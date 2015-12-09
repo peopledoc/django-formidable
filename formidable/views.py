@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework.generics import RetrieveAPIView
 
-# Create your views here.
+from formidable.models import Formidable
+from formidable.serializers import FormidableSerializer
+
+
+class FormidableDetail(RetrieveAPIView):
+
+    queryset = Formidable.objects.all()
+    serializer_class = FormidableSerializer
