@@ -4,6 +4,8 @@ from rest_framework import serializers
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
 
+BASE_FIELDS = 'label', 'type_id', 'placeholder', 'helptext', 'default',
+
 
 class FieldListSerializer(serializers.ListSerializer):
 
@@ -14,24 +16,24 @@ class FieldListSerializer(serializers.ListSerializer):
 
 class FieldidableSerializer(serializers.ModelSerializer):
 
+    items = ItemSerializer(many=True)
+
     class Meta:
         model = Fieldidable
         list_serializer_class = FieldListSerializer
-        fields = (
-            'id', 'label', 'type_id', 'placeholder', 'helptext', 'default',
-        )
+        fields = '__all__'
 
 
 class TextFieldSerializer(FieldidableSerializer):
-    pass
+
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS
 
 
 class DropdownFieldSerializer(FieldidableSerializer):
 
-    items = ItemSerializer(many=True)
-
     class Meta(FieldidableSerializer.Meta):
-        fields = FieldidableSerializer.Meta.fields + ('items',)
+        fields = BASE_FIELDS + ('items',)
 
 
 register = {
