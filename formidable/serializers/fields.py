@@ -33,10 +33,6 @@ class DropdownFieldSerializer(FieldidableSerializer):
     class Meta(FieldidableSerializer.Meta):
         fields = FieldidableSerializer.Meta.fields + ('items',)
 
-    def to_representation(self, instance):
-        print "youhou", instance
-        return super(DropdownFieldSerializer, self).to_representation(instance)
-
 
 register = {
     'dropdown': DropdownFieldSerializer,
