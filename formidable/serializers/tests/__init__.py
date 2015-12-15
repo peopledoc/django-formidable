@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from formidable.models import Formidable
 from formidable.serializers.forms import FormidableSerializer
-from formidable.serializers.fields import BASE_FIELDS
+from formidable.serializers.fields import BASE_FIELDS, SerializerRegister
 
 
 class SerializerTestCase(TestCase):
@@ -20,6 +20,10 @@ class SerializerTestCase(TestCase):
 
     def test_ok(self):
         self.assertTrue(self.serializer.data)
+
+    def test_register(self):
+        register = SerializerRegister.get_instance()
+        assert len(register) == 11
 
     def test_form_field(self):
         data = self.serializer.data
@@ -60,7 +64,8 @@ class SerializerTestCase(TestCase):
         data = serializer.data['fields'][0]
         for field in BASE_FIELDS:
             self.assertIn(field, data)
-        self.assertNotIn('multiple', data)
+        self.assertIn('multiple', data)
+        self.assertEquals(data['multiple'], False)
         self.assertIn('items', data)
         self.assertEquals(len(data['items'].keys()), 2)
         self.assertEquals(len(data['items'].values()), 2)

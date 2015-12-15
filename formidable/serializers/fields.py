@@ -4,7 +4,23 @@ from rest_framework import serializers
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
 
-BASE_FIELDS = 'label', 'type_id', 'placeholder', 'helptext', 'default',
+BASE_FIELDS = ('label', 'type_id', 'placeholder', 'helptext', 'default',)
+
+
+class SerializerRegister(dict):
+
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
+
+def load_serializer(klass):
+    SerializerRegister.get_instance()[klass.type_id] = klass
+    return klass
 
 
 class FieldListSerializer(serializers.ListSerializer):
@@ -16,6 +32,8 @@ class FieldListSerializer(serializers.ListSerializer):
 
 class FieldidableSerializer(serializers.ModelSerializer):
 
+    type_id = None
+
     items = ItemSerializer(many=True)
 
     class Meta:
@@ -24,22 +42,97 @@ class FieldidableSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+@load_serializer
 class TextFieldSerializer(FieldidableSerializer):
+
+    type_id = 'text'
 
     class Meta(FieldidableSerializer.Meta):
         fields = BASE_FIELDS
 
 
+@load_serializer
+class ParagraphFieldSerializer(TextFieldSerializer):
+
+    type_id = 'paragraph'
+
+
+@load_serializer
 class DropdownFieldSerializer(FieldidableSerializer):
+
+    type_id = 'dropdown'
+
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS + ('items', 'multiple')
+
+
+@load_serializer
+class CheckboxFieldSerializer(FieldidableSerializer):
+
+    type_id = 'checkbox'
 
     class Meta(FieldidableSerializer.Meta):
         fields = BASE_FIELDS + ('items',)
 
 
-register = {
-    'dropdown': DropdownFieldSerializer,
-    'text': TextFieldSerializer,
-}
+@load_serializer
+class CheckboxesFieldSerializer(FieldidableSerializer):
+
+    type_id = 'checkboxes'
+
+    class Meta(FieldidableSerializer):
+        fields = BASE_FIELDS + ('items', 'multiple')
+
+
+@load_serializer
+class RadiosFieldSerializer(FieldidableSerializer):
+
+    type_id = 'radios'
+
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS + ('items', 'multiple')
+
+
+@load_serializer
+class RadiosButtonsFieldSerializer(RadiosFieldSerializer):
+
+    type_id = 'radiosButtons'
+
+
+@load_serializer
+class FileFieldSerializer(FieldidableSerializer):
+
+    type_id = 'file'
+
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS
+
+
+@load_serializer
+class DateFieldSerializer(FieldidableSerializer):
+
+    type_id = 'date'
+
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS
+
+
+@load_serializer
+class EmailFieldSerializer(FieldidableSerializer):
+
+    type_id = 'email'
+
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS
+
+
+@load_serializer
+class NumberFieldSerializer(FieldidableSerializer):
+
+    type_id = 'number'
+
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS
 
 
 def call_right_serializer(meth):
@@ -67,6 +160,7 @@ def call_all_serializer(meth):
 class LazyChildProxy(object):
 
     def __init__(self):
+        register = SerializerRegister.get_instance()
         self.register = {key: value() for key, value in register.iteritems()}
 
     def get_right_serializer(self, instance):
