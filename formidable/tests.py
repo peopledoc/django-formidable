@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
+
 from django.core.urlresolvers import reverse
 
 from rest_framework.test import APITestCase
@@ -60,3 +62,12 @@ class CreateFormTestCase(APITestCase):
         self.assertEquals(formidable.fields.count(), 1)
         field = formidable.fields.first()
         self.assertEquals(field.items.count(), 2)
+
+    def test_forgotten_items_fields(self):
+        form_data_without_items = deepcopy(form_data_items)
+        form_data_without_items['fields'][0].pop('items')
+        res = self.client.post(
+            reverse('formidable:form_create'), form_data_without_items,
+            format='json'
+        )
+        self.assertEqual(res.status_code, 400)
