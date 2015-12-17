@@ -135,13 +135,24 @@ class NumberFieldSerializer(FieldidableSerializer):
         fields = BASE_FIELDS
 
 
-def call_right_serializer(meth):
+def call_right_serializer_by_instance(meth):
 
     def _wrapper(self, instance, *args, **kwargs):
 
-        serializer = self.get_right_serializer(instance)
+        serializer = self.get_right_serializer(instance.type_id)
         meth_name = getattr(serializer, meth.__name__)
         return meth_name(instance, *args, **kwargs)
+
+    return _wrapper
+
+
+def call_right_serializer_by_attrs(meth):
+
+    def _wrapper(self, attrs, *args, **kwargs):
+
+        serializer = self.get_right_serializer(attrs['type_id'])
+        meth_name = getattr(serializer, meth.__name__)
+        return meth_name(attrs, *args, **kwargs)
 
     return _wrapper
 
@@ -163,16 +174,20 @@ class LazyChildProxy(object):
         register = SerializerRegister.get_instance()
         self.register = {key: value() for key, value in register.iteritems()}
 
-    def get_right_serializer(self, instance):
-        return self.register[instance.type_id]
+    def get_right_serializer(self, type_id):
+        return self.register[type_id]
 
     def get_all_serializer(self):
         return [serializer for serializer in self.register.values()]
 
-    @call_right_serializer
+    @call_right_serializer_by_instance
     def to_representation(self, instance):
         pass
 
     @call_all_serializer
     def bind(self, *args, **kwargs):
+        pass
+
+    @call_right_serializer_by_attrs
+    def run_validation(self):
         pass
