@@ -16,4 +16,14 @@ class FormidableSerializer(serializers.ModelSerializer):
         depth = 2
 
     def create(self, validated_data):
-        return Formidable.objects.create(**validated_data)
+        fields_kwargs = None
+        if 'fields' in validated_data:
+            fields_kwargs = validated_data.pop('fields')
+
+        form = Formidable.objects.create(**validated_data)
+
+        if fields_kwargs:
+            field_serializer = self.fields['fields']
+            field_serializer.create(fields_kwargs, form.id)
+
+        return form
