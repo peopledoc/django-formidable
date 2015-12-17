@@ -14,3 +14,6 @@ class FormidableSerializer(serializers.ModelSerializer):
         model = Formidable
         fields = ('label', 'description', 'fields')
         depth = 2
+
+    def create(self, validated_data):
+        return Formidable.objects.create(**validated_data)
