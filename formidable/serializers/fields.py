@@ -29,6 +29,12 @@ class FieldListSerializer(serializers.ListSerializer):
         kwargs['child'] = LazyChildProxy()
         return super(FieldListSerializer, self).__init__(*args, **kwargs)
 
+    def create(self, validated_data, form_id):
+
+        for attrs in validated_data:
+            attrs['form_id'] = form_id
+            self.child.create(attrs)
+
 
 class FieldidableSerializer(serializers.ModelSerializer):
 
@@ -40,6 +46,16 @@ class FieldidableSerializer(serializers.ModelSerializer):
         model = Fieldidable
         list_serializer_class = FieldListSerializer
         fields = '__all__'
+
+
+class FieldItemMixin(object):
+
+    def create(self, validated_data):
+        items_kwargs = validated_data.pop('items')
+        field = super(FieldItemMixin, self).create(validated_data)
+        item_serializer = self.fields['items']
+        item_serializer.create(items_kwargs, field.id)
+        return field
 
 
 @load_serializer
@@ -58,7 +74,7 @@ class ParagraphFieldSerializer(TextFieldSerializer):
 
 
 @load_serializer
-class DropdownFieldSerializer(FieldidableSerializer):
+class DropdownFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'dropdown'
 
@@ -67,7 +83,7 @@ class DropdownFieldSerializer(FieldidableSerializer):
 
 
 @load_serializer
-class CheckboxFieldSerializer(FieldidableSerializer):
+class CheckboxFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'checkbox'
 
@@ -76,7 +92,7 @@ class CheckboxFieldSerializer(FieldidableSerializer):
 
 
 @load_serializer
-class CheckboxesFieldSerializer(FieldidableSerializer):
+class CheckboxesFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'checkboxes'
 
@@ -85,7 +101,7 @@ class CheckboxesFieldSerializer(FieldidableSerializer):
 
 
 @load_serializer
-class RadiosFieldSerializer(FieldidableSerializer):
+class RadiosFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'radios'
 
@@ -190,4 +206,8 @@ class LazyChildProxy(object):
 
     @call_right_serializer_by_attrs
     def run_validation(self):
+        pass
+
+    @call_right_serializer_by_attrs
+    def create(self, attrs):
         pass
