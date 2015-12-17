@@ -19,20 +19,22 @@ form_data = {
     ]
 }
 
-"""
-        {
-            "label": "my_dropdwon",
-            "type_id": "dropdown",
-            "placeholder": None,
-            "helptext": "Lesfrites c'est bon",
-            "default": None,
-            "items": {
-                "plop": "coin",
-                "tuto": "toto"
-            },
-            "multiple": False
-        }
-"""
+form_data_items = {
+    "label": "test create",
+    "description": "my first formidable by api",
+    "fields": [{
+        "label": "my_dropdwon",
+        "type_id": "dropdown",
+        "placeholder": None,
+        "helptext": "Lesfrites c'est bon",
+        "default": None,
+        "items": {
+            "plop": "coin",
+            "tuto": "toto"
+        },
+        "multiple": False
+    }]
+}
 
 
 class CreateFormTestCase(APITestCase):
@@ -46,3 +48,15 @@ class CreateFormTestCase(APITestCase):
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         formidable = Formidable.objects.order_by('pk').last()
         self.assertEquals(formidable.fields.count(), 1)
+
+    def test_with_items_in_fields(self):
+        initial_count = Formidable.objects.count()
+        res = self.client.post(
+            reverse('formidable:form_create'), form_data_items, format='json'
+        )
+        self.assertEquals(res.status_code, 201)
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        formidable = Formidable.objects.order_by('pk').last()
+        self.assertEquals(formidable.fields.count(), 1)
+        field = formidable.fields.first()
+        self.assertEquals(field.items.count(), 2)
