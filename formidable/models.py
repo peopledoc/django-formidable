@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-from formidable.managers import FormidableQuerySet
-
 
 class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
     description = models.TextField()
-    objects = FormidableQuerySet.as_manager()
 
 
 class Fieldidable(models.Model):
