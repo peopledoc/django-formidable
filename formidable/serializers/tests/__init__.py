@@ -147,3 +147,29 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertFalse(serializer.is_valid())
         self.assertIn('fields', serializer.errors)
+
+
+class UpdateFormTestCase(TestCase):
+
+    data = {
+        'label': u'edited form',
+        'description': 'description edited',
+        'fields': [],
+    }
+
+    def setUp(self):
+        super(UpdateFormTestCase, self).setUp()
+        self.form = Formidable.objects.create(
+            label=u'testform', description=u'test form',
+        )
+        self.text_field = self.form.fields.create(
+            type_id='text', label='test text',
+            placeholder='put your name here', helptext=u'your name',
+        )
+
+    def test_update_simple(self):
+        serializer = FormidableSerializer(instance=self.form, data=self.data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertEquals(form.label, u'edited form')
