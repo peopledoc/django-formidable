@@ -11,6 +11,11 @@ class Formidable(models.Model):
 
 
 class Fieldidable(models.Model):
+
+    class Meta:
+        unique_together = (('slug', 'form'),)
+
+    slug = models.CharField(max_length=256)
     label = models.CharField(max_length=256)
     form = models.ForeignKey(Formidable, related_name='fields')
     type_id = models.CharField(
