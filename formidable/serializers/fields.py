@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.utils.functional import cached_property
+
 from rest_framework import serializers
 
 from formidable.models import Fieldidable
@@ -45,14 +47,20 @@ class FieldidableSerializer(serializers.ModelSerializer):
 
 class FieldItemMixin(object):
 
+    @cached_property
     def item_serializer(self):
-        pass
+        return self.fields['items']
 
     def create(self, validated_data):
         items_kwargs = validated_data.pop('items')
         field = super(FieldItemMixin, self).create(validated_data)
-        item_serializer = self.fields['items']
-        item_serializer.create(items_kwargs, field.id)
+        self.item_serializer.create(items_kwargs, field.id)
+        return field
+
+    def update(self, instance, validated_data):
+        items_kwargs = validated_data.pop('items')
+        field = super(FieldItemMixin, self).update(instance, validated_data)
+        self.item_serializer.update(field.items, items_kwargs, field.id)
         return field
 
 

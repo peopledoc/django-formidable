@@ -60,6 +60,13 @@ class DictItemSerializer(serializers.ListSerializer):
             data['field_id'] = field_id
             self.child.create(data)
 
+    def update(self, items, validated_data, field_id):
+
+        for index, item in enumerate(items.all()):
+            data = validated_data[index]
+            data['field_id'] = field_id
+            self.child.update(item, data)
+
 
 class ItemSerializer(serializers.ModelSerializer):
 

@@ -161,6 +161,14 @@ class UpdateFormTestCase(TestCase):
         {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug'}
     ]
 
+    fields_items = [{
+        'type_id': 'dropdown', 'label': 'edited field',
+        'slug': 'dropdown-input', 'items': {
+            'gun': u'desert-eagle',
+            'sword': u'Andúril',
+        }
+    }]
+
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
         self.form = Formidable.objects.create(
@@ -188,3 +196,26 @@ class UpdateFormTestCase(TestCase):
         field = form.fields.first()
         self.assertEquals(self.text_field.pk, field.pk)
         self.assertEquals(field.label, u'edited field')
+
+    def test_update_fields_items(self):
+        self.dropdown_fields = self.form.fields.create(
+            slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
+        self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_items
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEquals(form.pk, self.form.pk)
+        field = form.fields.first()
+        self.assertEquals(self.dropdown_fields.pk, field.pk)
+        self.assertEquals(field.label, u'edited field')
+        self.assertEquals(field.items.count(), 2)
+        self.assertTrue(
+            field.items.filter(key='gun', value='desert-eagle').exists()
+        )
+        self.assertTrue(
+            field.items.filter(key='sword', value=u'Andúril').exists()
+        )
