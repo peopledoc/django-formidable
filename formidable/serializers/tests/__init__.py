@@ -157,14 +157,14 @@ class UpdateFormTestCase(TestCase):
         'fields': [],
     }
 
+    fields = [
+        {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug'}
+    ]
+
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
         self.form = Formidable.objects.create(
             label=u'testform', description=u'test form',
-        )
-        self.text_field = self.form.fields.create(
-            type_id='text', label='test text',
-            placeholder='put your name here', helptext=u'your name',
         )
 
     def test_update_simple(self):
@@ -173,3 +173,18 @@ class UpdateFormTestCase(TestCase):
         form = serializer.save()
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.label, u'edited form')
+
+    def test_update_fields(self):
+        self.text_field = self.form.fields.create(
+            type_id='text', label='test text', slug='text-slug',
+            placeholder='put your name here', helptext=u'your name',
+        )
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEquals(form.pk, self.form.pk)
+        field = form.fields.first()
+        self.assertEquals(self.text_field.pk, field.pk)
+        self.assertEquals(field.label, u'edited field')

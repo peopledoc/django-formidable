@@ -22,10 +22,12 @@ class FieldListSerializer(serializers.ListSerializer):
             attrs['form_id'] = form_id
             self.child.create(attrs)
 
-    def update(self, form_id, validated_data):
-        for data in validated_data:
+    def update(self, fields, validated_data, form_id):
+
+        for index, instance in enumerate(fields.all()):
+            data = validated_data[index]
             data['form_id'] = form_id
-            self.child.update(data)
+            self.child.update(instance, data)
 
 
 class FieldidableSerializer(serializers.ModelSerializer):
@@ -37,15 +39,14 @@ class FieldidableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fieldidable
         list_serializer_class = FieldListSerializer
-        fields = '__all__'
 
-    def update(self, validated_data):
-        self.Meta.model.filter(
-            slug=validated_data['slug'], form_id=validated_data['form_id']
-        ).update(**validated_data)
+        fields = '__all__'
 
 
 class FieldItemMixin(object):
+
+    def item_serializer(self):
+        pass
 
     def create(self, validated_data):
         items_kwargs = validated_data.pop('items')
@@ -207,4 +208,8 @@ class LazyChildProxy(object):
 
     @call_right_serializer_by_attrs
     def create(self, attrs):
+        pass
+
+    @call_right_serializer_by_instance
+    def update(self, instance, validated_data):
         pass

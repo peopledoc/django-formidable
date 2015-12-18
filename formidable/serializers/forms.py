@@ -23,9 +23,13 @@ class FormidableSerializer(serializers.ModelSerializer):
         return form
 
     def update(self, instance, validated_data):
+        fields_data = validated_data.pop('fields')
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
+        self.fields_serializer.update(
+            instance.fields, fields_data, instance.pk
+        )
         return instance
 
     @cached_property
