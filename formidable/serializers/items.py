@@ -36,7 +36,7 @@ class DictItemSerializer(serializers.ListSerializer):
                 api_settings.NON_FIELD_ERRORS_KEY: [message]
             })
 
-        ret = {}
+        ret = []
         errors = []
 
         for key, value in data.iteritems():
@@ -46,7 +46,7 @@ class DictItemSerializer(serializers.ListSerializer):
             except ValidationError as exc:
                 errors.append(exc.detail)
             else:
-                ret.update(validated)
+                ret.append(validated)
                 errors.append({})
 
         if any(errors):
@@ -56,10 +56,9 @@ class DictItemSerializer(serializers.ListSerializer):
 
     def create(self, validated_data, field_id):
 
-        for key, value in validated_data.iteritems():
-            self.child.create({
-                'key': key, 'value': value, 'field_id': field_id}
-            )
+        for data in validated_data:
+            data['field_id'] = field_id
+            self.child.create(data)
 
 
 class ItemSerializer(serializers.ModelSerializer):
