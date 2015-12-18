@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
-from formidable.serializers.register import SerializerRegister, load_serializer
+from formidable.register import SerializerRegister, load_serializer
 
 BASE_FIELDS = ('label', 'type_id', 'placeholder', 'helptext', 'default',)
 

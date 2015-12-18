@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-from formidable.serializers.register import SerializerRegister
+from formidable.register import SerializerRegister
 
 
 class Formidable(models.Model):
