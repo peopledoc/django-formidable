@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
+from formidable.register import SerializerRegister
+
 
 class Formidable(models.Model):
 
@@ -11,7 +13,10 @@ class Formidable(models.Model):
 class Fieldidable(models.Model):
     label = models.CharField(max_length=256)
     form = models.ForeignKey(Formidable, related_name='fields')
-    type_id = models.CharField(max_length=256, choices=(('String', 'string'),))
+    type_id = models.CharField(
+        max_length=256,
+        choices=SerializerRegister.get_instance().to_choices()
+    )
     placeholder = models.CharField(max_length=256, null=True, blank=True)
     helptext = models.TextField(null=True, blank=True)
     default = models.TextField(null=True, blank=True)
