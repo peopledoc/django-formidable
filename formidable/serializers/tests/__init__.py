@@ -87,8 +87,11 @@ class CreateSerializerTestCase(TestCase):
     fields_with_items = [
         {
             'type_id': 'dropdown',
-            'slug': 'dropdown-input', 'label': 'dropdown',
-            'multiple': False, 'items': {'tutu': 'toto'}
+            'slug': 'dropdown-input', 'label': 'dropdown label',
+            'multiple': False, 'items': {
+                'tutu': 'toto',
+                'tata': 'plop',
+            }
         }
     ]
 
@@ -113,6 +116,28 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(field.type_id, 'text')
         self.assertEquals(field.label, 'text label')
         self.assertEquals(field.slug, 'text_input')
+        field.items.all()
+
+    def test_create_field_with_items(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_with_items
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEquals(instance.label, u'test_create')
+        self.assertEquals(instance.description, u'description create')
+        self.assertEquals(instance.fields.count(), 1)
+        field = instance.fields.first()
+        self.assertEquals(field.type_id, 'dropdown')
+        self.assertEquals(field.label, 'dropdown label')
+        self.assertEquals(field.slug, 'dropdown-input')
+        self.assertEquals(field.items.count(), 2)
+        self.assertTrue(
+            field.items.filter(key='tutu', value='toto').exists()
+        )
+        self.assertTrue(
+            field.items.filter(key='tata', value='plop').exists()
+        )
 
     def test_create_field_without_items(self):
         data = copy.deepcopy(self.data)
