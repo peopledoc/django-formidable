@@ -5,7 +5,9 @@ from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
 from formidable.register import SerializerRegister, load_serializer
 
-BASE_FIELDS = ('label', 'type_id', 'placeholder', 'helptext', 'default',)
+BASE_FIELDS = (
+    'slug', 'label', 'type_id', 'placeholder', 'helptext', 'default',
+)
 
 
 class FieldListSerializer(serializers.ListSerializer):
@@ -20,6 +22,11 @@ class FieldListSerializer(serializers.ListSerializer):
             attrs['form_id'] = form_id
             self.child.create(attrs)
 
+    def update(self, form_id, validated_data):
+        for data in validated_data:
+            data['form_id'] = form_id
+            self.child.update(data)
+
 
 class FieldidableSerializer(serializers.ModelSerializer):
 
@@ -31,6 +38,11 @@ class FieldidableSerializer(serializers.ModelSerializer):
         model = Fieldidable
         list_serializer_class = FieldListSerializer
         fields = '__all__'
+
+    def update(self, validated_data):
+        self.Meta.model.filter(
+            slug=validated_data['slug'], form_id=validated_data['form_id']
+        ).update(**validated_data)
 
 
 class FieldItemMixin(object):
