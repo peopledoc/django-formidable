@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import copy
+
 from django.test import TestCase
 
 from formidable.models import Formidable
@@ -6,7 +8,7 @@ from formidable.serializers.forms import FormidableSerializer
 from formidable.serializers.fields import BASE_FIELDS, SerializerRegister
 
 
-class SerializerTestCase(TestCase):
+class RenderSerializerTestCase(TestCase):
 
     def setUp(self):
         self.form = Formidable.objects.create(
@@ -69,3 +71,37 @@ class SerializerTestCase(TestCase):
         self.assertIn('items', data)
         self.assertEquals(len(data['items'].keys()), 2)
         self.assertEquals(len(data['items'].values()), 2)
+
+
+class CreateSerializerTestCase(TestCase):
+
+    data = {
+        'label': u'test_create',
+        'description': u'description create',
+        'fields': []
+    }
+    fields_without_items = [
+        {'slug': 'text_input', 'label': 'text label', 'type_id': 'text'}
+    ]
+
+    def test_create_form(self):
+        serializer = FormidableSerializer(data=self.data)
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEquals(instance.label, u'test_create')
+        self.assertEquals(instance.description, u'description create')
+        self.assertEquals(instance.fields.count(), 0)
+
+    def test_create_field(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_without_items
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEquals(instance.label, u'test_create')
+        self.assertEquals(instance.description, u'description create')
+        self.assertEquals(instance.fields.count(), 1)
+        field = instance.fields.first()
+        self.assertEquals(field.type_id, 'text')
+        self.assertEquals(field.label, 'text label')
+        self.assertEquals(field.slug, 'text_input')
