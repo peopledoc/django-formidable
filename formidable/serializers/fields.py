@@ -3,24 +3,9 @@ from rest_framework import serializers
 
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
+from formidable.serializers.register import SerializerRegister, load_serializer
 
 BASE_FIELDS = ('label', 'type_id', 'placeholder', 'helptext', 'default',)
-
-
-class SerializerRegister(dict):
-
-    _instance = None
-
-    @classmethod
-    def get_instance(cls):
-        if cls._instance is None:
-            cls._instance = cls()
-        return cls._instance
-
-
-def load_serializer(klass):
-    SerializerRegister.get_instance()[klass.type_id] = klass
-    return klass
 
 
 class FieldListSerializer(serializers.ListSerializer):
