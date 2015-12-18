@@ -84,6 +84,14 @@ class CreateSerializerTestCase(TestCase):
         {'slug': 'text_input', 'label': 'text label', 'type_id': 'text'}
     ]
 
+    fields_with_items = [
+        {
+            'type_id': 'dropdown',
+            'slug': 'dropdown-input', 'label': 'dropdown',
+            'multiple': False, 'items': {'tutu': 'toto'}
+        }
+    ]
+
     def test_create_form(self):
         serializer = FormidableSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
@@ -105,3 +113,12 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(field.type_id, 'text')
         self.assertEquals(field.label, 'text label')
         self.assertEquals(field.slug, 'text_input')
+
+    def test_create_field_without_items(self):
+        data = copy.deepcopy(self.data)
+        fields = copy.deepcopy(self.fields_with_items)
+        fields[0].pop('items')
+        data['fields'] = fields
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('fields', serializer.errors)
