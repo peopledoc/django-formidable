@@ -16,9 +16,6 @@ class FormidableDetail(RetrieveAPIView):
         return qs.prefetch_related('fields')
 
 
-class FormidableUpdate(CreateAPIView):
+class FormidableCreate(CreateAPIView):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
-
-    def create(self, *args, **kwargs):
-        return super(FormidableUpdate, self).create(*args, **kwargs)
