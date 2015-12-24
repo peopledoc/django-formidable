@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+from django.utils.functional import cached_property
+
 from rest_framework import serializers
 
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
 from formidable.register import SerializerRegister, load_serializer
 
-BASE_FIELDS = ('label', 'type_id', 'placeholder', 'helptext', 'default',)
+BASE_FIELDS = (
+    'slug', 'label', 'type_id', 'placeholder', 'helptext', 'default',
+)
 
 
 class FieldListSerializer(serializers.ListSerializer):
@@ -20,6 +24,13 @@ class FieldListSerializer(serializers.ListSerializer):
             attrs['form_id'] = form_id
             self.child.create(attrs)
 
+    def update(self, fields, validated_data, form_id):
+
+        for index, instance in enumerate(fields.all()):
+            data = validated_data[index]
+            data['form_id'] = form_id
+            self.child.update(instance, data)
+
 
 class FieldidableSerializer(serializers.ModelSerializer):
 
@@ -30,16 +41,26 @@ class FieldidableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fieldidable
         list_serializer_class = FieldListSerializer
+
         fields = '__all__'
 
 
 class FieldItemMixin(object):
 
+    @cached_property
+    def item_serializer(self):
+        return self.fields['items']
+
     def create(self, validated_data):
         items_kwargs = validated_data.pop('items')
         field = super(FieldItemMixin, self).create(validated_data)
-        item_serializer = self.fields['items']
-        item_serializer.create(items_kwargs, field.id)
+        self.item_serializer.create(items_kwargs, field.id)
+        return field
+
+    def update(self, instance, validated_data):
+        items_kwargs = validated_data.pop('items')
+        field = super(FieldItemMixin, self).update(instance, validated_data)
+        self.item_serializer.update(field.items, items_kwargs, field.id)
         return field
 
 
@@ -195,4 +216,8 @@ class LazyChildProxy(object):
 
     @call_right_serializer_by_attrs
     def create(self, attrs):
+        pass
+
+    @call_right_serializer_by_instance
+    def update(self, instance, validated_data):
         pass

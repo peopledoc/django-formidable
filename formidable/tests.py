@@ -13,6 +13,7 @@ form_data = {
     "fields": [
         {
             "label": "hello",
+            "slug": "textslug",
             "type_id": "text",
             "placeholder": None,
             "helptext": None,
@@ -26,6 +27,7 @@ form_data_items = {
     "description": "my first formidable by api",
     "fields": [{
         "label": "my_dropdwon",
+        "slug": "dropdown_slug",
         "type_id": "dropdown",
         "placeholder": None,
         "helptext": "Lesfrites c'est bon",
