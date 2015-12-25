@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from django.db.models import Q
+
 from rest_framework import serializers
 from rest_framework.utils import html
 from rest_framework.serializers import ValidationError
@@ -61,6 +63,9 @@ class DictItemSerializer(serializers.ListSerializer):
             self.child.create(data)
 
     def update(self, items, validated_data, field_id):
+
+        keys = [data['key'] for data in validated_data]
+        Item.objects.filter(~Q(key__in=keys), field_id=field_id).delete()
 
         items = list(items.all())
 
