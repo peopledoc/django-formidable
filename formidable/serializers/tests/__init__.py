@@ -193,6 +193,20 @@ class UpdateFormTestCase(TestCase):
         field = form.fields.first()
         self.assertEquals(field.type_id, 'text')
 
+    def test_create_items_on_update(self):
+        self.dropdown_fields = self.form.fields.create(
+            slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_items)
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        field = form.fields.first()
+        self.assertEquals(field.items.count(), 2)
+
     def test_update_fields(self):
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='text-slug',

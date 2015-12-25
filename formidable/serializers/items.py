@@ -62,10 +62,18 @@ class DictItemSerializer(serializers.ListSerializer):
 
     def update(self, items, validated_data, field_id):
 
-        for index, item in enumerate(items.all()):
+        items = list(items.all())
+
+        for index, data in enumerate(validated_data):
+            qs = Item.objects.filter(
+                key=data['key'], field_id=field_id
+            )
             data = validated_data[index]
             data['field_id'] = field_id
-            self.child.update(item, data)
+            if qs.exists():
+                self.child.update(items[index], data)
+            else:
+                self.child.create(data)
 
 
 class ItemSerializer(serializers.ModelSerializer):
