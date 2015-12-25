@@ -18,11 +18,10 @@ class FieldListSerializer(serializers.ListSerializer):
         kwargs['child'] = LazyChildProxy()
         return super(FieldListSerializer, self).__init__(*args, **kwargs)
 
-    def create(self, validated_data, form_id=None):
+    def create(self, validated_data, form_id):
 
         for attrs in validated_data:
-            if form_id:
-                attrs['form_id'] = form_id
+            attrs['form_id'] = form_id
             self.child.create(attrs)
 
     def update(self, fields, validated_data, form_id):
