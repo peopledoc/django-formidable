@@ -27,10 +27,15 @@ class FieldListSerializer(serializers.ListSerializer):
             self.child.create(attrs)
 
     def update(self, fields, validated_data, form_id):
+        slugs = [data['slug'] for data in validated_data]
 
-        self.delete([data['slug'] for data in validated_data])
+        # delete field with slug which are not in payload anymore
+        Fieldidable.objects.filter(
+            ~Q(slug__in=slugs), form_id=form_id
+        ).delete()
 
         fields = list(fields.all())
+
         for index, data in enumerate(validated_data):
             slug = data['slug']
             qs = Fieldidable.objects.filter(slug=slug, form_id=form_id)
@@ -40,9 +45,6 @@ class FieldListSerializer(serializers.ListSerializer):
                 self.child.update(instance, data)
             else:
                 self.child.create(data)
-
-    def delete(self, slugs):
-        return Fieldidable.objects.filter(~Q(slug__in=slugs)).delete()
 
 
 class FieldidableSerializer(serializers.ModelSerializer):
