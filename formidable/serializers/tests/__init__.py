@@ -250,3 +250,15 @@ class UpdateFormTestCase(TestCase):
         self.assertTrue(
             field.items.filter(key='sword', value=u'Andúril').exists()
         )
+
+    def test_delete_on_update(self):
+        self.dropdown_fields = self.form.fields.create(
+            slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
+        self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
+        serializer = FormidableSerializer(instance=self.form, data=self.data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertEquals(form.fields.count(), 0)

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.db.models import Q
 from django.utils.functional import cached_property
+
 
 from rest_framework import serializers
 
@@ -26,6 +28,8 @@ class FieldListSerializer(serializers.ListSerializer):
 
     def update(self, fields, validated_data, form_id):
 
+        self.delete([data['slug'] for data in validated_data])
+
         fields = list(fields.all())
         for index, data in enumerate(validated_data):
             slug = data['slug']
@@ -36,6 +40,9 @@ class FieldListSerializer(serializers.ListSerializer):
                 self.child.update(instance, data)
             else:
                 self.child.create(data)
+
+    def delete(self, slugs):
+        return Fieldidable.objects.filter(~Q(slug__in=slugs)).delete()
 
 
 class FieldidableSerializer(serializers.ModelSerializer):
