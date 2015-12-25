@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.db.models import Q
 from django.utils.functional import cached_property
+
 
 from rest_framework import serializers
 
@@ -25,8 +27,15 @@ class FieldListSerializer(serializers.ListSerializer):
             self.child.create(attrs)
 
     def update(self, fields, validated_data, form_id):
+        slugs = [data['slug'] for data in validated_data]
+
+        # delete field with slug which are not in payload anymore
+        Fieldidable.objects.filter(
+            ~Q(slug__in=slugs), form_id=form_id
+        ).delete()
 
         fields = list(fields.all())
+
         for index, data in enumerate(validated_data):
             slug = data['slug']
             qs = Fieldidable.objects.filter(slug=slug, form_id=form_id)
