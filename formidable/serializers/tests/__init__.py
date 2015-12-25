@@ -206,6 +206,12 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
         self.assertEquals(field.items.count(), 2)
+        self.assertTrue(
+            field.items.filter(key=u'sword', value=u'Andúril').exists()
+        )
+        self.assertTrue(
+            field.items.filter(key=u'gun', value=u'desert-eagle').exists()
+        )
 
     def test_update_fields(self):
         self.text_field = self.form.fields.create(
