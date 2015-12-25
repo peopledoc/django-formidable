@@ -26,10 +26,16 @@ class FieldListSerializer(serializers.ListSerializer):
 
     def update(self, fields, validated_data, form_id):
 
-        for index, instance in enumerate(fields.all()):
-            data = validated_data[index]
+        fields = list(fields.all())
+        for index, data in enumerate(validated_data):
+            slug = data['slug']
+            qs = Fieldidable.objects.filter(slug=slug, form_id=form_id)
             data['form_id'] = form_id
-            self.child.update(instance, data)
+            if qs.exists():
+                instance = fields[index]
+                self.child.update(instance, data)
+            else:
+                self.child.create(data)
 
 
 class FieldidableSerializer(serializers.ModelSerializer):
