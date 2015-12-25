@@ -182,6 +182,17 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.label, u'edited form')
 
+    def test_create_field_on_update(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        field = form.fields.first()
+        self.assertEquals(field.type_id, 'text')
+
     def test_update_fields(self):
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='text-slug',
