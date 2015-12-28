@@ -89,7 +89,10 @@ class CreateSerializerTestCase(TestCase):
         'fields': []
     }
     fields_without_items = [
-        {'slug': 'text_input', 'label': 'text label', 'type_id': 'text'}
+        {
+            'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
+            'accesses': [{'access_id': 'padawan', 'level': 'required'}]
+        }
     ]
 
     fields_with_items = [
@@ -99,7 +102,10 @@ class CreateSerializerTestCase(TestCase):
             'multiple': False, 'items': {
                 'tutu': 'toto',
                 'tata': 'plop',
-            }
+            },
+            'accesses': [{
+                'access_id': 'padawan', 'level': 'required'
+            }]
         }
     ]
 
@@ -166,7 +172,8 @@ class UpdateFormTestCase(TestCase):
     }
 
     fields = [
-        {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug'}
+        {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
+         'accesses': [{'access_id': 'padawan', 'level': 'required'}]}
     ]
 
     fields_items = [{
@@ -174,7 +181,8 @@ class UpdateFormTestCase(TestCase):
         'slug': 'dropdown-input', 'items': {
             'gun': u'desert-eagle',
             'sword': u'Andúril',
-        }
+        },
+        'accesses': [{'access_id': 'padawan', 'level': 'required'}],
     }]
 
     def setUp(self):
@@ -205,6 +213,9 @@ class UpdateFormTestCase(TestCase):
         self.dropdown_fields = self.form.fields.create(
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
         )
+        self.dropdown_fields.accesses.create(
+            access_id='padawan', level='required'
+        )
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)
         serializer = FormidableSerializer(instance=self.form, data=data)
@@ -226,6 +237,9 @@ class UpdateFormTestCase(TestCase):
             type_id='text', label='test text', slug='text-slug',
             placeholder='put your name here', helptext=u'your name',
         )
+        self.text_field.accesses.create(
+            access_id='padawan', level='required'
+        )
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields
         serializer = FormidableSerializer(instance=self.form, data=data)
@@ -239,6 +253,9 @@ class UpdateFormTestCase(TestCase):
     def test_update_fields_items(self):
         self.dropdown_fields = self.form.fields.create(
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        self.dropdown_fields.accesses.create(
+            access_id='padawan', level='editable'
         )
         self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
         self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
@@ -258,6 +275,8 @@ class UpdateFormTestCase(TestCase):
         self.assertTrue(
             field.items.filter(key='sword', value=u'Andúril').exists()
         )
+        qs = field.accesses.filter(access_id='padawan', level=u'required')
+        self.assertTrue(qs.exists())
 
     def test_delete_on_update(self):
         self.dropdown_fields = self.form.fields.create(
@@ -274,6 +293,9 @@ class UpdateFormTestCase(TestCase):
     def test_delete_items_on_update(self):
         self.dropdown_fields = self.form.fields.create(
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        self.dropdown_fields.accesses.create(
+            access_id='padawan', level='required'
         )
         self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
         self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')

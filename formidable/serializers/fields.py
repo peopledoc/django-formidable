@@ -71,6 +71,14 @@ class FieldidableSerializer(serializers.ModelSerializer):
         self.access_serializer.create(accesses_data, field.id)
         return field
 
+    def update(self, instance, validated_data):
+        accesses_data = validated_data.pop('accesses')
+        field = super(FieldidableSerializer, self).update(
+            instance, validated_data
+        )
+        self.access_serializer.update(field.accesses, accesses_data, field.id)
+        return field
+
 
 class FieldItemMixin(object):
 
