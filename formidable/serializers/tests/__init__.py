@@ -162,6 +162,15 @@ class CreateSerializerTestCase(TestCase):
         self.assertFalse(serializer.is_valid())
         self.assertIn('fields', serializer.errors)
 
+    def test_create_wrong_access(self):
+        data = copy.deepcopy(self.data)
+        fields = copy.deepcopy(self.fields_with_items)
+        fields[0]['accesses'][0]['access_id'] = u'wrong'
+        data['fields'] = fields
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('fields', serializer.errors)
+
 
 class UpdateFormTestCase(TestCase):
 
