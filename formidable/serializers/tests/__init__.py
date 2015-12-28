@@ -18,6 +18,9 @@ class RenderSerializerTestCase(TestCase):
             type_id='text', label='test text',
             placeholder='put your name here', helptext=u'your name',
         )
+        self.text_field.accesses.create(
+            level=u'required', access_id=u'padawan'
+        )
         self.serializer = FormidableSerializer(instance=self.form)
 
     def test_ok(self):
@@ -54,6 +57,11 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['default'], None)
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
+        self.assertIn('accesses', text_field)
+        self.assertEquals(len(text_field['accesses']), 1)
+        accesses = text_field['accesses'][0]
+        self.assertEquals(accesses['access_id'], u'padawan')
+        self.assertEquals(accesses['level'], u'required')
 
     def test_dropdown_field(self):
         self.form.fields.all().delete()
