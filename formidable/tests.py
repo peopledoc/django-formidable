@@ -2,6 +2,7 @@
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from rest_framework.test import APITestCase
 
@@ -73,3 +74,13 @@ class CreateFormTestCase(APITestCase):
             format='json'
         )
         self.assertEqual(res.status_code, 400)
+
+
+class TestAccess(APITestCase):
+
+    def test_get(self):
+        response = self.client.get(reverse('formidable:accesses_list'))
+        self.assertEquals(response.status_code, 200)
+        for access in response.data:
+            self.assertIn('id', access)
+            self.assertIn(access['id'], settings.FORMIDABLE_ACCESSES)
