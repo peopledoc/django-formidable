@@ -34,6 +34,16 @@ class Item(models.Model):
     value = models.CharField(max_length=256)
 
 
+class Access(models.Model):
+
+    class Meta:
+        unique_together = (('field', 'access_id'),)
+
+    field = models.ForeignKey(Fieldidable, related_name='accesses')
+    access_id = models.CharField(max_length=128)
+    level = models.CharField(max_length=128)
+
+
 class Rulesidable(models.Model):
     pass
 
