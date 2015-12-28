@@ -18,7 +18,13 @@ form_data = {
             "type_id": "text",
             "placeholder": None,
             "helptext": None,
-            "default": None
+            "default": None,
+            "accesses": [
+                {"access_id": "padawan", "level": "required"},
+                {"access_id": "jedi", "level": "editable"},
+                {"access_id": "master-jedi", "level": "readonly"},
+                {"access_id": "human", "level": "hidden"},
+            ]
         },
     ]
 }
@@ -33,6 +39,12 @@ form_data_items = {
         "placeholder": None,
         "helptext": "Lesfrites c'est bon",
         "default": None,
+        "accesses": [
+            {"access_id": "padawan", "level": "required"},
+            {"access_id": "jedi", "level": "editable"},
+            {"access_id": "master-jedi", "level": "readonly"},
+            {"access_id": "human", "level": "hidden"},
+        ],
         "items": {
             "plop": "coin",
             "tuto": "toto"
@@ -53,6 +65,16 @@ class CreateFormTestCase(APITestCase):
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         formidable = Formidable.objects.order_by('pk').last()
         self.assertEquals(formidable.fields.count(), 1)
+        field = formidable.fields.first()
+        self.assertEquals(field.accesses.count(), 4)
+        accesses = [
+            ('padawan', 'required'), ('jedi', 'editable'),
+            ('master-jedi', 'readonly'), ('human', 'hidden'),
+        ]
+        for access, level in accesses:
+            self.assertTrue(
+                field.accesses.filter(access_id=access, level=level).exists()
+            )
 
     def test_with_items_in_fields(self):
         initial_count = Formidable.objects.count()
