@@ -81,6 +81,7 @@ class TestAccess(APITestCase):
     def test_get(self):
         response = self.client.get(reverse('formidable:accesses_list'))
         self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.data), 4)
         for access in response.data:
             self.assertIn('id', access)
             self.assertIn(access['id'], settings.FORMIDABLE_ACCESSES)
