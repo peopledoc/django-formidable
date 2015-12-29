@@ -7,10 +7,12 @@ from rest_framework import serializers
 
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
+from formidable.serializers.access import AccessSerializer
 from formidable.register import SerializerRegister, load_serializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'helptext', 'default',
+    'accesses',
 )
 
 
@@ -52,12 +54,30 @@ class FieldidableSerializer(serializers.ModelSerializer):
     type_id = None
 
     items = ItemSerializer(many=True)
+    accesses = AccessSerializer(many=True)
 
     class Meta:
         model = Fieldidable
         list_serializer_class = FieldListSerializer
-
         fields = '__all__'
+
+    @cached_property
+    def access_serializer(self):
+        return self.fields['accesses']
+
+    def create(self, validated_data):
+        accesses_data = validated_data.pop('accesses')
+        field = super(FieldidableSerializer, self).create(validated_data)
+        self.access_serializer.create(accesses_data, field)
+        return field
+
+    def update(self, instance, validated_data):
+        accesses_data = validated_data.pop('accesses')
+        field = super(FieldidableSerializer, self).update(
+            instance, validated_data
+        )
+        self.access_serializer.update(field.accesses, accesses_data, field)
+        return field
 
 
 class FieldItemMixin(object):
@@ -67,9 +87,9 @@ class FieldItemMixin(object):
         return self.fields['items']
 
     def create(self, validated_data):
-        items_kwargs = validated_data.pop('items')
+        items_data = validated_data.pop('items')
         field = super(FieldItemMixin, self).create(validated_data)
-        self.item_serializer.create(items_kwargs, field.id)
+        self.item_serializer.create(items_data, field.id)
         return field
 
     def update(self, instance, validated_data):

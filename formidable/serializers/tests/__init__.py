@@ -18,6 +18,9 @@ class RenderSerializerTestCase(TestCase):
             type_id='text', label='test text',
             placeholder='put your name here', helptext=u'your name',
         )
+        self.text_field.accesses.create(
+            level=u'required', access_id=u'padawan'
+        )
         self.serializer = FormidableSerializer(instance=self.form)
 
     def test_ok(self):
@@ -54,6 +57,11 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['default'], None)
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
+        self.assertIn('accesses', text_field)
+        self.assertEquals(len(text_field['accesses']), 1)
+        accesses = text_field['accesses'][0]
+        self.assertEquals(accesses['access_id'], u'padawan')
+        self.assertEquals(accesses['level'], u'required')
 
     def test_dropdown_field(self):
         self.form.fields.all().delete()
@@ -81,7 +89,10 @@ class CreateSerializerTestCase(TestCase):
         'fields': []
     }
     fields_without_items = [
-        {'slug': 'text_input', 'label': 'text label', 'type_id': 'text'}
+        {
+            'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
+            'accesses': [{'access_id': 'padawan', 'level': 'required'}]
+        }
     ]
 
     fields_with_items = [
@@ -91,7 +102,10 @@ class CreateSerializerTestCase(TestCase):
             'multiple': False, 'items': {
                 'tutu': 'toto',
                 'tata': 'plop',
-            }
+            },
+            'accesses': [{
+                'access_id': 'padawan', 'level': 'required'
+            }]
         }
     ]
 
@@ -116,7 +130,10 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(field.type_id, 'text')
         self.assertEquals(field.label, 'text label')
         self.assertEquals(field.slug, 'text_input')
-        field.items.all()
+        self.assertEquals(field.items.count(), 0)
+        # just one access has been specified, check the the other are created
+        # with default value
+        self.assertEquals(field.accesses.count(), 4)
 
     def test_create_field_with_items(self):
         data = copy.deepcopy(self.data)
@@ -138,11 +155,21 @@ class CreateSerializerTestCase(TestCase):
         self.assertTrue(
             field.items.filter(key='tata', value='plop').exists()
         )
+        self.assertEquals(field.accesses.count(), 4)
 
     def test_create_field_without_items(self):
         data = copy.deepcopy(self.data)
         fields = copy.deepcopy(self.fields_with_items)
         fields[0].pop('items')
+        data['fields'] = fields
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('fields', serializer.errors)
+
+    def test_create_wrong_access(self):
+        data = copy.deepcopy(self.data)
+        fields = copy.deepcopy(self.fields_with_items)
+        fields[0]['accesses'][0]['access_id'] = u'wrong'
         data['fields'] = fields
         serializer = FormidableSerializer(data=data)
         self.assertFalse(serializer.is_valid())
@@ -158,7 +185,8 @@ class UpdateFormTestCase(TestCase):
     }
 
     fields = [
-        {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug'}
+        {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
+         'accesses': [{'access_id': 'padawan', 'level': 'required'}]}
     ]
 
     fields_items = [{
@@ -166,7 +194,8 @@ class UpdateFormTestCase(TestCase):
         'slug': 'dropdown-input', 'items': {
             'gun': u'desert-eagle',
             'sword': u'Andúril',
-        }
+        },
+        'accesses': [{'access_id': 'padawan', 'level': 'required'}],
     }]
 
     def setUp(self):
@@ -192,10 +221,15 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
         self.assertEquals(field.type_id, 'text')
+        # check accesses are fully created
+        self.assertEquals(field.accesses.count(), 4)
 
     def test_create_items_on_update(self):
         self.dropdown_fields = self.form.fields.create(
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        self.dropdown_fields.accesses.create(
+            access_id='padawan', level='required'
         )
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)
@@ -218,6 +252,9 @@ class UpdateFormTestCase(TestCase):
             type_id='text', label='test text', slug='text-slug',
             placeholder='put your name here', helptext=u'your name',
         )
+        self.text_field.accesses.create(
+            access_id='padawan', level='required'
+        )
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields
         serializer = FormidableSerializer(instance=self.form, data=data)
@@ -231,6 +268,9 @@ class UpdateFormTestCase(TestCase):
     def test_update_fields_items(self):
         self.dropdown_fields = self.form.fields.create(
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        self.dropdown_fields.accesses.create(
+            access_id='padawan', level='editable'
         )
         self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
         self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
@@ -250,6 +290,8 @@ class UpdateFormTestCase(TestCase):
         self.assertTrue(
             field.items.filter(key='sword', value=u'Andúril').exists()
         )
+        qs = field.accesses.filter(access_id='padawan', level=u'required')
+        self.assertTrue(qs.exists())
 
     def test_delete_on_update(self):
         self.dropdown_fields = self.form.fields.create(
@@ -266,6 +308,9 @@ class UpdateFormTestCase(TestCase):
     def test_delete_items_on_update(self):
         self.dropdown_fields = self.form.fields.create(
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
+        )
+        self.dropdown_fields.accesses.create(
+            access_id='padawan', level='required'
         )
         self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
         self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')

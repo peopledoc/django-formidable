@@ -107,3 +107,5 @@ STATIC_ROOT = "/var/www/example.co"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+FORMIDABLE_ACCESSES = ['jedi', 'padawan', 'jedi-master', 'human']
