@@ -24,19 +24,31 @@ class SimpleAccessSerializer(serializers.BaseSerializer):
 
 class AccessListSerializer(serializers.ListSerializer):
 
-    def create(self, validated_data, field_id):
+    def create(self, validated_data, field):
 
         for data in validated_data:
-            data['field_id'] = field_id
+            data['field_id'] = field.id
             self.child.create(data)
 
-    def update(self, accesses, validated_data, field_id):
+    def update(self, accesses, validated_data, field):
 
         accesses = list(accesses.all())
 
         for index, data in enumerate(validated_data):
-            data['field_id'] = field_id
-            self.child.update(accesses[index], data)
+            data['field_id'] = field.id
+            if field.accesses.filter(access_id=data['access_id']).exists():
+                self.child.update(accesses[index], data)
+            else:
+                self.child.create(data)
+
+    def validate(self, data):
+        accesses_id = [accesses['access_id'] for accesses in data]
+
+        for access_id in settings.FORMIDABLE_ACCESSES:
+            if access_id not in accesses_id:
+                data.append({'access_id': access_id, 'level': 'editable'})
+
+        return data
 
 
 class AccessSerializer(serializers.ModelSerializer):
