@@ -130,7 +130,10 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(field.type_id, 'text')
         self.assertEquals(field.label, 'text label')
         self.assertEquals(field.slug, 'text_input')
-        field.items.all()
+        self.assertEquals(field.items.count(), 0)
+        # just one access has been specified, check the the other are created
+        # with default value
+        self.assertEquals(field.accesses.count(), 4)
 
     def test_create_field_with_items(self):
         data = copy.deepcopy(self.data)
@@ -152,6 +155,7 @@ class CreateSerializerTestCase(TestCase):
         self.assertTrue(
             field.items.filter(key='tata', value='plop').exists()
         )
+        self.assertEquals(field.accesses.count(), 4)
 
     def test_create_field_without_items(self):
         data = copy.deepcopy(self.data)
@@ -217,6 +221,8 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
         self.assertEquals(field.type_id, 'text')
+        # check accesses are fully created
+        self.assertEquals(field.accesses.count(), 4)
 
     def test_create_items_on_update(self):
         self.dropdown_fields = self.form.fields.create(
