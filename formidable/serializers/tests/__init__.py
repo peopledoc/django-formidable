@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from formidable.models import Formidable
 from formidable.serializers.forms import FormidableSerializer
-from formidable.serializers.fields import BASE_FIELDS, SerializerRegister
+from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
 
 
 class RenderSerializerTestCase(TestCase):
@@ -27,7 +27,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertTrue(self.serializer.data)
 
     def test_register(self):
-        register = SerializerRegister.get_instance()
+        register = FieldSerializerRegister.get_instance()
         assert len(register) == 11
 
     def test_form_field(self):

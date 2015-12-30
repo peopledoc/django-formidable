@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class SerializerRegister(dict):
+class Register(dict):
 
     _instance = None
 
@@ -15,6 +15,18 @@ class SerializerRegister(dict):
         return [(key, key) for key in self.keys()]
 
 
-def load_serializer(klass):
-    SerializerRegister.get_instance()[klass.type_id] = klass
-    return klass
+class FieldSerializerRegister(Register):
+    pass
+
+
+class ValidationSerializerRegister(Register):
+    pass
+
+
+def load_serializer(register):
+
+    def _wrapper(klass):
+        register[klass.type_id] = klass
+        return klass
+
+    return _wrapper

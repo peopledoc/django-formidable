@@ -8,7 +8,7 @@ from rest_framework import serializers
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.access import AccessSerializer
-from formidable.register import SerializerRegister, load_serializer
+from formidable.register import FieldSerializerRegister, load_serializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'helptext', 'default',
@@ -16,10 +16,13 @@ BASE_FIELDS = (
 )
 
 
+field_register = FieldSerializerRegister.get_instance()
+
+
 class FieldListSerializer(serializers.ListSerializer):
 
     def __init__(self, *args, **kwargs):
-        kwargs['child'] = LazyChildProxy()
+        kwargs['child'] = LazyChildProxy(field_register)
         return super(FieldListSerializer, self).__init__(*args, **kwargs)
 
     def create(self, validated_data, form_id):
@@ -99,7 +102,7 @@ class FieldItemMixin(object):
         return field
 
 
-@load_serializer
+@load_serializer(field_register)
 class TextFieldSerializer(FieldidableSerializer):
 
     type_id = 'text'
@@ -108,13 +111,13 @@ class TextFieldSerializer(FieldidableSerializer):
         fields = BASE_FIELDS
 
 
-@load_serializer
+@load_serializer(field_register)
 class ParagraphFieldSerializer(TextFieldSerializer):
 
     type_id = 'paragraph'
 
 
-@load_serializer
+@load_serializer(field_register)
 class DropdownFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'dropdown'
@@ -123,7 +126,7 @@ class DropdownFieldSerializer(FieldItemMixin, FieldidableSerializer):
         fields = BASE_FIELDS + ('items', 'multiple')
 
 
-@load_serializer
+@load_serializer(field_register)
 class CheckboxFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'checkbox'
@@ -132,7 +135,7 @@ class CheckboxFieldSerializer(FieldItemMixin, FieldidableSerializer):
         fields = BASE_FIELDS + ('items',)
 
 
-@load_serializer
+@load_serializer(field_register)
 class CheckboxesFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'checkboxes'
@@ -141,7 +144,7 @@ class CheckboxesFieldSerializer(FieldItemMixin, FieldidableSerializer):
         fields = BASE_FIELDS + ('items', 'multiple')
 
 
-@load_serializer
+@load_serializer(field_register)
 class RadiosFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'radios'
@@ -150,13 +153,13 @@ class RadiosFieldSerializer(FieldItemMixin, FieldidableSerializer):
         fields = BASE_FIELDS + ('items', 'multiple')
 
 
-@load_serializer
+@load_serializer(field_register)
 class RadiosButtonsFieldSerializer(RadiosFieldSerializer):
 
     type_id = 'radiosButtons'
 
 
-@load_serializer
+@load_serializer(field_register)
 class FileFieldSerializer(FieldidableSerializer):
 
     type_id = 'file'
@@ -165,7 +168,7 @@ class FileFieldSerializer(FieldidableSerializer):
         fields = BASE_FIELDS
 
 
-@load_serializer
+@load_serializer(field_register)
 class DateFieldSerializer(FieldidableSerializer):
 
     type_id = 'date'
@@ -174,7 +177,7 @@ class DateFieldSerializer(FieldidableSerializer):
         fields = BASE_FIELDS
 
 
-@load_serializer
+@load_serializer(field_register)
 class EmailFieldSerializer(FieldidableSerializer):
 
     type_id = 'email'
@@ -183,7 +186,7 @@ class EmailFieldSerializer(FieldidableSerializer):
         fields = BASE_FIELDS
 
 
-@load_serializer
+@load_serializer(field_register)
 class NumberFieldSerializer(FieldidableSerializer):
 
     type_id = 'number'
@@ -227,8 +230,7 @@ def call_all_serializer(meth):
 
 class LazyChildProxy(object):
 
-    def __init__(self):
-        register = SerializerRegister.get_instance()
+    def __init__(self, register):
         self.register = {key: value() for key, value in register.iteritems()}
 
     def get_right_serializer(self, type_id):
