@@ -8,6 +8,7 @@ from rest_framework import serializers
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.access import AccessSerializer
+from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.register import FieldSerializerRegister, load_serializer
 
 BASE_FIELDS = (
@@ -193,68 +194,3 @@ class NumberFieldSerializer(FieldidableSerializer):
 
     class Meta(FieldidableSerializer.Meta):
         fields = BASE_FIELDS
-
-
-def call_right_serializer_by_instance(meth):
-
-    def _wrapper(self, instance, *args, **kwargs):
-
-        serializer = self.get_right_serializer(instance.type_id)
-        meth_name = getattr(serializer, meth.__name__)
-        return meth_name(instance, *args, **kwargs)
-
-    return _wrapper
-
-
-def call_right_serializer_by_attrs(meth):
-
-    def _wrapper(self, attrs, *args, **kwargs):
-
-        serializer = self.get_right_serializer(attrs['type_id'])
-        meth_name = getattr(serializer, meth.__name__)
-        return meth_name(attrs, *args, **kwargs)
-
-    return _wrapper
-
-
-def call_all_serializer(meth):
-
-    def _wrapper(self, *args, **kwargs):
-
-        for serializer in self.get_all_serializer():
-            meth_name = getattr(serializer, meth.__name__)
-            return meth_name(*args, **kwargs)
-
-    return _wrapper
-
-
-class LazyChildProxy(object):
-
-    def __init__(self, register):
-        self.register = {key: value() for key, value in register.iteritems()}
-
-    def get_right_serializer(self, type_id):
-        return self.register[type_id]
-
-    def get_all_serializer(self):
-        return [serializer for serializer in self.register.values()]
-
-    @call_right_serializer_by_instance
-    def to_representation(self, instance):
-        pass
-
-    @call_all_serializer
-    def bind(self, *args, **kwargs):
-        pass
-
-    @call_right_serializer_by_attrs
-    def run_validation(self):
-        pass
-
-    @call_right_serializer_by_attrs
-    def create(self, attrs):
-        pass
-
-    @call_right_serializer_by_instance
-    def update(self, instance, validated_data):
-        pass
