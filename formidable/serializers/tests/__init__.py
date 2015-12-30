@@ -154,7 +154,6 @@ class CreateSerializerTestCase(TestCase):
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_with_validation
         serializer = FormidableSerializer(data=data)
-        import ipdb; ipdb.set_trace()
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
         self.assertEquals(instance.fields.count(), 1)
