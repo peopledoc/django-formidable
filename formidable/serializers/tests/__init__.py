@@ -160,6 +160,14 @@ class CreateSerializerTestCase(TestCase):
         field = instance.fields.first()
         self.assertEquals(field.validations.count(), 1)
 
+    def test_create_field_error_validations(self):
+        data = copy.deepcopy(self.data)
+        fields_data = copy.deepcopy(self.fields_with_validation)
+        fields_data[0]['validations'][0]['value'] = 'test'
+        data['fields'] = fields_data
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+
     def test_create_field_with_items(self):
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_with_items
