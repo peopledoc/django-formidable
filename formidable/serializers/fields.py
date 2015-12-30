@@ -8,12 +8,13 @@ from rest_framework import serializers
 from formidable.models import Fieldidable
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.access import AccessSerializer
+from formidable.serializers.validation import ValidationSerializer
 from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.register import FieldSerializerRegister, load_serializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'helptext', 'default',
-    'accesses',
+    'accesses', 'validations',
 )
 
 
@@ -59,6 +60,7 @@ class FieldidableSerializer(serializers.ModelSerializer):
 
     items = ItemSerializer(many=True)
     accesses = AccessSerializer(many=True)
+    validations = ValidationSerializer(many=True, required=False)
 
     class Meta:
         model = Fieldidable
@@ -69,10 +71,23 @@ class FieldidableSerializer(serializers.ModelSerializer):
     def access_serializer(self):
         return self.fields['accesses']
 
+    @cached_property
+    def validations_serializer(self):
+        return self.fields['validations']
+
     def create(self, validated_data):
         accesses_data = validated_data.pop('accesses')
+
+        validations_data = None
+        if 'validations' in validated_data:
+            validations_data = validated_data.pop('validations')
+
         field = super(FieldidableSerializer, self).create(validated_data)
         self.access_serializer.create(accesses_data, field)
+
+        if validations_data:
+            self.validations_serializer.create(validations_data, field)
+
         return field
 
     def update(self, instance, validated_data):

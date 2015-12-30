@@ -16,7 +16,8 @@ def call_right_serializer_by_attrs(meth):
 
     def _wrapper(self, attrs, *args, **kwargs):
 
-        serializer = self.get_right_serializer(attrs['type_id'])
+        lookup = self.lookup_field
+        serializer = self.get_right_serializer(attrs[lookup])
         meth_name = getattr(serializer, meth.__name__)
         return meth_name(attrs, *args, **kwargs)
 
@@ -37,6 +38,7 @@ def call_all_serializer(meth):
 class LazyChildProxy(object):
 
     def __init__(self, register):
+        self.lookup_field = register.lookup_field
         self.register = {key: value() for key, value in register.iteritems()}
 
     def get_right_serializer(self, type_id):

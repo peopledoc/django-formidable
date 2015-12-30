@@ -16,11 +16,11 @@ class Register(dict):
 
 
 class FieldSerializerRegister(Register):
-    pass
+    lookup_field = 'type_id'
 
 
 class ValidationSerializerRegister(Register):
-    pass
+    lookup_field = 'type'
 
 
 def load_serializer(register):

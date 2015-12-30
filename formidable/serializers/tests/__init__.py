@@ -109,6 +109,21 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    fields_with_validation = [
+        {
+            'slug': 'text_input',
+            'label': 'text label',
+            'type_id': 'text',
+            'accesses': [{'access_id': 'padawan', 'level': 'required'}],
+            'validations': [
+                {
+                    'type': 'minlength',
+                    'value': '5',
+                },
+            ]
+        }
+    ]
+
     def test_create_form(self):
         serializer = FormidableSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
@@ -134,6 +149,17 @@ class CreateSerializerTestCase(TestCase):
         # just one access has been specified, check the the other are created
         # with default value
         self.assertEquals(field.accesses.count(), 4)
+
+    def test_create_field_with_validations(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_with_validation
+        serializer = FormidableSerializer(data=data)
+        import ipdb; ipdb.set_trace()
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEquals(instance.fields.count(), 1)
+        field = instance.fields.first()
+        self.assertEquals(field.validations.count(), 1)
 
     def test_create_field_with_items(self):
         data = copy.deepcopy(self.data)
