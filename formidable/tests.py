@@ -22,7 +22,7 @@ form_data = {
             "accesses": [
                 {"access_id": "padawan", "level": "required"},
                 {"access_id": "jedi", "level": "editable"},
-                {"access_id": "master-jedi", "level": "readonly"},
+                {"access_id": "jedi-master", "level": "readonly"},
                 {"access_id": "human", "level": "hidden"},
             ]
         },
@@ -42,7 +42,7 @@ form_data_items = {
         "accesses": [
             {"access_id": "padawan", "level": "required"},
             {"access_id": "jedi", "level": "editable"},
-            {"access_id": "master-jedi", "level": "readonly"},
+            {"access_id": "jedi-master", "level": "readonly"},
             {"access_id": "human", "level": "hidden"},
         ],
         "items": {
@@ -69,7 +69,7 @@ class CreateFormTestCase(APITestCase):
         self.assertEquals(field.accesses.count(), 4)
         accesses = [
             ('padawan', 'required'), ('jedi', 'editable'),
-            ('master-jedi', 'readonly'), ('human', 'hidden'),
+            ('jedi-master', 'readonly'), ('human', 'hidden'),
         ]
         for access, level in accesses:
             self.assertTrue(
