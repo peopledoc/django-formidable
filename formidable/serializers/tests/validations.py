@@ -4,7 +4,8 @@ from django.test import TestCase
 
 from formidable.models import Formidable
 from formidable.serializers.validation import (
-    MinLengthSerializer, RegexpSerializer
+    MinLengthSerializer, RegexpSerializer,
+    ValidationSerializer
 )
 
 
@@ -42,3 +43,17 @@ class ValidationSerializerTest(TestCase):
         }
         serializer = RegexpSerializer(data=data)
         self.assertFalse(serializer.is_valid())
+
+    def test_update_validations(self):
+        list_serializer = ValidationSerializer(many=True)
+        self.text.validations.create(
+            value=u'5', type=u'minlength'
+        )
+        list_serializer.update(
+            self.text.validations,
+            [{'type': 'minlength', 'value': '12'}],
+            self.text
+        )
+        self.assertEquals(self.text.validations.count(), 1)
+        validation = self.text.validations.first()
+        self.assertEquals(validation.value, '12')

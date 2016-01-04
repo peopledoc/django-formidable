@@ -23,6 +23,12 @@ class ListValidationSerializer(serializers.ListSerializer):
             data['field_id'] = field.id
             self.child.create(data)
 
+    def update(self, validations, validated_data, field):
+        validations.all().delete()
+        for data in validated_data:
+            data['field_id'] = field.id
+            self.child.create(data)
+
 
 class ValidationSerializer(serializers.ModelSerializer):
 
