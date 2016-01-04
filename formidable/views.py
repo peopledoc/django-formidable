@@ -3,14 +3,16 @@
 from django.conf import settings
 
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveAPIView, CreateAPIView
+from rest_framework.generics import (
+    RetrieveUpdateAPIView, CreateAPIView
+)
 from rest_framework.response import Response
 
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 
 
-class FormidableDetail(RetrieveAPIView):
+class FormidableDetail(RetrieveUpdateAPIView):
 
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer

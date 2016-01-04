@@ -95,7 +95,97 @@ class CreateFormTestCase(APITestCase):
             reverse('formidable:form_create'), form_data_without_items,
             format='json'
         )
-        self.assertEqual(res.status_code, 400)
+        self.assertEquals(res.status_code, 400)
+
+
+class UpdateFormTestCase(APITestCase):
+
+    def setUp(self):
+        super(UpdateFormTestCase, self).setUp()
+        self.form = Formidable.objects.create(
+            label=u'test', description='test'
+        )
+
+    @property
+    def edit_url(self):
+        return reverse(
+            'formidable:form_detail', args=[self.form.id]
+        )
+
+    def test_simple(self):
+        initial_count = Formidable.objects.count()
+        data = {
+            'label': 'edited label',
+            'description': 'edited description',
+            'fields': []
+        }
+        res = self.client.put(self.edit_url, data)
+        self.assertEquals(res.status_code, 200)
+        formidable = Formidable.objects.order_by('pk').last()
+        self.assertEquals(formidable.pk, self.form.pk)
+        self.assertEquals(formidable.label, u'edited label')
+        self.assertEquals(formidable.description, u'edited description')
+        self.assertEquals(Formidable.objects.count(), initial_count)
+
+    def test_update_simple_fields(self):
+        field = self.form.fields.create(
+            type_id='text', slug='textslug', label=u'mytext',
+        )
+        for access in settings.FORMIDABLE_ACCESSES:
+            field.accesses.create(access_id=access, level=u'editable')
+        res = self.client.put(self.edit_url, form_data,  format='json')
+        self.assertEquals(res.status_code, 200)
+        form = Formidable.objects.order_by('pk').last()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        field = form.fields.first()
+        self.assertEquals(field.label, u'hello')
+        self.assertEquals(field.accesses.count(), 4)
+
+    def test_create_field_on_update(self):
+        field = self.form.fields.create(
+            type_id='text', slug='textslug', label=u'mytext',
+        )
+        for access in settings.FORMIDABLE_ACCESSES:
+            field.accesses.create(access_id=access, level=u'editable')
+
+        data = deepcopy(form_data)
+        data['fields'].extend(form_data_items['fields'])
+        res = self.client.put(self.edit_url, data,  format='json')
+        self.assertEquals(res.status_code, 200)
+        form = Formidable.objects.order_by('pk').last()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertEquals(form.fields.count(), 2)
+
+    def test_delete_field_on_update(self):
+        self.form.fields.create(
+            type_id='text', slug='textslug', label=u'mytext',
+        )
+        self.form.fields.create(
+            type_id='text', slug='delete-slug', label='text'
+        )
+
+        for access in settings.FORMIDABLE_ACCESSES:
+            for field in self.form.fields.all():
+                field.accesses.create(access_id=access, level=u'editable')
+
+        res = self.client.put(self.edit_url, form_data,  format='json')
+        self.assertEquals(res.status_code, 200)
+        form = Formidable.objects.order_by('pk').last()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        field = form.fields.first()
+        self.assertEquals(field.label, u'hello')
+        self.assertEquals(field.accesses.count(), 4)
+        self.assertTrue(field.accesses.filter(
+            access_id=u'padawan', level='required'
+        ).exists())
+        self.assertTrue(field.accesses.filter(
+            access_id=u'human', level='hidden'
+        ).exists())
+        self.assertTrue(field.accesses.filter(
+            access_id="jedi-master", level="readonly"
+        ).exists())
 
 
 class TestAccess(APITestCase):
