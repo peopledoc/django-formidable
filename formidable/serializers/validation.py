@@ -75,3 +75,39 @@ class RegexpSerializer(ValidationSerializer):
             raise ValidationError(u'invalide regexp,  {}'.format(e))
 
         return value
+
+
+@load_serializer(validation_register)
+class EqualSerializer(ValidationSerializer):
+
+    type_id = u'eq'
+
+
+@load_serializer(validation_register)
+class NotEqualSerializer(ValidationSerializer):
+
+    type_id = u'neq'
+
+
+@load_serializer(validation_register)
+class GtSerializer(ValidationSerializer):
+
+    type_id = u'gt'
+
+
+@load_serializer(validation_register)
+class GteSerializer(ValidationSerializer):
+
+    type_id = u'gte'
+
+
+@load_serializer(validation_register)
+class LtSerializer(ValidationSerializer):
+
+    type_id = u'lt'
+
+
+@load_serializer(validation_register)
+class LteSerializer(ValidationSerializer):
+
+    type_id = u'lte'
