@@ -32,10 +32,11 @@ class AccessListSerializer(serializers.ListSerializer):
 
     def update(self, accesses, validated_data, field):
 
-        accesses = list(accesses.all())
+        accesses = list(accesses.order_by('access_id').all())
+
+        validated_data = sorted(validated_data, key=lambda x: x['access_id'])
 
         for index, data in enumerate(validated_data):
-            data['field_id'] = field.id
             if field.accesses.filter(access_id=data['access_id']).exists():
                 self.child.update(accesses[index], data)
             else:
