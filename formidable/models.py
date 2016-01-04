@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-from formidable.register import SerializerRegister
+from formidable.register import FieldSerializerRegister
 
 
 class Formidable(models.Model):
@@ -20,7 +20,7 @@ class Fieldidable(models.Model):
     form = models.ForeignKey(Formidable, related_name='fields')
     type_id = models.CharField(
         max_length=256,
-        choices=SerializerRegister.get_instance().to_choices()
+        choices=FieldSerializerRegister.get_instance().to_choices()
     )
     placeholder = models.CharField(max_length=256, null=True, blank=True)
     helptext = models.TextField(null=True, blank=True)
@@ -44,9 +44,8 @@ class Access(models.Model):
     level = models.CharField(max_length=128)
 
 
-class Rulesidable(models.Model):
-    pass
-
-
 class Validationidable(models.Model):
-    pass
+    field = models.ForeignKey(Fieldidable, related_name='validations')
+    value = models.CharField(max_length=256)
+    type = models.CharField(max_length=256)
+    message = models.TextField(blank=True, null=True)

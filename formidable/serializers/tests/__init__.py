@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from formidable.models import Formidable
 from formidable.serializers.forms import FormidableSerializer
-from formidable.serializers.fields import BASE_FIELDS, SerializerRegister
+from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
 
 
 class RenderSerializerTestCase(TestCase):
@@ -27,7 +27,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertTrue(self.serializer.data)
 
     def test_register(self):
-        register = SerializerRegister.get_instance()
+        register = FieldSerializerRegister.get_instance()
         assert len(register) == 11
 
     def test_form_field(self):
@@ -109,6 +109,21 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    fields_with_validation = [
+        {
+            'slug': 'text_input',
+            'label': 'text label',
+            'type_id': 'text',
+            'accesses': [{'access_id': 'padawan', 'level': 'required'}],
+            'validations': [
+                {
+                    'type': 'minlength',
+                    'value': '5',
+                },
+            ]
+        }
+    ]
+
     def test_create_form(self):
         serializer = FormidableSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
@@ -134,6 +149,24 @@ class CreateSerializerTestCase(TestCase):
         # just one access has been specified, check the the other are created
         # with default value
         self.assertEquals(field.accesses.count(), 4)
+
+    def test_create_field_with_validations(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_with_validation
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEquals(instance.fields.count(), 1)
+        field = instance.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+
+    def test_create_field_error_validations(self):
+        data = copy.deepcopy(self.data)
+        fields_data = copy.deepcopy(self.fields_with_validation)
+        fields_data[0]['validations'][0]['value'] = 'test'
+        data['fields'] = fields_data
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
 
     def test_create_field_with_items(self):
         data = copy.deepcopy(self.data)
