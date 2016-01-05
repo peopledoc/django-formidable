@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from django.db.models import Q
-
 from rest_framework import serializers
 from rest_framework.utils import html
 from rest_framework.serializers import ValidationError
 from rest_framework.settings import api_settings
 
 from formidable.models import Item
+from formidable.serializers.list import NestedListSerializer
 
 
-class DictItemSerializer(serializers.ListSerializer):
+class DictItemSerializer(NestedListSerializer):
+
+    field_id = 'key'
+    parent_name = 'field_id'
 
     def to_representation(self, items):
         return {
@@ -55,30 +57,6 @@ class DictItemSerializer(serializers.ListSerializer):
             raise ValidationError(errors)
 
         return ret
-
-    def create(self, validated_data, field_id):
-
-        for data in validated_data:
-            data['field_id'] = field_id
-            self.child.create(data)
-
-    def update(self, items, validated_data, field_id):
-
-        keys = [data['key'] for data in validated_data]
-        Item.objects.filter(~Q(key__in=keys), field_id=field_id).delete()
-
-        items = list(items.all())
-
-        for index, data in enumerate(validated_data):
-            qs = Item.objects.filter(
-                key=data['key'], field_id=field_id
-            )
-            data = validated_data[index]
-            data['field_id'] = field_id
-            if qs.exists():
-                self.child.update(items[index], data)
-            else:
-                self.child.create(data)
 
 
 class ItemSerializer(serializers.ModelSerializer):

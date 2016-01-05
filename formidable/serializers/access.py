@@ -5,6 +5,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from formidable.models import Access
+from formidable.serializers.list import NestedListSerializer
 
 
 class SimpleAccessSerializer(serializers.BaseSerializer):
@@ -22,25 +23,10 @@ class SimpleAccessSerializer(serializers.BaseSerializer):
         return data
 
 
-class AccessListSerializer(serializers.ListSerializer):
+class AccessListSerializer(NestedListSerializer):
 
-    def create(self, validated_data, field):
-
-        for data in validated_data:
-            data['field_id'] = field.id
-            self.child.create(data)
-
-    def update(self, accesses, validated_data, field):
-
-        accesses = list(accesses.order_by('access_id').all())
-
-        validated_data = sorted(validated_data, key=lambda x: x['access_id'])
-
-        for index, data in enumerate(validated_data):
-            if field.accesses.filter(access_id=data['access_id']).exists():
-                self.child.update(accesses[index], data)
-            else:
-                self.child.create(data)
+    field_id = 'access_id'
+    parent_name = 'field_id'
 
     def validate(self, data):
         accesses_id = [accesses['access_id'] for accesses in data]
