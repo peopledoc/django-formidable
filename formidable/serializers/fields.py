@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.db.models import Q
 from django.utils.functional import cached_property
 
 
@@ -11,6 +10,7 @@ from formidable.serializers.access import AccessSerializer
 from formidable.serializers.validation import ValidationSerializer
 from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.register import FieldSerializerRegister, load_serializer
+from formidable.serializers.list import NestedListSerializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'helptext', 'default',
@@ -21,37 +21,14 @@ BASE_FIELDS = (
 field_register = FieldSerializerRegister.get_instance()
 
 
-class FieldListSerializer(serializers.ListSerializer):
+class FieldListSerializer(NestedListSerializer):
+
+    field_id = 'slug'
+    parent_name = 'form_id'
 
     def __init__(self, *args, **kwargs):
         kwargs['child'] = LazyChildProxy(field_register)
         return super(FieldListSerializer, self).__init__(*args, **kwargs)
-
-    def create(self, validated_data, form_id):
-
-        for attrs in validated_data:
-            attrs['form_id'] = form_id
-            self.child.create(attrs)
-
-    def update(self, fields, validated_data, form_id):
-        slugs = [data['slug'] for data in validated_data]
-
-        # delete field with slug which are not in payload anymore
-        Fieldidable.objects.filter(
-            ~Q(slug__in=slugs), form_id=form_id
-        ).delete()
-
-        fields = list(fields.all())
-
-        for index, data in enumerate(validated_data):
-            slug = data['slug']
-            qs = Fieldidable.objects.filter(slug=slug, form_id=form_id)
-            data['form_id'] = form_id
-            if qs.exists():
-                instance = fields[index]
-                self.child.update(instance, data)
-            else:
-                self.child.create(data)
 
 
 class FieldidableSerializer(serializers.ModelSerializer):

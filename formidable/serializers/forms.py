@@ -19,7 +19,7 @@ class FormidableSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         fields_kwargs = validated_data.pop('fields')
         form = Formidable.objects.create(**validated_data)
-        self.fields_serializer.create(fields_kwargs, form.id)
+        self.fields_serializer.create(fields_kwargs, form)
         return form
 
     def update(self, instance, validated_data):
@@ -28,7 +28,7 @@ class FormidableSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         self.fields_serializer.update(
-            instance.fields, fields_data, instance.pk
+            instance.fields, fields_data, instance
         )
         return instance
 
