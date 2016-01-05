@@ -108,13 +108,13 @@ class FieldItemMixin(object):
     def create(self, validated_data):
         items_data = validated_data.pop('items')
         field = super(FieldItemMixin, self).create(validated_data)
-        self.item_serializer.create(items_data, field.id)
+        self.item_serializer.create(items_data, field)
         return field
 
     def update(self, instance, validated_data):
         items_kwargs = validated_data.pop('items')
         field = super(FieldItemMixin, self).update(instance, validated_data)
-        self.item_serializer.update(field.items, items_kwargs, field.id)
+        self.item_serializer.update(field.items, items_kwargs, field)
         return field
 
 
