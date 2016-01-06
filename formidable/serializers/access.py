@@ -42,7 +42,7 @@ class AccessSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Access
-        fields = ('access_id', 'level')
+        fields = ('access_id', 'level', 'display')
         list_serializer_class = AccessListSerializer
 
     def validate_access_id(self, value):
