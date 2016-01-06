@@ -40,6 +40,8 @@ INSTALLED_APPS = (
     'django_extensions',
     'formidable',
     'rest_framework',
+    'demo',
+    'demo.builder',
 )
 
 MIDDLEWARE_CLASSES = (
