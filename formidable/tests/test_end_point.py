@@ -19,7 +19,7 @@ class RenderSerializerTestCase(TestCase):
             placeholder='put your name here', helptext=u'your name',
         )
         self.text_field.accesses.create(
-            level=u'required', access_id=u'padawan'
+            level=u'REQUIRED', access_id=u'padawan'
         )
         self.serializer = FormidableSerializer(instance=self.form)
 
@@ -61,7 +61,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(len(text_field['accesses']), 1)
         accesses = text_field['accesses'][0]
         self.assertEquals(accesses['access_id'], u'padawan')
-        self.assertEquals(accesses['level'], u'required')
+        self.assertEquals(accesses['level'], u'REQUIRED')
 
     def test_dropdown_field(self):
         self.form.fields.all().delete()
@@ -91,7 +91,7 @@ class CreateSerializerTestCase(TestCase):
     fields_without_items = [
         {
             'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
-            'accesses': [{'access_id': 'padawan', 'level': 'required'}]
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}]
         }
     ]
 
@@ -104,7 +104,7 @@ class CreateSerializerTestCase(TestCase):
                 'tata': 'plop',
             },
             'accesses': [{
-                'access_id': 'padawan', 'level': 'required'
+                'access_id': 'padawan', 'level': 'REQUIRED'
             }]
         }
     ]
@@ -114,7 +114,7 @@ class CreateSerializerTestCase(TestCase):
             'slug': 'text_input',
             'label': 'text label',
             'type_id': 'text',
-            'accesses': [{'access_id': 'padawan', 'level': 'required'}],
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
             'validations': [
                 {
                     'type': 'minlength',
@@ -219,7 +219,7 @@ class UpdateFormTestCase(TestCase):
 
     fields = [
         {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
-         'accesses': [{'access_id': 'padawan', 'level': 'required'}]}
+         'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}]}
     ]
 
     fields_items = [{
@@ -228,7 +228,7 @@ class UpdateFormTestCase(TestCase):
             'gun': u'desert-eagle',
             'sword': u'Andúril',
         },
-        'accesses': [{'access_id': 'padawan', 'level': 'required'}],
+        'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
     }]
 
     def setUp(self):
@@ -262,7 +262,7 @@ class UpdateFormTestCase(TestCase):
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
         )
         self.dropdown_fields.accesses.create(
-            access_id='padawan', level='required'
+            access_id='padawan', level='REQUIRED'
         )
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)
@@ -286,7 +286,7 @@ class UpdateFormTestCase(TestCase):
             placeholder='put your name here', helptext=u'your name',
         )
         self.text_field.accesses.create(
-            access_id='padawan', level='required'
+            access_id='padawan', level='REQUIRED'
         )
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields
@@ -303,7 +303,7 @@ class UpdateFormTestCase(TestCase):
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
         )
         self.dropdown_fields.accesses.create(
-            access_id='padawan', level='editable'
+            access_id='padawan', level='EDITABLE'
         )
         self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
         self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
@@ -323,7 +323,7 @@ class UpdateFormTestCase(TestCase):
         self.assertTrue(
             field.items.filter(key='sword', value=u'Andúril').exists()
         )
-        qs = field.accesses.filter(access_id='padawan', level=u'required')
+        qs = field.accesses.filter(access_id='padawan', level=u'REQUIRED')
         self.assertTrue(qs.exists())
 
     def test_delete_on_update(self):
@@ -343,7 +343,7 @@ class UpdateFormTestCase(TestCase):
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
         )
         self.dropdown_fields.accesses.create(
-            access_id='padawan', level='required'
+            access_id='padawan', level='REQUIRED'
         )
         self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
         self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
