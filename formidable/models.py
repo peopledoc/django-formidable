@@ -41,7 +41,10 @@ class Access(models.Model):
 
     field = models.ForeignKey(Fieldidable, related_name='accesses')
     access_id = models.CharField(max_length=128)
-    level = models.CharField(max_length=128)
+    level = models.CharField(max_length=128, choices=(
+        ('REQUIRED', 'REQUIRED'), ('EDITABLE', 'EDITABLE'),
+        ('HIDDEN', 'HIDDEN'), ('READONLY', 'READONLY'),
+    ))
 
 
 class Validationidable(models.Model):

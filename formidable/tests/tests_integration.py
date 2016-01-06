@@ -20,10 +20,10 @@ form_data = {
             "helptext": None,
             "default": None,
             "accesses": [
-                {"access_id": "padawan", "level": "required"},
-                {"access_id": "jedi", "level": "editable"},
-                {"access_id": "jedi-master", "level": "readonly"},
-                {"access_id": "human", "level": "hidden"},
+                {"access_id": "padawan", "level": "REQUIRED"},
+                {"access_id": "jedi", "level": "EDITABLE"},
+                {"access_id": "jedi-master", "level": "READONLY"},
+                {"access_id": "human", "level": "HIDDEN"},
             ]
         },
     ]
@@ -40,10 +40,10 @@ form_data_items = {
         "helptext": "Lesfrites c'est bon",
         "default": None,
         "accesses": [
-            {"access_id": "padawan", "level": "required"},
-            {"access_id": "jedi", "level": "editable"},
-            {"access_id": "jedi-master", "level": "readonly"},
-            {"access_id": "human", "level": "hidden"},
+            {"access_id": "padawan", "level": "REQUIRED"},
+            {"access_id": "jedi", "level": "EDITABLE"},
+            {"access_id": "jedi-master", "level": "READONLY"},
+            {"access_id": "human", "level": "HIDDEN"},
         ],
         "items": {
             "plop": "coin",
@@ -68,8 +68,8 @@ class CreateFormTestCase(APITestCase):
         field = formidable.fields.first()
         self.assertEquals(field.accesses.count(), 4)
         accesses = [
-            ('padawan', 'required'), ('jedi', 'editable'),
-            ('jedi-master', 'readonly'), ('human', 'hidden'),
+            ('padawan', 'REQUIRED'), ('jedi', 'EDITABLE'),
+            ('jedi-master', 'READONLY'), ('human', 'HIDDEN'),
         ]
         for access, level in accesses:
             self.assertTrue(
@@ -93,6 +93,16 @@ class CreateFormTestCase(APITestCase):
         form_data_without_items['fields'][0].pop('items')
         res = self.client.post(
             reverse('formidable:form_create'), form_data_without_items,
+            format='json'
+        )
+        self.assertEquals(res.status_code, 400)
+
+    def test_with_unknown_accesses(self):
+        form_data_copy = deepcopy(form_data)
+        field = form_data_copy['fields'][0]
+        field['accesses'][0]['access_id'] = 'NOT_A_LEVEL'
+        res = self.client.post(
+            reverse('formidable:form_create'), form_data_copy,
             format='json'
         )
         self.assertEquals(res.status_code, 400)
@@ -132,7 +142,7 @@ class UpdateFormTestCase(APITestCase):
             type_id='text', slug='textslug', label=u'mytext',
         )
         for access in settings.FORMIDABLE_ACCESSES:
-            field.accesses.create(access_id=access, level=u'editable')
+            field.accesses.create(access_id=access, level=u'EDITABLE')
         res = self.client.put(self.edit_url, form_data,  format='json')
         self.assertEquals(res.status_code, 200)
         form = Formidable.objects.order_by('pk').last()
@@ -147,7 +157,7 @@ class UpdateFormTestCase(APITestCase):
             type_id='text', slug='textslug', label=u'mytext',
         )
         for access in settings.FORMIDABLE_ACCESSES:
-            field.accesses.create(access_id=access, level=u'editable')
+            field.accesses.create(access_id=access, level=u'EDITABLE')
 
         data = deepcopy(form_data)
         data['fields'].extend(form_data_items['fields'])
@@ -167,7 +177,7 @@ class UpdateFormTestCase(APITestCase):
 
         for access in settings.FORMIDABLE_ACCESSES:
             for field in self.form.fields.all():
-                field.accesses.create(access_id=access, level=u'editable')
+                field.accesses.create(access_id=access, level=u'EDITABLE')
 
         res = self.client.put(self.edit_url, form_data,  format='json')
         self.assertEquals(res.status_code, 200)
@@ -178,13 +188,13 @@ class UpdateFormTestCase(APITestCase):
         self.assertEquals(field.label, u'hello')
         self.assertEquals(field.accesses.count(), 4)
         self.assertTrue(field.accesses.filter(
-            access_id=u'padawan', level='required'
+            access_id=u'padawan', level='REQUIRED'
         ).exists())
         self.assertTrue(field.accesses.filter(
-            access_id=u'human', level='hidden'
+            access_id=u'human', level='HIDDEN'
         ).exists())
         self.assertTrue(field.accesses.filter(
-            access_id="jedi-master", level="readonly"
+            access_id="jedi-master", level="READONLY"
         ).exists())
 
 

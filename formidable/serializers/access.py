@@ -33,7 +33,7 @@ class AccessListSerializer(NestedListSerializer):
 
         for access_id in settings.FORMIDABLE_ACCESSES:
             if access_id not in accesses_id:
-                data.append({'access_id': access_id, 'level': 'editable'})
+                data.append({'access_id': access_id, 'level': 'EDITABLE'})
 
         return data
 
