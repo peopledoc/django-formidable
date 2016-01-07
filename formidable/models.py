@@ -45,10 +45,10 @@ class Access(models.Model):
         ('REQUIRED', 'REQUIRED'), ('EDITABLE', 'EDITABLE'),
         ('HIDDEN', 'HIDDEN'), ('READONLY', 'READONLY'),
     ))
-    display = models.CharField(max_length=128, choices=(
+    display = models.CharField(max_length=128, null=True, blank=True, choices=(
         ('FORM', 'Form'),
         ('TABLE', 'Table'),
-    ), default='FORM')
+    ))
 
 
 class Validationidable(models.Model):
