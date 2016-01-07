@@ -15,11 +15,18 @@ class RenderSerializerTestCase(TestCase):
             label=u'testform', description=u'test form',
         )
         self.text_field = self.form.fields.create(
-            type_id='text', label='test text',
+            type_id='text', label='test text', slug='test_text',
+            placeholder='put your name here', helptext=u'your name',
+        )
+        self.text_field2 = self.form.fields.create(
+            type_id='text', label='test text 2', slug='test_text_2',
             placeholder='put your name here', helptext=u'your name',
         )
         self.text_field.accesses.create(
             level=u'REQUIRED', access_id=u'padawan'
+        )
+        self.text_field2.accesses.create(
+            level=u'EDITABLE', access_id=u'jedi', display='TABLE'
         )
         self.serializer = FormidableSerializer(instance=self.form)
 
@@ -40,7 +47,7 @@ class RenderSerializerTestCase(TestCase):
     def test_fields(self):
         data = self.serializer.data
         self.assertIn('fields', data)
-        self.assertEquals(len(data['fields']), 1)
+        self.assertEquals(len(data['fields']), 2)
 
     def test_base_field_for_fieldidable(self):
         field_text = self.serializer.data['fields'][0]
@@ -62,6 +69,24 @@ class RenderSerializerTestCase(TestCase):
         accesses = text_field['accesses'][0]
         self.assertEquals(accesses['access_id'], u'padawan')
         self.assertEquals(accesses['level'], u'REQUIRED')
+        self.assertEquals(accesses['display'], None)
+
+    def test_text_field2(self):
+        data = self.serializer.data
+        text_field = data['fields'][1]
+        self.assertEquals(text_field['type_id'], u'text')
+        self.assertEquals(text_field['label'], u'test text 2')
+        self.assertEquals(text_field['placeholder'], 'put your name here')
+        self.assertEquals(text_field['helptext'], 'your name')
+        self.assertEquals(text_field['default'], None)
+        self.assertNotIn('multiple', text_field)
+        self.assertNotIn('items', text_field)
+        self.assertIn('accesses', text_field)
+        self.assertEquals(len(text_field['accesses']), 1)
+        accesses = text_field['accesses'][0]
+        self.assertEquals(accesses['access_id'], u'jedi')
+        self.assertEquals(accesses['level'], u'EDITABLE')
+        self.assertEquals(accesses['display'], 'TABLE')
 
     def test_dropdown_field(self):
         self.form.fields.all().delete()
