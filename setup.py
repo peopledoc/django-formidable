@@ -19,8 +19,6 @@ setup(
     install_requires=[
         'django<1.9',
         'djangorestframework',
-        'ipdb',
-        'django_extensions',
     ],
     classifiers=[
         'Environment :: Web Environment',
