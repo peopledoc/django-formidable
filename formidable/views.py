@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import settings
-
 from rest_framework.views import APIView
 from rest_framework.generics import (
     RetrieveUpdateAPIView, CreateAPIView
@@ -10,6 +8,7 @@ from rest_framework.response import Response
 
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
+from formidable.accesses import get_accesses
 
 
 class FormidableDetail(RetrieveUpdateAPIView):
@@ -30,7 +29,7 @@ class FormidableCreate(CreateAPIView):
 class AccessList(APIView):
 
     def get(self, request, format=None):
-        serializer = SimpleAccessSerializer(data=settings.FORMIDABLE_ACCESSES)
+        serializer = SimpleAccessSerializer(data=get_accesses())
         if serializer.is_valid():
             return Response(serializer.data)
         else:
