@@ -43,6 +43,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(data['label'], u'testform')
         self.assertIn('description', data)
         self.assertEquals(data['description'], u'test form')
+        self.assertEquals(data['id'], self.form.pk)
 
     def test_fields(self):
         data = self.serializer.data

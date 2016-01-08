@@ -13,8 +13,9 @@ class FormidableSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Formidable
-        fields = ('label', 'description', 'fields')
+        fields = ('label', 'description', 'fields', 'id')
         depth = 2
+        extra_kwargs = {'id': {'read_only': True}}
 
     def create(self, validated_data):
         fields_kwargs = validated_data.pop('fields')
