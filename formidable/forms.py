@@ -46,7 +46,13 @@ class FieldBuilder(object):
     def get_widget_class(self):
         return self.widget_class
 
+    def get_widget_kwargs(self):
+        return {}
+
     def get_required(self):
+        if self.role is None:
+            return False
+
         access = self.field.accesses.get(access_id=self.role)
         if access.level == u'HIDDEN':
             raise SkipField()
@@ -64,10 +70,17 @@ class TextFieldBuilder(FieldBuilder):
     field_class = forms.CharField
 
 
+class ParagraphFieldBuilder(FieldBuilder):
+
+    field_class = forms.CharField
+    widget_class = forms.Textarea
+
+
 class FormFieldFactory(object):
 
     field_map = {
         'text': TextFieldBuilder,
+        'paragraph': ParagraphFieldBuilder
     }
 
     @classmethod
