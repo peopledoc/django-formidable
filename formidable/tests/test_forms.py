@@ -86,6 +86,59 @@ class TestDynamicForm(TestCase):
         self.assertTrue(radio.choices)
         self.assertEquals(len(radio.choices), 2)
 
+    def test_email_field(self):
+        self.form.fields.create(
+            slug=u'input-email', type_id=u'email', label=u'your email',
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('input-email', form.fields)
+        email = form.fields['input-email']
+        self.assertEquals(type(email), forms.EmailField)
+
+    def test_date_field(self):
+        self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('input-date', form.fields)
+        date = form.fields['input-date']
+        self.assertEquals(type(date), forms.DateField)
+
+    def test_number_field(self):
+        self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('input-number', form.fields)
+        number = form.fields['input-number']
+        self.assertEquals(type(number), forms.IntegerField)
+
+    def test_required_field(self):
+        self.text_field.accesses.create(access_id=u'human', level=u'REQUIRED')
+        form_class = self.form.get_django_form_class(role=u'human')
+        form = form_class()
+        self.assertIn('text-input', form.fields)
+        self.assertEquals(form.fields['text-input'].required, True)
+
+    def test_editable_field(self):
+        self.text_field.accesses.create(access_id=u'human', level=u'EDITABLE')
+        form_class = self.form.get_django_form_class(role=u'human')
+        form = form_class()
+        self.assertIn('text-input', form.fields)
+        self.assertEquals(form.fields['text-input'].required, False)
+
+    def test_readonly_field(self):
+        self.text_field.accesses.create(access_id=u'human', level=u'READONLY')
+        form_class = self.form.get_django_form_class(role=u'human')
+        form = form_class()
+        self.assertIn('text-input', form.fields)
+        field = form.fields['text-input']
+        self.assertEquals(field.required, False)
+        self.assertEquals(field.widget.attrs['disabled'], True)
+
     def test_hidden_field(self):
         self.text_field.accesses.create(access_id=u'human', level=u'HIDDEN')
         form_class = self.form.get_django_form_class(role=u'human')

@@ -13,14 +13,14 @@ class BaseDynamicForm(forms.Form):
 
 class FieldBuilder(object):
 
-    widget_class = None
+    widget_class = forms.TextInput
     field_class = forms.CharField
 
     def __init__(self, field):
         self.field = field
 
-    def build(self, role):
-        self.role = role
+    def build(self, role=None):
+        self.access = self.field.accesses.get(access_id=role) if role else None
         field_class = self.get_field_class()
         return field_class(**self.get_field_kwargs())
 
@@ -52,18 +52,26 @@ class FieldBuilder(object):
         return self.widget_class
 
     def get_widget_kwargs(self):
-        return {}
+        return {'attrs': self.get_widget_attrs()}
+
+    def get_widget_attrs(self):
+        return {'disabled': self.get_disabled()}
+
+    def get_disabled(self):
+        if self.access:
+            return self.access.level == u'READONLY'
+
+        return False
 
     def get_required(self):
-        if self.role is None:
-            return False
+        if self.access:
 
-        access = self.field.accesses.get(access_id=self.role)
+            if self.access.level == u'HIDDEN':
+                raise SkipField()
 
-        if access.level == u'HIDDEN':
-            raise SkipField()
+            return self.access.level == u'REQUIRED'
 
-        return access.level == u'REQUIRED'
+        return False
 
     def get_label(self):
         return self.field.label
@@ -84,6 +92,21 @@ class ParagraphFieldBuilder(FieldBuilder):
 class CheckboxFieldBuilder(FieldBuilder):
 
     widget_class = forms.CheckboxInput
+
+
+class EmailFieldBuilder(FieldBuilder):
+
+    field_class = forms.EmailField
+
+
+class DateFieldBuilder(FieldBuilder):
+
+    field_class = forms.DateField
+
+
+class IntegerFieldBuilder(FieldBuilder):
+
+    field_class = forms.IntegerField
 
 
 class ChoiceFieldBuilder(FieldBuilder):
@@ -128,6 +151,9 @@ class FormFieldFactory(object):
         'checkbox': CheckboxFieldBuilder,
         'radios': RadioFieldBuilder,
         'checkboxes': CheckboxesFieldBuilder,
+        'email': EmailFieldBuilder,
+        'date': DateFieldBuilder,
+        'number': IntegerFieldBuilder,
     }
 
     @classmethod
