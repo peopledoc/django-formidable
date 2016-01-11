@@ -39,6 +39,8 @@ class FieldidableSerializer(serializers.ModelSerializer):
     accesses = AccessSerializer(many=True)
     validations = ValidationSerializer(many=True, required=False)
 
+    nested_objects = ['accesses', 'validations']
+
     class Meta:
         model = Fieldidable
         list_serializer_class = FieldListSerializer
@@ -53,26 +55,40 @@ class FieldidableSerializer(serializers.ModelSerializer):
         return self.fields['validations']
 
     def create(self, validated_data):
-        accesses_data = validated_data.pop('accesses')
-
-        validations_data = None
-        if 'validations' in validated_data:
-            validations_data = validated_data.pop('validations')
-
+        nested_data = self.extract_nested_data(validated_data)
         field = super(FieldidableSerializer, self).create(validated_data)
-        self.access_serializer.create(accesses_data, field)
-
-        if validations_data:
-            self.validations_serializer.create(validations_data, field)
-
+        self.create_nested_objects(field, nested_data)
         return field
 
+    def create_nested_objects(self, field, nested_data):
+        for name, data in nested_data.iteritems():
+            self.fields[name].create(field, nested_data[name])
+
+    def update_nested_objects(self, field, nested_data):
+        for name, data in nested_data.iteritems():
+            self.fields[name].update(
+                getattr(field, name), field, nested_data[name]
+            )
+
+    def extract_nested_data(self, data):
+        """
+        Extract the data for nested object. By default DRF raise an execption
+        when data for nested objet are found.
+        Data are validated before, if nested_object is required we are sure
+        to have the data.
+        """
+        res = {}
+        for nested_object_name in self.nested_objects:
+            if nested_object_name in data:
+                res[nested_object_name] = data.pop(nested_object_name)
+        return res
+
     def update(self, instance, validated_data):
-        accesses_data = validated_data.pop('accesses')
+        nested_data = self.extract_nested_data(validated_data)
         field = super(FieldidableSerializer, self).update(
             instance, validated_data
         )
-        self.access_serializer.update(field.accesses, accesses_data, field)
+        self.update_nested_objects(field, nested_data)
         return field
 
 
@@ -85,13 +101,13 @@ class FieldItemMixin(object):
     def create(self, validated_data):
         items_data = validated_data.pop('items')
         field = super(FieldItemMixin, self).create(validated_data)
-        self.item_serializer.create(items_data, field)
+        self.item_serializer.create(field, items_data)
         return field
 
     def update(self, instance, validated_data):
         items_kwargs = validated_data.pop('items')
         field = super(FieldItemMixin, self).update(instance, validated_data)
-        self.item_serializer.update(field.items, items_kwargs, field)
+        self.item_serializer.update(field.items, field, items_kwargs)
         return field
 
 

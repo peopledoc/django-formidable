@@ -117,7 +117,8 @@ class CreateSerializerTestCase(TestCase):
     fields_without_items = [
         {
             'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
-            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}]
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [{'type': 'minlength', 'value': 5, 'message': u'é'}]
         }
     ]
 
@@ -244,8 +245,11 @@ class UpdateFormTestCase(TestCase):
     }
 
     fields = [
-        {'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
-         'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}]}
+        {
+            'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [{'type': 'maxlength', 'value': '128'}]
+        }
     ]
 
     fields_items = [{
