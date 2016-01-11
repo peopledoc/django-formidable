@@ -136,12 +136,12 @@ class DropdownFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
 
 @load_serializer(field_register)
-class CheckboxFieldSerializer(FieldItemMixin, FieldidableSerializer):
+class CheckboxFieldSerializer(FieldidableSerializer):
 
     type_id = 'checkbox'
 
     class Meta(FieldidableSerializer.Meta):
-        fields = BASE_FIELDS + ('items',)
+        fields = BASE_FIELDS
 
 
 @load_serializer(field_register)
