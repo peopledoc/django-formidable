@@ -52,6 +52,23 @@ class TestDynamicForm(TestCase):
         self.assertTrue(dropdown.choices)
         self.assertEquals(len(dropdown.choices), 2)
 
+    def test_dropdown_input_multiple(self):
+        drop = self.form.fields.create(
+            slug=u'multiple-weapons', type_id=u'dropdown',
+            label=u'chose you weapon', multiple=True
+        )
+        for key in ['sword', 'gun']:
+            drop.items.create(key=key, value=key)
+
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('multiple-weapons', form.fields)
+        dropdown = form.fields['multiple-weapons']
+        self.assertEquals(type(dropdown), forms.ChoiceField)
+        self.assertEquals(type(dropdown.widget), forms.SelectMultiple)
+        self.assertTrue(dropdown.choices)
+        self.assertEquals(len(dropdown.choices), 2)
+
     def test_radio_input(self):
         field = self.form.fields.create(
             slug=u'input-radio', type_id=u'radios',
