@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render_to_response
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from formidable.models import Formidable
 
-def index(request):
-    return render_to_response('index.html')
+
+class FormidableListView(ListView):
+
+    model = Formidable
+
+
+class FormidableDetailView(DetailView):
+
+    model = Formidable
