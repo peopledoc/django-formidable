@@ -11,7 +11,7 @@ class NestedListSerializer(ListSerializer):
     field_id = None
     parent_name = None
 
-    def update(self, qs, validated_data, field):
+    def update(self, qs, field, validated_data):
         created_ids, updated_ids, deleted_ids = self._extract_id(
             qs, validated_data
         )
@@ -33,7 +33,7 @@ class NestedListSerializer(ListSerializer):
             else:
                 self.child.update(objects_list[index-ajust], data)
 
-    def create(self, validated_data, field):
+    def create(self, field, validated_data):
 
         for data in validated_data:
             data[self.parent_name] = field.id

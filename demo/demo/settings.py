@@ -86,6 +86,7 @@ DATABASES = {
     }
 }
 
+FORMIDABLE_ACCESSES_LOADER = 'demo.formidable_accesses.get_accesses'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -105,9 +106,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = "/var/www/example.co"
+STATIC_ROOT = "var"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
-FORMIDABLE_ACCESSES = ['jedi', 'padawan', 'jedi-master', 'human']

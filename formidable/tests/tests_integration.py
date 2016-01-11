@@ -2,11 +2,11 @@
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
-from django.conf import settings
 
 from rest_framework.test import APITestCase
 
 from formidable.models import Formidable
+from formidable.accesses import get_accesses
 
 form_data = {
     "label": "test create",
@@ -141,8 +141,8 @@ class UpdateFormTestCase(APITestCase):
         field = self.form.fields.create(
             type_id='text', slug='textslug', label=u'mytext',
         )
-        for access in settings.FORMIDABLE_ACCESSES:
-            field.accesses.create(access_id=access, level=u'EDITABLE')
+        for access in get_accesses():
+            field.accesses.create(access_id=access.id, level=u'EDITABLE')
         res = self.client.put(self.edit_url, form_data,  format='json')
         self.assertEquals(res.status_code, 200)
         form = Formidable.objects.order_by('pk').last()
@@ -156,8 +156,8 @@ class UpdateFormTestCase(APITestCase):
         field = self.form.fields.create(
             type_id='text', slug='textslug', label=u'mytext',
         )
-        for access in settings.FORMIDABLE_ACCESSES:
-            field.accesses.create(access_id=access, level=u'EDITABLE')
+        for access in get_accesses():
+            field.accesses.create(access_id=access.id, level=u'EDITABLE')
 
         data = deepcopy(form_data)
         data['fields'].extend(form_data_items['fields'])
@@ -175,9 +175,9 @@ class UpdateFormTestCase(APITestCase):
             type_id='text', slug='delete-slug', label='text'
         )
 
-        for access in settings.FORMIDABLE_ACCESSES:
+        for access in get_accesses():
             for field in self.form.fields.all():
-                field.accesses.create(access_id=access, level=u'EDITABLE')
+                field.accesses.create(access_id=access.id, level=u'EDITABLE')
 
         res = self.client.put(self.edit_url, form_data,  format='json')
         self.assertEquals(res.status_code, 200)
@@ -206,4 +206,10 @@ class TestAccess(APITestCase):
         self.assertEquals(len(response.data), 4)
         for access in response.data:
             self.assertIn('id', access)
-            self.assertIn(access['id'], settings.FORMIDABLE_ACCESSES)
+            self.assertIn('label', access)
+            self.assertIn(
+                access['id'], [obj.id for obj in get_accesses()]
+            )
+            self.assertIn(
+                access['label'], [obj.label for obj in get_accesses()]
+            )

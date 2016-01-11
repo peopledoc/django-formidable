@@ -46,8 +46,12 @@ class Access(models.Model):
     field = models.ForeignKey(Fieldidable, related_name='accesses')
     access_id = models.CharField(max_length=128)
     level = models.CharField(max_length=128, choices=(
-        ('REQUIRED', 'REQUIRED'), ('EDITABLE', 'EDITABLE'),
-        ('HIDDEN', 'HIDDEN'), ('READONLY', 'READONLY'),
+        ('REQUIRED', 'Required'), ('EDITABLE', 'Editable'),
+        ('HIDDEN', 'Hidden'), ('READONLY', 'Readonly'),
+    ))
+    display = models.CharField(max_length=128, null=True, blank=True, choices=(
+        ('FORM', 'Form'),
+        ('TABLE', 'Table'),
     ))
 
 
