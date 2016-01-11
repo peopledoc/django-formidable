@@ -2,12 +2,16 @@
 from django.db import models
 
 from formidable.register import FieldSerializerRegister
+from formidable.forms import get_dynamic_form_class
 
 
 class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
     description = models.TextField()
+
+    def get_django_form_class(self, role=None):
+        return get_dynamic_form_class(self, role)
 
 
 class Fieldidable(models.Model):
