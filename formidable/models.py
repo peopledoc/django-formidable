@@ -37,6 +37,9 @@ class Item(models.Model):
     key = models.CharField(max_length=256)
     value = models.CharField(max_length=256)
 
+    def __unicode__(self):
+        return u'{}: {}'.format(self.key, self.value)
+
 
 class Access(models.Model):
 

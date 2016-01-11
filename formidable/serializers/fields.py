@@ -149,8 +149,8 @@ class CheckboxesFieldSerializer(FieldItemMixin, FieldidableSerializer):
 
     type_id = 'checkboxes'
 
-    class Meta(FieldidableSerializer):
-        fields = BASE_FIELDS + ('items', 'multiple')
+    class Meta(FieldidableSerializer.Meta):
+        fields = BASE_FIELDS + ('items',)
 
 
 @load_serializer(field_register)
@@ -159,7 +159,7 @@ class RadiosFieldSerializer(FieldItemMixin, FieldidableSerializer):
     type_id = 'radios'
 
     class Meta(FieldidableSerializer.Meta):
-        fields = BASE_FIELDS + ('items', 'multiple')
+        fields = BASE_FIELDS + ('items',)
 
 
 @load_serializer(field_register)

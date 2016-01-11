@@ -114,6 +114,11 @@ class RadioFieldBuilder(ChoiceFieldBuilder):
     widget_class = forms.RadioSelect
 
 
+class CheckboxesFieldBuilder(ChoiceFieldBuilder):
+
+    widget_class = forms.CheckboxSelectMultiple
+
+
 class FormFieldFactory(object):
 
     field_map = {
@@ -122,6 +127,7 @@ class FormFieldFactory(object):
         'dropdown': DropdownFieldBuilder,
         'checkbox': CheckboxFieldBuilder,
         'radios': RadioFieldBuilder,
+        'checkboxes': CheckboxesFieldBuilder,
     }
 
     @classmethod
