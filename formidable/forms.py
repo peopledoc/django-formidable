@@ -29,7 +29,7 @@ class FieldBuilder(object):
 
     def get_field_kwargs(self):
         kwargs = {
-            'required': self.is_required(),
+            'required': self.get_required(),
             'label': self.get_label(),
         }
         widget = self.get_widget()
@@ -46,10 +46,11 @@ class FieldBuilder(object):
     def get_widget_class(self):
         return self.widget_class
 
-    def is_required(self):
-        return self.field.accesses.filter(
-            access_id=self.role, level=u'REQUIRED'
-        ).exists()
+    def get_required(self):
+        access = self.field.accesses.get(access_id=self.role)
+        if access.level == u'HIDDEN':
+            raise SkipField()
+        return access.level == u'REQUIRED'
 
     def get_label(self):
         return self.field.label
