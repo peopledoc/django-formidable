@@ -54,7 +54,7 @@ class TestDynamicForm(TestCase):
 
     def test_radio_input(self):
         field = self.form.fields.create(
-            slug=u'input-radio', type_id=u'checkbox',
+            slug=u'input-radio', type_id=u'radios',
             label=u'chose you weapon'
         )
         for key in ['sword', 'gun']:
@@ -63,11 +63,11 @@ class TestDynamicForm(TestCase):
         form_class = self.form.get_django_form_class()
         form = form_class()
         self.assertIn('input-radio', form.fields)
-        checkbox = form.fields['input-radio']
-        self.assertEquals(type(checkbox), forms.ChoiceField)
-        self.assertEquals(type(checkbox.widget), forms.RadioSelect)
-        self.assertTrue(checkbox.choices)
-        self.assertEquals(len(checkbox.choices), 2)
+        radio = form.fields['input-radio']
+        self.assertEquals(type(radio), forms.ChoiceField)
+        self.assertEquals(type(radio.widget), forms.RadioSelect)
+        self.assertTrue(radio.choices)
+        self.assertEquals(len(radio.choices), 2)
 
     def test_hidden_field(self):
         self.text_field.accesses.create(access_id=u'human', level=u'HIDDEN')
