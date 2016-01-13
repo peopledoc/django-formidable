@@ -7,7 +7,7 @@
 <div>
   <ul>
     {% for form in object_list %}
-      <li><a href="{{ form.id }}">{{ form.label }}</a></li>
+      <li><a href="{{ form.id }}">{{ form.label }}</a> (<a href="builder/{{ form.id }}">Edit</a>)</li>
     {% empty %}
       <li>No forms yet.</li>
     {% endfor %}

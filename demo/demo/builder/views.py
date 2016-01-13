@@ -12,3 +12,9 @@ class FormidableListView(ListView):
 class FormidableDetailView(DetailView):
 
     model = Formidable
+
+
+class FormidableBuilderView(DetailView):
+
+    template_name = 'formidable/formidable_builder.html'
+    model = Formidable
