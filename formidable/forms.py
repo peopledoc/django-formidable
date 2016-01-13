@@ -2,6 +2,11 @@
 
 from django import forms
 
+from formidable.validators import ValidatorFactory
+
+
+validator_factory = ValidatorFactory()
+
 
 class SkipField(Exception):
     pass
@@ -33,6 +38,7 @@ class FieldBuilder(object):
             'required': self.get_required(),
             'label': self.get_label(),
             'help_text': self.get_helptext(),
+            'validators': self.get_validators(),
         }
 
         widget = self.get_widget()
@@ -78,6 +84,13 @@ class FieldBuilder(object):
 
     def get_helptext(self):
         return self.field.helptext
+
+    def get_validators(self):
+        res = []
+        for validation in self.field.validations.all():
+            validator = validator_factory.produce(validation)
+            res.append(validator)
+        return res
 
 
 class TextFieldBuilder(FieldBuilder):
