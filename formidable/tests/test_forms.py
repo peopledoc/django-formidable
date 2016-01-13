@@ -190,3 +190,14 @@ class TestFormValidation(TestCase):
         form_class = self.form.get_django_form_class()
         form = form_class(data={'text-input': 'abcd1234'})
         self.assertFalse(form.is_valid())
+
+    def test_regexp_max_length(self):
+        self.text_field.validations.create(type=u'REGEXP', value=r'^[0-9]+$')
+        self.text_field.validations.create(type=u'MINLENGTH', value='5')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'text-input': '1234'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'text-input': '1234abcdef'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'text-input': '123456789'})
+        self.assertTrue(form.is_valid())
