@@ -144,3 +144,49 @@ class TestDynamicForm(TestCase):
         form_class = self.form.get_django_form_class(role=u'human')
         form = form_class()
         self.assertNotIn('text-input', form.fields)
+
+
+class TestFormValidation(TestCase):
+
+    def setUp(self):
+        self.form = Formidable.objects.create(label=u'test',
+                                              description=u'desc')
+        self.text_field = self.form.fields.create(
+            slug=u'text-input', type_id=u'text', label=u'mytext'
+        )
+
+    def test_min_length_ko(self):
+        self.text_field.validations.create(type=u'MINLENGTH', value='5')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'text-input': '1234'})
+        self.assertFalse(form.is_valid())
+
+    def test_min_length_ok(self):
+        self.text_field.validations.create(type=u'MINLENGTH', value='5')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'text-input': '12345'})
+        self.assertTrue(form.is_valid())
+
+    def test_max_length_ok(self):
+        self.text_field.validations.create(type=u'MAXLENGTH', value='4')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'text-input': '12345'})
+        self.assertFalse(form.is_valid())
+
+    def test_max_length_ko(self):
+        self.text_field.validations.create(type=u'MAXLENGTH', value='4')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'text-input': '123'})
+        self.assertTrue(form.is_valid())
+
+    def test_regex_ok(self):
+        self.text_field.validations.create(type=u'REGEXP', value=r'^[0-9]+$')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'text-input': '12345'})
+        self.assertTrue(form.is_valid())
+
+    def test_regex_ko(self):
+        self.text_field.validations.create(type=u'REGEXP', value=r'^[0-9]+$')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'text-input': 'abcd1234'})
+        self.assertFalse(form.is_valid())
