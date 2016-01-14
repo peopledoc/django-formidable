@@ -36,6 +36,30 @@ class LTValidator(validators.BaseValidator):
         return cleaned >= limit_value
 
 
+class EQValidator(validators.BaseValidator):
+
+    message = _("Ensure this field is equal to %(limit_value)s")
+
+    def clean(self, x):
+        return x
+
+    def compare(self, cleaned, limit_value):
+        limit_value = type(cleaned)(limit_value)
+        return cleaned != limit_value
+
+
+class NEQValidator(validators.BaseValidator):
+
+    message = _("Ensure this field is not equal to %(limit_value)s")
+
+    def clean(self, x):
+        return x
+
+    def compare(self, cleaned, limit_value):
+        limit_value = type(cleaned)(limit_value)
+        return cleaned == limit_value
+
+
 class DateValidator(object):
 
     def __init__(self, limit_value, message=None):
@@ -58,6 +82,18 @@ class DateMaxValueValidator(DateValidator, validators.MaxValueValidator):
 
 class DateMinValueValidator(DateValidator, validators.MinValueValidator):
     pass
+
+
+class DateEQValidator(DateValidator, EQValidator):
+
+    def compare(self, x, y):
+        return x != y
+
+
+class DateNEQValidator(DateValidator, NEQValidator):
+
+    def compare(self, x, y):
+        return x == y
 
 
 class ValidatorFactory(object):
@@ -97,6 +133,12 @@ class ValidatorFactory(object):
     def lte(self, value, message):
         return validators.MaxValueValidator(int(value), message)
 
+    def eq(self, value, message):
+        return EQValidator(value, message)
+
+    def neq(self, value, message):
+        return NEQValidator(value, message)
+
     def produce(self, validation):
         meth = self.maps[validation.type]
         msg = validation.message or None
@@ -116,3 +158,9 @@ class DateValidatorFactory(ValidatorFactory):
 
     def gte(self, value, message):
         return DateMinValueValidator(value, message)
+
+    def eq(self, value, message):
+        return DateEQValidator(value, message)
+
+    def neq(self, value, message):
+        return DateNEQValidator(value, message)

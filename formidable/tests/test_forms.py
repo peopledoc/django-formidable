@@ -268,7 +268,7 @@ class TestFormValidation(TestCase):
         )
         number.validations.create(type=u'LT', value='42')
         form_class = self.form.get_django_form_class()
-        form = form_class(data={'input-number': '21'})
+        fns Gruberorm = form_class(data={'input-number': '21'})
         self.assertTrue(form.is_valid())
 
     def test_lt_ko(self):
@@ -280,6 +280,114 @@ class TestFormValidation(TestCase):
         form = form_class(data={'input-number': '21'})
         self.assertFalse(form.is_valid())
         form = form_class(data={'input-number': '22'})
+        self.assertFalse(form.is_valid())
+
+    def test_eq_integer_ok(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'EQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertTrue(form.is_valid())
+
+    def test_eq_integer_ko(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'EQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '22'})
+        self.assertFalse(form.is_valid())
+
+    def test_neq_integer_ok(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'NEQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '22'})
+        self.assertTrue(form.is_valid())
+
+    def test_neq_integer_ko(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'NEQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertFalse(form.is_valid())
+
+    def test_eq_str_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-text', type_id=u'text', label=u'your text',
+        )
+        field.validations.create(type=u'EQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertTrue(form.is_valid())
+
+    def test_eq_str_ko(self):
+        text = self.form.fields.create(
+            slug=u'input-text', type_id=u'text', label=u'your text',
+        )
+        text.validations.create(type=u'EQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-text': '22'})
+        self.assertFalse(form.is_valid())
+
+    def test_neq_str_ok(self):
+        text = self.form.fields.create(
+            slug=u'input-text', type_id=u'text', label=u'your text',
+        )
+        text.validations.create(type=u'NEQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-text': '22'})
+        self.assertTrue(form.is_valid())
+
+    def test_neq_str_ko(self):
+        text = self.form.fields.create(
+            slug=u'input-text', type_id=u'text', label=u'your text',
+        )
+        text.validations.create(type=u'NEQ', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-text': '21'})
+        self.assertFalse(form.is_valid())
+
+    def test_eq_date_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-text', type_id=u'date', label=u'your text',
+        )
+        field.validations.create(type=u'EQ', value='12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '12/21/2012'})
+        self.assertTrue(form.is_valid())
+
+    def test_eq_date_ko(self):
+        text = self.form.fields.create(
+            slug=u'input-text', type_id=u'date', label=u'your text',
+        )
+        text.validations.create(type=u'EQ', value='12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-text': '22/12/2012'})
+        self.assertFalse(form.is_valid())
+
+    def test_neq_date_ok(self):
+        text = self.form.fields.create(
+            slug=u'input-text', type_id=u'date', label=u'your text',
+        )
+        text.validations.create(type=u'NEQ', value='12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-text': '12/22/2012'})
+        self.assertTrue(form.is_valid())
+
+    def test_neq_date_ko(self):
+        text = self.form.fields.create(
+            slug=u'input-text', type_id=u'date', label=u'your text',
+        )
+        text.validations.create(type=u'NEQ', value='12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-text': '12/21/2012'})
         self.assertFalse(form.is_valid())
 
     def test_lt_date_ok(self):
