@@ -268,7 +268,7 @@ class TestFormValidation(TestCase):
         )
         number.validations.create(type=u'LT', value='42')
         form_class = self.form.get_django_form_class()
-        fns Gruberorm = form_class(data={'input-number': '21'})
+        form = form_class(data={'input-number': '21'})
         self.assertTrue(form.is_valid())
 
     def test_lt_ko(self):
