@@ -321,3 +321,43 @@ class TestFormValidation(TestCase):
         form_class = self.form.get_django_form_class()
         form = form_class(data={'input-date': '12/22/2012'})
         self.assertFalse(form.is_valid())
+
+    def test_gt_date_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'GT', value=u'12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/22/2012'})
+        self.assertTrue(form.is_valid())
+
+    def test_gt_date_ko(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'GT', value=u'12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/21/2012'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'input-date': '12/20/2012'})
+        self.assertFalse(form.is_valid())
+
+    def test_gte_date_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'GTE', value=u'12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/21/2012'})
+        self.assertTrue(form.is_valid())
+        form = form_class(data={'input-date': '12/23/2012'})
+        self.assertTrue(form.is_valid())
+
+    def test_gte_date_ko(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'GT', value=u'12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/20/2012'})
+        self.assertFalse(form.is_valid())

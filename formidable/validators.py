@@ -110,3 +110,9 @@ class DateValidatorFactory(ValidatorFactory):
 
     def lte(self, value, message):
         return DateMaxValueValidator(value, message)
+
+    def gt(self, value, message):
+        return DateGTValidator(value, message)
+
+    def gte(self, value, message):
+        return DateMinValueValidator(value, message)
