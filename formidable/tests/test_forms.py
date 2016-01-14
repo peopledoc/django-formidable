@@ -230,3 +230,74 @@ class TestFormValidation(TestCase):
         form_class = self.form.get_django_form_class()
         form = form_class(data={'input-number': '21'})
         self.assertTrue(form.is_valid())
+        form = form_class(data={'input-number': '22'})
+        self.assertTrue(form.is_valid())
+
+    def test_gte_ko(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'GTE', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '20'})
+        self.assertFalse(form.is_valid())
+
+    def test_lte_ok(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'LTE', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertTrue(form.is_valid())
+        form = form_class(data={'input-number': '20'})
+        self.assertTrue(form.is_valid())
+
+    def test_lte_ko(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'LT', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '22'})
+        self.assertFalse(form.is_valid())
+
+    def test_lt_ok(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'LT', value='42')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertTrue(form.is_valid())
+
+    def test_lt_ko(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'LT', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'input-number': '22'})
+        self.assertFalse(form.is_valid())
+
+    def test_lt_date_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'LT', value=u'12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/20/2012'})
+        self.assertTrue(form.is_valid())
+
+    def test_lt_date_ko(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'LT', value=u'12/21/2012')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/21/2012'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'input-date': '12/22/2012'})
+        self.assertFalse(form.is_valid())
