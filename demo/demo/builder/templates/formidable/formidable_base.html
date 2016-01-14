@@ -18,18 +18,8 @@
   </head>
   <body>
     <div class="container">
-      <div class="title">
-        <h1>May the Form be with you!</h1>
-      </div>
-      <div id="formidable">
-      </div>
+      {% block content %}{% endblock %}
     </div>
-    <script src="{% static "assets/vendor.js" %}"></script>
-    <script src="{% static "assets/formidable.js" %}"></script>
-    <script>
-      $(document).ready(function() {
-          Formidable.start();
-      });
-    </script>
+    {% block extra_js %}{% endblock %}
   </body>
 </html>

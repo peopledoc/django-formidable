@@ -9,6 +9,6 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
     url(r'^api/', include('formidable.urls', namespace='formidable')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', include('demo.builder.urls', namespace='builder')),
-    url(r'^preview/(?P<pk>\d+)/', FormPreview.as_view())
+    url(r'^preview/(?P<pk>\d+)/', FormPreview.as_view()),
+    url(r'^forms/', include('demo.builder.urls', namespace='builder')),
 ]
