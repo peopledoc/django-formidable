@@ -28,6 +28,9 @@ class RenderSerializerTestCase(TestCase):
         self.text_field2.accesses.create(
             level=u'EDITABLE', access_id=u'jedi', display='TABLE'
         )
+        self.text_field.validations.create(
+            type=u'MINLENGTH', value=u'5'
+        )
         self.serializer = FormidableSerializer(instance=self.form)
 
     def test_ok(self):

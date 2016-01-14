@@ -5,7 +5,8 @@ def call_right_serializer_by_instance(meth):
 
     def _wrapper(self, instance, *args, **kwargs):
 
-        serializer = self.get_right_serializer(instance.type_id)
+        type_id = getattr(instance, self.lookup_field)
+        serializer = self.get_right_serializer(type_id)
         meth_name = getattr(serializer, meth.__name__)
         return meth_name(instance, *args, **kwargs)
 
