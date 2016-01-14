@@ -8,6 +8,8 @@ Validators
 
 """
 
+from dateutil.parser import parse
+
 from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 
@@ -17,7 +19,7 @@ class GTValidator(validators.BaseValidator):
     message = _("Ensure this field is greater than %(limit_value)s")
 
     def clean(self, x):
-        return int(x)
+        return x
 
     def compare(self, cleaned, limit_value):
         return cleaned <= limit_value
@@ -28,10 +30,34 @@ class LTValidator(validators.BaseValidator):
     message = _("Ensure this field is lesser than %(limit_value)s")
 
     def clean(self, x):
-        return int(x)
+        return x
 
     def compare(self, cleaned, limit_value):
         return cleaned >= limit_value
+
+
+class DateValidator(object):
+
+    def __init__(self, limit_value, message=None):
+        return super(DateValidator, self).__init__(
+            parse(limit_value).date(), message
+        )
+
+
+class DateGTValidator(DateValidator, GTValidator):
+    pass
+
+
+class DateLTValidator(DateValidator, LTValidator):
+    pass
+
+
+class DateMaxValueValidator(DateValidator, validators.MaxValueValidator):
+    pass
+
+
+class DateMinValueValidator(DateValidator, validators.MinValueValidator):
+    pass
 
 
 class ValidatorFactory(object):
@@ -75,3 +101,12 @@ class ValidatorFactory(object):
         meth = self.maps[validation.type]
         msg = validation.message or None
         return meth(self, validation.value, msg)
+
+
+class DateValidatorFactory(ValidatorFactory):
+
+    def lt(self, value, message):
+        return DateLTValidator(value, message)
+
+    def lte(self, value, message):
+        return DateMaxValueValidator(value, message)
