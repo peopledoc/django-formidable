@@ -1,0 +1,16 @@
+{% extends "formidable/formidable_base.html" %}
+
+{% block content %}
+<div class="title">
+  <h1>Forms</h1>
+</div>
+<div>
+  <ul>
+    {% for form in object_list %}
+      <li><a href="{{ form.id }}">{{ form.label }}</a> (<a href="builder/{{ form.id }}">Edit</a>)</li>
+    {% empty %}
+      <li>No forms yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
