@@ -14,9 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class GTValidator(validators.BaseValidator):
 
-    message = _(
-        "Ensure this field is greater than or equals to %(limit_value)s"
-    )
+    message = _("Ensure this field is greater than %(limit_value)s")
 
     def clean(self, x):
         return int(x)
@@ -27,9 +25,7 @@ class GTValidator(validators.BaseValidator):
 
 class LTValidator(validators.BaseValidator):
 
-    message = _(
-        "Ensure this field is lesser than or equals to %(limit_value)s"
-    )
+    message = _("Ensure this field is lesser than %(limit_value)s")
 
     def clean(self, x):
         return int(x)
