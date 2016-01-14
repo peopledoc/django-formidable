@@ -2,7 +2,7 @@
 
 from django import forms
 
-from formidable.validators import ValidatorFactory
+from formidable.validators import ValidatorFactory, DateValidatorFactory
 
 
 class SkipField(Exception):
@@ -114,6 +114,7 @@ class EmailFieldBuilder(FieldBuilder):
 class DateFieldBuilder(FieldBuilder):
 
     field_class = forms.DateField
+    validator_factory_class = DateValidatorFactory
 
 
 class IntegerFieldBuilder(FieldBuilder):
