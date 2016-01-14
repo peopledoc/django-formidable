@@ -118,7 +118,7 @@ class CreateSerializerTestCase(TestCase):
         {
             'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'validations': [{'type': 'minlength', 'value': 5, 'message': u'é'}]
+            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': u'é'}]
         }
     ]
 
@@ -144,7 +144,7 @@ class CreateSerializerTestCase(TestCase):
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
             'validations': [
                 {
-                    'type': 'minlength',
+                    'type': 'MINLENGTH',
                     'value': '5',
                 },
             ]
@@ -248,7 +248,7 @@ class UpdateFormTestCase(TestCase):
         {
             'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'validations': [{'type': 'maxlength', 'value': '128'}]
+            'validations': [{'type': 'MAXLENGTH', 'value': '128'}]
         }
     ]
 
