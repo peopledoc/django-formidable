@@ -201,3 +201,32 @@ class TestFormValidation(TestCase):
         self.assertFalse(form.is_valid())
         form = form_class(data={'text-input': '123456789'})
         self.assertTrue(form.is_valid())
+
+    def test_gt_ok(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'GT', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '42'})
+        self.assertTrue(form.is_valid())
+
+    def test_gt_ko(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'GT', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'input-number': '20'})
+        self.assertFalse(form.is_valid())
+
+    def test_gte_ok(self):
+        number = self.form.fields.create(
+            slug=u'input-number', type_id=u'number', label=u'your number',
+        )
+        number.validations.create(type=u'GTE', value='21')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-number': '21'})
+        self.assertTrue(form.is_valid())
