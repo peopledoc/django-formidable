@@ -1,23 +1,41 @@
 # -*- coding: utf-8 -*-
+"""
+Validators
+==========
+
+.. autoclass: GTEValidator
+    :members:
+
+"""
 
 from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 
 
-class MaxOrEqualValueValidator(validators.MaxValueValidator):
+class GTValidator(validators.BaseValidator):
 
-    message = _("Ensure this value is less than %(limit_value)s.")
+    message = _(
+        "Ensure this field is greater than or equals to %(limit_value)s"
+    )
 
-    def compare(self, a, b):
-        return a >= b
+    def clean(self, x):
+        return int(x)
+
+    def compare(self, cleaned, limit_value):
+        return cleaned <= limit_value
 
 
-class MinOrEqualValueValidator(validators.MinValueValidator):
+class LTValidator(validators.BaseValidator):
 
-    message = _("Ensure this value is greater than %(limit_value)s.")
+    message = _(
+        "Ensure this field is lesser than or equals to %(limit_value)s"
+    )
 
-    def compare(self, a, b):
-        return a <= b
+    def clean(self, x):
+        return int(x)
+
+    def compare(self, cleaned, limit_value):
+        return cleaned >= limit_value
 
 
 class ValidatorFactory(object):
@@ -46,16 +64,16 @@ class ValidatorFactory(object):
         return validators.RegexValidator(regex=value, message=message)
 
     def gt(self, value, message):
-        return validators.MaxValueValidator(value, message)
+        return GTValidator(int(value), message)
 
     def gte(self, value, message):
-        return MaxOrEqualValueValidator(value, message)
+        return validators.MinValueValidator(int(value), message)
 
     def lt(self, value, message):
-        return validators.MinValueValidator(value, message)
+        return LTValidator(int(value), message)
 
     def lte(self, value, message):
-        return MinOrEqualValueValidator(value, message)
+        return validators.MaxValueValidator(int(value), message)
 
     def produce(self, validation):
         meth = self.maps[validation.type]
