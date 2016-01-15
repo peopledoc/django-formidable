@@ -9,10 +9,6 @@ class SkipField(Exception):
     pass
 
 
-class BaseDynamicForm(forms.Form):
-    pass
-
-
 class FieldBuilder(object):
 
     widget_class = forms.TextInput
@@ -181,18 +177,3 @@ class FormFieldFactory(object):
 
 
 form_field_factory = FormFieldFactory()
-
-
-def get_dynamic_form_class(formidable, role=None):
-
-    fields = {}
-
-    for field in formidable.fields.all():
-        try:
-            form_field = FormFieldFactory.produce(field, role)
-        except SkipField:
-            pass
-        else:
-            fields[field.slug] = form_field
-
-    return type('DynamicForm', (BaseDynamicForm,), fields)
