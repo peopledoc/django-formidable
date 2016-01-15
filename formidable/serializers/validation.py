@@ -114,6 +114,18 @@ class LteSerializer(ValidationSerializer):
 
 
 @load_serializer(validation_register)
+class AgeAboveSerializer(IntValueChecker, ValidationSerializer):
+
+    type_id = u'IS_AGE_ABOVE'
+
+
+@load_serializer(validation_register)
+class AgeUnderSerializer(IntValueChecker, ValidationSerializer):
+
+    type_id = u'IS_AGE_UNDER'
+
+
+@load_serializer(validation_register)
 class FutureDateSerializer(ValidationSerializer):
 
     type_id = u'IS_DATE_IN_THE_FUTURE'

@@ -10,6 +10,7 @@ Validators
 from datetime import date
 
 from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 
 from django.core import validators
 from django.utils.translation import ugettext_lazy as _
@@ -110,6 +111,21 @@ class DateIsInFuture(validators.BaseValidator):
             return x > today
 
 
+class AgeAboveValidator(validators.BaseValidator):
+
+    def clean(self, birth_date):
+        return relativedelta(date.today(), birth_date).years
+
+    def compare(self, value, age):
+        return value < age
+
+
+class AgeUnderValidator(AgeAboveValidator):
+
+    def compare(self, value, age):
+        return value >= age
+
+
 class ValidatorFactory(object):
 
     maps = {
@@ -165,6 +181,8 @@ class DateValidatorFactory(ValidatorFactory):
     maps['IS_DATE_IN_THE_FUTURE'] = lambda self, x, y=None: self.future_date(
         x, y
     )
+    maps['IS_AGE_ABOVE'] = lambda self, x, y=None: self.age_above(x, y)
+    maps['IS_AGE_UNDER'] = lambda self, x, y=None: self.age_under(x, y)
 
     def lt(self, value, message):
         return DateLTValidator(value, message)
@@ -186,3 +204,9 @@ class DateValidatorFactory(ValidatorFactory):
 
     def future_date(self, value, message):
         return DateIsInFuture(value == u'true', message)
+
+    def age_above(self, value, message):
+        return AgeAboveValidator(int(value), message)
+
+    def age_under(self, value, message):
+        return AgeUnderValidator(int(value), message)

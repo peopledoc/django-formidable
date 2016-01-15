@@ -504,3 +504,51 @@ class TestFormValidation(TestCase):
         self.assertFalse(form.is_valid())
         form = form_class(data={'input-date': '12/21/2012'})
         self.assertFalse(form.is_valid())
+
+    @freeze_time('2012-01-01')
+    def test_is_age_above_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'IS_AGE_ABOVE',
+                                 value=u'20')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '01/01/1990'})
+        self.assertTrue(form.is_valid())
+        form = form_class(data={'input-date': '01/01/1992'})
+        self.assertTrue(form.is_valid())
+
+    @freeze_time('2012-01-01')
+    def test_is_age_above_ko(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'IS_AGE_ABOVE',
+                                 value=u'20')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '01/01/2000'})
+        self.assertFalse(form.is_valid())
+
+    @freeze_time('2012-01-01')
+    def test_is_age_under_ko(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'IS_AGE_UNDER',
+                                 value=u'20')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '01/01/1990'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'input-date': '01/01/1992'})
+        self.assertFalse(form.is_valid())
+
+    @freeze_time('2012-01-01')
+    def test_is_age_under_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'IS_AGE_UNDER',
+                                 value=u'20')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '01/01/2000'})
+        self.assertTrue(form.is_valid())
