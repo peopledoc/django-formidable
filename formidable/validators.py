@@ -7,6 +7,7 @@ Validators
     :members:
 
 """
+from datetime import date
 
 from dateutil.parser import parse
 
@@ -96,6 +97,19 @@ class DateNEQValidator(DateValidator, NEQValidator):
         return x == y
 
 
+class DateIsInFuture(validators.BaseValidator):
+
+    def clean(self, x):
+        return x
+
+    def compare(self, x, has_to_be_in_future):
+        today = date.today()
+        if has_to_be_in_future:
+            return x <= today
+        else:
+            return x > today
+
+
 class ValidatorFactory(object):
 
     maps = {
@@ -147,6 +161,11 @@ class ValidatorFactory(object):
 
 class DateValidatorFactory(ValidatorFactory):
 
+    maps = ValidatorFactory.maps.copy()
+    maps['IS_DATE_IN_THE_FUTURE'] = lambda self, x, y=None: self.future_date(
+        x, y
+    )
+
     def lt(self, value, message):
         return DateLTValidator(value, message)
 
@@ -164,3 +183,6 @@ class DateValidatorFactory(ValidatorFactory):
 
     def neq(self, value, message):
         return DateNEQValidator(value, message)
+
+    def future_date(self, value, message):
+        return DateIsInFuture(value == u'true', message)

@@ -2,6 +2,7 @@
 
 from django import forms
 from django.test import TestCase
+from freezegun import freeze_time
 
 from formidable.models import Formidable
 
@@ -468,4 +469,38 @@ class TestFormValidation(TestCase):
         field.validations.create(type=u'GT', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
         form = form_class(data={'input-date': '12/20/2012'})
+        self.assertFalse(form.is_valid())
+
+    @freeze_time('2012-12-21')
+    def test_date_is_in_the_future_ok(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'IS_DATE_IN_THE_FUTURE',
+                                 value=u'false')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/20/2012'})
+        self.assertTrue(form.is_valid())
+        form = form_class(data={'input-date': '12/21/2012'})
+        self.assertTrue(form.is_valid())
+        field.validations.update(value=u'true')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/22/2012'})
+        self.assertTrue(form.is_valid())
+
+    @freeze_time('2012-12-21')
+    def test_date_is_in_the_future_ko(self):
+        field = self.form.fields.create(
+            slug=u'input-date', type_id=u'date', label=u'your date',
+        )
+        field.validations.create(type=u'IS_DATE_IN_THE_FUTURE',
+                                 value=u'false')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/22/2012'})
+        self.assertFalse(form.is_valid())
+        field.validations.update(value=u'true')
+        form_class = self.form.get_django_form_class()
+        form = form_class(data={'input-date': '12/20/2012'})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'input-date': '12/21/2012'})
         self.assertFalse(form.is_valid())

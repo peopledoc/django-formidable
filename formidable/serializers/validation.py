@@ -111,3 +111,15 @@ class LtSerializer(ValidationSerializer):
 class LteSerializer(ValidationSerializer):
 
     type_id = u'LTE'
+
+
+@load_serializer(validation_register)
+class FutureDateSerializer(ValidationSerializer):
+
+    type_id = u'IS_DATE_IN_THE_FUTURE'
+
+    def validate_value(self, value):
+        if value in ['t', "true"]:
+            return "true"
+        else:
+            return "false"

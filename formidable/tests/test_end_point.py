@@ -151,6 +151,18 @@ class CreateSerializerTestCase(TestCase):
                     'value': '5',
                 },
             ]
+        },
+        {
+            'slug': 'input-date',
+            'label': 'licence driver',
+            'type_id': 'date',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [
+                {
+                    'type': 'IS_DATE_IN_THE_FUTURE',
+                    'value': 'false',
+                },
+            ]
         }
     ]
 
@@ -164,14 +176,14 @@ class CreateSerializerTestCase(TestCase):
 
     def test_create_field(self):
         data = copy.deepcopy(self.data)
-        data['fields'] = self.fields_without_items
+        data['fields'] = copy.deepcopy(self.fields_without_items)
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
         self.assertEquals(instance.label, u'test_create')
         self.assertEquals(instance.description, u'description create')
         self.assertEquals(instance.fields.count(), 1)
-        field = instance.fields.first()
+        field = instance.fields.filter(type_id=u'text').first()
         self.assertEquals(field.type_id, 'text')
         self.assertEquals(field.label, 'text label')
         self.assertEquals(field.slug, 'text_input')
@@ -186,9 +198,11 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
-        self.assertEquals(instance.fields.count(), 1)
-        field = instance.fields.first()
+        self.assertEquals(instance.fields.count(), 2)
+        field = instance.fields.filter(type_id=u'date').first()
         self.assertEquals(field.validations.count(), 1)
+        validation = field.validations.first()
+        self.assertEquals(validation.value, 'false')
 
     def test_create_field_error_validations(self):
         data = copy.deepcopy(self.data)
