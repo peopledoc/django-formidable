@@ -19,6 +19,7 @@ setup(
     install_requires=[
         'django<1.9',
         'djangorestframework',
+        'dateutils',
     ],
     classifiers=[
         'Environment :: Web Environment',

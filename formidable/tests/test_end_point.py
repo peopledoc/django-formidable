@@ -28,6 +28,9 @@ class RenderSerializerTestCase(TestCase):
         self.text_field2.accesses.create(
             level=u'EDITABLE', access_id=u'jedi', display='TABLE'
         )
+        self.text_field.validations.create(
+            type=u'MINLENGTH', value=u'5'
+        )
         self.serializer = FormidableSerializer(instance=self.form)
 
     def test_ok(self):
@@ -118,7 +121,7 @@ class CreateSerializerTestCase(TestCase):
         {
             'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'validations': [{'type': 'minlength', 'value': 5, 'message': u'é'}]
+            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': u'é'}]
         }
     ]
 
@@ -144,8 +147,20 @@ class CreateSerializerTestCase(TestCase):
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
             'validations': [
                 {
-                    'type': 'minlength',
+                    'type': 'MINLENGTH',
                     'value': '5',
+                },
+            ]
+        },
+        {
+            'slug': 'input-date',
+            'label': 'licence driver',
+            'type_id': 'date',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [
+                {
+                    'type': 'IS_DATE_IN_THE_FUTURE',
+                    'value': 'false',
                 },
             ]
         }
@@ -161,14 +176,14 @@ class CreateSerializerTestCase(TestCase):
 
     def test_create_field(self):
         data = copy.deepcopy(self.data)
-        data['fields'] = self.fields_without_items
+        data['fields'] = copy.deepcopy(self.fields_without_items)
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
         self.assertEquals(instance.label, u'test_create')
         self.assertEquals(instance.description, u'description create')
         self.assertEquals(instance.fields.count(), 1)
-        field = instance.fields.first()
+        field = instance.fields.filter(type_id=u'text').first()
         self.assertEquals(field.type_id, 'text')
         self.assertEquals(field.label, 'text label')
         self.assertEquals(field.slug, 'text_input')
@@ -183,9 +198,11 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
-        self.assertEquals(instance.fields.count(), 1)
-        field = instance.fields.first()
+        self.assertEquals(instance.fields.count(), 2)
+        field = instance.fields.filter(type_id=u'date').first()
         self.assertEquals(field.validations.count(), 1)
+        validation = field.validations.first()
+        self.assertEquals(validation.value, 'false')
 
     def test_create_field_error_validations(self):
         data = copy.deepcopy(self.data)
@@ -248,7 +265,7 @@ class UpdateFormTestCase(TestCase):
         {
             'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'validations': [{'type': 'maxlength', 'value': '128'}]
+            'validations': [{'type': 'MAXLENGTH', 'value': '128'}]
         }
     ]
 

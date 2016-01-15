@@ -53,19 +53,19 @@ class IntValueChecker(object):
 @load_serializer(validation_register)
 class MinLengthSerializer(IntValueChecker, ValidationSerializer):
 
-    type_id = u'minlength'
+    type_id = u'MINLENGTH'
 
 
 @load_serializer(validation_register)
 class MaxLengthSerializer(IntValueChecker, ValidationSerializer):
 
-    type_id = u'maxlength'
+    type_id = u'MAXLENGTH'
 
 
 @load_serializer(validation_register)
 class RegexpSerializer(ValidationSerializer):
 
-    type_id = u'regexp'
+    type_id = u'REGEXP'
 
     def validate_value(self, value):
 
@@ -80,34 +80,58 @@ class RegexpSerializer(ValidationSerializer):
 @load_serializer(validation_register)
 class EqualSerializer(ValidationSerializer):
 
-    type_id = u'eq'
+    type_id = u'EQ'
 
 
 @load_serializer(validation_register)
 class NotEqualSerializer(ValidationSerializer):
 
-    type_id = u'neq'
+    type_id = u'NEQ'
 
 
 @load_serializer(validation_register)
 class GtSerializer(ValidationSerializer):
 
-    type_id = u'gt'
+    type_id = u'GT'
 
 
 @load_serializer(validation_register)
 class GteSerializer(ValidationSerializer):
 
-    type_id = u'gte'
+    type_id = u'GTE'
 
 
 @load_serializer(validation_register)
 class LtSerializer(ValidationSerializer):
 
-    type_id = u'lt'
+    type_id = u'LT'
 
 
 @load_serializer(validation_register)
 class LteSerializer(ValidationSerializer):
 
-    type_id = u'lte'
+    type_id = u'LTE'
+
+
+@load_serializer(validation_register)
+class AgeAboveSerializer(IntValueChecker, ValidationSerializer):
+
+    type_id = u'IS_AGE_ABOVE'
+
+
+@load_serializer(validation_register)
+class AgeUnderSerializer(IntValueChecker, ValidationSerializer):
+
+    type_id = u'IS_AGE_UNDER'
+
+
+@load_serializer(validation_register)
+class FutureDateSerializer(ValidationSerializer):
+
+    type_id = u'IS_DATE_IN_THE_FUTURE'
+
+    def validate_value(self, value):
+        if value in ['t', "true"]:
+            return "true"
+        else:
+            return "false"

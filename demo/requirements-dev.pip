@@ -2,4 +2,5 @@ djangorestframework
 django<1.9
 ipdb
 django-extensions
+freezegun
 -e ./
