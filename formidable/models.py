@@ -2,7 +2,6 @@
 from django.db import models
 
 from formidable.register import FieldSerializerRegister
-from formidable.forms import get_dynamic_form_class
 
 
 class Formidable(models.Model):
@@ -11,6 +10,7 @@ class Formidable(models.Model):
     description = models.TextField()
 
     def get_django_form_class(self, role=None):
+        from formidable.forms import get_dynamic_form_class
         return get_dynamic_form_class(self, role)
 
 
