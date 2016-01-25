@@ -51,3 +51,8 @@ class MultipleChoiceField(ItemField, fields.MultipleChoiceField):
 class BooleanField(Field, fields.BooleanField):
 
     widget = widgets.CheckboxInput
+
+
+class DateField(Field, fields.DateField):
+
+    widget = widgets.DateInput
