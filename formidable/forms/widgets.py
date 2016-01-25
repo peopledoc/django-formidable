@@ -25,10 +25,10 @@ class Textarea(FormidableWidget, widgets.Textarea):
     type_id = 'paragraph'
 
 
-class WidgetWithItems(FormidableWidget):
+class ItemsWidget(FormidableWidget):
 
     def to_formidable(self, formidable, slug, label, help_text, items):
-        field = super(WidgetWithItems, self).to_formidable(
+        field = super(ItemsWidget, self).to_formidable(
             formidable, slug, label, help_text
         )
         for key, value in items:
@@ -36,12 +36,17 @@ class WidgetWithItems(FormidableWidget):
         return field
 
 
-class WidgetWithItemsMultiple(WidgetWithItems):
+class ItemsWidgetMultiple(ItemsWidget):
 
     multiple = True
 
 
-class Select(WidgetWithItems, widgets.Select):
+class Select(ItemsWidget, widgets.Select):
+
+    type_id = 'dropdown'
+
+
+class SelectMultiple(ItemsWidgetMultiple, widgets.SelectMultiple):
 
     type_id = 'dropdown'
 
@@ -49,3 +54,9 @@ class Select(WidgetWithItems, widgets.Select):
 class CheckboxInput(FormidableWidget, widgets.CheckboxInput):
 
     type_id = u'checkbox'
+
+
+class CheckboxSelectMultiple(ItemsWidgetMultiple,
+                             widgets.CheckboxSelectMultiple):
+
+    type_id = u'checkboxes'

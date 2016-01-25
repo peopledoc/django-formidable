@@ -30,14 +30,22 @@ class CharField(Field, fields.CharField):
     pass
 
 
-class ChoiceField(Field, fields.ChoiceField):
+class ItemField(Field):
+
+    def get_extra_formidable_kwargs(self):
+        kwargs = super(ItemField, self).get_extra_formidable_kwargs()
+        kwargs['items'] = self.choices
+        return kwargs
+
+
+class ChoiceField(ItemField, fields.ChoiceField):
 
     widget = widgets.Select
 
-    def get_extra_formidable_kwargs(self):
-        kwargs = super(ChoiceField, self).get_extra_formidable_kwargs()
-        kwargs['items'] = self.choices
-        return kwargs
+
+class MultipleChoiceField(ItemField, fields.MultipleChoiceField):
+
+    widget = widgets.SelectMultiple
 
 
 class BooleanField(Field, fields.BooleanField):
