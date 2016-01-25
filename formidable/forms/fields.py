@@ -38,3 +38,8 @@ class ChoiceField(Field, fields.ChoiceField):
         kwargs = super(ChoiceField, self).get_extra_formidable_kwargs()
         kwargs['items'] = self.choices
         return kwargs
+
+
+class BooleanField(Field, fields.BooleanField):
+
+    widget = widgets.CheckboxInput

@@ -21,6 +21,7 @@ class TestFromDjangoForm(TestCase):
         ).exists())
 
     def test_dropdown_field(self):
+
         class MyForm(FormidableForm):
             mydropdown = fields.ChoiceField(label=u'Weapons', choices=(
                 ('GUN', 'eagle'), ('SWORD', u'Andúril'))
@@ -42,3 +43,18 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(
             field.items.filter(key=u'SWORD', value=u'Andúril').exists()
         )
+
+    def test_checkbox_field(self):
+
+        class MyForm(FormidableForm):
+
+            checkboxinput = fields.BooleanField(label=u'Do you agree ?')
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label=u'form-with-checkbox')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        self.assertTrue(form.fields.filter(
+            slug=u'checkboxinput', type_id=u'checkbox', label='Do you agree ?'
+        ).exists())
