@@ -111,7 +111,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         model = Fieldidable
         fields = (
             'slug', 'label', 'type_id', 'placeholder', 'helpText', 'default',
-            'validations', 'disabled', 'required', 'items'
+            'validations', 'disabled', 'required', 'multiple', 'items'
         )
 
     def get_attribute(self, instance):
