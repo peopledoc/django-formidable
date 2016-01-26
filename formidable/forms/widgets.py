@@ -46,6 +46,11 @@ class Select(ItemsWidget, widgets.Select):
     type_id = 'dropdown'
 
 
+class RadioSelect(ItemsWidget, widgets.RadioSelect):
+
+    type_id = 'radios'
+
+
 class SelectMultiple(ItemsWidgetMultiple, widgets.SelectMultiple):
 
     type_id = 'dropdown'

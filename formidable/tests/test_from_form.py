@@ -129,3 +129,21 @@ class TestFromDjangoForm(TestCase):
             slug=u'dateinput', type_id=u'date', label='Birth Date',
         ).exists())
         self.assertFalse(form.fields.first().multiple)
+
+    def test_radio_select(self):
+
+        class MyForm(FormidableForm):
+
+            radioinput = fields.ChoiceField(label=u'Apero ?', choices=(
+                ('Yes', 'Oui'), ('No', 'Non'),
+            ), widget=widgets.RadioSelect)
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label=u'form-with-radios')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        self.assertTrue(form.fields.filter(
+            slug=u'radioinput', type_id=u'radios', label='Apero ?',
+        ).exists())
+        self.assertFalse(form.fields.first().multiple)
