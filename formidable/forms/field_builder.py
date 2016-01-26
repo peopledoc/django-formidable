@@ -32,7 +32,7 @@ class FieldBuilder(object):
         kwargs = {
             'required': self.get_required(),
             'label': self.get_label(),
-            'help_text': self.get_helptext(),
+            'help_text': self.get_helpText(),
             'validators': self.get_validators(),
         }
 
@@ -77,8 +77,8 @@ class FieldBuilder(object):
     def get_label(self):
         return self.field.label
 
-    def get_helptext(self):
-        return self.field.helptext
+    def get_helpText(self):
+        return self.field.helpText
 
     def get_validators(self):
         res = []

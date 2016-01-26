@@ -13,7 +13,7 @@ from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers.list import NestedListSerializer
 
 BASE_FIELDS = (
-    'slug', 'label', 'type_id', 'placeholder', 'helptext', 'default',
+    'slug', 'label', 'type_id', 'placeholder', 'helpText', 'default',
     'accesses', 'validations',
 )
 

@@ -17,7 +17,7 @@ form_data = {
             "slug": "textslug",
             "type_id": "text",
             "placeholder": None,
-            "helptext": None,
+            "helpText": None,
             "default": None,
             "accesses": [
                 {"access_id": "padawan", "level": "REQUIRED"},
@@ -37,7 +37,7 @@ form_data_items = {
         "slug": "dropdown_slug",
         "type_id": "dropdown",
         "placeholder": None,
-        "helptext": "Lesfrites c'est bon",
+        "helpText": "Lesfrites c'est bon",
         "default": None,
         "accesses": [
             {"access_id": "padawan", "level": "REQUIRED"},
