@@ -4,12 +4,12 @@ from django.utils.functional import cached_property
 from rest_framework import serializers
 
 from formidable.models import Formidable
-from formidable.serializers.fields import FieldidableSerializer
+from formidable.serializers import fields
 
 
 class FormidableSerializer(serializers.ModelSerializer):
 
-    fields = FieldidableSerializer(many=True)
+    fields = fields.FieldidableSerializer(many=True)
 
     class Meta:
         model = Formidable
@@ -36,3 +36,17 @@ class FormidableSerializer(serializers.ModelSerializer):
     @cached_property
     def fields_serializer(self):
         return self.fields['fields']
+
+
+class ContextFormSerializer(serializers.ModelSerializer):
+
+    fields = fields.ContextFieldSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Formidable
+        fields = ('id', 'label', 'description', 'fields')
+        depth = 2
+
+    def __init__(self, *args, **kwargs):
+        super(ContextFormSerializer, self).__init__(*args, **kwargs)
+        self.fields['fields'].set_context('role', self._context['role'])

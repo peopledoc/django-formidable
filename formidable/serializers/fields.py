@@ -92,6 +92,48 @@ class FieldidableSerializer(serializers.ModelSerializer):
         return field
 
 
+class ListContextFieldSerializer(serializers.ListSerializer):
+
+    def set_context(self, key, value):
+        self._context[key] = value
+        self.child._context[key] = value
+
+
+class ContextFieldSerializer(serializers.ModelSerializer):
+
+    disabled = serializers.SerializerMethodField()
+    required = serializers.SerializerMethodField()
+    validations = ValidationSerializer(many=True, required=False)
+    items = ItemSerializer(many=True, required=False)
+
+    class Meta:
+        list_serializer_class = ListContextFieldSerializer
+        model = Fieldidable
+        fields = (
+            'slug', 'label', 'type_id', 'placeholder', 'helpText', 'default',
+            'validations', 'disabled', 'required', 'items'
+        )
+
+    def get_attribute(self, instance):
+        field = super(ContextFieldSerializer, self).get_attribute(instance)
+        access = field.accesses.get(access_id=instance.role)
+        if access.level == 'REQUIRED':
+            field.required = True
+        elif access.level == 'READONLY':
+            field.disabled = True
+        return field
+
+    @property
+    def role(self):
+        return self._context['role']
+
+    def get_disabled(self, obj):
+        return obj.accesses.get(access_id=self.role).level == 'READONLY'
+
+    def get_required(self, obj):
+        return obj.accesses.get(access_id=self.role).level == 'REQUIRED'
+
+
 class FieldItemMixin(object):
 
     @cached_property
