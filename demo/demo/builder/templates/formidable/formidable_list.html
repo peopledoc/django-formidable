@@ -5,12 +5,31 @@
   <h1>Forms</h1>
 </div>
 <div>
+  <table>
+    <thead>
+      <tr>
+        {% for role in roles %}
+      	  <th>{{ role.label }}</th>
+      	{% endfor %}
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in object_list %}
+        <tr>
+          {% for role in roles %}
+            <td><a href="{{ form.id }}/{{ role.id }}">{{ form.label }}</a></td>
+          {% endfor %}
+          <td><a href="builder/{{ form.id }}">Edit</a></td>
+        </tr>
+        {% empty %}
+          <tr>
+            <td colspan="{{ roles|length|add:1 }}">No forms yet.</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
   <ul>
-    {% for form in object_list %}
-      <li><a href="{{ form.id }}">{{ form.label }}</a> (<a href="builder/{{ form.id }}">Edit</a>)</li>
-    {% empty %}
-      <li>No forms yet.</li>
-    {% endfor %}
   </ul>
 </div>
 {% endblock %}
