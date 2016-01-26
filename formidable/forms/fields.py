@@ -2,22 +2,56 @@
 
 from django.forms import fields
 from formidable.forms import widgets
+from formidable.accesses import get_accesses, AccessUnknow
 
 
 class Field(fields.Field):
 
     widget = widgets.TextInput
 
+    def __init__(self, accesses=None, *args, **kwargs):
+        self.accesses = accesses or {}
+        super(Field, self).__init__(*args, **kwargs)
+
     def to_formidable(self, form, slug):
+        # First thing, check accesses are correct.
+        self.check_accesses()
+        # Generate kwargs for create fields
         label = self.label or slug
         kwargs = {
             'formidable': form, 'slug': slug, 'label': label,
             'help_text': self.help_text,
-
         }
         kwargs.update(self.get_extra_formidable_kwargs())
         widget = self.get_widget()
-        widget.to_formidable(**kwargs)
+        field = widget.to_formidable(**kwargs)
+        self.create_accesses(field)
+
+    def create_accesses(self, field):
+        for access, level in self.get_complete_accesses().items():
+            field.accesses.create(access_id=access, level=level)
+
+    def get_complete_accesses(self):
+        """
+        Return a access dict with all the access defines by client.
+        If access is missing in the :attr:`accesses` it will be added
+        with default value `EDITABLE`.
+        If access is unknow an exception is raised.
+        """
+        self.check_accesses()
+        accesses = {}
+        for access in get_accesses():
+            if access.id not in self.accesses.keys():
+                accesses[access.id] = u'EDITABLE'
+            else:
+                accesses[access.id] = self.accesses[access.id]
+        return accesses
+
+    def check_accesses(self):
+        accesses_id = [access.id for access in get_accesses()]
+        for access in self.accesses.keys():
+            if access not in accesses_id:
+                raise AccessUnknow(access)
 
     def get_widget(self):
         return self.widget

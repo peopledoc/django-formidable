@@ -6,7 +6,32 @@ from formidable.forms import FormidableForm
 from formidable.forms import fields, widgets
 
 
+class FormTest(FormidableForm):
+
+    mytext = fields.CharField(label=u'Name', accesses={
+        'padawan': 'EDITABLE', 'jedi': 'REQUIRED', 'jedi-master': 'HIDDEN',
+        'human': 'EDITABLE',
+    })
+    dropdown = fields.ChoiceField(
+        choices=(('tutu', 'toto'), ('foo', 'bar')),
+        accesses={'jedi': 'EDITABLE'}
+    )
+
+
 class TestFromDjangoForm(TestCase):
+
+    def test_accesses(self):
+        form = FormTest.to_formidable(label=u'with-accesses')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mytext').exists())
+        field = form.fields.get(slug='mytext')
+        self.assertEquals(4, field.accesses.count())
+        self.assertTrue(form.fields.filter(slug='dropdown').exists())
+        field = form.fields.get(slug='dropdown')
+        self.assertEquals(4, field.accesses.count())
+        self.assertTrue(field.accesses.filter(
+            access_id='jedi', level=u'EDITABLE').exists()
+        )
 
     def test_text_field(self):
 
@@ -121,7 +146,7 @@ class TestFromDjangoForm(TestCase):
             dateinput = fields.DateField(label=u'Birth Date')
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-checkbox')
+        form = MyForm.to_formidable(label=u'form-with-date')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
