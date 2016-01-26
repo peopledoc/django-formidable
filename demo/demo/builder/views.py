@@ -13,6 +13,12 @@ class FormidableDetailView(DetailView):
 
     model = Formidable
 
+    def dispatch(self, request, *args, **kwargs):
+        request.session['role'] = kwargs['role']
+        return super(FormidableDetailView, self).dispatch(
+            request, *args, **kwargs
+        )
+
 
 class FormidableBuilderView(DetailView):
 

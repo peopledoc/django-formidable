@@ -86,6 +86,7 @@ DATABASES = {
 }
 
 FORMIDABLE_ACCESSES_LOADER = 'demo.formidable_accesses.get_accesses'
+FORMIDABLE_CONTEXT_LOADER = 'demo.formidable_accesses.get_context'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

@@ -8,3 +8,7 @@ def get_accesses():
         AccessObject(id=key, label=key)
         for key in [u'padawan', 'jedi', 'jedi-master', 'human']
     ]
+
+
+def get_context(request, kwargs):
+    return request.session['role']
