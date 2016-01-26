@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
-from formidable.accesses import get_accesses
+from formidable.accesses import get_accesses, get_context
 
 
 class FormidableDetail(RetrieveUpdateAPIView):
@@ -40,11 +40,8 @@ class ContextFormDetail(RetrieveAPIView):
 
     def get_serializer_context(self):
         context = super(ContextFormDetail, self).get_serializer_context()
-        context['role'] = self.get_context(self.request, self.kwargs)
+        context['role'] = get_context(self.request, self.kwargs)
         return context
-
-    def get_context(self, request, kwargs):
-        raise NotImplementedError()
 
 
 class AccessList(APIView):
