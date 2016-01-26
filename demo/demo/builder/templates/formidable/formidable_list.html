@@ -8,19 +8,21 @@
   <table>
     <thead>
       <tr>
+        <th>Forms \ Roles</th>
         {% for role in roles %}
-      	  <th>{{ role.label }}</th>
-      	{% endfor %}
+          <th>{{ role.label }}</th>
+        {% endfor %}
         <th></th>
       </tr>
     </thead>
     <tbody>
       {% for form in object_list %}
         <tr>
+          <th>{{ form.label }}</th>
           {% for role in roles %}
-            <td><a href="{{ form.id }}/{{ role.id }}">{{ form.label }}</a></td>
+            <td><a href="{{ form.id }}/{{ role.id }}">&#x1f441;</a></td>
           {% endfor %}
-          <td><a href="builder/{{ form.id }}">🖉</a></td>
+          <td><a href="builder/{{ form.id }}">&#x1f589;</a></td>
         </tr>
         {% empty %}
           <tr>
