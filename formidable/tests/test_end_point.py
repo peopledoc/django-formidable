@@ -16,11 +16,11 @@ class RenderSerializerTestCase(TestCase):
         )
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='test_text',
-            placeholder='put your name here', helptext=u'your name',
+            placeholder='put your name here', helpText=u'your name',
         )
         self.text_field2 = self.form.fields.create(
             type_id='text', label='test text 2', slug='test_text_2',
-            placeholder='put your name here', helptext=u'your name',
+            placeholder='put your name here', helpText=u'your name',
         )
         self.text_field.accesses.create(
             level=u'REQUIRED', access_id=u'padawan'
@@ -64,7 +64,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['type_id'], u'text')
         self.assertEquals(text_field['label'], u'test text')
         self.assertEquals(text_field['placeholder'], 'put your name here')
-        self.assertEquals(text_field['helptext'], 'your name')
+        self.assertEquals(text_field['helpText'], 'your name')
         self.assertEquals(text_field['default'], None)
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
@@ -81,7 +81,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['type_id'], u'text')
         self.assertEquals(text_field['label'], u'test text 2')
         self.assertEquals(text_field['placeholder'], 'put your name here')
-        self.assertEquals(text_field['helptext'], 'your name')
+        self.assertEquals(text_field['helpText'], 'your name')
         self.assertEquals(text_field['default'], None)
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
@@ -330,7 +330,7 @@ class UpdateFormTestCase(TestCase):
     def test_update_fields(self):
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='text-slug',
-            placeholder='put your name here', helptext=u'your name',
+            placeholder='put your name here', helpText=u'your name',
         )
         self.text_field.accesses.create(
             access_id='padawan', level='REQUIRED'

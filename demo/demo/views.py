@@ -3,6 +3,7 @@
 from django.views.generic.edit import FormView
 
 from formidable.models import Formidable
+from formidable.views import ContextFormDetail
 
 
 class FormPreview(FormView):
@@ -17,3 +18,9 @@ class FormPreview(FormView):
 
     def form_valid(self, form):
         return self.form_invalid(form)
+
+
+class DemoContextFormDetail(ContextFormDetail):
+
+    def get_context(self, request, **kwargs):
+        return kwargs['role']

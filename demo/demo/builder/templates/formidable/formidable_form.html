@@ -1,0 +1,16 @@
+{% extends "formidable/formidable_base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="title">
+  <h1>May the Form be with you!</h1>
+</div>
+<h2>
+  <a href="{% url 'builder:formidable-builder' object.pk%}">Go to the Builder</a>
+</h2>
+<form action="" method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <a href="{% url 'builder:formidable-list' %}">Cancel</a>
+  <input type="submit" value="Update" />
+</form>
+{% endblock %}

@@ -2,15 +2,36 @@
 
 {% block content %}
 <div class="title">
-  <h1>Forms</h1>
+  <h1>May the Form be with you!</h1>
 </div>
 <div>
+  <table>
+    <thead>
+      <tr>
+        <th>Forms \ Roles</th>
+        {% for role in roles %}
+          <th>{{ role.label }}</th>
+        {% endfor %}
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in object_list %}
+        <tr>
+          <th>{{ form.label }}</th>
+          {% for role in roles %}
+            <td><a href="{% url 'builder:formidable-detail' form.id role.id %}">&#x1f441;</a></td>
+          {% endfor %}
+          <td><a href="{% url 'builder:formidable-edit' form.id %}">&#x1f589;</a></td>
+        </tr>
+        {% empty %}
+          <tr>
+            <td colspan="{{ roles|length|add:1 }}">No forms yet.</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
   <ul>
-    {% for form in object_list %}
-      <li><a href="{{ form.id }}">{{ form.label }}</a> (<a href="builder/{{ form.id }}">Edit</a>)</li>
-    {% empty %}
-      <li>No forms yet.</li>
-    {% endfor %}
   </ul>
 </div>
 {% endblock %}

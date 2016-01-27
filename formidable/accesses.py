@@ -32,3 +32,10 @@ def get_accesses():
     for access in res:
         assert type(access) == AccessObject, u'access must be AccessObject'
     return res
+
+
+def get_context(request, kwargs):
+    module, meth_name = settings.FORMIDABLE_CONTEXT_LOADER.rsplit('.', 1)
+    mod = importlib.import_module(module, [meth_name])
+    meth = getattr(mod, meth_name)
+    return meth(request, kwargs)
