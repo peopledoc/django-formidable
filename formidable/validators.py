@@ -110,7 +110,7 @@ class NEQValidator(FormidableValidator, validators.BaseValidator):
         return cleaned == limit_value
 
 
-class DateValidator(object):
+class DateValidator(FormidableValidator):
 
     def __init__(self, limit_value, message=None):
         return super(DateValidator, self).__init__(
@@ -119,22 +119,28 @@ class DateValidator(object):
 
 
 class DateGTValidator(DateValidator, GTValidator):
-    pass
+
+    type = 'GT'
 
 
 class DateLTValidator(DateValidator, LTValidator):
-    pass
+
+    type = 'LT'
 
 
 class DateMaxValueValidator(DateValidator, validators.MaxValueValidator):
-    pass
+
+    type = 'LTE'
 
 
 class DateMinValueValidator(DateValidator, validators.MinValueValidator):
-    pass
+
+    type = 'GTE'
 
 
 class DateEQValidator(DateValidator, EQValidator):
+
+    type = 'EQ'
 
     def compare(self, x, y):
         return x != y
@@ -142,11 +148,15 @@ class DateEQValidator(DateValidator, EQValidator):
 
 class DateNEQValidator(DateValidator, NEQValidator):
 
+    type = 'NEQ'
+
     def compare(self, x, y):
         return x == y
 
 
-class DateIsInFuture(validators.BaseValidator):
+class DateIsInFuture(FormidableValidator, validators.BaseValidator):
+
+    type = 'IS_DATE_IN_THE_FUTURE'
 
     def clean(self, x):
         return x
@@ -159,7 +169,9 @@ class DateIsInFuture(validators.BaseValidator):
             return x > today
 
 
-class AgeAboveValidator(validators.BaseValidator):
+class AgeAboveValidator(FormidableValidator, validators.BaseValidator):
+
+    type = 'IS_AGE_ABOVE'
 
     def clean(self, birth_date):
         return relativedelta(date.today(), birth_date).years
@@ -169,6 +181,8 @@ class AgeAboveValidator(validators.BaseValidator):
 
 
 class AgeUnderValidator(AgeAboveValidator):
+
+    type = 'IS_AGE_UNDER'
 
     def compare(self, value, age):
         return value >= age
@@ -251,7 +265,7 @@ class DateValidatorFactory(ValidatorFactory):
         return DateNEQValidator(value, message)
 
     def future_date(self, value, message):
-        return DateIsInFuture(value == u'true', message)
+        return DateIsInFuture(value.lower() == u'true', message)
 
     def age_above(self, value, message):
         return AgeAboveValidator(int(value), message)

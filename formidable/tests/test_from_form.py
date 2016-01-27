@@ -75,18 +75,137 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            mytext = fields.CharField(
-                label=u'text', validators=[validators.MinLengthValidator(5)]
+            mynumber = fields.IntegerField(
+                label=u'number', validators=[validators.GTValidator(5)]
             )
 
         form = MyForm.to_formidable(label=u'with-validators')
         self.assertTrue(form.pk)
-        self.assertTrue(form.fields.filter(slug='mytext').exists())
+        self.assertTrue(form.fields.filter(slug='mynumber').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'MINLENGTH')
+        self.assertEquals(valid.type, u'GT')
         self.assertEquals(valid.value, u'5')
+
+    def test_lt_validator(self):
+
+        class MyForm(FormidableForm):
+
+            mynumber = fields.IntegerField(
+                label=u'number', validators=[validators.LTValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mynumber').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'LT')
+        self.assertEquals(valid.value, u'5')
+
+    def test_gte_validator(self):
+
+        class MyForm(FormidableForm):
+
+            mynumber = fields.IntegerField(
+                label=u'number', validators=[validators.GTEValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mynumber').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'GTE')
+        self.assertEquals(valid.value, u'5')
+
+    def test_lte_validator(self):
+
+        class MyForm(FormidableForm):
+
+            mynumber = fields.IntegerField(
+                label=u'number', validators=[validators.LTEValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mynumber').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'LTE')
+        self.assertEquals(valid.value, u'5')
+
+    def test_eq_validator(self):
+
+        class MyForm(FormidableForm):
+
+            mynumber = fields.IntegerField(
+                label=u'number', validators=[validators.EQValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mynumber').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'EQ')
+        self.assertEquals(valid.value, u'5')
+
+    def test_neq_validator(self):
+
+        class MyForm(FormidableForm):
+
+            mynumber = fields.IntegerField(
+                label=u'number', validators=[validators.NEQValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mynumber').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'NEQ')
+        self.assertEquals(valid.value, u'5')
+
+    def test_futur_date(self):
+
+        class MyForm(FormidableForm):
+
+            mydate = fields.DateField(
+                validators=[validators.DateIsInFuture(False)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mydate').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'IS_DATE_IN_THE_FUTURE')
+        self.assertEquals(valid.value, u'False')
+
+    def test_is_age_above(self):
+
+        class MyForm(FormidableForm):
+
+            mydate = fields.DateField(
+                validators=[validators.AgeAboveValidator(21)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mydate').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'IS_AGE_ABOVE')
+        self.assertEquals(valid.value, '21')
 
     def test_accesses(self):
         form = FormTest.to_formidable(label=u'with-accesses')
