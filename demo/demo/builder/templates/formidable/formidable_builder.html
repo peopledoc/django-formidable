@@ -16,8 +16,8 @@
     Formidable.start({
       formID: {{ object.pk }},
       component: 'builder',
-      cancelURL: '/forms',
-      returnURL: '/forms'
+      cancelURL: '{% url "builder:formidable-edit" object.pk %}',
+      returnURL: '{% url "builder:formidable-list" %}'
     });
   });
 </script>

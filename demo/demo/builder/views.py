@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
 from formidable.models import Formidable
+from django.core.urlresolvers import reverse
 from formidable.accesses import get_accesses
 
 
@@ -24,6 +26,15 @@ class FormidableDetailView(DetailView):
         return super(FormidableDetailView, self).dispatch(
             request, *args, **kwargs
         )
+
+
+class FormidableUpdateView(UpdateView):
+
+    model = Formidable
+    fields = ['label', 'description']
+
+    def get_success_url(self):
+        return reverse('builder:formidable-list')
 
 
 class FormidableBuilderView(DetailView):

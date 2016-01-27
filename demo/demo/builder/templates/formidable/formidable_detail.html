@@ -15,8 +15,8 @@
   $(document).ready(function() {
     Formidable.start({
       formID: {{ object.pk }},
-      cancelURL: '/forms',
-      returnURL: '/forms'
+      cancelURL: '{% url "builder:formidable-list" %}',
+      returnURL: '{% url "builder:formidable-list" %}'
     });
   });
 </script>
