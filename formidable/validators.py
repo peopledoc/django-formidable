@@ -16,7 +16,52 @@ from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 
 
-class GTValidator(validators.BaseValidator):
+class FormidableValidator(object):
+
+    def to_formidable(self, field):
+        return field.validations.create(**self.get_formidable_kwargs())
+
+    def get_formidable_kwargs(self):
+        return {
+            'type': self.type, 'value': self.limit_value,
+            'message': self.message,
+        }
+
+
+class GTEValidator(FormidableValidator, validators.MinValueValidator):
+
+    type = u'GTE'
+
+
+class LTEValidator(FormidableValidator, validators.MaxValueValidator):
+
+    type = u'LTE'
+
+
+class MaxLengthValidator(FormidableValidator, validators.MaxLengthValidator):
+
+    type = u'MAXLENGTH'
+
+
+class MinLengthValidator(FormidableValidator, validators.MinLengthValidator):
+
+    type = u'MINLENGTH'
+
+
+class RegexValidator(FormidableValidator, validators.RegexValidator):
+
+    type = u'REGEXP'
+
+    def get_formidable_kwargs(self):
+        return {
+            'type': self.type, 'value': self.regex.pattern,
+            'message': self.message,
+        }
+
+
+class GTValidator(FormidableValidator, validators.BaseValidator):
+
+    type = u'GT'
 
     message = _("Ensure this field is greater than %(limit_value)s")
 
@@ -27,8 +72,9 @@ class GTValidator(validators.BaseValidator):
         return cleaned <= limit_value
 
 
-class LTValidator(validators.BaseValidator):
+class LTValidator(FormidableValidator, validators.BaseValidator):
 
+    type = 'LT'
     message = _("Ensure this field is lesser than %(limit_value)s")
 
     def clean(self, x):
@@ -38,8 +84,9 @@ class LTValidator(validators.BaseValidator):
         return cleaned >= limit_value
 
 
-class EQValidator(validators.BaseValidator):
+class EQValidator(FormidableValidator, validators.BaseValidator):
 
+    type = 'EQ'
     message = _("Ensure this field is equal to %(limit_value)s")
 
     def clean(self, x):
@@ -50,8 +97,9 @@ class EQValidator(validators.BaseValidator):
         return cleaned != limit_value
 
 
-class NEQValidator(validators.BaseValidator):
+class NEQValidator(FormidableValidator, validators.BaseValidator):
 
+    type = 'NEQ'
     message = _("Ensure this field is not equal to %(limit_value)s")
 
     def clean(self, x):

@@ -5,7 +5,7 @@ from formidable.forms import widgets
 from formidable.accesses import get_accesses, AccessUnknow
 
 
-class Field(fields.Field):
+class Field(object):
 
     widget = widgets.TextInput
 
@@ -26,10 +26,16 @@ class Field(fields.Field):
         widget = self.get_widget()
         field = widget.to_formidable(**kwargs)
         self.create_accesses(field)
+        self.create_validators(field)
 
     def create_accesses(self, field):
         for access, level in self.get_complete_accesses().items():
             field.accesses.create(access_id=access, level=level)
+
+    def create_validators(self, field):
+        for validator in self.validators:
+            if hasattr(validator, 'to_formidable'):
+                validator.to_formidable(field)
 
     def get_complete_accesses(self):
         """

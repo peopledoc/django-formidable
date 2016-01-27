@@ -4,6 +4,7 @@ from django.test import TestCase
 from formidable.models import Formidable
 from formidable.forms import FormidableForm
 from formidable.forms import fields, widgets
+from formidable import validators
 
 
 class FormTest(FormidableForm):
@@ -19,6 +20,56 @@ class FormTest(FormidableForm):
 
 
 class TestFromDjangoForm(TestCase):
+
+    def test_regex_validators(self):
+        class MyForm(FormidableForm):
+
+            mytext = fields.CharField(
+                label=u'text', validators=[validators.RegexValidator(
+                    regex=r'^[0-9]\w+'
+                )]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mytext').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'REGEXP')
+        self.assertEquals(valid.value, r'^[0-9]\w+')
+
+    def test_max_length_validators(self):
+        class MyForm(FormidableForm):
+
+            mytext = fields.CharField(
+                label=u'text', validators=[validators.MaxLengthValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mytext').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'MAXLENGTH')
+        self.assertEquals(valid.value, u'5')
+
+    def test_min_length_validators(self):
+        class MyForm(FormidableForm):
+
+            mytext = fields.CharField(
+                label=u'text', validators=[validators.MinLengthValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mytext').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'MINLENGTH')
+        self.assertEquals(valid.value, u'5')
 
     def test_accesses(self):
         form = FormTest.to_formidable(label=u'with-accesses')
