@@ -1,0 +1,158 @@
+{
+  "label": "Augmentation d'heures",
+  "description": "Saisie des changements des horaires hedbomadaire",
+  "fields": [{
+    "slug": "nom",
+    "label": "Nom",
+    "type_id": "text",
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }, {
+    "slug": "prenom",
+    "label": "Prénom",
+    "type_id": "text",
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }, {
+    "slug": "ancienHoraire",
+    "label": "Ancien horaire hebdomadaire",
+    "type_id": "number",
+    "helpText": "Entre O et 50",
+    "validations": [{
+      "type": "GTE",
+      "value": "0"
+    }, {
+      "type": "LTE",
+      "value": "50"
+    }],
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }, {
+    "slug": "nouvelHoraire",
+    "label": "Nouvel horaire hebdomadaire",
+    "type_id": "number",
+    "helpText": "Entre O et 50",
+    "validations": [{
+      "type": "GTE",
+      "value": "0"
+    }, {
+      "type": "LTE",
+      "value": "50"
+    }],
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }, {
+    "slug": "motif",
+    "label": "Motif de l'augmentation",
+    "type_id": "paragraph",
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }, {
+    "slug": "dateDebut",
+    "label": "Date de début de l'avenant",
+    "type_id": "date",
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }, {
+    "slug": "dateFin",
+    "label": "Date de fin",
+    "type_id": "date",
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }, {
+    "slug": "planning",
+    "label": "Fichier Planning",
+    "helpText": "Merci de nous transmettre le planning",
+    "type_id": "file",
+    "accesses": [{
+      "level": "REQUIRED",
+      "access_id": "padawan"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "jedi-master"
+    }, {
+      "level": "REQUIRED",
+      "access_id": "human"
+    }]
+  }]
+}
