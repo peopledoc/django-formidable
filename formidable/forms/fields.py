@@ -96,3 +96,8 @@ class BooleanField(Field, fields.BooleanField):
 class DateField(Field, fields.DateField):
 
     widget = widgets.DateInput
+
+
+class IntegerField(Field, fields.IntegerField):
+
+    widget = widgets.NumberInput

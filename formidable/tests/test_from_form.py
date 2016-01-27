@@ -71,6 +71,23 @@ class TestFromDjangoForm(TestCase):
         self.assertEquals(valid.type, u'MINLENGTH')
         self.assertEquals(valid.value, u'5')
 
+    def test_gt_validator(self):
+
+        class MyForm(FormidableForm):
+
+            mytext = fields.CharField(
+                label=u'text', validators=[validators.MinLengthValidator(5)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mytext').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'MINLENGTH')
+        self.assertEquals(valid.value, u'5')
+
     def test_accesses(self):
         form = FormTest.to_formidable(label=u'with-accesses')
         self.assertTrue(form.pk)
@@ -94,6 +111,18 @@ class TestFromDjangoForm(TestCase):
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.fields.filter(
             slug=u'mytext', type_id=u'text', label='My Text'
+        ).exists())
+
+    def test_integer_field(self):
+
+        class MyForm(FormidableForm):
+            number_children = fields.IntegerField(label='Your Children Number')
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label=u'tutu')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.fields.filter(
+            slug=u'number_children', type_id=u'number',
         ).exists())
 
     def test_dropdown_field(self):

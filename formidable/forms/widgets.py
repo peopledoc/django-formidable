@@ -70,3 +70,8 @@ class CheckboxSelectMultiple(ItemsWidgetMultiple,
 class DateInput(FormidableWidget, widgets.DateInput):
 
     type_id = u'date'
+
+
+class NumberInput(FormidableWidget, widgets.NumberInput):
+
+    type_id = u'number'
