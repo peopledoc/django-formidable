@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 from rest_framework.views import APIView
 from rest_framework.generics import (
@@ -8,7 +8,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 
-from formidable.models import Formidable
+from formidable.models import Formidable, Fieldidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.accesses import get_accesses, get_context
@@ -35,7 +35,12 @@ class ContextFormDetail(RetrieveAPIView):
 
     def get_queryset(self):
         qs = super(ContextFormDetail, self).get_queryset()
-        qs = qs.filter(~Q(fields__accesses__level='HIDDEN'))
+        qs = qs.prefetch_related(Prefetch(
+            'fields',
+            queryset=Fieldidable.objects.filter(
+                ~Q(accesses__level='HIDDEN')
+            )
+        ))
         return qs
 
     def get_serializer_context(self):
