@@ -11,7 +11,7 @@ class FormidableWidget(widgets.Widget):
     def to_formidable(self, formidable, slug, label, help_text):
         return formidable.fields.create(
             slug=slug, label=label, type_id=self.type_id,
-            helptext=help_text, multiple=self.multiple
+            helpText=help_text, multiple=self.multiple
         )
 
 
