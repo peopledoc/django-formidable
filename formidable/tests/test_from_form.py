@@ -207,6 +207,23 @@ class TestFromDjangoForm(TestCase):
         self.assertEquals(valid.type, u'IS_AGE_ABOVE')
         self.assertEquals(valid.value, '21')
 
+    def test_is_age_under(self):
+
+        class MyForm(FormidableForm):
+
+            mydate = fields.DateField(
+                validators=[validators.AgeUnderValidator(21)]
+            )
+
+        form = MyForm.to_formidable(label=u'with-validators')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mydate').exists())
+        field = form.fields.first()
+        self.assertEquals(field.validations.count(), 1)
+        valid = field.validations.first()
+        self.assertEquals(valid.type, u'IS_AGE_UNDER')
+        self.assertEquals(valid.value, '21')
+
     def test_accesses(self):
         form = FormTest.to_formidable(label=u'with-accesses')
         self.assertTrue(form.pk)
