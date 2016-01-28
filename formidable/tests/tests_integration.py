@@ -3,10 +3,13 @@ from copy import deepcopy
 
 from django.core.urlresolvers import reverse
 
+from freezegun import freeze_time
 from rest_framework.test import APITestCase
 
 from formidable.models import Formidable
 from formidable.accesses import get_accesses
+from formidable.forms import FormidableForm, fields
+from formidable import validators
 
 form_data = {
     "label": "test create",
@@ -213,3 +216,58 @@ class TestAccess(APITestCase):
             self.assertIn(
                 access['label'], [obj.label for obj in get_accesses()]
             )
+
+
+class TestChain(APITestCase):
+
+    class MyTestForm(FormidableForm):
+
+        name = fields.CharField(label=u'Name', accesses={'jedi': 'REQUIRED'})
+        birth_date = fields.DateField(
+            label='Your Birth Date', validators=[
+                validators.AgeAboveValidator(
+                    21, message=u'You cannot be a jedi until your 21'
+                ),
+                validators.DateIsInFuture(False)
+            ],
+            accesses={'jedi': 'REQUIRED'},
+        )
+        out_date = fields.DateField(validators=[
+            validators.DateIsInFuture(True)
+            ]
+        )
+        weapons = fields.ChoiceField(choices=[
+            ('gun', 'blaster'), ('sword', 'light saber')
+        ])
+        salary = fields.IntegerField(validators=[
+            validators.GTValidator(0), validators.LTEValidator(25)
+            ], accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
+        )
+
+    def setUp(self):
+        super(APITestCase, self).setUp()
+        self.form = self.MyTestForm.to_formidable(label='Jedi Form')
+        self.assertTrue(self.form.pk)
+
+    @freeze_time('2021-01-01')
+    def test_jedi_form_valid(self):
+        form_class = self.form.get_django_form_class(role='jedi')
+        form = form_class(data={
+            'name': 'Gerard', 'birth_date': '1998-01-01', 'weapons': 'gun',
+            'out_date': '2042-01-01'
+        })
+        self.assertTrue(form.is_valid())
+
+    @freeze_time('2021-01-01')
+    def test_jedi_form_form_invalid(self):
+        form_class = self.form.get_django_form_class(role='jedi')
+        form = form_class(data={
+            'name': 'Gerard', 'birth_date': '2010-01-01', 'weapons': 'gun',
+            'out_date': '2042-01-01'
+        })
+        self.assertFalse(form.is_valid())
+        self.assertIn('birth_date', form.errors)
+        self.assertEquals(
+            form.errors['birth_date'][0],
+            'You cannot be a jedi until your 21'
+        )
