@@ -4,7 +4,9 @@ import copy
 from django.test import TestCase
 
 from formidable.models import Formidable
+from formidable.forms import FormidableForm, fields
 from formidable.serializers.forms import FormidableSerializer
+from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
 
 
@@ -108,6 +110,92 @@ class RenderSerializerTestCase(TestCase):
         self.assertIn('items', data)
         self.assertEquals(len(data['items'].keys()), 2)
         self.assertEquals(len(data['items'].values()), 2)
+
+
+class RenderContextSerializer(TestCase):
+
+    def test_required_field(self):
+
+        class TestForm(FormidableForm):
+            name = fields.CharField(label=u'Your Name', accesses={
+                'jedi': 'REQUIRED',
+            })
+
+        form = TestForm.to_formidable(label='title')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('fields', data)
+        self.assertEquals(len(data['fields']), 1)
+        field = data['fields'][0]
+        self.assertIn('required', field)
+        self.assertTrue(field['required'])
+        self.assertIn('disabled', field)
+        self.assertFalse(field['disabled'])
+
+    def test_editable_field(self):
+
+        class TestForm(FormidableForm):
+            name = fields.CharField(label=u'Your Name', accesses={
+                'jedi': 'EDITABLE',
+            })
+
+        form = TestForm.to_formidable(label='title')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('fields', data)
+        self.assertEquals(len(data['fields']), 1)
+        field = data['fields'][0]
+        self.assertIn('required', field)
+        self.assertFalse(field['required'])
+        self.assertIn('disabled', field)
+        self.assertFalse(field['disabled'])
+
+    def test_readonly_field(self):
+
+        class TestForm(FormidableForm):
+            name = fields.CharField(label=u'Your Name', accesses={
+                'jedi': 'READONLY',
+            })
+
+        form = TestForm.to_formidable(label='title')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('fields', data)
+        self.assertEquals(len(data['fields']), 1)
+        field = data['fields'][0]
+        self.assertIn('required', field)
+        self.assertFalse(field['required'])
+        self.assertIn('disabled', field)
+        self.assertTrue(field['disabled'])
+
+    def test_hidden_field(self):
+
+        class TestForm(FormidableForm):
+            name = fields.CharField(label=u'Your Name', accesses={
+                'jedi': 'HIDDEN',
+            })
+
+        form = TestForm.to_formidable(label='title')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('fields', data)
+        self.assertEquals(len(data['fields']), 0)
+
+        # Other access are availabel
+
+        serializer = ContextFormSerializer(form, context={'role': 'human'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('fields', data)
+        self.assertEquals(len(data['fields']), 1)
 
 
 class CreateSerializerTestCase(TestCase):

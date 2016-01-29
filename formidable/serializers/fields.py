@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.utils.functional import cached_property
+from django.db.models import Prefetch
 
 
 from rest_framework import serializers
 
-from formidable.models import Fieldidable
+from formidable.models import Fieldidable, Access
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.access import AccessSerializer
 from formidable.serializers.validation import ValidationSerializer
@@ -98,6 +99,25 @@ class ListContextFieldSerializer(serializers.ListSerializer):
         self._context[key] = value
         self.child._context[key] = value
 
+    @property
+    def role(self):
+        return self._context['role']
+
+    def get_attribute(self, instance):
+        qs = super(ListContextFieldSerializer, self).get_attribute(instance)
+        access_qs = Access.objects.filter(access_id=self.role)
+        access_qs = access_qs.exclude(level=u'HIDDEN')
+        qs = qs.prefetch_related(Prefetch('accesses', queryset=access_qs))
+        return qs
+
+    def to_representation(self, fields):
+        res = []
+        for field in fields.all():
+            if field.accesses.exists():
+                res.append(self.child.to_representation(field))
+
+        return res
+
 
 class ContextFieldSerializer(serializers.ModelSerializer):
 
@@ -113,15 +133,6 @@ class ContextFieldSerializer(serializers.ModelSerializer):
             'slug', 'label', 'type_id', 'placeholder', 'helpText', 'default',
             'validations', 'disabled', 'required', 'multiple', 'items'
         )
-
-    def get_attribute(self, instance):
-        field = super(ContextFieldSerializer, self).get_attribute(instance)
-        access = field.accesses.get(access_id=instance.role)
-        if access.level == 'REQUIRED':
-            field.required = True
-        elif access.level == 'READONLY':
-            field.disabled = True
-        return field
 
     @property
     def role(self):
