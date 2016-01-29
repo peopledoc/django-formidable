@@ -138,7 +138,7 @@ class RenderContextSerializer(TestCase):
 
         class TestForm(FormidableForm):
             name = fields.CharField(label=u'Your Name', accesses={
-                'jedi': 'REQUIRED',
+                'jedi': 'EDITABLE',
             })
 
         form = TestForm.to_formidable(label='title')
@@ -150,7 +150,7 @@ class RenderContextSerializer(TestCase):
         self.assertEquals(len(data['fields']), 1)
         field = data['fields'][0]
         self.assertIn('required', field)
-        self.assertTrue(field['required'])
+        self.assertFalse(field['required'])
         self.assertIn('disabled', field)
         self.assertFalse(field['disabled'])
 
