@@ -5,6 +5,7 @@ from django.test import TestCase
 from freezegun import freeze_time
 
 from formidable.models import Formidable
+from formidable.forms import widgets, fields
 
 
 class TestDynamicForm(TestCase):
@@ -24,6 +25,17 @@ class TestDynamicForm(TestCase):
         self.assertEquals(text.required, False)
         self.assertEquals(type(text), forms.CharField)
         self.assertEquals(type(text.widget), forms.TextInput)
+
+    def test_help_text(self):
+        self.form.fields.create(
+            slug='my-helptext', type_id='helpText', label=u'Here a Heptext',
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('my-helptext', form.fields)
+        text = form.fields['my-helptext']
+        self.assertEquals(type(text), fields.FormatField)
+        self.assertEquals(type(text.widget), widgets.FormatWidget)
 
     def test_paragraph_input(self):
         self.form.fields.create(
