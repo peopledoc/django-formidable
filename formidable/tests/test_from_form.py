@@ -388,3 +388,20 @@ class TestFromDjangoForm(TestCase):
             slug=u'radioinput', type_id=u'radios', label='Apero ?',
         ).exists())
         self.assertFalse(form.fields.first().multiple)
+
+    def test_help_text(self):
+
+        class MyForm(FormidableForm):
+
+            helptext = fields.FormatField(
+                text=u'My Help Text', widget=widgets.FormatWidget
+            )
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label=u'form-with-helptex')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        self.assertTrue(form.fields.filter(
+            slug=u'helptext', type_id=u'helpText', label='My Help Text',
+        ).exists())
