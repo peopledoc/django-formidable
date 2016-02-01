@@ -75,3 +75,11 @@ class DateInput(FormidableWidget, widgets.DateInput):
 class NumberInput(FormidableWidget, widgets.NumberInput):
 
     type_id = u'number'
+
+
+class FormatWidget(FormidableWidget):
+
+    type_id = u'helpText'
+
+    def render(self, name, value, attrs=None):
+        return u'<p>{}</p>'.format(value)

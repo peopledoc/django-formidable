@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.forms import fields
+
 from formidable.forms import widgets
 from formidable.accesses import get_accesses, AccessUnknow
 
@@ -44,7 +45,6 @@ class Field(object):
         with default value `EDITABLE`.
         If access is unknow an exception is raised.
         """
-        self.check_accesses()
         accesses = {}
         for access in get_accesses():
             if access.id not in self.accesses.keys():
@@ -64,6 +64,17 @@ class Field(object):
 
     def get_extra_formidable_kwargs(self):
         return {}
+
+
+class FormatField(Field, fields.Field):
+
+    def __init__(self, text, *args, **kwargs):
+        self.text = text
+        kwargs['label'] = ''
+        super(FormatField, self).__init__(*args, **kwargs)
+
+    def prepare_value(self, *args):
+        return self.text
 
 
 class CharField(Field, fields.CharField):
