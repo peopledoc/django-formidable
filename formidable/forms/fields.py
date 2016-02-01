@@ -76,6 +76,9 @@ class FormatField(Field, fields.Field):
     def prepare_value(self, *args):
         return self.text
 
+    def get_extra_formidable_kwargs(self):
+        return {'label': self.text}
+
 
 class CharField(Field, fields.CharField):
     pass
