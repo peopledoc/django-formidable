@@ -77,7 +77,7 @@ class NumberInput(FormidableWidget, widgets.NumberInput):
     type_id = u'number'
 
 
-class FormatWidget(FormidableWidget):
+class HelpTextWidget(FormidableWidget):
 
     type_id = u'helpText'
 

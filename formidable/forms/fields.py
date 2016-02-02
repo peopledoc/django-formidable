@@ -66,18 +66,17 @@ class Field(object):
         return {}
 
 
-class FormatField(Field, fields.Field):
+class HelpTextField(Field, fields.Field):
 
-    def __init__(self, text, *args, **kwargs):
-        self.text = text
+    widget = widgets.HelpTextWidget
+
+    def __init__(self, help_text, *args, **kwargs):
         kwargs['label'] = ''
-        super(FormatField, self).__init__(*args, **kwargs)
+        kwargs['help_text'] = help_text
+        super(HelpTextField, self).__init__(*args, **kwargs)
 
     def prepare_value(self, *args):
-        return self.text
-
-    def get_extra_formidable_kwargs(self):
-        return {'label': self.text}
+        return self.help_text
 
 
 class CharField(Field, fields.CharField):

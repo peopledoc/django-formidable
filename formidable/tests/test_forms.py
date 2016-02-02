@@ -34,8 +34,8 @@ class TestDynamicForm(TestCase):
         form = form_class()
         self.assertIn('my-helptext', form.fields)
         text = form.fields['my-helptext']
-        self.assertEquals(type(text), fields.FormatField)
-        self.assertEquals(type(text.widget), widgets.FormatWidget)
+        self.assertEquals(type(text), fields.HelpTextField)
+        self.assertEquals(type(text.widget), widgets.HelpTextWidget)
 
     def test_paragraph_input(self):
         self.form.fields.create(

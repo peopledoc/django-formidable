@@ -3,7 +3,7 @@
 from django import forms
 
 from formidable.validators import ValidatorFactory, DateValidatorFactory
-from formidable.forms import fields, widgets
+from formidable.forms import fields
 
 
 class SkipField(Exception):
@@ -89,19 +89,9 @@ class FieldBuilder(object):
         return res
 
 
-class FormatFieldBuilder(FieldBuilder):
+class HelpTextBuilder(FieldBuilder):
 
-    field_class = fields.FormatField
-    widget_class = widgets.FormatWidget
-
-    def get_field_kwargs(self):
-        kwargs = super(FormatFieldBuilder, self).get_field_kwargs()
-        kwargs['text'] = kwargs.pop('label')
-        return kwargs
-
-
-class HelpTextBuilder(FormatFieldBuilder):
-    pass
+    field_class = fields.HelpTextField
 
 
 class TextFieldBuilder(FieldBuilder):

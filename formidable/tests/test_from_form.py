@@ -393,9 +393,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            helptext = fields.FormatField(
-                text=u'My Help Text', widget=widgets.FormatWidget
-            )
+            helptext = fields.HelpTextField(help_text=u'My Help Text')
 
         initial_count = Formidable.objects.count()
         form = MyForm.to_formidable(label=u'form-with-helptex')
@@ -403,5 +401,5 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'helptext', type_id=u'helpText', label='My Help Text',
+            slug=u'helptext', type_id=u'helpText', helpText='My Help Text',
         ).exists())
