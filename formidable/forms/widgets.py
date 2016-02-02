@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.forms import widgets
+
 from markdown import markdown
 
 
@@ -78,7 +79,7 @@ class NumberInput(FormidableWidget, widgets.NumberInput):
     type_id = u'number'
 
 
-class HelpTexttWidget(FormidableWidget):
+class HelpTextWidget(FormidableWidget):
 
     type_id = u'helpText'
 

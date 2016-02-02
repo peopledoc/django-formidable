@@ -2,7 +2,7 @@
 from django import forms
 
 from formidable.models import Formidable
-from formidable.forms.field_builder import FormFieldFactory, SkipField
+from formidable.forms import field_builder
 
 
 class BaseDynamicForm(forms.Form):
@@ -15,8 +15,8 @@ def get_dynamic_form_class(formidable, role=None):
 
     for field in formidable.fields.all():
         try:
-            form_field = FormFieldFactory.produce(field, role)
-        except SkipField:
+            form_field = field_builder.FormFieldFactory.produce(field, role)
+        except field_builder.SkipField:
             pass
         else:
             fields[field.slug] = form_field
