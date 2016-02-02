@@ -12,8 +12,8 @@ class SkipField(Exception):
 
 class FieldBuilder(object):
 
-    widget_class = forms.TextInput
     field_class = forms.CharField
+    widget_class = None
     validator_factory_class = ValidatorFactory
 
     def __init__(self, field):
@@ -95,7 +95,8 @@ class HelpTextBuilder(FieldBuilder):
 
 
 class TextFieldBuilder(FieldBuilder):
-    pass
+
+    widget_class = forms.TextInput
 
 
 class ParagraphFieldBuilder(FieldBuilder):

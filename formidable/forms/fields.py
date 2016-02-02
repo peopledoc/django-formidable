@@ -79,6 +79,12 @@ class HelpTextField(Field, fields.Field):
         return self.help_text
 
 
+class TitleField(Field, fields.Field):
+
+    def prepare_value(self, *args):
+        return self.help_text
+
+
 class CharField(Field, fields.CharField):
     pass
 
