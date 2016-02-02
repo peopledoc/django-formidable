@@ -120,6 +120,8 @@ class RenderSerializerTestCase(TestCase):
         serializer = FormidableSerializer(instance=self.form)
         data = serializer.data['fields'][0]
         for field in BASE_FIELDS:
+            if field == u'label':
+                continue
             self.assertIn(field, data)
         self.assertEqual(data['helpText'],
                          'Please enter your information here')
