@@ -255,3 +255,14 @@ class NumberFieldSerializer(FieldidableSerializer):
 
     class Meta(FieldidableSerializer.Meta):
         fields = BASE_FIELDS
+
+
+@load_serializer(field_register)
+class HelpTextFieldSerializer(FieldidableSerializer):
+
+    type_id = 'helpText'
+    helpText = serializers.CharField(required=True)
+
+    class Meta(FieldidableSerializer.Meta):
+        # Just to remove "label" attribut
+        fields = list(set(BASE_FIELDS) - set(['label']))

@@ -40,7 +40,7 @@ class RenderSerializerTestCase(TestCase):
 
     def test_register(self):
         register = FieldSerializerRegister.get_instance()
-        assert len(register) == 11
+        assert len(register) == 12
 
     def test_form_field(self):
         data = self.serializer.data
@@ -110,6 +110,19 @@ class RenderSerializerTestCase(TestCase):
         self.assertIn('items', data)
         self.assertEquals(len(data['items'].keys()), 2)
         self.assertEquals(len(data['items'].values()), 2)
+
+    def test_helptext_field(self):
+        self.form.fields.all().delete()
+        self.help_text = self.form.fields.create(
+            type_id='helpText', slug='your help text',
+            helpText=u'Please enter your information here'
+        )
+        serializer = FormidableSerializer(instance=self.form)
+        data = serializer.data['fields'][0]
+        for field in BASE_FIELDS:
+            self.assertIn(field, data)
+        self.assertEqual(data['helpText'],
+                         'Please enter your information here')
 
 
 class RenderContextSerializer(TestCase):
@@ -254,6 +267,22 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    format_field_helptext = [
+        {
+            'slug': 'myhelptext',
+            'type_id': 'helpText',
+            'helpText': 'Hello',
+            'accesses': [],
+        }
+    ]
+    format_without_field_helptext = [
+        {
+            'slug': 'myhelptext',
+            'type_id': 'helpText',
+            'accesses': [],
+        }
+    ]
+
     def test_create_form(self):
         serializer = FormidableSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
@@ -339,6 +368,18 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertFalse(serializer.is_valid())
         self.assertIn('fields', serializer.errors)
+
+    def test_create_helptext(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.format_field_helptext
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+
+    def test_create_helptext_wrong(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.format_without_field_helptext
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
 
 
 class UpdateFormTestCase(TestCase):
