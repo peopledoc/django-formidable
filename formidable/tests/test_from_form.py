@@ -403,3 +403,18 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(form.fields.filter(
             slug=u'helptext', type_id=u'helpText', helpText='My Help Text',
         ).exists())
+
+    def test_title(self):
+
+        class MyForm(FormidableForm):
+
+            title = fields.TitleField(label=u'Hello')
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label=u'form-with-title')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        self.assertTrue(form.fields.filter(
+            slug=u'title', type_id=u'title', label='Hello',
+        ).exists())

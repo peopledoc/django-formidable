@@ -28,7 +28,8 @@ class TestDynamicForm(TestCase):
 
     def test_help_text(self):
         self.form.fields.create(
-            slug='my-helptext', type_id='helpText', label=u'Here a Heptext',
+            slug='my-helptext', type_id='helpText',
+            helpText=u'Here a Heptext',
         )
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -36,6 +37,19 @@ class TestDynamicForm(TestCase):
         text = form.fields['my-helptext']
         self.assertEquals(type(text), fields.HelpTextField)
         self.assertEquals(type(text.widget), widgets.HelpTextWidget)
+        self.assertEquals(text.text, 'Here a Heptext')
+
+    def test_title_field(self):
+        self.form.fields.create(
+            slug='my-title', type_id='title', label='Hello',
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('my-title', form.fields)
+        text = form.fields['my-title']
+        self.assertEquals(type(text), fields.TitleField)
+        self.assertEquals(type(text.widget), widgets.TitleWidget)
+        self.assertEquals(text.label, 'Hello')
 
     def test_paragraph_input(self):
         self.form.fields.create(
