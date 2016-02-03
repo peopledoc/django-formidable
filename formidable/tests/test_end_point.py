@@ -40,7 +40,7 @@ class RenderSerializerTestCase(TestCase):
 
     def test_register(self):
         register = FieldSerializerRegister.get_instance()
-        assert len(register) == 12
+        assert len(register) == 13
 
     def test_form_field(self):
         data = self.serializer.data
@@ -125,6 +125,19 @@ class RenderSerializerTestCase(TestCase):
             self.assertIn(field, data)
         self.assertEqual(data['helpText'],
                          'Please enter your information here')
+
+    def test_title_field(self):
+        self.form.fields.all().delete()
+        self.title = self.form.fields.create(
+            type_id='title', slug='my title',
+            label=u'This is on onboarding form.'
+        )
+        serializer = FormidableSerializer(instance=self.form)
+        data = serializer.data['fields'][0]
+        for field in BASE_FIELDS:
+            self.assertIn(field, data)
+        self.assertEqual(data['label'],
+                         'This is on onboarding form.')
 
 
 class RenderContextSerializer(TestCase):
@@ -284,6 +297,14 @@ class CreateSerializerTestCase(TestCase):
             'accesses': [],
         }
     ]
+    format_field_title = [
+        {
+            'slug': 'mytitle',
+            'type_id': 'title',
+            'label': 'This is an Onboarding Form.',
+            'accesses': [],
+        }
+    ]
 
     def test_create_form(self):
         serializer = FormidableSerializer(data=self.data)
@@ -376,12 +397,28 @@ class CreateSerializerTestCase(TestCase):
         data['fields'] = self.format_field_helptext
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEqual(instance.fields.count(), 1)
+        qs = instance.fields.filter(type_id='helpText', helpText='Hello')
+        self.assertTrue(qs.exists())
 
     def test_create_helptext_wrong(self):
         data = copy.deepcopy(self.data)
         data['fields'] = self.format_without_field_helptext
         serializer = FormidableSerializer(data=data)
         self.assertFalse(serializer.is_valid())
+
+    def test_create_title(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.format_field_title
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEqual(instance.fields.count(), 1)
+        qs = instance.fields.filter(
+            type_id='title', label='This is an Onboarding Form.'
+        )
+        self.assertTrue(qs.exists())
 
 
 class UpdateFormTestCase(TestCase):
