@@ -99,6 +99,11 @@ class HelpTextBuilder(FieldBuilder):
         return kwargs
 
 
+class TitleFielBuilder(FieldBuilder):
+
+    field_class = fields.TitleField
+
+
 class TextFieldBuilder(FieldBuilder):
 
     widget_class = forms.TextInput
@@ -176,6 +181,7 @@ class FormFieldFactory(object):
         'date': DateFieldBuilder,
         'number': IntegerFieldBuilder,
         'helpText': HelpTextBuilder,
+        'title': TitleFielBuilder,
     }
 
     @classmethod

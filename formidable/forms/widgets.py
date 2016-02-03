@@ -97,6 +97,6 @@ class TitleWidget(FormidableWidget):
 
     def render(self, name, value, attrs=None):
         balise = attrs.get('balise', None) or self.balise
-        return u'<{balise}>{value}<{balise}>'.format(
+        return u'<{balise}>{value}</{balise}>'.format(
             balise=balise, value=value
         )
