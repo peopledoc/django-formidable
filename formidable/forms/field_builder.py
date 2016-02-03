@@ -93,6 +93,11 @@ class HelpTextBuilder(FieldBuilder):
 
     field_class = fields.HelpTextField
 
+    def get_field_kwargs(self):
+        kwargs = super(HelpTextBuilder, self).get_field_kwargs()
+        kwargs['text'] = kwargs.pop('help_text')
+        return kwargs
+
 
 class TextFieldBuilder(FieldBuilder):
 

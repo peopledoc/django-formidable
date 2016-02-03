@@ -2,7 +2,7 @@
 
 from django.forms import fields
 
-from formidable.forms import widgets
+from formidable.forms import widgets, boundfield
 from formidable.accesses import get_accesses, AccessUnknow
 
 
@@ -67,22 +67,40 @@ class Field(object):
 
 
 class HelpTextField(Field, fields.Field):
+    """
+    The help text field is just a field to show some text formatted in
+    markdown (implemented in the render widget).
+    Du to the method :meth:`Form._html_output`, we cannot override the
+    mechanism  to render the field correctly.
+
+    In deed, in the method, if help_text exists it's render under a <span>
+    balise, and the label under <label> balise.
+    We don't want something like that.
+    To avoid this, we override the label and the help_text attribut,
+    to it at None value.
+    """
 
     widget = widgets.HelpTextWidget
 
-    def __init__(self, help_text, *args, **kwargs):
-        kwargs['label'] = ''
-        kwargs['help_text'] = help_text
+    def __init__(self, text, *args, **kwargs):
+        kwargs['label'] = None
+        kwargs['help_text'] = None
+        self.text = text
         super(HelpTextField, self).__init__(*args, **kwargs)
 
-    def prepare_value(self, *args):
-        return self.help_text
+    def get_bound_field(self, form, name):
+        return boundfield.HelpTextBoundField(form, self, name)
+
+    def get_extra_formidable_kwargs(self):
+        return {'help_text': self.text}
 
 
 class TitleField(Field, fields.Field):
 
-    def prepare_value(self, *args):
-        return self.help_text
+    widget = widgets.TitleWidget
+
+    def get_bound_field(self, form, name):
+        return boundfield.TitleBoundField(form, self, name)
 
 
 class CharField(Field, fields.CharField):

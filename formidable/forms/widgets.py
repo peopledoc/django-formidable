@@ -85,3 +85,18 @@ class HelpTextWidget(FormidableWidget):
 
     def render(self, name, value, attrs=None):
         return markdown(value)
+
+
+class TitleWidget(FormidableWidget):
+
+    type_id = u'title'
+
+    def __init__(self, balise='h4', *args, **kwargs):
+        self.balise = balise
+        super(TitleWidget, self).__init__(*args, **kwargs)
+
+    def render(self, name, value, attrs=None):
+        balise = attrs.get('balise', None) or self.balise
+        return u'<{balise}>{value}<{balise}>'.format(
+            balise=balise, value=value
+        )
