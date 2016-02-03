@@ -393,7 +393,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            helptext = fields.HelpTextField(help_text=u'My Help Text')
+            helptext = fields.HelpTextField(text=u'My Help Text')
 
         initial_count = Formidable.objects.count()
         form = MyForm.to_formidable(label=u'form-with-helptex')
