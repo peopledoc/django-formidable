@@ -100,3 +100,11 @@ class TitleWidget(FormidableWidget):
         return u'<{balise}>{value}</{balise}>'.format(
             balise=balise, value=value
         )
+
+
+class SeparatorWidget(FormidableWidget):
+
+    type_id = 'separator'
+
+    def render(self, name, value, attrs=None):
+        return '<tr>'

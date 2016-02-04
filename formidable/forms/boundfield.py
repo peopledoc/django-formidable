@@ -18,9 +18,6 @@ class FormatBoundField(forms.BoundField):
         # generation
         self.label = None
 
-    def value(self):
-        return self.field.label
-
 
 class HelpTextBoundField(FormatBoundField):
 
@@ -32,3 +29,9 @@ class TitleBoundField(FormatBoundField):
 
     def value(self):
         return self.field.label
+
+
+class SeparatorBoundField(FormatBoundField):
+
+    def value(self):
+        return None

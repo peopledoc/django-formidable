@@ -66,12 +66,15 @@ class Field(object):
         return {}
 
 
-class HelpTextField(Field, fields.Field):
+class FormatField(Field, fields.Field):
     """
-    The help text field is just a field to show some text formatted in
-    markdown (implemented in the render widget).
-    Du to the method :meth:`Form._html_output`, we cannot override the
-    mechanism  to render the field correctly.
+    Format Field just here to handle display information inside the form.
+    The help_text attribut is removed automatically to handle a display.
+
+    The get_bound_field is define here (has to be implemented in daughter
+    class). Basically, the bound field is here just to retur the good
+    value to display.
+
 
     In deed, in the method, if help_text exists it's render under a <span>
     balise, and the label under <label> balise.
@@ -80,11 +83,22 @@ class HelpTextField(Field, fields.Field):
     to it at None value.
     """
 
+    def __init__(self, *args, **kwargs):
+        kwargs['help_text'] = ''
+        super(FormatField, self).__init__(*args, **kwargs)
+
+
+class HelpTextField(FormatField, fields.Field):
+    """
+    The help text field is just a field to show some text formatted in
+    markdown (implemented in the render widget).
+    Du to the method :meth:`Form._html_output`, we cannot override the
+    mechanism  to render the field correctly.
+    """
+
     widget = widgets.HelpTextWidget
 
     def __init__(self, text, *args, **kwargs):
-        kwargs['label'] = None
-        kwargs['help_text'] = None
         self.text = text
         super(HelpTextField, self).__init__(*args, **kwargs)
 
@@ -103,8 +117,31 @@ class TitleField(Field, fields.Field):
         return boundfield.TitleBoundField(form, self, name)
 
 
+class SeparatorField(FormatField, fields.Field):
+
+    widget = widgets.SeparatorWidget
+
+    def get_bound_field(self, form, name):
+        return boundfield.SeparatorBoundField(form, self, name)
+
+
 class CharField(Field, fields.CharField):
     pass
+
+
+class BooleanField(Field, fields.BooleanField):
+
+    widget = widgets.CheckboxInput
+
+
+class DateField(Field, fields.DateField):
+
+    widget = widgets.DateInput
+
+
+class IntegerField(Field, fields.IntegerField):
+
+    widget = widgets.NumberInput
 
 
 class ItemField(Field):
@@ -123,18 +160,3 @@ class ChoiceField(ItemField, fields.ChoiceField):
 class MultipleChoiceField(ItemField, fields.MultipleChoiceField):
 
     widget = widgets.SelectMultiple
-
-
-class BooleanField(Field, fields.BooleanField):
-
-    widget = widgets.CheckboxInput
-
-
-class DateField(Field, fields.DateField):
-
-    widget = widgets.DateInput
-
-
-class IntegerField(Field, fields.IntegerField):
-
-    widget = widgets.NumberInput
