@@ -276,3 +276,13 @@ class TitleFieldSerializer(FieldidableSerializer):
     class Meta(FieldidableSerializer.Meta):
         # Just to remove "help_text" attribut
         fields = list(set(BASE_FIELDS) - set(['help_text']))
+
+
+@load_serializer(field_register)
+class SeparatorFieldSerializer(FieldidableSerializer):
+
+    type_id = 'separator'
+
+    class Meta(FieldidableSerializer.Meta):
+        # Just to remove "help_text" attribut
+        fields = list(set(BASE_FIELDS) - set(['label', 'help_text']))
