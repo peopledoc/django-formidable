@@ -404,6 +404,20 @@ class TestFromDjangoForm(TestCase):
             slug=u'helptext', type_id=u'helpText', helpText='My Help Text',
         ).exists())
 
+    def test_separator(self):
+        class MyForm(FormidableForm):
+
+            sepa = fields.SeparatorField()
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label=u'form-with-separator')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        self.assertTrue(form.fields.filter(
+            slug=u'sepa', type_id=u'separator').exists()
+        )
+
     def test_title(self):
 
         class MyForm(FormidableForm):
