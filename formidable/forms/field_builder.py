@@ -104,6 +104,11 @@ class TitleFielBuilder(FieldBuilder):
     field_class = fields.TitleField
 
 
+class SeparatorBuilder(FieldBuilder):
+
+    field_class = fields.SeparatorField
+
+
 class TextFieldBuilder(FieldBuilder):
 
     widget_class = forms.TextInput
@@ -182,6 +187,7 @@ class FormFieldFactory(object):
         'number': IntegerFieldBuilder,
         'helpText': HelpTextBuilder,
         'title': TitleFielBuilder,
+        'separator': SeparatorBuilder,
     }
 
     @classmethod

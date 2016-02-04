@@ -51,6 +51,15 @@ class TestDynamicForm(TestCase):
         self.assertEquals(type(text.widget), widgets.TitleWidget)
         self.assertEquals(text.label, 'Hello')
 
+    def test_separator_field(self):
+        self.form.fields.create(slug='separator', type_id='separator')
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('separator', form.fields)
+        field = form.fields['separator']
+        self.assertEquals(type(field), fields.SeparatorField)
+        self.assertEquals(type(field.widget), widgets.SeparatorWidget)
+
     def test_paragraph_input(self):
         self.form.fields.create(
             slug=u'area-input', type_id=u'paragraph', label=u'type a msg'
