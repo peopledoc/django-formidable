@@ -317,6 +317,13 @@ class CreateSerializerTestCase(TestCase):
             'accesses': [],
         }
     ]
+    format_field_separator = [
+        {
+            'slug': 'sepa',
+            'type_id': 'separator',
+            'accesses': [],
+        }
+    ]
 
     def test_create_form(self):
         serializer = FormidableSerializer(data=self.data)
@@ -429,6 +436,18 @@ class CreateSerializerTestCase(TestCase):
         self.assertEqual(instance.fields.count(), 1)
         qs = instance.fields.filter(
             type_id='title', label='This is an Onboarding Form.'
+        )
+        self.assertTrue(qs.exists())
+
+    def test_create_sepa(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.format_field_separator
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEqual(instance.fields.count(), 1)
+        qs = instance.fields.filter(
+            type_id='separator', slug='sepa'
         )
         self.assertTrue(qs.exists())
 
