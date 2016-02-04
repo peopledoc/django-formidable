@@ -2,29 +2,33 @@
 
 from django.test import TestCase
 
-from formidable.forms import FormidableForm, fields
+from formidable.forms import BaseDynamicForm, fields
 
 
-class TestForm(FormidableForm):
+class TestForm(BaseDynamicForm):
 
     title = fields.TitleField(label=u'Onboarding Form')
     helptext = fields.HelpTextField(text='Enter your **address**')
-    address = fields.CharField()
+    sepa = fields.SeparatorField()
 
 
 class RenderingFormatField(TestCase):
 
-    def setUp(self):
-        self.form = TestForm.to_formidable(label='with-format-field')
-        self.form_class = self.form.get_django_form_class()
-
     def test_render_help_text(self):
-        form = self.form_class()
+        form = TestForm()
         text = form.as_p()
         self.assertIn('<p>Enter your <strong>address</strong></p>', text)
         self.assertNotIn('<span> Enter your **address**', text)
+        self.assertNotIn("id_title", text)
 
     def test_render_title(self):
-        form = self.form_class()
+        form = TestForm()
         text = form.as_p()
+        self.assertNotIn("id_helptext", text)
         self.assertIn('<h4>Onboarding Form</h4>', text)
+
+    def test_render_separator(self):
+        form = TestForm()
+        text = form.as_p()
+        self.assertNotIn("id_sepa", text)
+        self.assertIn('<tr>', text)
