@@ -40,7 +40,7 @@ class RenderSerializerTestCase(TestCase):
 
     def test_register(self):
         register = FieldSerializerRegister.get_instance()
-        assert len(register) == 13
+        assert len(register) == 14
 
     def test_form_field(self):
         data = self.serializer.data
@@ -138,6 +138,18 @@ class RenderSerializerTestCase(TestCase):
             self.assertIn(field, data)
         self.assertEqual(data['label'],
                          'This is on onboarding form.')
+        self.assertNotIn('help_text', data)
+
+    def test_separator_field(self):
+        self.form.fields.all().delete()
+        self.sepa = self.form.fields.create(
+            type_id='separator', slug='sepa',
+        )
+        serializer = FormidableSerializer(instance=self.form)
+        data = serializer.data['fields'][0]
+        self.assertEqual(data['type_id'], 'separator')
+        self.assertNotIn('label', data)
+        self.assertNotIn('help_text', data)
 
 
 class RenderContextSerializer(TestCase):
