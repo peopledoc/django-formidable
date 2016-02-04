@@ -5,6 +5,7 @@ from django.test import TestCase
 from freezegun import freeze_time
 
 from formidable.models import Formidable
+from formidable.forms import widgets, fields
 
 
 class TestDynamicForm(TestCase):
@@ -24,6 +25,40 @@ class TestDynamicForm(TestCase):
         self.assertEquals(text.required, False)
         self.assertEquals(type(text), forms.CharField)
         self.assertEquals(type(text.widget), forms.TextInput)
+
+    def test_help_text(self):
+        self.form.fields.create(
+            slug='my-helptext', type_id='helpText',
+            helpText=u'Here a Heptext',
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('my-helptext', form.fields)
+        text = form.fields['my-helptext']
+        self.assertEquals(type(text), fields.HelpTextField)
+        self.assertEquals(type(text.widget), widgets.HelpTextWidget)
+        self.assertEquals(text.text, 'Here a Heptext')
+
+    def test_title_field(self):
+        self.form.fields.create(
+            slug='my-title', type_id='title', label='Hello',
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('my-title', form.fields)
+        text = form.fields['my-title']
+        self.assertEquals(type(text), fields.TitleField)
+        self.assertEquals(type(text.widget), widgets.TitleWidget)
+        self.assertEquals(text.label, 'Hello')
+
+    def test_separator_field(self):
+        self.form.fields.create(slug='separator', type_id='separator')
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('separator', form.fields)
+        field = form.fields['separator']
+        self.assertEquals(type(field), fields.SeparatorField)
+        self.assertEquals(type(field.widget), widgets.SeparatorWidget)
 
     def test_paragraph_input(self):
         self.form.fields.create(

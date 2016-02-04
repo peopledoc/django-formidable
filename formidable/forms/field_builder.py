@@ -3,6 +3,7 @@
 from django import forms
 
 from formidable.validators import ValidatorFactory, DateValidatorFactory
+from formidable.forms import fields
 
 
 class SkipField(Exception):
@@ -11,8 +12,8 @@ class SkipField(Exception):
 
 class FieldBuilder(object):
 
-    widget_class = forms.TextInput
     field_class = forms.CharField
+    widget_class = None
     validator_factory_class = ValidatorFactory
 
     def __init__(self, field):
@@ -88,8 +89,29 @@ class FieldBuilder(object):
         return res
 
 
+class HelpTextBuilder(FieldBuilder):
+
+    field_class = fields.HelpTextField
+
+    def get_field_kwargs(self):
+        kwargs = super(HelpTextBuilder, self).get_field_kwargs()
+        kwargs['text'] = kwargs.pop('help_text')
+        return kwargs
+
+
+class TitleFielBuilder(FieldBuilder):
+
+    field_class = fields.TitleField
+
+
+class SeparatorBuilder(FieldBuilder):
+
+    field_class = fields.SeparatorField
+
+
 class TextFieldBuilder(FieldBuilder):
-    pass
+
+    widget_class = forms.TextInput
 
 
 class ParagraphFieldBuilder(FieldBuilder):
@@ -163,6 +185,9 @@ class FormFieldFactory(object):
         'email': EmailFieldBuilder,
         'date': DateFieldBuilder,
         'number': IntegerFieldBuilder,
+        'helpText': HelpTextBuilder,
+        'title': TitleFielBuilder,
+        'separator': SeparatorBuilder,
     }
 
     @classmethod

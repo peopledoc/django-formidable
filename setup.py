@@ -20,6 +20,7 @@ setup(
         'django<1.9',
         'djangorestframework',
         'dateutils',
+        'markdown',
     ],
     classifiers=[
         'Environment :: Web Environment',
