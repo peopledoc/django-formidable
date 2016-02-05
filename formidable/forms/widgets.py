@@ -10,10 +10,11 @@ class FormidableWidget(widgets.Widget):
     type_id = None
     multiple = False
 
-    def to_formidable(self, formidable, slug, label, help_text):
+    def to_formidable(self, formidable, slug, label, help_text, order):
         return formidable.fields.create(
             slug=slug, label=label, type_id=self.type_id,
-            helpText=help_text, multiple=self.multiple
+            helpText=help_text, multiple=self.multiple,
+            order=order
         )
 
 
@@ -29,9 +30,9 @@ class Textarea(FormidableWidget, widgets.Textarea):
 
 class ItemsWidget(FormidableWidget):
 
-    def to_formidable(self, formidable, slug, label, help_text, items):
+    def to_formidable(self, formidable, slug, label, help_text, order, items):
         field = super(ItemsWidget, self).to_formidable(
-            formidable, slug, label, help_text
+            formidable, slug, label, help_text, order
         )
         for key, value in items:
             field.items.create(key=key, value=value)

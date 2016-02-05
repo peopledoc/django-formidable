@@ -17,7 +17,7 @@ class Formidable(models.Model):
 class Fieldidable(models.Model):
 
     class Meta:
-        unique_together = (('slug', 'form'),)
+        unique_together = (('slug', 'form'), ('order', 'form'))
 
     slug = models.CharField(max_length=256)
     label = models.CharField(max_length=256)
@@ -30,6 +30,7 @@ class Fieldidable(models.Model):
     helpText = models.TextField(null=True, blank=True)
     default = models.TextField(null=True, blank=True)
     multiple = models.BooleanField(default=False)
+    order = models.IntegerField()
 
 
 class Item(models.Model):

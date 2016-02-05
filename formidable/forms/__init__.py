@@ -49,6 +49,8 @@ class FormidableForm(forms.Form):
     @classmethod
     def to_formidable(cls, label, description=u''):
         form = Formidable.objects.create(label=label, description=description)
+        order = 0
         for slug, field in cls.declared_fields.items():
-            field.to_formidable(form, slug)
+            field.to_formidable(form, order, slug)
+            order += 1
         return form

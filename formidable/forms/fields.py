@@ -14,20 +14,21 @@ class Field(object):
         self.accesses = accesses or {}
         super(Field, self).__init__(*args, **kwargs)
 
-    def to_formidable(self, form, slug):
+    def to_formidable(self, form, order, slug):
         # First thing, check accesses are correct.
         self.check_accesses()
         # Generate kwargs for create fields
         label = self.label or slug
         kwargs = {
             'formidable': form, 'slug': slug, 'label': label,
-            'help_text': self.help_text,
+            'help_text': self.help_text, 'order': order,
         }
         kwargs.update(self.get_extra_formidable_kwargs())
         widget = self.get_widget()
         field = widget.to_formidable(**kwargs)
         self.create_accesses(field)
         self.create_validators(field)
+        return field
 
     def create_accesses(self, field):
         for access, level in self.get_complete_accesses().items():
