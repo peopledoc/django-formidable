@@ -366,10 +366,10 @@ class CreateSerializerTestCase(TestCase):
         instance = serializer.save()
         self.assertEquals(instance.fields.count(), 2)
         self.assertTrue(
-            instance.fields.filter(order=0, slug='text_input')
+            instance.fields.filter(order=0, slug='text_input').exists()
         )
         self.assertTrue(
-            instance.fields.filter(order=1, slug='input-date')
+            instance.fields.filter(order=1, slug='input-date').exists()
         )
 
     def test_create_field_with_validations(self):
