@@ -31,13 +31,16 @@ class FieldListSerializer(NestedListSerializer):
         kwargs['child'] = LazyChildProxy(field_register)
         return super(FieldListSerializer, self).__init__(*args, **kwargs)
 
-    def get_update_data(self, index, data):
-        data['order'] = index
-        return data
+    def validate(self, validated_data):
+        """
+        At this point all the data has been validated. We have to inject the
+        order before the update/create method sorted the validated data
+        by id.
+        """
+        for index, data in enumerate(validated_data):
+            data['order'] = index
 
-    def get_create_data(self, index, data):
-        data['order'] = index
-        return data
+        return validated_data
 
 
 class FieldidableSerializer(serializers.ModelSerializer):
