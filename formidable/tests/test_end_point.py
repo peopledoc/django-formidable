@@ -358,6 +358,20 @@ class CreateSerializerTestCase(TestCase):
         # with default value
         self.assertEquals(field.accesses.count(), 4)
 
+    def test_create_order(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_with_validation
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        instance = serializer.save()
+        self.assertEquals(instance.fields.count(), 2)
+        self.assertTrue(
+            instance.fields.filter(order=0, slug='text_input')
+        )
+        self.assertTrue(
+            instance.fields.filter(order=1, slug='input-date')
+        )
+
     def test_create_field_with_validations(self):
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_with_validation

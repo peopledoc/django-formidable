@@ -27,17 +27,24 @@ class NestedListSerializer(ListSerializer):
         for index, data in enumerate(validated_data):
 
             data[self.parent_name] = field.id
+            final_data = self.get_update_data(index, data)
             if data[self.field_id] in created_ids:
-                self.child.create(data)
+                self.child.create(final_data)
                 ajust += 1
             else:
-                self.child.update(objects_list[index-ajust], data)
+                self.child.update(objects_list[index-ajust], final_data)
+
+    def get_update_data(self, index, data):
+        return data
 
     def create(self, field, validated_data):
 
-        for data in validated_data:
+        for index, data in enumerate(validated_data):
             data[self.parent_name] = field.id
-            self.child.create(data)
+            self.child.create(self.get_create_data(index, data))
+
+    def get_create_data(self, index, data):
+        return data
 
     def _extract_id(self, qs, validated_data):
         validated_ids = set([data[self.field_id] for data in validated_data])
