@@ -33,7 +33,7 @@ def get_dynamic_form_class(formidable, role=None):
 
     fields = {}
 
-    for field in formidable.fields.all():
+    for field in formidable.fields.order_by('order').all():
         try:
             form_field = field_builder.FormFieldFactory.produce(field, role)
         except field_builder.SkipField:
