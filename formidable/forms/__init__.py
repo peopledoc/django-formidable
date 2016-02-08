@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
+
 from django import forms
 
 from formidable.models import Formidable
@@ -31,7 +33,7 @@ class BaseDynamicForm(forms.Form):
 
 def get_dynamic_form_class(formidable, role=None):
 
-    fields = {}
+    fields = OrderedDict()
 
     for field in formidable.fields.order_by('order').all():
         try:

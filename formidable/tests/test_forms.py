@@ -18,6 +18,27 @@ class TestDynamicForm(TestCase):
             order=self.form.get_next_field_order()
         )
 
+    def test_field_order(self):
+        _1 = self.form.fields.create(slug='text', type_id='text', order=1)
+        _2 = self.form.fields.create(slug='text2', type_id='text', order=2)
+        _3 = self.form.fields.create(slug='text3', type_id='text', order=3)
+        form_class = self.form.get_django_form_class()
+        ordered_fields = ['text-input', 'text', 'text2', 'text3']
+        for index, field_name in enumerate(form_class.declared_fields.keys()):
+            self.assertEqual(ordered_fields[index], field_name)
+        _1.order = 3
+        _1.save()
+        _2.order = 1
+        _2.save()
+        _3.order = 0
+        _3.save()
+        self.text_field.order = 2
+        self.text_field.save()
+        ordered_fields = ['text3', 'text2', 'text-input', 'text']
+        form_class = self.form.get_django_form_class()
+        for index, field_name in enumerate(form_class.declared_fields.keys()):
+            self.assertEqual(ordered_fields[index], field_name)
+
     def test_text_input(self):
         form_class = self.form.get_django_form_class()
         form = form_class()
