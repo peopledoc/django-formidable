@@ -35,7 +35,7 @@ class NestedListSerializer(ListSerializer):
 
     def create(self, field, validated_data):
 
-        for index, data in enumerate(validated_data):
+        for data in validated_data:
             data[self.parent_name] = field.id
             self.child.create(data)
 
