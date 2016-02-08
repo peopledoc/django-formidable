@@ -151,7 +151,7 @@ class RenderSerializerTestCase(TestCase):
         )
         serializer = FormidableSerializer(instance=self.form)
         data = serializer.data['fields'][0]
-        for field in RENDER_BASE_FIELDS:
+        for field in set(RENDER_BASE_FIELDS) - set(['help_text']):
             self.assertIn(field, data)
         self.assertEqual(data['label'],
                          'This is on onboarding form.')
