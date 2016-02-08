@@ -554,6 +554,28 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.label, u'edited form')
 
+    def test_order_on_update(self):
+        self.form.fields.create(type_id='text', slug='already-there', order=0)
+        fields_to_update = self.fields + self.fields_items + [
+            {'type_id': 'text', 'slug': 'already-there', 'label': 'tutu',
+                'accesses': []},
+        ]
+        data = copy.deepcopy(self.data)
+        data['fields'] = fields_to_update
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEquals(form.pk, self.form.pk)
+        self.assertTrue(
+            self.form.fields.filter(slug='text-slug', order=0).exists()
+        )
+        self.assertTrue(
+            self.form.fields.filter(slug='dropdown-input', order=1).exists()
+        )
+        self.assertTrue(
+            self.form.fields.filter(slug='already-there', order=2).exists()
+        )
+
     def test_create_field_on_update(self):
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields
