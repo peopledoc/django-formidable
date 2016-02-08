@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
+
 from django import forms
 
 from formidable.models import Formidable
@@ -31,9 +33,9 @@ class BaseDynamicForm(forms.Form):
 
 def get_dynamic_form_class(formidable, role=None):
 
-    fields = {}
+    fields = OrderedDict()
 
-    for field in formidable.fields.all():
+    for field in formidable.fields.order_by('order').all():
         try:
             form_field = field_builder.FormFieldFactory.produce(field, role)
         except field_builder.SkipField:
@@ -49,6 +51,8 @@ class FormidableForm(forms.Form):
     @classmethod
     def to_formidable(cls, label, description=u''):
         form = Formidable.objects.create(label=label, description=description)
+        order = 0
         for slug, field in cls.declared_fields.items():
-            field.to_formidable(form, slug)
+            field.to_formidable(form, order, slug)
+            order += 1
         return form

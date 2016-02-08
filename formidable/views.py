@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from django.db.models import Prefetch
+
 from rest_framework.views import APIView
 from rest_framework.generics import (
     RetrieveUpdateAPIView, CreateAPIView,
@@ -7,7 +9,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 
-from formidable.models import Formidable
+from formidable.models import Formidable, Fieldidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.accesses import get_accesses, get_context
@@ -20,7 +22,8 @@ class FormidableDetail(RetrieveUpdateAPIView):
 
     def get_queryset(self):
         qs = super(FormidableDetail, self).get_queryset()
-        return qs.prefetch_related('fields')
+        field_qs = Fieldidable.objects.order_by('order')
+        return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
 
 class FormidableCreate(CreateAPIView):
@@ -31,6 +34,11 @@ class FormidableCreate(CreateAPIView):
 class ContextFormDetail(RetrieveAPIView):
     queryset = Formidable.objects.all()
     serializer_class = ContextFormSerializer
+
+    def get_queryset(self):
+        qs = super(ContextFormDetail, self).get_queryset()
+        field_qs = Fieldidable.objects.order_by('order')
+        return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
     def get_serializer_context(self):
         context = super(ContextFormDetail, self).get_serializer_context()

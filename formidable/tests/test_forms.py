@@ -14,8 +14,30 @@ class TestDynamicForm(TestCase):
         self.form = Formidable.objects.create(label=u'test',
                                               description=u'desc')
         self.text_field = self.form.fields.create(
-            slug=u'text-input', type_id=u'text', label=u'mytext'
+            slug=u'text-input', type_id=u'text', label=u'mytext',
+            order=self.form.get_next_field_order()
         )
+
+    def test_field_order(self):
+        _1 = self.form.fields.create(slug='text', type_id='text', order=1)
+        _2 = self.form.fields.create(slug='text2', type_id='text', order=2)
+        _3 = self.form.fields.create(slug='text3', type_id='text', order=3)
+        form_class = self.form.get_django_form_class()
+        ordered_fields = ['text-input', 'text', 'text2', 'text3']
+        for index, field_name in enumerate(form_class.declared_fields.keys()):
+            self.assertEqual(ordered_fields[index], field_name)
+        _1.order = 3
+        _1.save()
+        _2.order = 1
+        _2.save()
+        _3.order = 0
+        _3.save()
+        self.text_field.order = 2
+        self.text_field.save()
+        ordered_fields = ['text3', 'text2', 'text-input', 'text']
+        form_class = self.form.get_django_form_class()
+        for index, field_name in enumerate(form_class.declared_fields.keys()):
+            self.assertEqual(ordered_fields[index], field_name)
 
     def test_text_input(self):
         form_class = self.form.get_django_form_class()
@@ -30,6 +52,7 @@ class TestDynamicForm(TestCase):
         self.form.fields.create(
             slug='my-helptext', type_id='helpText',
             helpText=u'Here a Heptext',
+            order=self.form.get_next_field_order()
         )
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -42,6 +65,7 @@ class TestDynamicForm(TestCase):
     def test_title_field(self):
         self.form.fields.create(
             slug='my-title', type_id='title', label='Hello',
+            order=self.form.get_next_field_order()
         )
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -52,7 +76,10 @@ class TestDynamicForm(TestCase):
         self.assertEquals(text.label, 'Hello')
 
     def test_separator_field(self):
-        self.form.fields.create(slug='separator', type_id='separator')
+        self.form.fields.create(
+            slug='separator', type_id='separator',
+            order=self.form.get_next_field_order()
+        )
         form_class = self.form.get_django_form_class()
         form = form_class()
         self.assertIn('separator', form.fields)
@@ -62,7 +89,8 @@ class TestDynamicForm(TestCase):
 
     def test_paragraph_input(self):
         self.form.fields.create(
-            slug=u'area-input', type_id=u'paragraph', label=u'type a msg'
+            slug=u'area-input', type_id=u'paragraph', label=u'type a msg',
+            order=self.form.get_next_field_order()
         )
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -74,7 +102,8 @@ class TestDynamicForm(TestCase):
 
     def test_dropdown_input(self):
         drop = self.form.fields.create(
-            slug=u'weapons', type_id=u'dropdown', label=u'chose you weapon'
+            slug=u'weapons', type_id=u'dropdown', label=u'chose you weapon',
+            order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
             drop.items.create(key=key, value=key)
@@ -91,7 +120,8 @@ class TestDynamicForm(TestCase):
     def test_dropdown_input_multiple(self):
         drop = self.form.fields.create(
             slug=u'multiple-weapons', type_id=u'dropdown',
-            label=u'chose you weapon', multiple=True
+            label=u'chose you weapon', multiple=True,
+            order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
             drop.items.create(key=key, value=key)
@@ -108,7 +138,8 @@ class TestDynamicForm(TestCase):
     def test_radio_input(self):
         field = self.form.fields.create(
             slug=u'input-radio', type_id=u'radios',
-            label=u'chose you weapon'
+            label=u'chose you weapon',
+            order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
             field.items.create(key=key, value=key)
@@ -125,6 +156,7 @@ class TestDynamicForm(TestCase):
     def test_email_field(self):
         self.form.fields.create(
             slug=u'input-email', type_id=u'email', label=u'your email',
+            order=self.form.get_next_field_order()
         )
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -135,6 +167,7 @@ class TestDynamicForm(TestCase):
     def test_date_field(self):
         self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -145,6 +178,7 @@ class TestDynamicForm(TestCase):
     def test_number_field(self):
         self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -188,7 +222,8 @@ class TestFormValidation(TestCase):
         self.form = Formidable.objects.create(label=u'test',
                                               description=u'desc')
         self.text_field = self.form.fields.create(
-            slug=u'text-input', type_id=u'text', label=u'mytext'
+            slug=u'text-input', type_id=u'text', label=u'mytext',
+            order=self.form.get_next_field_order()
         )
 
     def test_min_length_ko(self):
@@ -241,6 +276,7 @@ class TestFormValidation(TestCase):
     def test_gt_ok(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'GT', value='21')
         form_class = self.form.get_django_form_class()
@@ -250,6 +286,7 @@ class TestFormValidation(TestCase):
     def test_gt_ko(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'GT', value='21')
         form_class = self.form.get_django_form_class()
@@ -261,6 +298,7 @@ class TestFormValidation(TestCase):
     def test_gte_ok(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'GTE', value='21')
         form_class = self.form.get_django_form_class()
@@ -272,6 +310,7 @@ class TestFormValidation(TestCase):
     def test_gte_ko(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'GTE', value='21')
         form_class = self.form.get_django_form_class()
@@ -281,6 +320,7 @@ class TestFormValidation(TestCase):
     def test_lte_ok(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'LTE', value='21')
         form_class = self.form.get_django_form_class()
@@ -292,6 +332,7 @@ class TestFormValidation(TestCase):
     def test_lte_ko(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'LT', value='21')
         form_class = self.form.get_django_form_class()
@@ -301,6 +342,7 @@ class TestFormValidation(TestCase):
     def test_lt_ok(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'LT', value='42')
         form_class = self.form.get_django_form_class()
@@ -310,6 +352,7 @@ class TestFormValidation(TestCase):
     def test_lt_ko(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'LT', value='21')
         form_class = self.form.get_django_form_class()
@@ -321,6 +364,7 @@ class TestFormValidation(TestCase):
     def test_eq_integer_ok(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'EQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -330,6 +374,7 @@ class TestFormValidation(TestCase):
     def test_eq_integer_ko(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'EQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -339,6 +384,7 @@ class TestFormValidation(TestCase):
     def test_neq_integer_ok(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'NEQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -348,6 +394,7 @@ class TestFormValidation(TestCase):
     def test_neq_integer_ko(self):
         number = self.form.fields.create(
             slug=u'input-number', type_id=u'number', label=u'your number',
+            order=self.form.get_next_field_order()
         )
         number.validations.create(type=u'NEQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -357,6 +404,7 @@ class TestFormValidation(TestCase):
     def test_eq_str_ok(self):
         field = self.form.fields.create(
             slug=u'input-text', type_id=u'text', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'EQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -366,6 +414,7 @@ class TestFormValidation(TestCase):
     def test_eq_str_ko(self):
         text = self.form.fields.create(
             slug=u'input-text', type_id=u'text', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         text.validations.create(type=u'EQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -375,6 +424,7 @@ class TestFormValidation(TestCase):
     def test_neq_str_ok(self):
         text = self.form.fields.create(
             slug=u'input-text', type_id=u'text', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         text.validations.create(type=u'NEQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -384,6 +434,7 @@ class TestFormValidation(TestCase):
     def test_neq_str_ko(self):
         text = self.form.fields.create(
             slug=u'input-text', type_id=u'text', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         text.validations.create(type=u'NEQ', value='21')
         form_class = self.form.get_django_form_class()
@@ -393,6 +444,7 @@ class TestFormValidation(TestCase):
     def test_eq_date_ok(self):
         field = self.form.fields.create(
             slug=u'input-text', type_id=u'date', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'EQ', value='12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -402,6 +454,7 @@ class TestFormValidation(TestCase):
     def test_eq_date_ko(self):
         text = self.form.fields.create(
             slug=u'input-text', type_id=u'date', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         text.validations.create(type=u'EQ', value='12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -411,6 +464,7 @@ class TestFormValidation(TestCase):
     def test_neq_date_ok(self):
         text = self.form.fields.create(
             slug=u'input-text', type_id=u'date', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         text.validations.create(type=u'NEQ', value='12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -420,6 +474,7 @@ class TestFormValidation(TestCase):
     def test_neq_date_ko(self):
         text = self.form.fields.create(
             slug=u'input-text', type_id=u'date', label=u'your text',
+            order=self.form.get_next_field_order()
         )
         text.validations.create(type=u'NEQ', value='12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -429,6 +484,7 @@ class TestFormValidation(TestCase):
     def test_lt_date_ok(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'LT', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -438,6 +494,7 @@ class TestFormValidation(TestCase):
     def test_lt_date_ko(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'LT', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -449,6 +506,7 @@ class TestFormValidation(TestCase):
     def test_lte_date_ok(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'LTE', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -460,6 +518,7 @@ class TestFormValidation(TestCase):
     def test_lte_date_ko(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'LT', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -469,6 +528,7 @@ class TestFormValidation(TestCase):
     def test_gt_date_ok(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'GT', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -478,6 +538,7 @@ class TestFormValidation(TestCase):
     def test_gt_date_ko(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'GT', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -489,6 +550,7 @@ class TestFormValidation(TestCase):
     def test_gte_date_ok(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'GTE', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -500,6 +562,7 @@ class TestFormValidation(TestCase):
     def test_gte_date_ko(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'GT', value=u'12/21/2012')
         form_class = self.form.get_django_form_class()
@@ -510,6 +573,7 @@ class TestFormValidation(TestCase):
     def test_date_is_in_the_future_ok(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'IS_DATE_IN_THE_FUTURE',
                                  value=u'false')
@@ -527,6 +591,7 @@ class TestFormValidation(TestCase):
     def test_date_is_in_the_future_ko(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'IS_DATE_IN_THE_FUTURE',
                                  value=u'false')
@@ -544,6 +609,7 @@ class TestFormValidation(TestCase):
     def test_is_age_above_ok(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'IS_AGE_ABOVE',
                                  value=u'20')
@@ -557,6 +623,7 @@ class TestFormValidation(TestCase):
     def test_is_age_above_ko(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'IS_AGE_ABOVE',
                                  value=u'20')
@@ -568,6 +635,7 @@ class TestFormValidation(TestCase):
     def test_is_age_under_ko(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'IS_AGE_UNDER',
                                  value=u'20')
@@ -581,6 +649,7 @@ class TestFormValidation(TestCase):
     def test_is_age_under_ok(self):
         field = self.form.fields.create(
             slug=u'input-date', type_id=u'date', label=u'your date',
+            order=self.form.get_next_field_order()
         )
         field.validations.create(type=u'IS_AGE_UNDER',
                                  value=u'20')

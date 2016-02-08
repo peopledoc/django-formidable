@@ -143,6 +143,7 @@ class UpdateFormTestCase(APITestCase):
     def test_update_simple_fields(self):
         field = self.form.fields.create(
             type_id='text', slug='textslug', label=u'mytext',
+            order=self.form.get_next_field_order()
         )
         for access in get_accesses():
             field.accesses.create(access_id=access.id, level=u'EDITABLE')
@@ -158,6 +159,7 @@ class UpdateFormTestCase(APITestCase):
     def test_create_field_on_update(self):
         field = self.form.fields.create(
             type_id='text', slug='textslug', label=u'mytext',
+            order=self.form.get_next_field_order()
         )
         for access in get_accesses():
             field.accesses.create(access_id=access.id, level=u'EDITABLE')
@@ -173,8 +175,10 @@ class UpdateFormTestCase(APITestCase):
     def test_delete_field_on_update(self):
         self.form.fields.create(
             type_id='text', slug='textslug', label=u'mytext',
+            order=self.form.get_next_field_order()
         )
         self.form.fields.create(
+            order=self.form.get_next_field_order(),
             type_id='text', slug='delete-slug', label='text'
         )
 

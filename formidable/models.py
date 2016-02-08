@@ -13,11 +13,19 @@ class Formidable(models.Model):
         from formidable.forms import get_dynamic_form_class
         return get_dynamic_form_class(self, role)
 
+    def get_next_field_order(self):
+        """
+        Get the next order to set on the field to arrive.
+        Try to avoid use this method for performance reason.
+        """
+        agg = self.fields.aggregate(models.Max('order'))
+        return agg['order__max'] + 1 if agg['order__max'] is not None else 0
+
 
 class Fieldidable(models.Model):
 
     class Meta:
-        unique_together = (('slug', 'form'),)
+        unique_together = (('slug', 'form'))
 
     slug = models.CharField(max_length=256)
     label = models.CharField(max_length=256)
@@ -30,6 +38,7 @@ class Fieldidable(models.Model):
     helpText = models.TextField(null=True, blank=True)
     default = models.TextField(null=True, blank=True)
     multiple = models.BooleanField(default=False)
+    order = models.IntegerField()
 
 
 class Item(models.Model):

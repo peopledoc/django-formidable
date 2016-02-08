@@ -15,7 +15,7 @@ from formidable.serializers.list import NestedListSerializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'helpText', 'default',
-    'accesses', 'validations',
+    'accesses', 'validations', 'order'
 )
 
 
@@ -31,6 +31,17 @@ class FieldListSerializer(NestedListSerializer):
         kwargs['child'] = LazyChildProxy(field_register)
         return super(FieldListSerializer, self).__init__(*args, **kwargs)
 
+    def validate(self, validated_data):
+        """
+        At this point all the data has been validated. We have to inject the
+        order before the update/create method sorted the validated data
+        by id.
+        """
+        for index, data in enumerate(validated_data):
+            data['order'] = index
+
+        return validated_data
+
 
 class FieldidableSerializer(serializers.ModelSerializer):
 
@@ -39,6 +50,10 @@ class FieldidableSerializer(serializers.ModelSerializer):
     items = ItemSerializer(many=True)
     accesses = AccessSerializer(many=True)
     validations = ValidationSerializer(many=True, required=False)
+    # redifine here the order field just to take it at the save/update time
+    # The order is automatically calculated, if the order is define in
+    # incomming payload, it will be automatically overrided.
+    order = serializers.IntegerField(write_only=True, required=False)
 
     nested_objects = ['accesses', 'validations']
 
