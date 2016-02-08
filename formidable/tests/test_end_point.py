@@ -369,6 +369,38 @@ class CreateSerializerTestCase(TestCase):
         # with default value
         self.assertEquals(field.accesses.count(), 4)
 
+    def test_create_ordering(self):
+        # aggregate fields
+        def extend(l, elt):
+            l.extend(elt)
+            return l
+
+        fields = reduce(extend, [
+            self.fields_with_items, self.fields_without_items,
+            self.format_field_helptext, self.format_field_separator,
+            self.format_field_title
+        ], [])
+        data = copy.deepcopy(self.data)
+        data['fields'] = fields
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertTrue(form.fields.filter(
+            slug='dropdown-input', order=0
+        ).exists())
+        self.assertTrue(form.fields.filter(
+            slug='text_input', order=1
+        ).exists())
+        self.assertTrue(form.fields.filter(
+            slug='myhelptext', order=2
+        ).exists())
+        self.assertTrue(form.fields.filter(
+            slug='sepa', order=3
+        ).exists())
+        self.assertTrue(form.fields.filter(
+            slug='mytitle', order=4
+        ).exists())
+
     def test_create_order(self):
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_with_validation
