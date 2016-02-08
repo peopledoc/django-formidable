@@ -47,6 +47,17 @@ class RenderSerializerTestCase(TestCase):
         register = FieldSerializerRegister.get_instance()
         assert len(register) == 14
 
+    def test_render_in_order(self):
+        self.text_field3 = self.form.fields.create(
+            type_id='text', label='test text 2', slug='test_text_3',
+            placeholder='put your name here', helpText=u'your name',
+            order=self.form.get_next_field_order()
+        )
+        data = self.serializer.data
+        ordered_slug = ['test_text', 'test_text_2', 'test_text_3']
+        for index, field in enumerate(data['fields']):
+            self.assertEqual(ordered_slug[index], field['slug'])
+
     def test_form_field(self):
         data = self.serializer.data
         self.assertIn('label', data)
