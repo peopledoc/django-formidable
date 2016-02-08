@@ -9,6 +9,8 @@ from formidable import validators
 
 class FormTest(FormidableForm):
 
+    title = fields.TitleField(label=u'Jedi Onboarding')
+    helptext = fields.HelpTextField(text=u'youhou')
     mytext = fields.CharField(label=u'Name', accesses={
         'padawan': 'EDITABLE', 'jedi': 'REQUIRED', 'jedi-master': 'HIDDEN',
         'human': 'EDITABLE',
@@ -20,6 +22,21 @@ class FormTest(FormidableForm):
 
 
 class TestFromDjangoForm(TestCase):
+
+    def test_order_create(self):
+        form = FormTest.to_formidable(label=u'label')
+        self.assertTrue(
+            form.fields.filter(slug='title', order=0).exists()
+        )
+        self.assertTrue(
+            form.fields.filter(slug='helptext', order=1).exists()
+        )
+        self.assertTrue(
+            form.fields.filter(slug='mytext', order=2).exists()
+        )
+        self.assertTrue(
+            form.fields.filter(slug='dropdown', order=3).exists()
+        )
 
     def test_regex_validators(self):
         class MyForm(FormidableForm):
