@@ -21,12 +21,12 @@ class RenderSerializerTestCase(TestCase):
         )
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='test_text',
-            placeholder='put your name here', helpText=u'your name',
+            placeholder='put your name here', help_text=u'your name',
             order=self.form.get_next_field_order()
         )
         self.text_field2 = self.form.fields.create(
             type_id='text', label='test text 2', slug='test_text_2',
-            placeholder='put your name here', helpText=u'your name',
+            placeholder='put your name here', help_text=u'your name',
             order=self.form.get_next_field_order()
         )
         self.text_field.accesses.create(
@@ -50,7 +50,7 @@ class RenderSerializerTestCase(TestCase):
     def test_render_in_order(self):
         self.text_field3 = self.form.fields.create(
             type_id='text', label='test text 2', slug='test_text_3',
-            placeholder='put your name here', helpText=u'your name',
+            placeholder='put your name here', help_text=u'your name',
             order=self.form.get_next_field_order()
         )
         data = self.serializer.data
@@ -82,7 +82,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['type_id'], u'text')
         self.assertEquals(text_field['label'], u'test text')
         self.assertEquals(text_field['placeholder'], 'put your name here')
-        self.assertEquals(text_field['helpText'], 'your name')
+        self.assertEquals(text_field['help_text'], 'your name')
         self.assertEquals(text_field['default'], None)
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
@@ -99,7 +99,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['type_id'], u'text')
         self.assertEquals(text_field['label'], u'test text 2')
         self.assertEquals(text_field['placeholder'], 'put your name here')
-        self.assertEquals(text_field['helpText'], 'your name')
+        self.assertEquals(text_field['help_text'], 'your name')
         self.assertEquals(text_field['default'], None)
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
@@ -131,15 +131,15 @@ class RenderSerializerTestCase(TestCase):
     def test_helptext_field(self):
         self.form.fields.all().delete()
         self.help_text = self.form.fields.create(
-            type_id='helpText', slug='your help text',
-            helpText=u'Please enter your information here',
+            type_id='help_text', slug='your help text',
+            help_text=u'Please enter your information here',
             order=self.form.get_next_field_order()
         )
         serializer = FormidableSerializer(instance=self.form)
         data = serializer.data['fields'][0]
         for field in list(set(RENDER_BASE_FIELDS) - set(['label'])):
             self.assertIn(field, data)
-        self.assertEqual(data['helpText'],
+        self.assertEqual(data['help_text'],
                          'Please enter your information here')
 
     def test_title_field(self):
@@ -315,15 +315,15 @@ class CreateSerializerTestCase(TestCase):
     format_field_helptext = [
         {
             'slug': 'myhelptext',
-            'type_id': 'helpText',
-            'helpText': 'Hello',
+            'type_id': 'help_text',
+            'help_text': 'Hello',
             'accesses': [],
         }
     ]
     format_without_field_helptext = [
         {
             'slug': 'myhelptext',
-            'type_id': 'helpText',
+            'type_id': 'help_text',
             'accesses': [],
         }
     ]
@@ -482,7 +482,7 @@ class CreateSerializerTestCase(TestCase):
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
         self.assertEqual(instance.fields.count(), 1)
-        qs = instance.fields.filter(type_id='helpText', helpText='Hello')
+        qs = instance.fields.filter(type_id='help_text', help_text='Hello')
         self.assertTrue(qs.exists())
 
     def test_create_helptext_wrong(self):
@@ -616,7 +616,7 @@ class UpdateFormTestCase(TestCase):
     def test_update_fields(self):
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='text-slug',
-            placeholder='put your name here', helpText=u'your name',
+            placeholder='put your name here', help_text=u'your name',
             order=self.form.get_next_field_order()
         )
         self.text_field.accesses.create(

@@ -35,7 +35,7 @@ class Fieldidable(models.Model):
         choices=FieldSerializerRegister.get_instance().to_choices()
     )
     placeholder = models.CharField(max_length=256, null=True, blank=True)
-    helpText = models.TextField(null=True, blank=True)
+    help_text = models.TextField(null=True, blank=True)
     default = models.TextField(null=True, blank=True)
     multiple = models.BooleanField(default=False)
     order = models.IntegerField()

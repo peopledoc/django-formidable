@@ -33,7 +33,7 @@ class FieldBuilder(object):
         kwargs = {
             'required': self.get_required(),
             'label': self.get_label(),
-            'help_text': self.get_helpText(),
+            'help_text': self.get_help_text(),
             'validators': self.get_validators(),
         }
 
@@ -78,8 +78,8 @@ class FieldBuilder(object):
     def get_label(self):
         return self.field.label
 
-    def get_helpText(self):
-        return self.field.helpText
+    def get_help_text(self):
+        return self.field.help_text
 
     def get_validators(self):
         res = []
@@ -185,7 +185,7 @@ class FormFieldFactory(object):
         'email': EmailFieldBuilder,
         'date': DateFieldBuilder,
         'number': IntegerFieldBuilder,
-        'helpText': HelpTextBuilder,
+        'help_text': HelpTextBuilder,
         'title': TitleFielBuilder,
         'separator': SeparatorBuilder,
     }
