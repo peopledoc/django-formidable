@@ -20,7 +20,7 @@ form_data = {
             "slug": "textslug",
             "type_id": "text",
             "placeholder": None,
-            "helpText": None,
+            "help_text": None,
             "default": None,
             "accesses": [
                 {"access_id": "padawan", "level": "REQUIRED"},
@@ -40,7 +40,7 @@ form_data_items = {
         "slug": "dropdown_slug",
         "type_id": "dropdown",
         "placeholder": None,
-        "helpText": "Lesfrites c'est bon",
+        "help_text": "Lesfrites c'est bon",
         "default": None,
         "accesses": [
             {"access_id": "padawan", "level": "REQUIRED"},

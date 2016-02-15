@@ -14,7 +14,7 @@ from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers.list import NestedListSerializer
 
 BASE_FIELDS = (
-    'slug', 'label', 'type_id', 'placeholder', 'helpText', 'default',
+    'slug', 'label', 'type_id', 'placeholder', 'help_text', 'default',
     'accesses', 'validations', 'order'
 )
 
@@ -145,7 +145,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         list_serializer_class = ListContextFieldSerializer
         model = Fieldidable
         fields = (
-            'slug', 'label', 'type_id', 'placeholder', 'helpText', 'default',
+            'slug', 'label', 'type_id', 'placeholder', 'help_text', 'default',
             'validations', 'disabled', 'required', 'multiple', 'items'
         )
 
@@ -275,8 +275,8 @@ class NumberFieldSerializer(FieldidableSerializer):
 @load_serializer(field_register)
 class HelpTextFieldSerializer(FieldidableSerializer):
 
-    type_id = 'helpText'
-    helpText = serializers.CharField(required=True)
+    type_id = 'help_text'
+    help_text = serializers.CharField(required=True)
 
     class Meta(FieldidableSerializer.Meta):
         # Just to remove "label" attribut

@@ -418,7 +418,7 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'helptext', type_id=u'helpText', helpText='My Help Text',
+            slug=u'helptext', type_id=u'help_text', help_text='My Help Text',
         ).exists())
 
     def test_separator(self):
