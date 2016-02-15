@@ -5,7 +5,13 @@
 <div class="title">
   <h1>May the Form be with you!</h1>
 </div>
-<div id="formidable"></div>
+<form class="form-horizontal">
+  <div id="formidable"></div>
+  <div class="pull-right">
+    <button type="button" class="btn btn-default" onclick="history.back()">Cancel</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
 {% endblock %}
 
 {% block extra_js %}
@@ -13,6 +19,14 @@
 <script src="{% static "assets/formidable.js" %}"></script>
 <script>
   $(document).ready(function() {
+    Formidable.on('form-is-valid', function(status) {
+      console.log('Form is valid: ' + status);
+      if (status) {
+        $('form button[type=submit').removeAttr('disabled');
+      } else {
+        $('form button[type=submit').attr('disabled', 'disabled');
+      }
+    });
     Formidable.start({
       formID: {{ object.pk }}
     });
