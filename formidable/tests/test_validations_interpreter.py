@@ -18,36 +18,34 @@ class TestInterpreter(TestCase):
         super(TestCase, self).setUp()
         self.form = TestForm(data={'name': 'Obiwan'})
         self.assertTrue(self.form.is_valid())
-        self.cleaned_data = self.form.cleaned_data
+        self.interpreter = Interpreter(self.form.cleaned_data)
 
     def test_bool(self):
         ast = {
             'node': 'boolean',
             'value': 'True',
         }
-        self.assertTrue(Interpreter(self.cleaned_data)(ast))
+        self.assertTrue(self.interpreter(ast))
         ast['value'] = 'false'
-        self.assertFalse(Interpreter(self.cleaned_data)(ast))
+        self.assertFalse(self.interpreter(ast))
 
     def test_int(self):
         ast = {
             'node': 'integer',
             'value': '21',
         }
-        self.assertEquals(Interpreter(self.cleaned_data)(ast), 21)
+        self.assertEquals(self.interpreter(ast), 21)
 
     def test_string(self):
         ast = {
             'node': 'string',
             'value': 'Intërnasì©lÍzation',
         }
-        interpreter = Interpreter(self.cleaned_data)
-        self.assertEquals(interpreter(ast), 'Intërnasì©lÍzation')
+        self.assertEquals(self.interpreter(ast), 'Intërnasì©lÍzation')
 
     def test_access_field(self):
         ast = {
             'field_id': 'name',
             'node': 'field'
         }
-        interpreter = Interpreter(self.cleaned_data)
-        self.assertEquals(interpreter(ast), 'Obiwan')
+        self.assertEquals(self.interpreter(ast), 'Obiwan')
