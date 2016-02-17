@@ -50,8 +50,8 @@ class TestDynamicForm(TestCase):
 
     def test_help_text(self):
         self.form.fields.create(
-            slug='my-helptext', type_id='helpText',
-            helpText=u'Here a Heptext',
+            slug='my-helptext', type_id='help_text',
+            help_text=u'Here a Heptext',
             order=self.form.get_next_field_order()
         )
         form_class = self.form.get_django_form_class()

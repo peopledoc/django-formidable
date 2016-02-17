@@ -13,7 +13,7 @@ class FormidableWidget(widgets.Widget):
     def to_formidable(self, formidable, slug, label, help_text, order):
         return formidable.fields.create(
             slug=slug, label=label, type_id=self.type_id,
-            helpText=help_text, multiple=self.multiple,
+            help_text=help_text, multiple=self.multiple,
             order=order
         )
 
@@ -82,7 +82,7 @@ class NumberInput(FormidableWidget, widgets.NumberInput):
 
 class HelpTextWidget(FormidableWidget):
 
-    type_id = u'helpText'
+    type_id = u'help_text'
 
     def render(self, name, value, attrs=None):
         return markdown(value)
