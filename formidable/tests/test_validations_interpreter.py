@@ -49,3 +49,34 @@ class TestInterpreter(TestCase):
             'node': 'field'
         }
         self.assertEquals(self.interpreter(ast), 'Obiwan')
+
+    def test_simple_function(self):
+        ast = {
+            'node': 'function',
+            'function': 'is_empty',
+            'params': [{
+                'node': 'string',
+                'value': ''
+            }]
+        }
+        self.assertTrue(self.interpreter(ast))
+        ast = {
+            'node': 'function',
+            'function': 'is_empty',
+            'params': [{
+                'node': 'string',
+                'value': 'Tutu'
+            }]
+        }
+        self.assertFalse(self.interpreter(ast))
+
+    def test_function_with_field(self):
+        ast = {
+            'node': 'function',
+            'function': 'is_empty',
+            'params': [{
+                'node': 'field',
+                'field_id': 'name'
+            }]
+        }
+        self.assertFalse(self.interpreter(ast))
