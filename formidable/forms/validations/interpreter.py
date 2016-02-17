@@ -2,6 +2,11 @@
 
 from six import with_metaclass
 
+from formidable.forms.validations.functions import FunctionRegister
+
+
+func_register = FunctionRegister.get_instance()
+
 
 class Routeur(dict):
 
@@ -48,6 +53,17 @@ class Interpreter(with_metaclass(InterpreterMetaClass)):
         subinterpreter_klass = self.routeur.route(ast)
         subinterpreter = subinterpreter_klass(self.form_data)
         return subinterpreter(ast)
+
+
+class FunctionInterpreter(Interpreter):
+
+    node = 'function'
+
+    def __call__(self, ast):
+        args_list = [self.route(node) for node in ast['params']]
+        function_name = ast['function']
+        function = func_register[function_name]()
+        return function(*args_list)
 
 
 class BooleanIntepreter(Interpreter):
