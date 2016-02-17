@@ -9,7 +9,7 @@ from formidable.forms.validations.interpreter import Interpreter
 
 class TestForm(forms.Form):
 
-    name = forms.CharField()
+    name = forms.CharField(required=False)
 
 
 class TestInterpreter(TestCase):
@@ -80,3 +80,7 @@ class TestInterpreter(TestCase):
             }]
         }
         self.assertFalse(self.interpreter(ast))
+        form = TestForm(data={'name': ''})
+        self.assertTrue(form.is_valid())
+        interpreter = Interpreter(form.cleaned_data)
+        self.assertTrue(interpreter(ast))
