@@ -46,7 +46,7 @@ class ValidationFunctionTest(TestCase):
     def test_eq(self):
         func = functions.Eq()
         self.assertTrue(func(12, 12))
-        self.assertTrue(func(12, 12, functions.Add()(6, 6)))
+        self.assertFalse(func(12, 10))
 
     def test_not(self):
         func = functions.Not()
