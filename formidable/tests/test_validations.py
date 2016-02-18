@@ -33,6 +33,11 @@ class ValidationFunctionTest(TestCase):
         self.assertEquals(func(11, 21), -10)
         self.assertEquals(func(0, 0), 0)
 
+    def test_mult(self):
+        func = functions.Mult()
+        self.assertEquals(func(6, 7), 42)
+        self.assertEquals(func(0, 0), 0)
+
 
 class TestForm(forms.Form):
 
