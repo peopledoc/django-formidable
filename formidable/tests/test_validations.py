@@ -38,6 +38,21 @@ class ValidationFunctionTest(TestCase):
         self.assertEquals(func(6, 7), 42)
         self.assertEquals(func(0, 0), 0)
 
+    def test_div(self):
+        func = functions.Div()
+        self.assertEquals(func(42, 7), 6)
+        self.assertRaises(ZeroDivisionError, func, 42, 0)
+
+    def test_eq(self):
+        func = functions.Eq()
+        self.assertTrue(func(12, 12))
+        self.assertTrue(func(12, 12, functions.Add()(6, 6)))
+
+    def test_not(self):
+        func = functions.Not()
+        self.assertTrue(func(False))
+        self.assertFalse(func(True))
+
 
 class TestForm(forms.Form):
 
