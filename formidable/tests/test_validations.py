@@ -81,13 +81,17 @@ class ValidationFunctionTest(TestCase):
 class TestForm(forms.Form):
 
     name = forms.CharField(required=False)
+    has_children = forms.BooleanField(required=False)
+    number_children = forms.IntegerField(required=False)
 
 
 class TestInterpreter(TestCase):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        self.form = TestForm(data={'name': 'Obiwan'})
+        self.form = TestForm(data={
+            'name': 'Anakin', 'has_children': True, 'number_children': 2
+        })
         self.assertTrue(self.form.is_valid())
         self.interpreter = Interpreter(self.form.cleaned_data)
 
@@ -119,7 +123,7 @@ class TestInterpreter(TestCase):
             'field_id': 'name',
             'node': 'field'
         }
-        self.assertEquals(self.interpreter(ast), 'Obiwan')
+        self.assertEquals(self.interpreter(ast), 'Anakin')
 
     def test_simple_function(self):
         ast = {
