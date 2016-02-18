@@ -155,3 +155,22 @@ class TestInterpreter(TestCase):
         self.assertTrue(form.is_valid())
         interpreter = Interpreter(form.cleaned_data)
         self.assertTrue(interpreter(ast))
+
+    def test_comparison(self):
+        ast = {
+            'node': 'comparison',
+            'comparison': 'eq',
+            'params': [{
+                'node': 'boolean',
+                'value': 'False'
+            }, {
+                'node': 'function',
+                'function': 'is_empty',
+                'params': [{
+                    'node': 'field',
+                    'field_id': 'name'
+                }]
+            }]
+        }
+
+        self.assertTrue(self.interpreter(ast))
