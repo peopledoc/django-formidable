@@ -1,10 +1,31 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 
 from django.test import TestCase
 from django import forms
 
+from formidable.forms.validations import functions
 from formidable.forms.validations.interpreter import Interpreter
+
+
+class ValidationFunctionTest(TestCase):
+
+    def test_is_empty(self):
+        func = functions.IsEmpty()
+        self.assertTrue(func(None))
+        self.assertTrue(func(''))
+        self.assertTrue(func(False))
+        self.assertTrue(func(0))
+        self.assertTrue(func(""))
+        self.assertFalse(func("tutu"))
+        self.assertFalse(func(True))
+        self.assertFalse(func(1))
+
+    def test_add(self):
+        func = functions.Add()
+        self.assertEquals(func(21, 21), 42)
+        self.assertEquals(func(10, 11), 21)
 
 
 class TestForm(forms.Form):
