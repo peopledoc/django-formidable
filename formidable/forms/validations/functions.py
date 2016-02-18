@@ -61,9 +61,64 @@ class Mult(Function):
 class Div(Function):
 
     class Meta:
-        name = ''
+        name = 'div'
 
     def __call__(self, x, y):
         if y == 0:
             raise ZeroDivisionError()
         return x / y
+
+
+class Not(Function):
+
+    class Meta:
+        name = 'not'
+
+    def __call__(self, x):
+        return not(x)
+
+
+class Eq(Function):
+
+    class Meta:
+        name = 'eq'
+
+    def __call__(self, *args):
+        return reduce(lambda x, y: x and y, args)
+
+
+class Gt(Function):
+
+    class Meta:
+        name = 'gt'
+
+    def __call__(self, x, y):
+        return x > y
+
+
+class Gte(Function):
+
+    class Meta:
+        name = 'gte'
+
+    def __call__(self, x, y):
+        return x >= y
+
+
+class Lt(Function):
+
+    class Meta:
+        name = 'lt'
+
+    def __call__(self, x, y):
+        return x < y
+
+
+class Lte(Function):
+
+    class Meta:
+        name = 'lte'
+
+    def __call__(self, x, y):
+
+        return x <= y
