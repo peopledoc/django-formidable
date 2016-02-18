@@ -53,6 +53,30 @@ class ValidationFunctionTest(TestCase):
         self.assertTrue(func(False))
         self.assertFalse(func(True))
 
+    def test_gt(self):
+        func = functions.Gt()
+        self.assertTrue(func(7, 5))
+        self.assertFalse(func(5, 7))
+        self.assertFalse(func(5, 5))
+
+    def test_gte(self):
+        func = functions.Gte()
+        self.assertTrue(func(7, 5))
+        self.assertFalse(func(5, 7))
+        self.assertTrue(func(5, 5))
+
+    def test_lt(self):
+        func = functions.Lt()
+        self.assertFalse(func(7, 5))
+        self.assertTrue(func(5, 7))
+        self.assertFalse(func(5, 5))
+
+    def test_lte(self):
+        func = functions.Lte()
+        self.assertFalse(func(7, 5))
+        self.assertTrue(func(5, 7))
+        self.assertTrue(func(5, 5))
+
 
 class TestForm(forms.Form):
 
