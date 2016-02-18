@@ -32,6 +32,8 @@ class InterpreterMetaClass(type):
 
 
 class Interpreter(with_metaclass(InterpreterMetaClass)):
+    """
+    """
 
     node = None
 
@@ -43,9 +45,24 @@ class Interpreter(with_metaclass(InterpreterMetaClass)):
         return self.route(ast)
 
     def route(self, ast):
+        """
+        Look at the substree ``ast`` and interpret it with the rigth
+        node visitor.
+        """
         subinterpreter_klass = self.routeur.route(ast)
         subinterpreter = subinterpreter_klass(self.form_data)
         return subinterpreter(ast)
+
+
+class AndBoolInterpreter(Interpreter):
+
+    node = 'and_bool'
+
+    def __call__(self, ast):
+        lhs = self.route(ast['lhs'])
+        rhs = self.route(ast['rhs'])
+
+        return lhs and rhs
 
 
 class ComparisonInterpreter(Interpreter):
