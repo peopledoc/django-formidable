@@ -27,6 +27,12 @@ class ValidationFunctionTest(TestCase):
         self.assertEquals(func(21, 21), 42)
         self.assertEquals(func(10, 11), 21)
 
+    def test_sub(self):
+        func = functions.Sub()
+        self.assertEquals(func(21, 11), 10)
+        self.assertEquals(func(11, 21), -10)
+        self.assertEquals(func(0, 0), 0)
+
 
 class TestForm(forms.Form):
 
