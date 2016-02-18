@@ -23,11 +23,11 @@ class InterpreterMetaClass(type):
     def __new__(cls, name, bases, attrs):
 
         klass = super(InterpreterMetaClass, cls).__new__(
-                cls, name, bases, attrs
-                )
+            cls, name, bases, attrs
+        )
         mapper = Routeur.get_instance()
         if klass.node:
-            mapper[klass.node] = klass
+            mapper.add(klass)
         return klass
 
 
@@ -46,6 +46,17 @@ class Interpreter(with_metaclass(InterpreterMetaClass)):
         subinterpreter_klass = self.routeur.route(ast)
         subinterpreter = subinterpreter_klass(self.form_data)
         return subinterpreter(ast)
+
+
+class ComparisonInterpreter(Interpreter):
+
+    node = 'comparison'
+
+    def __call__(self, ast):
+        function_list = [self.route(node) for node in ast['params']]
+        function_name = ast['comparison']
+        comparison = func_register[function_name]()
+        return comparison(*function_list)
 
 
 class FunctionInterpreter(Interpreter):
