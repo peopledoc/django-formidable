@@ -2,21 +2,14 @@
 
 from six import with_metaclass
 
+from formidable.utils import singleton
 from formidable.forms.validations.functions import FunctionRegister
 
 
 func_register = FunctionRegister.get_instance()
 
 
-class Routeur(dict):
-
-    _instance = None
-
-    @classmethod
-    def get_instance(cls):
-        if not cls._instance:
-            cls._instance = cls()
-        return cls._instance
+class Routeur(dict, singleton):
 
     def add(self, klass):
         self[klass.node] = klass
