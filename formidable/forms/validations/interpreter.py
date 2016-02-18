@@ -54,6 +54,29 @@ class Interpreter(with_metaclass(InterpreterMetaClass)):
         return subinterpreter(ast)
 
 
+class IfInterpreter(Interpreter):
+
+    node = 'if'
+
+    def __call__(self, ast):
+        condition = self.route(ast['bool_expr'])
+        if condition:
+            return self.route(ast['then'])
+        subast = ast.get('else')
+        return self.route(subast) if subast else True
+
+
+class OrBoolInterpreter(Interpreter):
+
+    node = 'or_bool'
+
+    def __call__(self, ast):
+
+        lhs = self.route(ast['lhs'])
+        rhs = self.route(ast['rhs'])
+        return lhs or rhs
+
+
 class AndBoolInterpreter(Interpreter):
 
     node = 'and_bool'
