@@ -190,3 +190,21 @@ class TestInterpreter(TestCase):
         self.assertTrue(self.interpreter(ast))
         ast['lhs']['value'] = 'False'
         self.assertFalse(self.interpreter(ast))
+
+    def test_or_bool(self):
+        ast = {
+            'node': 'or_bool',
+            'lhs': {
+                'node': 'boolean',
+                'value': 'True'
+            },
+            'rhs': {
+                'node': 'boolean',
+                'value': 'True'
+            }
+        }
+        self.assertTrue(self.interpreter(ast))
+        ast['lhs']['value'] = 'False'
+        self.assertTrue(self.interpreter(ast))
+        ast['rhs']['value'] = 'False'
+        self.assertFalse(self.interpreter(ast))
