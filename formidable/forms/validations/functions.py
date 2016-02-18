@@ -29,3 +29,41 @@ class IsEmpty(Function):
 
     def __call__(self, value):
         return value in [None, '', 0, False]
+
+
+class Add(Function):
+
+    class Meta:
+        name = 'add'
+
+    def __call__(self, x, y):
+        return x + y
+
+
+class Sub(Function):
+
+    class Meta:
+        name = 'sub'
+
+    def __call__(self, x, y):
+        return x - y
+
+
+class Mult(Function):
+
+    class Meta:
+        name = 'mult'
+
+    def __call__(self, x, y):
+        return x * y
+
+
+class Div(Function):
+
+    class Meta:
+        name = ''
+
+    def __call__(self, x, y):
+        if y == 0:
+            raise ZeroDivisionError()
+        return x / y
