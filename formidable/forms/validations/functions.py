@@ -83,8 +83,8 @@ class Eq(Function):
     class Meta:
         name = 'eq'
 
-    def __call__(self, *args):
-        return reduce(lambda x, y: x and y, args)
+    def __call__(self, x, y):
+        return x == y
 
 
 class Gt(Function):
