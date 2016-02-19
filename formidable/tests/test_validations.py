@@ -256,6 +256,34 @@ class TestInterpreter(TestCase):
                     }]
                 }]
             },
+            'else': {
+                'node': 'or_bool',
+                'params': [{
+                    'node': 'comparison',
+                    'comparison': 'eq',
+                    'params': [{
+                        'node': 'function',
+                        'function': 'is_empty',
+                        'params': [{
+                            'node': 'field',
+                            'field_id': 'number_children',
+                        }]
+                    }, {
+                        'node': 'boolean',
+                        'value': 'True',
+                    }]
+                }, {
+                    'node': 'comparison',
+                    'comparison': 'eq',
+                    'params': [{
+                        'node': 'field',
+                        'field_id': 'number_children'
+                    }, {
+                        'node': 'integer',
+                        'value': '0'
+                    }]
+                }]
+            },
         }
 
         self.assertTrue(self.interpreter(ast))
@@ -276,6 +304,13 @@ class TestInterpreter(TestCase):
         # Do not check children_number
         form = TestForm(data={
             'name': 'Anakin', 'has_children': False,
+        })
+        self.assertTrue(form.is_valid())
+        interpreter = Interpreter(form.cleaned_data)
+        self.assertTrue(interpreter(ast))
+        # has_children to false and number_children 0
+        form = TestForm(data={
+            'name': 'Anakin', 'has_children': False, 'number_children': 0
         })
         self.assertTrue(form.is_valid())
         interpreter = Interpreter(form.cleaned_data)
