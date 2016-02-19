@@ -91,4 +91,4 @@ class FieldNode(ASTNode):
         attributes = ('field_id',)
 
     def __init__(self, field_id):
-        self.fi:xld_id = field_id
+        self.field_id = field_id
