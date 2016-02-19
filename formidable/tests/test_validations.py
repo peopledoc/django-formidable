@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from json import dumps
 
 from django.test import TestCase
 from django import forms
 
 from formidable.forms.validations import functions
 from formidable.forms.validations.interpreter import Interpreter
+from formidable.forms.validations import ast as ast_mod
 
 
 class ValidationFunctionTest(TestCase):
@@ -315,3 +317,44 @@ class TestInterpreter(TestCase):
         self.assertTrue(form.is_valid())
         interpreter = Interpreter(form.cleaned_data)
         self.assertTrue(interpreter(ast))
+
+
+class TestAST(TestCase):
+
+    def test_field(self):
+        node = ast_mod.FieldNode('tutu')
+        res = node.to_dict()
+        self.assertEquals(res['node'], 'field')
+        self.assertEquals(res['field_id'], 'tutu')
+
+    def test_integer(self):
+        node = ast_mod.IntegerNode('12')
+        res = node.to_dict()
+        self.assertEquals(res['node'], 'integer')
+        self.assertEquals(res['value'], '12')
+
+    def test_boolean(self):
+        node = ast_mod.BooleanNode('True')
+        res = node.to_dict()
+        self.assertEquals(res['node'], 'boolean')
+        self.assertEquals(res['value'], 'True')
+
+    def test_string(self):
+        node = ast_mod.StringNode('toto')
+        res = node.to_dict()
+        self.assertEquals(res['node'], 'string')
+        self.assertEquals(res['value'], 'toto')
+
+    def test_function(self):
+        params = [ast_mod.FieldNode('foo')]
+        node = ast_mod.FunctionNode('is_empty', params=params)
+        res = node.to_dict()
+        expected = {
+            'node': 'function',
+            'function': 'is_empty',
+            'params': [{
+                'node': 'field',
+                'field_id': 'foo'
+            }]
+        }
+        self.assertEquals(dumps(res), dumps(expected))
