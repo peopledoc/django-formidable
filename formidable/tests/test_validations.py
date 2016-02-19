@@ -210,3 +210,73 @@ class TestInterpreter(TestCase):
         self.assertTrue(self.interpreter(ast))
         ast['params'][1]['value'] = 'False'
         self.assertFalse(self.interpreter(ast))
+
+    def test_if_then_else(self):
+        # if the value of the field "has_children" is True,
+        # Check the value of "number_children" exists and > 0
+        # Else, the value of "number_children" does not Exist or equals to 0
+        ast = {
+            'node': 'if',
+            'condition': {
+                'node': 'comparison',
+                'comparison': 'eq',
+                'params': [{
+                    'node': 'field',
+                    'field_id': 'has_children'
+                }, {
+                    'node': 'boolean',
+                    'value': 'True'
+                }],
+            },
+            'then': {
+                'node': 'and_bool',
+                'params': [{
+                    'node': 'comparison',
+                    'comparison': 'eq',
+                    'params': [{
+                        'node': 'function',
+                        'function': 'is_empty',
+                        'params': [{
+                            'node': 'field',
+                            'field_id': 'number_children',
+                        }]
+                    }, {
+                        'node': 'boolean',
+                        'value': 'False',
+                    }]
+                }, {
+                    'node': 'comparison',
+                    'comparison': 'gt',
+                    'params': [{
+                        'node': 'field',
+                        'field_id': 'number_children'
+                    }, {
+                        'node': 'integer',
+                        'value': '0'
+                    }]
+                }]
+            },
+        }
+
+        self.assertTrue(self.interpreter(ast))
+        # check "has_children" but do not fill "number_children"
+        form = TestForm(data={
+            'name': 'Anakin', 'has_children': True,
+        })
+        self.assertTrue(form.is_valid())
+        interpreter = Interpreter(form.cleaned_data)
+        self.assertFalse(interpreter(ast))
+        # check "has_children" but fill children_number with 0
+        form = TestForm(data={
+            'name': 'Anakin', 'has_children': True, 'number_children': 0
+        })
+        self.assertTrue(form.is_valid())
+        interpreter = Interpreter(form.cleaned_data)
+        self.assertFalse(interpreter(ast))
+        # Do not check children_number
+        form = TestForm(data={
+            'name': 'Anakin', 'has_children': False,
+        })
+        self.assertTrue(form.is_valid())
+        interpreter = Interpreter(form.cleaned_data)
+        self.assertTrue(interpreter(ast))
