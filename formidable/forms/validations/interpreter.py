@@ -71,10 +71,8 @@ class OrBoolInterpreter(Interpreter):
     node = 'or_bool'
 
     def __call__(self, ast):
-
-        lhs = self.route(ast['lhs'])
-        rhs = self.route(ast['rhs'])
-        return lhs or rhs
+        params = [self.route(node) for node in ast['params']]
+        return reduce(lambda x, y: x or y, params)
 
 
 class AndBoolInterpreter(Interpreter):
@@ -82,10 +80,23 @@ class AndBoolInterpreter(Interpreter):
     node = 'and_bool'
 
     def __call__(self, ast):
-        lhs = self.route(ast['lhs'])
-        rhs = self.route(ast['rhs'])
+        for node in ast['params']:
+            if not self.route(node):
+                return False
+        return True
 
-        return lhs and rhs
+
+class IdentityInterpreter(Interpreter):
+
+    node = 'identity'
+
+    def __call__(self, ast):
+        res = self.route(ast['or_bool'])
+        func_name = ast.get('identity')
+        if func_name:
+            func = func_register[func_name]()
+            res = func(res)
+        return res
 
 
 class ComparisonInterpreter(Interpreter):
@@ -93,10 +104,11 @@ class ComparisonInterpreter(Interpreter):
     node = 'comparison'
 
     def __call__(self, ast):
-        function_list = [self.route(node) for node in ast['params']]
         function_name = ast['comparison']
         comparison = func_register[function_name]()
-        return comparison(*function_list)
+        args = [self.route(node) for node in ast['params']]
+        # Parser garantuee the return is always Boolean
+        return comparison(*args)
 
 
 class FunctionInterpreter(Interpreter):
@@ -104,9 +116,9 @@ class FunctionInterpreter(Interpreter):
     node = 'function'
 
     def __call__(self, ast):
-        args_list = [self.route(node) for node in ast['params']]
         function_name = ast['function']
         function = func_register[function_name]()
+        args_list = [self.route(node) for node in ast['params']]
         return function(*args_list)
 
 

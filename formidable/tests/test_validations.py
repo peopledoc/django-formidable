@@ -182,33 +182,31 @@ class TestInterpreter(TestCase):
     def test_and_bool(self):
         ast = {
             'node': 'and_bool',
-            'lhs': {
+            'params': [{
                 'node': 'boolean',
                 'value': 'True',
-            },
-            'rhs': {
+            }, {
                 'node': 'boolean',
                 'value': 'True'
-            }
+            }]
         }
         self.assertTrue(self.interpreter(ast))
-        ast['lhs']['value'] = 'False'
+        ast['params'][0]['value'] = 'False'
         self.assertFalse(self.interpreter(ast))
 
     def test_or_bool(self):
         ast = {
             'node': 'or_bool',
-            'lhs': {
+            'params': [{
                 'node': 'boolean',
                 'value': 'True'
-            },
-            'rhs': {
+            }, {
                 'node': 'boolean',
                 'value': 'True'
-            }
+            }]
         }
         self.assertTrue(self.interpreter(ast))
-        ast['lhs']['value'] = 'False'
+        ast['params'][0]['value'] = 'False'
         self.assertTrue(self.interpreter(ast))
-        ast['rhs']['value'] = 'False'
+        ast['params'][1]['value'] = 'False'
         self.assertFalse(self.interpreter(ast))
