@@ -59,7 +59,7 @@ class IfInterpreter(Interpreter):
     node = 'if'
 
     def __call__(self, ast):
-        condition = self.route(ast['bool_expr'])
+        condition = self.route(ast['condition'])
         if condition:
             return self.route(ast['then'])
         subast = ast.get('else')
