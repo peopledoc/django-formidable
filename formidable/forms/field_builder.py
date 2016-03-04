@@ -157,6 +157,11 @@ class DropdownFieldBuilder(ChoiceFieldBuilder):
 
     widget_class = forms.Select
 
+    def get_field_class(self):
+        if self.field.multiple:
+            return forms.MultipleChoiceField
+        return super(DropdownFieldBuilder, self).get_fied_class()
+
     def get_widget_class(self):
         if self.field.multiple:
             return forms.SelectMultiple
