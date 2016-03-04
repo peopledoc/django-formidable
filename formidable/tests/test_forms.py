@@ -130,7 +130,7 @@ class TestDynamicForm(TestCase):
         form = form_class()
         self.assertIn('multiple-weapons', form.fields)
         dropdown = form.fields['multiple-weapons']
-        self.assertEquals(type(dropdown), forms.ChoiceField)
+        self.assertEquals(type(dropdown), forms.MultipleChoiceField)
         self.assertEquals(type(dropdown.widget), forms.SelectMultiple)
         self.assertTrue(dropdown.choices)
         self.assertEquals(len(dropdown.choices), 2)
