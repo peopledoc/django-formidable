@@ -160,7 +160,7 @@ class DropdownFieldBuilder(ChoiceFieldBuilder):
     def get_field_class(self):
         if self.field.multiple:
             return forms.MultipleChoiceField
-        return super(DropdownFieldBuilder, self).get_fied_class()
+        return super(DropdownFieldBuilder, self).get_field_class()
 
     def get_widget_class(self):
         if self.field.multiple:
