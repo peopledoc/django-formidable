@@ -41,6 +41,12 @@ class PresetValueArgument(PresetArgument):
     type_ = 'value'
 
 
+class PresetFieldOrValueArgument(PresetArgument):
+
+    def get_types(self):
+        return ['field', 'value']
+
+
 class Presets(object):
 
     slug = None

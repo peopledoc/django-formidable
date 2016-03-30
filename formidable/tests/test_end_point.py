@@ -769,3 +769,22 @@ class TestPresetsSerializerRender(TestCase):
         self.assertIn('types', data)
         self.assertEqual(len(data['types']), 1)
         self.assertIn('value', data['types'])
+
+    def test_render_preset_hybrid_arg(self):
+        field_arg = presets.PresetFieldOrValueArgument(
+            slug='test', label='test',
+            help_text='pick up the value to compare'
+        )
+        serializer = PresetsArgsSerializer(field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test')
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test')
+        self.assertIn('help_text', data)
+        self.assertEqual(data['help_text'], 'pick up the value to compare')
+        self.assertIn('types', data)
+        self.assertEqual(len(data['types']), 2)
+        self.assertIn('value', data['types'])
+        self.assertIn('field', data['types'])
