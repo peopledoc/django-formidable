@@ -8,6 +8,8 @@ from formidable.forms import FormidableForm, fields
 from formidable.serializers.forms import FormidableSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
+from formidable.serializers.presets import PresetsSerializer
+from formidable.forms.validations.presets import Presets
 
 
 RENDER_BASE_FIELDS = list(set(BASE_FIELDS) - set(['order']))
@@ -694,3 +696,27 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
         self.assertEquals(field.items.count(), 0)
+
+
+class TestPresetsSerializerRender(TestCase):
+
+    class PresetsTest(Presets):
+
+        label = 'test-label'
+        slug = 'test-slug'
+        description = 'this is a test'
+        default_message = 'thrown message when error test'
+
+    def test_render_preset_attr(self):
+        preset_instance = self.PresetsTest()
+        serializer = PresetsSerializer(preset_instance)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test-label')
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test-slug')
+        self.assertIn('description', data)
+        self.assertEqual(data['description'], 'this is a test')
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'thrown message when error test')
