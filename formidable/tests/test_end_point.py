@@ -711,6 +711,17 @@ class TestPresetsSerializerRender(TestCase):
         def __init__(self, definition=None):
             self.description = definition or self.__class__.description
 
+    class PresetsTestWithArgs(presets.Presets):
+
+        label = 'test-label-args'
+        slug = 'test-slug-args'
+        description = 'this is a test with argument'
+        default_message = 'you shouldnt see this'
+
+        class MetaParameters(object):
+            lhs = presets.PresetFieldArgument(label='lhs')
+            rhs = presets.PresetValueArgument(label='Rhs', slug='test-rhs')
+
     def test_render_preset_attr(self):
         preset_instance = self.PresetsTest()
         serializer = PresetsSerializer(preset_instance)
@@ -788,3 +799,11 @@ class TestPresetsSerializerRender(TestCase):
         self.assertEqual(len(data['types']), 2)
         self.assertIn('value', data['types'])
         self.assertIn('field', data['types'])
+
+    def test_render_preset_with_argument(self):
+        preset_instance = self.PresetsTestWithArgs()
+        serializer = PresetsSerializer(preset_instance)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('fields', data)
+        self.assertEqual(len(data['fields']), 2)
