@@ -18,6 +18,29 @@ class PresetsMetaClass(type):
         return klass
 
 
+class PresetArgument(object):
+
+    def __init__(self, slug, label, help_text='', placeholder=''):
+        self.slug = slug
+        self.label = label
+        self.help_text = help_text
+        self.placeholder = placeholder
+        self.types = self.get_types()
+
+    def get_types(self):
+        return [self.__class__.type_]
+
+
+class PresetFieldArgument(PresetArgument):
+
+    type_ = 'field'
+
+
+class PresetValueArgument(PresetArgument):
+
+    type_ = 'value'
+
+
 class Presets(object):
 
     slug = None
