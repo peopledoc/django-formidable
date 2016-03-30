@@ -20,7 +20,7 @@ class PresetsMetaClass(type):
 
 class PresetArgument(object):
 
-    def __init__(self, slug, label, help_text='', placeholder=''):
+    def __init__(self, label, slug=None, help_text='', placeholder=''):
         self.slug = slug
         self.label = label
         self.help_text = help_text
@@ -29,6 +29,13 @@ class PresetArgument(object):
 
     def get_types(self):
         return [self.__class__.type_]
+
+    def set_slug(self, slug):
+        """
+        Set a slug only if the original slug is no set before
+        """
+        if self.slug is None:
+            self.slug = slug
 
 
 class PresetFieldArgument(PresetArgument):
