@@ -73,6 +73,3 @@ class ConfirmationPresets(Presets):
     label = 'Confirmation'
     description = "Be sure two fields are exacly the same value"
     default_message = "{left} are not equals to {right}"
-
-    def __init__(self, definition):
-        self.definition = "youhou"
