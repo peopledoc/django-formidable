@@ -9,7 +9,8 @@ from formidable.serializers.forms import FormidableSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
 from formidable.serializers.presets import PresetsSerializer
-from formidable.forms.validations.presets import Presets
+from formidable.serializers.presets import PresetsArgsSerializer
+from formidable.forms.validations import presets
 
 
 RENDER_BASE_FIELDS = list(set(BASE_FIELDS) - set(['order']))
@@ -700,7 +701,7 @@ class UpdateFormTestCase(TestCase):
 
 class TestPresetsSerializerRender(TestCase):
 
-    class PresetsTest(Presets):
+    class PresetsTest(presets.Presets):
 
         label = 'test-label'
         slug = 'test-slug'
@@ -732,3 +733,39 @@ class TestPresetsSerializerRender(TestCase):
         self.assertIn('description', data)
         self.assertNotEqual(data['description'], 'oh no !')
         self.assertEqual(data['description'], 'this is a test')
+
+    def test_render_preset_field_arg(self):
+        field_arg = presets.PresetFieldArgument(
+            slug='test', label='test',
+            help_text='pick up the field to validated'
+        )
+        serializer = PresetsArgsSerializer(field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test')
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test')
+        self.assertIn('help_text', data)
+        self.assertEqual(data['help_text'], 'pick up the field to validated')
+        self.assertIn('types', data)
+        self.assertEqual(len(data['types']), 1)
+        self.assertIn('field', data['types'])
+
+    def test_render_preset_value_arg(self):
+        field_arg = presets.PresetValueArgument(
+            slug='test', label='test',
+            help_text='pick up the value to compare'
+        )
+        serializer = PresetsArgsSerializer(field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test')
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test')
+        self.assertIn('help_text', data)
+        self.assertEqual(data['help_text'], 'pick up the value to compare')
+        self.assertIn('types', data)
+        self.assertEqual(len(data['types']), 1)
+        self.assertIn('value', data['types'])
