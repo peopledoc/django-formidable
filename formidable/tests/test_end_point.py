@@ -707,6 +707,9 @@ class TestPresetsSerializerRender(TestCase):
         description = 'this is a test'
         default_message = 'thrown message when error test'
 
+        def __init__(self, definition=None):
+            self.description = definition or self.__class__.description
+
     def test_render_preset_attr(self):
         preset_instance = self.PresetsTest()
         serializer = PresetsSerializer(preset_instance)
@@ -720,3 +723,12 @@ class TestPresetsSerializerRender(TestCase):
         self.assertEqual(data['description'], 'this is a test')
         self.assertIn('message', data)
         self.assertEqual(data['message'], 'thrown message when error test')
+
+    def test_render_class_attr(self):
+        preset_instance = self.PresetsTest('oh no !')
+        serializer = PresetsSerializer(preset_instance)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('description', data)
+        self.assertNotEqual(data['description'], 'oh no !')
+        self.assertEqual(data['description'], 'this is a test')
