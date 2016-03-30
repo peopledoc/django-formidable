@@ -21,9 +21,25 @@ class SlugFieldClassAttr(ClassAttrSerializer, fields.SlugField):
     pass
 
 
+class ListField(fields.Field):
+
+    def to_representation(self, value):
+        return list(value)
+
+
+class PresetsArgsSerializer(Serializer):
+
+    slug = fields.SlugField()
+    label = fields.CharField()
+    help_text = fields.CharField(required=False)
+    placehorlder = fields.CharField(required=False)
+    types = ListField()
+
+
 class PresetsSerializer(Serializer):
 
     slug = SlugFieldClassAttr()
     label = CharFieldClassAttr()
     description = CharFieldClassAttr()
     message = CharFieldClassAttr(source='default_message')
+#    fields = PresetsArgsSerializer(many=True)
