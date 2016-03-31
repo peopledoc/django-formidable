@@ -708,6 +708,9 @@ class TestPresetsSerializerRender(TestCase):
         description = 'this is a test'
         default_message = 'thrown message when error test'
 
+        class MetaParameters:
+            pass
+
         def __init__(self, definition=None):
             self.description = definition or self.__class__.description
 
