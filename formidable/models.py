@@ -72,3 +72,17 @@ class Validationidable(models.Model):
     value = models.CharField(max_length=256)
     type = models.CharField(max_length=256)
     message = models.TextField(blank=True, null=True)
+
+
+class Preset(models.Model):
+    form = models.ForeignKey(Formidable, related_name='presets')
+    slug = models.CharField(max_length=128)
+    message = models.TextField()
+
+
+class PresetArg(models.Model):
+    preset = models.ForeignKey(Preset, related_name='arguments')
+    value = models.CharField(max_length=128)
+    type = models.CharField(max_length=64, choices=(
+        ('field', 'field'), ('value', 'value'),
+    ))
