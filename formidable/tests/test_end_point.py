@@ -315,6 +315,26 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    presets = [
+      {
+        'slug': 'confirmation',
+        'message': 'noteq!',
+        'fields': [{
+          'slug': 'left',
+          'value': 'testField2',
+          'type': 'field'
+        }, {
+          'slug': 'comparator',
+          'value': 'eq',
+          'type': 'value'
+        }, {
+          'slug': 'right',
+          'value': 'testField3',
+          'type': 'field'
+        }]
+      }
+    ]
+
     format_field_helptext = [
         {
             'slug': 'myhelptext',
@@ -353,6 +373,16 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(instance.label, u'test_create')
         self.assertEquals(instance.description, u'description create')
         self.assertEquals(instance.fields.count(), 0)
+
+    def test_create_form_with_presets(self):
+        data = copy.deepcopy(self.data)
+        data['presets'] = copy.deepcopy(self.presets)
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
+        self.assertEqual(instance.presets.count(), 1)
+        preset = instance.presets.first()
+        self.assertEqual(preset.arguments.count(), 3)
 
     def test_create_field(self):
         data = copy.deepcopy(self.data)
