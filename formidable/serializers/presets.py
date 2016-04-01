@@ -2,7 +2,12 @@
 from __future__ import unicode_literals
 
 from rest_framework.serializers import Serializer, ListSerializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework import fields
+
+from formidable.models import Preset, PresetArg
+from formidable.serializers.list import NestedListSerializer
+from formidable.serializers.common import WithNestedSerializer
 
 
 class ClassAttrSerializer(object):
@@ -52,3 +57,34 @@ class PresetsSerializer(Serializer):
     description = CharFieldClassAttr()
     message = CharFieldClassAttr(source='default_message')
     fields = PresetsArgsSerializer(many=True)
+
+
+class PresetArgListSerializer(NestedListSerializer):
+    parent_name = 'preset_id'
+
+
+class PresetArgModelSerializer(ModelSerializer):
+
+    class Meta:
+        model = PresetArg
+        list_serializer_class = PresetArgListSerializer
+        exclude = ('preset',)
+
+
+class PresetListSerializer(NestedListSerializer):
+    parent_name = 'form_id'
+
+
+class PresetModelSerializer(WithNestedSerializer):
+
+    fields = PresetArgModelSerializer(many=True)
+
+    nested_objects = ['fields']
+
+    class Meta:
+        model = Preset
+        list_serializer_class = PresetListSerializer
+        exclude = ('form',)
+
+    def create(self, validated_data):
+        return super(PresetModelSerializer, self).create(validated_data)
