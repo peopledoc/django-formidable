@@ -6,7 +6,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import fields
 
 from formidable.models import Preset, PresetArg
-from formidable.serializers.list import NestedListSerializer
+from formidable.serializers.list import NestedListSerializerDummyUpdate
 from formidable.serializers.common import WithNestedSerializer
 
 
@@ -59,7 +59,7 @@ class PresetsSerializer(Serializer):
     fields = PresetsArgsSerializer(many=True)
 
 
-class PresetArgListSerializer(NestedListSerializer):
+class PresetArgListSerializer(NestedListSerializerDummyUpdate):
     parent_name = 'preset_id'
 
 
@@ -71,7 +71,7 @@ class PresetArgModelSerializer(ModelSerializer):
         exclude = ('preset',)
 
 
-class PresetListSerializer(NestedListSerializer):
+class PresetListSerializer(NestedListSerializerDummyUpdate):
     parent_name = 'form_id'
 
 

@@ -46,3 +46,10 @@ class NestedListSerializer(ListSerializer):
         created_ids = validated_ids - db_ids
         deleted_ids = db_ids - validated_ids
         return created_ids, updated_ids, deleted_ids
+
+
+class NestedListSerializerDummyUpdate(NestedListSerializer):
+
+    def update(self, qs, parent, validated_data):
+        qs.all().delete()
+        return self.create(parent,  validated_data)
