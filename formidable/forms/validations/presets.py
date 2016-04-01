@@ -2,11 +2,18 @@
 
 from __future__ import unicode_literals
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 
 
 class PresetsRegister(dict):
-    pass
+
+    def build_rules(self, qs_presets):
+        rules = []
+        for preset in qs_presets.all():
+            klass = self[preset.slug]
+            instance = klass(preset.arguments.all())
+            rules.append(instance)
+        return rules
 
 
 presets_register = PresetsRegister()
@@ -70,6 +77,18 @@ class PresetArgument(object):
         if self.slug is None:
             self.slug = slug
 
+    def get_value(self, arguments, fields):
+
+        for arg in arguments:
+            if arg.slug == self.slug:
+                if arg.type == 'field':
+                    return fields[arg.value]
+                return arg.value
+
+        raise ImproperlyConfigured(
+            '{} is missing'.format(self.slug)
+        )
+
 
 class PresetFieldArgument(PresetArgument):
 
@@ -96,8 +115,27 @@ class Presets(object):
 
     __metaclass__ = PresetsMetaClass
 
-    class MetaParameters(object):
+    class MetaParameters:
         pass
+
+    def __init__(self, arguments, message=None):
+        self.arguments = arguments
+        self.message = message or self.default_message
+
+    def __call__(self, cleaned_data):
+        kwargs = self.collect_kwargs(cleaned_data)
+        if not self.run(**kwargs):
+            raise ValidationError(self.get_message(kwargs))
+        return True
+
+    def collect_kwargs(self, cleaned_data):
+        kwargs = {}
+        for arg in self._declared_arguments.values():
+            kwargs[arg.slug] = arg.get_value(self.arguments, cleaned_data)
+        return kwargs
+
+    def get_message(self, kwargs):
+        return self.message.format(**kwargs)
 
 
 class ConfirmationPresets(Presets):
@@ -112,3 +150,6 @@ class ConfirmationPresets(Presets):
         right = PresetFieldOrValueArgument(
             'Compare to', help_text='compare with'
         )
+
+    def run(self, left, right):
+        return left == right
