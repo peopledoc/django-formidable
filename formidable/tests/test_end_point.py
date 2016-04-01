@@ -382,7 +382,17 @@ class CreateSerializerTestCase(TestCase):
         instance = serializer.save()
         self.assertEqual(instance.presets.count(), 1)
         preset = instance.presets.first()
+        self.assertEqual(preset.slug, 'confirmation')
         self.assertEqual(preset.arguments.count(), 3)
+        self.assertTrue(
+            preset.arguments.filter(slug='left', value='testField2').exists()
+        )
+        self.assertTrue(
+            preset.arguments.filter(slug='right', value='testField3').exists()
+        )
+        self.assertTrue(
+            preset.arguments.filter(slug='comparator', value='eq').exists()
+        )
 
     def test_create_field(self):
         data = copy.deepcopy(self.data)
@@ -565,6 +575,26 @@ class UpdateFormTestCase(TestCase):
         }
     ]
 
+    presets = [
+      {
+        'slug': 'confirmation',
+        'message': 'noteq!',
+        'fields': [{
+          'slug': 'left',
+          'value': 'testFieldX',
+          'type': 'field'
+        }, {
+          'slug': 'comparator',
+          'value': 'eq',
+          'type': 'value'
+        }, {
+          'slug': 'right',
+          'value': 'testFieldY',
+          'type': 'field'
+        }]
+      }
+    ]
+
     fields_items = [{
         'type_id': 'dropdown', 'label': 'edited field',
         'slug': 'dropdown-input', 'items': {
@@ -607,6 +637,31 @@ class UpdateFormTestCase(TestCase):
         )
         self.assertTrue(
             self.form.fields.filter(slug='already-there', order=2).exists()
+        )
+
+    def test_presets_on_update(self):
+        preset = self.form.presets.create(slug='comparison', message='compare')
+        preset.arguments.create(slug='left', value='field1', type='field')
+        preset.arguments.create(slug='right', value='12', type='value')
+        preset.arguments.create(slug='operator', value='=', type='value')
+        self.assertEqual(self.form.presets.count(), 1)
+        data = copy.deepcopy(self.data)
+        data['presets'] = self.presets
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid())
+        form = serializer.save()
+        self.assertEqual(form.pk, self.form.pk)
+        self.assertEqual(form.presets.count(), 1)
+        preset = form.presets.first()
+        self.assertEqual(preset.arguments.count(), 3)
+        self.assertTrue(
+            preset.arguments.filter(slug='left', value='testFieldX').exists()
+        )
+        self.assertTrue(
+            preset.arguments.filter(slug='right', value='testFieldY').exists()
+        )
+        self.assertTrue(
+            preset.arguments.filter(slug='comparator', value='eq').exists()
         )
 
     def test_create_field_on_update(self):
