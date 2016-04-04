@@ -33,7 +33,7 @@ class BaseDynamicForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(BaseDynamicForm, self).clean()
-        for rule in self.presets:
+        for rule in self.rules:
             rule(cleaned_data)
         return cleaned_data
 
