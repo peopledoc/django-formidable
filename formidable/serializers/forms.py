@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ValidationError
 
 from rest_framework import serializers
 
@@ -20,6 +21,38 @@ class FormidableSerializer(WithNestedSerializer):
         fields = ('label', 'description', 'fields', 'id', 'presets')
         depth = 2
         extra_kwargs = {'id': {'read_only': True}}
+
+    def validate(self, data):
+        """
+        The validation step called the preset validation.
+        The preset validation take care about preset are correctly define
+        and argument defined are correct.
+        But, we cannot check if field setup in preset argument exits inside
+        the form itself. The only moment we can check, is here.
+        """
+        # calling subserializer validate method (fields, and presets)
+        data = super(FormidableSerializer, self).validate(data)
+        # we check every field define in presets are define inside the form.
+        if 'fields' in data and 'presets' in data:
+            data = self.check_presets_cohesion(data)
+        return data
+
+    def check_presets_cohesion(self, data):
+        presets = data['presets']
+        # validation already called on fields we are sur the slug is set
+        # Samet thing for argument is presets
+        fields_slug = [field['slug'] for field in data['fields']]
+
+        for preset in presets:
+            arguments = preset['fields']
+            for argument in arguments:
+                if argument['type'] == 'field' \
+                        and argument['slug'] not in fields_slug:
+                    raise ValidationError(
+                        'Preset ({}) argument is using an undefined field ({})'.format(  # noqa
+                            preset['slug'], argument['slug']
+                        )
+                    )
 
 
 class ContextFormSerializer(serializers.ModelSerializer):
