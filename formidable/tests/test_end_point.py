@@ -374,24 +374,14 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(instance.description, u'description create')
         self.assertEquals(instance.fields.count(), 0)
 
-    def test_create_form_with_presets(self):
+    def test_create_form_with_presets_invalid_argument(self):
         data = copy.deepcopy(self.data)
         data['presets'] = copy.deepcopy(self.presets)
         serializer = FormidableSerializer(data=data)
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        instance = serializer.save()
-        self.assertEqual(instance.presets.count(), 1)
-        preset = instance.presets.first()
-        self.assertEqual(preset.slug, 'confirmation')
-        self.assertEqual(preset.arguments.count(), 3)
-        self.assertTrue(
-            preset.arguments.filter(slug='left', value='testField2').exists()
-        )
-        self.assertTrue(
-            preset.arguments.filter(slug='right', value='testField3').exists()
-        )
-        self.assertTrue(
-            preset.arguments.filter(slug='comparator', value='eq').exists()
+        self.assertFalse(serializer.is_valid(), serializer.errors)
+        self.assertIn(
+            serializer.errors['non_field_errors'][0],
+            'Preset (confirmation) argument is using an undefined field (left)'
         )
 
     def test_create_field(self):
