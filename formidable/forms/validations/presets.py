@@ -7,9 +7,9 @@ from django.core.exceptions import ValidationError, ImproperlyConfigured
 
 class PresetsRegister(dict):
 
-    def build_rules(self, qs_presets):
+    def build_rules(self, form):
         rules = []
-        for preset in qs_presets.all():
+        for preset in form.presets.all():
             klass = self[preset.slug]
             instance = klass(preset.arguments.all())
             rules.append(instance)
