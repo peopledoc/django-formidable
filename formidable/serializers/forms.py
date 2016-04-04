@@ -47,12 +47,13 @@ class FormidableSerializer(WithNestedSerializer):
             arguments = preset['fields']
             for argument in arguments:
                 if argument['type'] == 'field' \
-                        and argument['slug'] not in fields_slug:
+                        and argument['value'] not in fields_slug:
                     raise ValidationError(
                         'Preset ({}) argument is using an undefined field ({})'.format(  # noqa
-                            preset['slug'], argument['slug']
+                            preset['slug'], argument['value']
                         )
                     )
+        return data
 
 
 class ContextFormSerializer(serializers.ModelSerializer):
