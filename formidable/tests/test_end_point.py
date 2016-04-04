@@ -315,7 +315,25 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
-    presets = [
+    valid_presets = [{
+        'slug': 'comparison',
+        'message': 'not the same',
+        'fields': [{
+            'slug': 'left',
+            'value': 'input-date',
+            'type': 'field',
+        }, {
+            'slug': 'comparator',
+            'value': '=',
+            'type': 'value',
+        }, {
+            'slug': 'right',
+            'value': 'text_input',
+            'type': 'field'
+        }],
+    }]
+
+    presets_with_wrong_parameters = [
       {
         'slug': 'confirmation',
         'message': 'noteq!',
@@ -374,14 +392,30 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(instance.description, u'description create')
         self.assertEquals(instance.fields.count(), 0)
 
+    def test_create_form_presets(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['presets'] = copy.deepcopy(self.valid_presets)
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        self.assertEqual(form.presets.count(), 1)
+        preset = form.presets.first()
+        self.assertTrue(
+            preset.arguments.filter(slug='left', value='input-date').exists()
+        )
+        self.assertTrue(
+            preset.arguments.filter(slug='right', value='text_input').exists()
+        )
+
     def test_create_form_with_presets_invalid_argument(self):
         data = copy.deepcopy(self.data)
-        data['presets'] = copy.deepcopy(self.presets)
+        data['presets'] = copy.deepcopy(self.presets_with_wrong_parameters)
         serializer = FormidableSerializer(data=data)
         self.assertFalse(serializer.is_valid(), serializer.errors)
         self.assertIn(
             serializer.errors['non_field_errors'][0],
-            'Preset (confirmation) argument is using an undefined field (left)'
+            'Preset (confirmation) argument is using an undefined field (testField2)'  # noqa
         )
 
     def test_create_field(self):
@@ -565,25 +599,50 @@ class UpdateFormTestCase(TestCase):
         }
     ]
 
-    presets = [
-      {
-        'slug': 'confirmation',
-        'message': 'noteq!',
-        'fields': [{
-          'slug': 'left',
-          'value': 'testFieldX',
-          'type': 'field'
-        }, {
-          'slug': 'comparator',
-          'value': 'eq',
-          'type': 'value'
-        }, {
-          'slug': 'right',
-          'value': 'testFieldY',
-          'type': 'field'
-        }]
-      }
+    fields_with_validation = [
+        {
+            'slug': 'text_input',
+            'label': 'text label',
+            'type_id': 'text',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [
+                {
+                    'type': 'MINLENGTH',
+                    'value': '5',
+                },
+            ]
+        },
+        {
+            'slug': 'input-date',
+            'label': 'licence driver',
+            'type_id': 'date',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [
+                {
+                    'type': 'IS_DATE_IN_THE_FUTURE',
+                    'value': 'false',
+                },
+            ]
+        }
     ]
+
+    valid_presets = [{
+        'slug': 'comparison',
+        'message': 'not the same',
+        'fields': [{
+            'slug': 'left',
+            'value': 'input-date',
+            'type': 'field',
+        }, {
+            'slug': 'comparator',
+            'value': '=',
+            'type': 'value',
+        }, {
+            'slug': 'right',
+            'value': 'text_input',
+            'type': 'field'
+        }],
+    }]
 
     fields_items = [{
         'type_id': 'dropdown', 'label': 'edited field',
@@ -636,22 +695,23 @@ class UpdateFormTestCase(TestCase):
         preset.arguments.create(slug='operator', value='=', type='value')
         self.assertEqual(self.form.presets.count(), 1)
         data = copy.deepcopy(self.data)
-        data['presets'] = self.presets
+        data['fields'] = self.fields_with_validation
+        data['presets'] = self.valid_presets
         serializer = FormidableSerializer(instance=self.form, data=data)
-        self.assertTrue(serializer.is_valid())
+        self.assertTrue(serializer.is_valid(), serializer.errors)
         form = serializer.save()
         self.assertEqual(form.pk, self.form.pk)
         self.assertEqual(form.presets.count(), 1)
         preset = form.presets.first()
         self.assertEqual(preset.arguments.count(), 3)
         self.assertTrue(
-            preset.arguments.filter(slug='left', value='testFieldX').exists()
+            preset.arguments.filter(slug='left', value='input-date').exists()
         )
         self.assertTrue(
-            preset.arguments.filter(slug='right', value='testFieldY').exists()
+            preset.arguments.filter(slug='right', value='text_input').exists()
         )
         self.assertTrue(
-            preset.arguments.filter(slug='comparator', value='eq').exists()
+            preset.arguments.filter(slug='comparator', value='=').exists()
         )
 
     def test_create_field_on_update(self):
