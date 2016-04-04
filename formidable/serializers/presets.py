@@ -85,6 +85,3 @@ class PresetModelSerializer(WithNestedSerializer):
         model = Preset
         list_serializer_class = PresetListSerializer
         exclude = ('form',)
-
-    def create(self, validated_data):
-        return super(PresetModelSerializer, self).create(validated_data)
