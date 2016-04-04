@@ -796,9 +796,6 @@ class TestPresetsSerializerRender(TestCase):
         class MetaParameters:
             pass
 
-        def __init__(self, definition=None):
-            self.description = definition or self.__class__.description
-
     class PresetsTestWithArgs(presets.Presets):
 
         label = 'test-label-args'
@@ -811,7 +808,7 @@ class TestPresetsSerializerRender(TestCase):
             rhs = presets.PresetValueArgument(label='Rhs', slug='test-rhs')
 
     def test_render_preset_attr(self):
-        preset_instance = self.PresetsTest()
+        preset_instance = self.PresetsTest([])
         serializer = PresetsSerializer(preset_instance)
         self.assertTrue(serializer.data)
         data = serializer.data
@@ -825,7 +822,8 @@ class TestPresetsSerializerRender(TestCase):
         self.assertEqual(data['message'], 'thrown message when error test')
 
     def test_render_class_attr(self):
-        preset_instance = self.PresetsTest('oh no !')
+        preset_instance = self.PresetsTest([])
+        preset_instance.description = 'oh no !'
         serializer = PresetsSerializer(preset_instance)
         self.assertTrue(serializer.data)
         data = serializer.data
@@ -889,7 +887,7 @@ class TestPresetsSerializerRender(TestCase):
         self.assertIn('field', data['types'])
 
     def test_render_preset_with_argument(self):
-        preset_instance = self.PresetsTestWithArgs()
+        preset_instance = self.PresetsTestWithArgs(arguments=[])
         serializer = PresetsSerializer(preset_instance)
         self.assertTrue(serializer.data)
         data = serializer.data
