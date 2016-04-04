@@ -81,8 +81,8 @@ class PresetArgument(object):
 
         for arg in arguments:
             if arg.slug == self.slug:
-                if arg.type == 'field':
-                    return fields[arg.value]
+                if arg.field_id:
+                    return fields[arg.field_id]
                 return arg.value
 
         raise ImproperlyConfigured(

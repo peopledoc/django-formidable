@@ -8,18 +8,18 @@ from formidable.forms.validations.presets import ConfirmationPresets
 
 class FakeArgument(object):
 
-    def __init__(self, slug, value, type):
+    def __init__(self, slug, field_id=None, value=None):
         self.slug = slug
         self.value = value
-        self.type = type
+        self.field_id = field_id
 
 
 class PresetsTestCase(TestCase):
 
     def test_confirmation_ok_value(self):
         args = [
-            FakeArgument('left', 'name', 'field'),
-            FakeArgument('right', 'toto', 'value')
+            FakeArgument('left', field_id='name'),
+            FakeArgument('right', value='toto')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'name': 'toto'}
@@ -27,8 +27,8 @@ class PresetsTestCase(TestCase):
 
     def test_confirmation_ok_field(self):
         args = [
-            FakeArgument('left', 'password', 'field'),
-            FakeArgument('right', 'confirm_password', 'field')
+            FakeArgument('left', field_id='password'),
+            FakeArgument('right', field_id='confirm_password')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'toto'}
@@ -36,8 +36,8 @@ class PresetsTestCase(TestCase):
 
     def test_confirmation_ko_value(self):
         args = [
-            FakeArgument('left', 'name', 'field'),
-            FakeArgument('right', 'toto', 'value')
+            FakeArgument('left', field_id='name'),
+            FakeArgument('right', value='toto')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'name': 'tutu'}
@@ -46,8 +46,8 @@ class PresetsTestCase(TestCase):
 
     def test_confirmation_ko_field(self):
         args = [
-            FakeArgument('left', 'password', 'field'),
-            FakeArgument('right', 'confirm_password', 'field')
+            FakeArgument('left', field_id='password'),
+            FakeArgument('right', field_id='confirm_password')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
@@ -56,7 +56,7 @@ class PresetsTestCase(TestCase):
 
     def test_missing_left_operand(self):
         args = [
-            FakeArgument('right', 'confirm_password', 'field')
+            FakeArgument('right', field_id='confirm_password')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
@@ -65,7 +65,7 @@ class PresetsTestCase(TestCase):
 
     def test_missing_right_operand(self):
         args = [
-            FakeArgument('left', 'password', 'field'),
+            FakeArgument('left', field_id='password'),
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}

@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 from rest_framework.serializers import Serializer, ListSerializer
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework import fields
+
 
 from formidable.models import Preset, PresetArg
 from formidable.serializers.list import NestedListSerializerDummyUpdate
@@ -69,6 +70,13 @@ class PresetArgModelSerializer(ModelSerializer):
         model = PresetArg
         list_serializer_class = PresetArgListSerializer
         exclude = ('preset',)
+
+    def validate(self, data):
+        field_id = data.get('field_id')
+        value = data.get('value')
+        if field_id or value:
+            return data
+        raise ValidationError('field_id or value have to be filled.')
 
 
 class PresetListSerializer(NestedListSerializerDummyUpdate):

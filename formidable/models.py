@@ -83,7 +83,5 @@ class Preset(models.Model):
 class PresetArg(models.Model):
     preset = models.ForeignKey(Preset, related_name='arguments')
     slug = models.CharField(max_length=128)
-    value = models.CharField(max_length=128)
-    type = models.CharField(max_length=64, choices=(
-        ('field', 'field'), ('value', 'value'),
-    ))
+    value = models.CharField(max_length=128, null=True, blank=True)
+    field_id = models.CharField(max_length=128, null=True, blank=True)

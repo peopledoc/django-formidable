@@ -46,11 +46,11 @@ class FormidableSerializer(WithNestedSerializer):
         for preset in presets:
             arguments = preset['fields']
             for argument in arguments:
-                if argument['type'] == 'field' \
-                        and argument['value'] not in fields_slug:
+                field_id = argument.get('field_id')
+                if field_id and field_id not in fields_slug:
                     raise ValidationError(
                         'Preset ({}) argument is using an undefined field ({})'.format(  # noqa
-                            preset['slug'], argument['value']
+                            preset['slug'], field_id
                         )
                     )
         return data
