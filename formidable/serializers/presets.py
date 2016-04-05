@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from rest_framework.serializers import Serializer, ListSerializer
 from rest_framework.serializers import ModelSerializer, ValidationError
+from rest_framework.serializers import CharField
 from rest_framework import fields
 
 
@@ -85,6 +86,7 @@ class PresetListSerializer(NestedListSerializerDummyUpdate):
 
 class PresetModelSerializer(WithNestedSerializer):
 
+    preset_id = CharField(source='slug')
     fields = PresetArgModelSerializer(many=True)
 
     nested_objects = ['fields']
