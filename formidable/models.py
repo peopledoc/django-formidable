@@ -77,7 +77,7 @@ class Validationidable(models.Model):
 class Preset(models.Model):
     form = models.ForeignKey(Formidable, related_name='presets')
     slug = models.CharField(max_length=128)
-    message = models.TextField()
+    message = models.TextField(null=True, blank=True)
 
 
 class PresetArg(models.Model):

@@ -8,6 +8,7 @@ from rest_framework import fields
 
 
 from formidable.models import Preset, PresetArg
+from formidable.forms.validations.presets import presets_register
 from formidable.serializers.list import NestedListSerializerDummyUpdate
 from formidable.serializers.common import WithNestedSerializer
 
@@ -87,11 +88,19 @@ class PresetListSerializer(NestedListSerializerDummyUpdate):
 class PresetModelSerializer(WithNestedSerializer):
 
     preset_id = CharField(source='slug')
-    fields = PresetArgModelSerializer(many=True)
+    fields = PresetArgModelSerializer(source='arguments', many=True)
 
     nested_objects = ['fields']
 
     class Meta:
         model = Preset
         list_serializer_class = PresetListSerializer
-        exclude = ('form',)
+        exclude = ('form', 'slug')
+
+    def validate(self, data):
+        if not data.get('message'):
+            data['message'] = presets_register[data['slug']].default_message
+        return super(PresetModelSerializer, self).validate(data)
+
+    def to_internal_value(self, data):
+        return super(PresetModelSerializer, self).to_internal_value(data)
