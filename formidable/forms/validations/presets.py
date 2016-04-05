@@ -54,7 +54,8 @@ class PresetsMetaClass(type):
 
         attrs['_declared_arguments'] = _declared_arguments
         klass = super(PresetsMetaClass, mcls).__new__(mcls, name, base, attrs)
-        presets_register[klass.slug] = klass
+        if attrs['slug']:
+            presets_register[klass.slug] = klass
         return klass
 
 

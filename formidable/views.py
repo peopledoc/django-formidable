@@ -13,6 +13,8 @@ from formidable.models import Formidable, Fieldidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.accesses import get_accesses, get_context
+from formidable.serializers.presets import PresetsSerializer
+from formidable.forms.validations.presets import presets_register
 
 
 class FormidableDetail(RetrieveUpdateAPIView):
@@ -54,3 +56,16 @@ class AccessList(APIView):
             return Response(serializer.data)
         else:
             return Response(data=serializer.errors, status_code=400)
+
+
+class PresetsList(APIView):
+
+    def get(self, request, format=None):
+        presets_declarations = [
+            klass([]) for klass in presets_register.values()
+        ]
+        serializer = PresetsSerializer(
+            many=True,
+            instance=presets_declarations
+        )
+        return Response(serializer.data)
