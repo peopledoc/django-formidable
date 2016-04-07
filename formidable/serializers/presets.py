@@ -88,8 +88,7 @@ class PresetListSerializer(NestedListSerializerDummyUpdate):
 class PresetModelSerializer(WithNestedSerializer):
 
     preset_id = CharField(source='slug')
-    fields = PresetArgModelSerializer(source='arguments', many=True)
-
+    fields = PresetArgModelSerializer(many=True)
     nested_objects = ['fields']
 
     class Meta:
@@ -101,6 +100,3 @@ class PresetModelSerializer(WithNestedSerializer):
         if not data.get('message'):
             data['message'] = presets_register[data['slug']].default_message
         return super(PresetModelSerializer, self).validate(data)
-
-    def to_internal_value(self, data):
-        return super(PresetModelSerializer, self).to_internal_value(data)

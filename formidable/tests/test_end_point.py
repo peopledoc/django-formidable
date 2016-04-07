@@ -316,7 +316,7 @@ class CreateSerializerTestCase(TestCase):
     ]
 
     valid_presets = [{
-        'slug': 'comparison',
+        'preset_id': 'comparison',
         'message': 'not the same',
         'fields': [{
             'slug': 'left',
@@ -332,7 +332,7 @@ class CreateSerializerTestCase(TestCase):
 
     presets_with_wrong_parameters = [
       {
-        'slug': 'confirmation',
+        'preset_id': 'confirmation',
         'message': 'noteq!',
         'fields': [{
           'slug': 'left',
@@ -623,7 +623,7 @@ class UpdateFormTestCase(TestCase):
     ]
 
     valid_presets = [{
-        'slug': 'comparison',
+        'preset_id': 'comparison',
         'message': 'not the same',
         'fields': [{
             'slug': 'left',
