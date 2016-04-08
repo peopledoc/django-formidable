@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
@@ -8,7 +8,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 setup(
     name='django-formidable',
     version='0.1.0dev0',
-    packages=['formidable'],
+    packages=find_packages(),
     include_package_data=True,
     license='BSD License',  # example license
     description='A simple Django app to conduct Web-based polls.',
