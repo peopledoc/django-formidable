@@ -61,12 +61,15 @@ class PresetsMetaClass(type):
 
 class PresetArgument(object):
 
-    def __init__(self, label, slug=None, help_text='', placeholder=''):
+    def __init__(self, label, slug=None,
+                 help_text='', placeholder='', items=None):
         self.slug = slug
         self.label = label
         self.help_text = help_text
         self.placeholder = placeholder
         self.types = self.get_types()
+        self.has_items = items is not None
+        self.items = items or {}
 
     def get_types(self):
         return [self.__class__.type_]
@@ -154,3 +157,32 @@ class ConfirmationPresets(Presets):
 
     def run(self, left, right):
         return left == right
+
+
+class ComparisonPresets(Presets):
+
+    slug = 'comparison'
+    label = 'comparison'
+    description = "Compare two fields with standard operation"
+    default_message = "{left} is not {operator} to {right}"
+
+    mapper = {
+        'eq': lambda x, y: x == y,
+        'neq': lambda x, y: x != y,
+        'gt': lambda x, y: x > y,
+        'gte': lambda x, y: x >= y,
+        'lt': lambda x, y: x < y,
+        'lte': lambda x, y: x <= y,
+    }
+
+    class MetaParameters:
+        left = PresetFieldArgument('Reference')
+        operator = PresetValueArgument('Operator', items={
+            'eq': '=',  'lt': '<', 'lte': '<=', 'gt': '>',
+            'gte': '>=', 'neq': '!='
+        })
+        right = PresetFieldArgument('Compare to')
+
+    def run(self, left, operator, right):
+        meth = self.mapper[operator]
+        return meth(left, right)
