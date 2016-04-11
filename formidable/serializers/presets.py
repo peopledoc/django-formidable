@@ -59,7 +59,7 @@ class PresetsSerializer(Serializer):
     label = CharFieldClassAttr()
     description = CharFieldClassAttr()
     message = CharFieldClassAttr(source='default_message')
-    fields = PresetsArgsSerializer(many=True)
+    arguments = PresetsArgsSerializer(many=True)
 
 
 class PresetArgListSerializer(NestedListSerializerDummyUpdate):

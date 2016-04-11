@@ -927,5 +927,5 @@ class TestPresetsSerializerRender(TestCase):
         serializer = PresetsSerializer(preset_instance)
         self.assertTrue(serializer.data)
         data = serializer.data
-        self.assertIn('fields', data)
-        self.assertEqual(len(data['fields']), 2)
+        self.assertIn('arguments', data)
+        self.assertEqual(len(data['arguments']), 2)
