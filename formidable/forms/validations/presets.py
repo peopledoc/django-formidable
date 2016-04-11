@@ -169,8 +169,8 @@ class ComparisonPresets(Presets):
     class MetaParameters:
         left = PresetFieldArgument('Reference')
         operator = PresetValueArgument('Operator', items={
-            '=': 'eq', '<': 'lt', '<=': 'lte', '>': 'gt',
-            '>=': 'gte', '!=': 'neq'
+            'eq': '=',  'lt': '<', 'lte': '<=', 'gt': '>',
+            'gte': '>=', 'neq': '!='
         })
         right = PresetFieldArgument('Compare to')
 
