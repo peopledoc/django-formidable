@@ -315,7 +315,8 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'mydropdown', type_id=u'dropdown', label='Weapons'
+            slug=u'mydropdown', type_id=u'dropdown', label='Weapons',
+            multiple=True
         ).exists())
         field = form.fields.first()
         self.assertEquals(field.items.count(), 2)
