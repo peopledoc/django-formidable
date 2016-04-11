@@ -157,3 +157,22 @@ class ConfirmationPresets(Presets):
 
     def run(self, left, right):
         return left == right
+
+
+class ComparisonPresets(Presets):
+
+    slug = 'comparison'
+    label = 'comparison'
+    description = "Compare two fields with standard operation"
+    default_message = "{left} is not {operator} to {right}"
+
+    class MetaParameters:
+        left = PresetFieldArgument('Reference')
+        operator = PresetValueArgument('Operator', items={
+            '=': 'eq', '<': 'lt', '<=': 'lte', '>': 'gt',
+            '>=': 'gte', '!=': 'neq'
+        })
+        right = PresetFieldArgument('Compare to')
+
+    def run(self, left, operator, right):
+        return left == right
