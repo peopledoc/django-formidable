@@ -44,7 +44,7 @@ class FormidableSerializer(WithNestedSerializer):
         fields_slug = [field['slug'] for field in data['fields']]
 
         for preset in presets:
-            arguments = preset['fields']
+            arguments = preset['arguments']
             for argument in arguments:
                 field_id = argument.get('field_id')
                 if field_id and field_id not in fields_slug:

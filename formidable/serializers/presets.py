@@ -88,13 +88,19 @@ class PresetListSerializer(NestedListSerializerDummyUpdate):
 class PresetModelSerializer(WithNestedSerializer):
 
     preset_id = CharField(source='slug')
-    fields = PresetArgModelSerializer(many=True)
-    nested_objects = ['fields']
+    arguments = PresetArgModelSerializer(many=True)
+
+    nested_objects = ['arguments']
 
     class Meta:
         model = Preset
         list_serializer_class = PresetListSerializer
         exclude = ('form', 'slug')
+
+    def validate_preset_id(self, slug):
+        if slug not in presets_register.keys():
+            raise ValidationError('{} is not an available preset'.format(slug))
+        return slug
 
     def validate(self, data):
         if not data.get('message'):

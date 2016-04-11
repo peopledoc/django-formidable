@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.db import models
 
 from formidable.register import FieldSerializerRegister
@@ -85,3 +87,8 @@ class PresetArg(models.Model):
     slug = models.CharField(max_length=128)
     value = models.CharField(max_length=128, null=True, blank=True)
     field_id = models.CharField(max_length=128, null=True, blank=True)
+
+    def __unicode__(self):
+        if self.field_id:
+            return '{} : field {}'.format(self.slug, self.field_id)
+        return '{} : value {}'.format(self.slug, self.value)
