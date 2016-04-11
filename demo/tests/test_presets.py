@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 
 from formidable.forms.validations.presets import ConfirmationPresets
+from formidable.forms.validations.presets import ComparisonPresets
 
 
 class FakeArgument(object):
@@ -70,4 +71,46 @@ class PresetsTestCase(TestCase):
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
         with self.assertRaises(ImproperlyConfigured):
+            self.assertTrue(rule(cleaned_data))
+
+    def test_comparison_eq_ok(self):
+        args = [
+            FakeArgument('left', field_id='hours'),
+            FakeArgument('operator', value='eq'),
+            FakeArgument('right', field_id='hours-2')
+        ]
+        rule = ComparisonPresets(args)
+        cleaned_data = {'hours': 12, 'hours-2': 12}
+        self.assertTrue(rule(cleaned_data))
+
+    def test_comparison_eq_ko(self):
+        args = [
+            FakeArgument('left', field_id='hours'),
+            FakeArgument('operator', value='eq'),
+            FakeArgument('right', field_id='hours-2')
+        ]
+        rule = ComparisonPresets(args)
+        cleaned_data = {'hours': 11, 'hours-2': 12}
+        with self.assertRaises(ValidationError):
+            self.assertTrue(rule(cleaned_data))
+
+    def test_comparison_neq_ok(self):
+        args = [
+            FakeArgument('left', field_id='hours'),
+            FakeArgument('operator', value='neq'),
+            FakeArgument('right', field_id='hours-2')
+        ]
+        rule = ComparisonPresets(args)
+        cleaned_data = {'hours': 12, 'hours-2': 11}
+        self.assertTrue(rule(cleaned_data))
+
+    def test_comparison_neq_ko(self):
+        args = [
+            FakeArgument('left', field_id='hours'),
+            FakeArgument('operator', value='neq'),
+            FakeArgument('right', field_id='hours-2')
+        ]
+        rule = ComparisonPresets(args)
+        cleaned_data = {'hours': 12, 'hours-2': 12}
+        with self.assertRaises(ValidationError):
             self.assertTrue(rule(cleaned_data))

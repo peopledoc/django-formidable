@@ -166,6 +166,15 @@ class ComparisonPresets(Presets):
     description = "Compare two fields with standard operation"
     default_message = "{left} is not {operator} to {right}"
 
+    mapper = {
+        'eq': lambda x, y: x == y,
+        'neq': lambda x, y: x != y,
+        'gt': lambda x, y: x > y,
+        'gte': lambda x, y: x >= y,
+        'lt': lambda x, y: x < y,
+        'lte': lambda x, y: x <= y,
+    }
+
     class MetaParameters:
         left = PresetFieldArgument('Reference')
         operator = PresetValueArgument('Operator', items={
@@ -175,4 +184,5 @@ class ComparisonPresets(Presets):
         right = PresetFieldArgument('Compare to')
 
     def run(self, left, operator, right):
-        return left == right
+        meth = self.mapper[operator]
+        return meth(left, right)
