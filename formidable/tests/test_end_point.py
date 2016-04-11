@@ -318,7 +318,7 @@ class CreateSerializerTestCase(TestCase):
     valid_presets = [{
         'preset_id': 'comparison',
         'message': 'not the same',
-        'fields': [{
+        'arguments': [{
             'slug': 'left',
             'field_id': 'input-date',
         }, {
@@ -334,7 +334,7 @@ class CreateSerializerTestCase(TestCase):
       {
         'preset_id': 'confirmation',
         'message': 'noteq!',
-        'fields': [{
+        'arguments': [{
           'slug': 'left',
           'field_id': 'testField2',
         }, {
@@ -623,14 +623,11 @@ class UpdateFormTestCase(TestCase):
     ]
 
     valid_presets = [{
-        'preset_id': 'comparison',
+        'preset_id': 'confirmation',
         'message': 'not the same',
-        'fields': [{
+        'arguments': [{
             'slug': 'left',
             'field_id': 'input-date',
-        }, {
-            'slug': 'comparator',
-            'value': '=',
         }, {
             'slug': 'right',
             'field_id': 'text_input',
@@ -696,7 +693,7 @@ class UpdateFormTestCase(TestCase):
         self.assertEqual(form.pk, self.form.pk)
         self.assertEqual(form.presets.count(), 1)
         preset = form.presets.first()
-        self.assertEqual(preset.arguments.count(), 3)
+        self.assertEqual(preset.arguments.count(), 2)
         self.assertTrue(
             preset.arguments.filter(
                 slug='left', field_id='input-date').exists()
@@ -704,9 +701,6 @@ class UpdateFormTestCase(TestCase):
         self.assertTrue(
             preset.arguments.filter(
                 slug='right', field_id='text_input').exists()
-        )
-        self.assertTrue(
-            preset.arguments.filter(slug='comparator', value='=').exists()
         )
 
     def test_create_field_on_update(self):
