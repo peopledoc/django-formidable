@@ -316,14 +316,11 @@ class CreateSerializerTestCase(TestCase):
     ]
 
     valid_presets = [{
-        'preset_id': 'comparison',
+        'preset_id': 'confirmation',
         'message': 'not the same',
         'arguments': [{
             'slug': 'left',
             'field_id': 'input-date',
-        }, {
-            'slug': 'comparator',
-            'value': '=',
         }, {
             'slug': 'right',
             'field_id': 'text_input',
