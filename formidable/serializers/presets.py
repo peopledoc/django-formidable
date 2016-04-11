@@ -11,6 +11,7 @@ from formidable.models import Preset, PresetArg
 from formidable.forms.validations.presets import presets_register
 from formidable.serializers.list import NestedListSerializerDummyUpdate
 from formidable.serializers.common import WithNestedSerializer
+from formidable.serializers.child_proxy import LazyChildProxy
 
 
 class ClassAttrSerializer(object):
@@ -29,13 +30,23 @@ class SlugFieldClassAttr(ClassAttrSerializer, fields.SlugField):
     pass
 
 
-class ListField(fields.Field):
+class PresetsArgsSerializerRegister(dict):
 
-    def to_representation(self, value):
-        return list(value)
+    lookup_field = 'has_items'
+
+    def __init__(self):
+        super(PresetsArgsSerializerRegister, self).__init__()
+        self.update({
+            True: PresetsArgSerializerWithItems,
+            False: PresetsArgsSerializer
+        })
 
 
-class PresetArgsSerializerList(ListSerializer):
+class PresetArgsListSerializer(ListSerializer):
+
+    def __init__(self, *args, **kwargs):
+        kwargs['child'] = LazyChildProxy(PresetsArgsSerializerRegister())
+        super(PresetArgsListSerializer, self).__init__(*args, **kwargs)
 
     def get_attribute(self, instance):
         return instance.__class__._declared_arguments.values()
@@ -44,13 +55,18 @@ class PresetArgsSerializerList(ListSerializer):
 class PresetsArgsSerializer(Serializer):
 
     class Meta:
-        list_serializer_class = PresetArgsSerializerList
+        list_serializer_class = PresetArgsListSerializer
 
     slug = fields.SlugField()
     label = fields.CharField()
     help_text = fields.CharField(required=False)
     placehorlder = fields.CharField(required=False)
-    types = ListField()
+    types = fields.ListField()
+
+
+class PresetsArgSerializerWithItems(PresetsArgsSerializer):
+
+    items = fields.DictField()
 
 
 class PresetsSerializer(Serializer):
@@ -62,7 +78,7 @@ class PresetsSerializer(Serializer):
     arguments = PresetsArgsSerializer(many=True)
 
 
-class PresetArgListSerializer(NestedListSerializerDummyUpdate):
+class PresetArgModelListSerializer(NestedListSerializerDummyUpdate):
     parent_name = 'preset_id'
 
 
@@ -70,7 +86,7 @@ class PresetArgModelSerializer(ModelSerializer):
 
     class Meta:
         model = PresetArg
-        list_serializer_class = PresetArgListSerializer
+        list_serializer_class = PresetArgModelListSerializer
         exclude = ('preset',)
 
     def validate(self, data):
