@@ -61,12 +61,15 @@ class PresetsMetaClass(type):
 
 class PresetArgument(object):
 
-    def __init__(self, label, slug=None, help_text='', placeholder=''):
+    def __init__(self, label, slug=None,
+                 help_text='', placeholder='', items=None):
         self.slug = slug
         self.label = label
         self.help_text = help_text
         self.placeholder = placeholder
         self.types = self.get_types()
+        self.has_items = items is not None
+        self.items = items or {}
 
     def get_types(self):
         return [self.__class__.type_]

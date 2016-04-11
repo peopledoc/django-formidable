@@ -10,6 +10,7 @@ from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
 from formidable.serializers.presets import PresetsSerializer
 from formidable.serializers.presets import PresetsArgsSerializer
+from formidable.serializers.presets import PresetsArgSerializerWithItems
 from formidable.forms.validations import presets
 
 
@@ -841,7 +842,10 @@ class TestPresetsSerializerRender(TestCase):
 
         class MetaParameters(object):
             lhs = presets.PresetFieldArgument(label='lhs')
-            rhs = presets.PresetValueArgument(label='Rhs', slug='test-rhs')
+            rhs = presets.PresetValueArgument(
+                label='Rhs', slug='test-rhs',
+                items={'tutu': 'toto', 'foo': 'bar'},
+            )
 
     def test_render_preset_attr(self):
         preset_instance = self.PresetsTest([])
@@ -884,6 +888,20 @@ class TestPresetsSerializerRender(TestCase):
         self.assertIn('types', data)
         self.assertEqual(len(data['types']), 1)
         self.assertIn('field', data['types'])
+
+    def test_render_preset_with_items(self):
+        field_arg = presets.PresetValueArgument(
+            slug='test', label='test',
+            help_text='pick up the field to validated',
+            items={'foo': 'bar', 'tutu': 'toto'}
+        )
+        serializer = PresetsArgSerializerWithItems(instance=field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('items', data)
+        self.assertEqual(len(data['items']), 2)
+        self.assertIn('foo', data['items'])
+        self.assertEqual(data['items']['foo'], 'bar')
 
     def test_render_preset_value_arg(self):
         field_arg = presets.PresetValueArgument(
