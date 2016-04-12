@@ -5,6 +5,7 @@ from django import forms
 
 from formidable.models import Formidable
 from formidable.forms import field_builder
+from formidable.forms.validations.presets import presets_register
 
 
 class FormidableBoundFieldCache(dict):
@@ -30,10 +31,16 @@ class BaseDynamicForm(forms.Form):
         super(BaseDynamicForm, self).__init__(*args, **kwargs)
         self._bound_fields_cache = FormidableBoundFieldCache()
 
+    def clean(self):
+        cleaned_data = super(BaseDynamicForm, self).clean()
+        for rule in self.rules:
+            rule(cleaned_data)
+        return cleaned_data
+
 
 def get_dynamic_form_class(formidable, role=None):
 
-    fields = OrderedDict()
+    attrs = OrderedDict()
 
     for field in formidable.fields.order_by('order').all():
         try:
@@ -41,9 +48,10 @@ def get_dynamic_form_class(formidable, role=None):
         except field_builder.SkipField:
             pass
         else:
-            fields[field.slug] = form_field
+            attrs[field.slug] = form_field
 
-    return type('DynamicForm', (BaseDynamicForm,), fields)
+    attrs['rules'] = presets_register.build_rules(formidable)
+    return type('DynamicForm', (BaseDynamicForm,), attrs)
 
 
 class FormidableForm(forms.Form):

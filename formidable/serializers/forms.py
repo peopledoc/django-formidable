@@ -1,41 +1,59 @@
 # -*- coding: utf-8 -*-
-from django.utils.functional import cached_property
+from django.core.exceptions import ValidationError
 
 from rest_framework import serializers
 
 from formidable.models import Formidable
 from formidable.serializers import fields
+from formidable.serializers.common import WithNestedSerializer
+from formidable.serializers.presets import PresetModelSerializer
 
 
-class FormidableSerializer(serializers.ModelSerializer):
+class FormidableSerializer(WithNestedSerializer):
 
     fields = fields.FieldidableSerializer(many=True)
+    presets = PresetModelSerializer(many=True, required=False)
+
+    nested_objects = ['fields', 'presets']
 
     class Meta:
         model = Formidable
-        fields = ('label', 'description', 'fields', 'id')
+        fields = ('label', 'description', 'fields', 'id', 'presets')
         depth = 2
         extra_kwargs = {'id': {'read_only': True}}
 
-    def create(self, validated_data):
-        fields_kwargs = validated_data.pop('fields')
-        form = Formidable.objects.create(**validated_data)
-        self.fields_serializer.create(form, fields_kwargs)
-        return form
+    def validate(self, data):
+        """
+        The validation step called the preset validation.
+        The preset validation take care about preset are correctly define
+        and argument defined are correct.
+        But, we cannot check if field setup in preset argument exits inside
+        the form itself. The only moment we can check, is here.
+        """
+        # calling subserializer validate method (fields, and presets)
+        data = super(FormidableSerializer, self).validate(data)
+        # we check every field define in presets are define inside the form.
+        if 'fields' in data and 'presets' in data:
+            data = self.check_presets_cohesion(data)
+        return data
 
-    def update(self, instance, validated_data):
-        fields_data = validated_data.pop('fields')
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        self.fields_serializer.update(
-            instance.fields, instance, fields_data,
-        )
-        return instance
+    def check_presets_cohesion(self, data):
+        presets = data['presets']
+        # validation already called on fields we are sur the slug is set
+        # Samet thing for argument is presets
+        fields_slug = [field['slug'] for field in data['fields']]
 
-    @cached_property
-    def fields_serializer(self):
-        return self.fields['fields']
+        for preset in presets:
+            arguments = preset['arguments']
+            for argument in arguments:
+                field_id = argument.get('field_id')
+                if field_id and field_id not in fields_slug:
+                    raise ValidationError(
+                        'Preset ({}) argument is using an undefined field ({})'.format(  # noqa
+                            preset['slug'], field_id
+                        )
+                    )
+        return data
 
 
 class ContextFormSerializer(serializers.ModelSerializer):

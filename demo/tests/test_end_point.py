@@ -8,6 +8,10 @@ from formidable.forms import FormidableForm, fields
 from formidable.serializers.forms import FormidableSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
+from formidable.serializers.presets import PresetsSerializer
+from formidable.serializers.presets import PresetsArgsSerializer
+from formidable.serializers.presets import PresetsArgSerializerWithItems
+from formidable.forms.validations import presets
 
 
 RENDER_BASE_FIELDS = list(set(BASE_FIELDS) - set(['order']))
@@ -312,6 +316,35 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    valid_presets = [{
+        'preset_id': 'confirmation',
+        'message': 'not the same',
+        'arguments': [{
+            'slug': 'left',
+            'field_id': 'input-date',
+        }, {
+            'slug': 'right',
+            'field_id': 'text_input',
+        }],
+    }]
+
+    presets_with_wrong_parameters = [
+      {
+        'preset_id': 'confirmation',
+        'message': 'noteq!',
+        'arguments': [{
+          'slug': 'left',
+          'field_id': 'testField2',
+        }, {
+          'slug': 'comparator',
+          'value': 'eq',
+        }, {
+          'slug': 'right',
+          'field_id': 'testField3',
+        }]
+      }
+    ]
+
     format_field_helptext = [
         {
             'slug': 'myhelptext',
@@ -350,6 +383,34 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(instance.label, u'test_create')
         self.assertEquals(instance.description, u'description create')
         self.assertEquals(instance.fields.count(), 0)
+
+    def test_create_form_presets(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['presets'] = copy.deepcopy(self.valid_presets)
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        self.assertEqual(form.presets.count(), 1)
+        preset = form.presets.first()
+        self.assertTrue(
+            preset.arguments.filter(
+                slug='left', field_id='input-date').exists()
+        )
+        self.assertTrue(
+            preset.arguments.filter(
+                slug='right', field_id='text_input').exists()
+        )
+
+    def test_create_form_with_presets_invalid_argument(self):
+        data = copy.deepcopy(self.data)
+        data['presets'] = copy.deepcopy(self.presets_with_wrong_parameters)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid(), serializer.errors)
+        self.assertIn(
+            serializer.errors['non_field_errors'][0],
+            'Preset (confirmation) argument is using an undefined field (testField2)'  # noqa
+        )
 
     def test_create_field(self):
         data = copy.deepcopy(self.data)
@@ -532,6 +593,45 @@ class UpdateFormTestCase(TestCase):
         }
     ]
 
+    fields_with_validation = [
+        {
+            'slug': 'text_input',
+            'label': 'text label',
+            'type_id': 'text',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [
+                {
+                    'type': 'MINLENGTH',
+                    'value': '5',
+                },
+            ]
+        },
+        {
+            'slug': 'input-date',
+            'label': 'licence driver',
+            'type_id': 'date',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'validations': [
+                {
+                    'type': 'IS_DATE_IN_THE_FUTURE',
+                    'value': 'false',
+                },
+            ]
+        }
+    ]
+
+    valid_presets = [{
+        'preset_id': 'confirmation',
+        'message': 'not the same',
+        'arguments': [{
+            'slug': 'left',
+            'field_id': 'input-date',
+        }, {
+            'slug': 'right',
+            'field_id': 'text_input',
+        }],
+    }]
+
     fields_items = [{
         'type_id': 'dropdown', 'label': 'edited field',
         'slug': 'dropdown-input', 'items': {
@@ -574,6 +674,31 @@ class UpdateFormTestCase(TestCase):
         )
         self.assertTrue(
             self.form.fields.filter(slug='already-there', order=2).exists()
+        )
+
+    def test_presets_on_update(self):
+        preset = self.form.presets.create(slug='comparison', message='compare')
+        preset.arguments.create(slug='left', field_id='field1')
+        preset.arguments.create(slug='right', value='12')
+        preset.arguments.create(slug='operator')
+        self.assertEqual(self.form.presets.count(), 1)
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_with_validation
+        data['presets'] = self.valid_presets
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        self.assertEqual(form.pk, self.form.pk)
+        self.assertEqual(form.presets.count(), 1)
+        preset = form.presets.first()
+        self.assertEqual(preset.arguments.count(), 2)
+        self.assertTrue(
+            preset.arguments.filter(
+                slug='left', field_id='input-date').exists()
+        )
+        self.assertTrue(
+            preset.arguments.filter(
+                slug='right', field_id='text_input').exists()
         )
 
     def test_create_field_on_update(self):
@@ -694,3 +819,131 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
         self.assertEquals(field.items.count(), 0)
+
+
+class TestPresetsSerializerRender(TestCase):
+
+    class PresetsTest(presets.Presets):
+
+        label = 'test-label'
+        slug = 'test-slug'
+        description = 'this is a test'
+        default_message = 'thrown message when error test'
+
+        class MetaParameters:
+            pass
+
+    class PresetsTestWithArgs(presets.Presets):
+
+        label = 'test-label-args'
+        slug = 'test-slug-args'
+        description = 'this is a test with argument'
+        default_message = 'you shouldnt see this'
+
+        class MetaParameters(object):
+            lhs = presets.PresetFieldArgument(label='lhs')
+            rhs = presets.PresetValueArgument(
+                label='Rhs', slug='test-rhs',
+                items={'tutu': 'toto', 'foo': 'bar'},
+            )
+
+    def test_render_preset_attr(self):
+        preset_instance = self.PresetsTest([])
+        serializer = PresetsSerializer(preset_instance)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test-label')
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test-slug')
+        self.assertIn('description', data)
+        self.assertEqual(data['description'], 'this is a test')
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'thrown message when error test')
+
+    def test_render_class_attr(self):
+        preset_instance = self.PresetsTest([])
+        preset_instance.description = 'oh no !'
+        serializer = PresetsSerializer(preset_instance)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('description', data)
+        self.assertNotEqual(data['description'], 'oh no !')
+        self.assertEqual(data['description'], 'this is a test')
+
+    def test_render_preset_field_arg(self):
+        field_arg = presets.PresetFieldArgument(
+            slug='test', label='test',
+            help_text='pick up the field to validated'
+        )
+        serializer = PresetsArgsSerializer(field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test')
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test')
+        self.assertIn('help_text', data)
+        self.assertEqual(data['help_text'], 'pick up the field to validated')
+        self.assertIn('types', data)
+        self.assertEqual(len(data['types']), 1)
+        self.assertIn('field', data['types'])
+
+    def test_render_preset_with_items(self):
+        field_arg = presets.PresetValueArgument(
+            slug='test', label='test',
+            help_text='pick up the field to validated',
+            items={'foo': 'bar', 'tutu': 'toto'}
+        )
+        serializer = PresetsArgSerializerWithItems(instance=field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('items', data)
+        self.assertEqual(len(data['items']), 2)
+        self.assertIn('foo', data['items'])
+        self.assertEqual(data['items']['foo'], 'bar')
+
+    def test_render_preset_value_arg(self):
+        field_arg = presets.PresetValueArgument(
+            slug='test', label='test',
+            help_text='pick up the value to compare'
+        )
+        serializer = PresetsArgsSerializer(field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test')
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test')
+        self.assertIn('help_text', data)
+        self.assertEqual(data['help_text'], 'pick up the value to compare')
+        self.assertIn('types', data)
+        self.assertEqual(len(data['types']), 1)
+        self.assertIn('value', data['types'])
+
+    def test_render_preset_hybrid_arg(self):
+        field_arg = presets.PresetFieldOrValueArgument(
+            slug='test', label='test',
+            help_text='pick up the value to compare'
+        )
+        serializer = PresetsArgsSerializer(field_arg)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('slug', data)
+        self.assertEqual(data['slug'], 'test')
+        self.assertIn('label', data)
+        self.assertEqual(data['label'], 'test')
+        self.assertIn('help_text', data)
+        self.assertEqual(data['help_text'], 'pick up the value to compare')
+        self.assertIn('types', data)
+        self.assertEqual(len(data['types']), 2)
+        self.assertIn('value', data['types'])
+        self.assertIn('field', data['types'])
+
+    def test_render_preset_with_argument(self):
+        preset_instance = self.PresetsTestWithArgs(arguments=[])
+        serializer = PresetsSerializer(preset_instance)
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('arguments', data)
+        self.assertEqual(len(data['arguments']), 2)
