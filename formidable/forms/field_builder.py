@@ -186,6 +186,7 @@ class FormFieldFactory(object):
         'dropdown': DropdownFieldBuilder,
         'checkbox': CheckboxFieldBuilder,
         'radios': RadioFieldBuilder,
+        'radios_buttons': RadioFieldBuilder,
         'checkboxes': CheckboxesFieldBuilder,
         'email': EmailFieldBuilder,
         'date': DateFieldBuilder,
