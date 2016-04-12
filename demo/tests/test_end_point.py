@@ -312,6 +312,16 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    radios_buttons_fields = [
+        {
+            'slug': 'test-radios',
+            'label': 'test-radios-buttons',
+            'type_id': 'radios_buttons',
+            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'items': {'tutu': 'toto', 'foo': 'bar'}
+        }
+    ]
+
     format_field_helptext = [
         {
             'slug': 'myhelptext',
@@ -474,6 +484,16 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertFalse(serializer.is_valid())
         self.assertIn('fields', serializer.errors)
+
+    def test_create_radios_buttons_field(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.radios_buttons_fields)
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
+        self.assertEqual(instance.fields.count(), 1)
+        field = instance.fields.first()
+        self.assertTrue(field.type_id, 'radios_buttons')
 
     def test_create_helptext(self):
         data = copy.deepcopy(self.data)
