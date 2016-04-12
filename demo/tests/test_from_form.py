@@ -450,3 +450,18 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(form.fields.filter(
             slug=u'title', type_id=u'title', label='Hello',
         ).exists())
+
+    def test_file_field(self):
+
+        class MyForm(FormidableForm):
+
+            myfile = fields.FileField(label='social-health-care')
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label=u'form-with-file')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        self.assertTrue(form.fields.filter(
+            slug=u'myfile', type_id=u'file', label='social-health-care',
+        ).exists())

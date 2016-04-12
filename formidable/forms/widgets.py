@@ -80,6 +80,11 @@ class NumberInput(FormidableWidget, widgets.NumberInput):
     type_id = u'number'
 
 
+class ClearableFileInput(FormidableWidget, widgets.ClearableFileInput):
+
+    type_id = u'file'
+
+
 class HelpTextWidget(FormidableWidget):
 
     type_id = u'help_text'
