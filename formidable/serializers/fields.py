@@ -233,7 +233,7 @@ class RadiosFieldSerializer(FieldItemMixin, FieldidableSerializer):
 @load_serializer(field_register)
 class RadiosButtonsFieldSerializer(RadiosFieldSerializer):
 
-    type_id = 'radiosButtons'
+    type_id = 'radios_buttons'
 
 
 @load_serializer(field_register)
