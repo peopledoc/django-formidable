@@ -16,8 +16,14 @@ class DictItemSerializer(NestedListSerializer):
 
     def to_representation(self, items):
         return {
-            item.key: item.value for item in items.all()
+            item.key: item.value for item in items.order_by('order').all()
         }
+
+    def validate(self, data):
+        for index, item in enumerate(data):
+            item['order'] = index
+
+        return data
 
     def to_internal_value(self, data):
         """

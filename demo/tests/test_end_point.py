@@ -120,8 +120,10 @@ class RenderSerializerTestCase(TestCase):
             type_id='dropdown', label=u'choose your weapon',
             order=self.form.get_next_field_order()
         )
-        self.dropdown.items.create(key='tutu', value='toto')
-        self.dropdown.items.create(key=u'plop', value=u'Intérnätiônal')
+        order = self.dropdown.get_next_order()
+        self.dropdown.items.create(key='tutu', value='toto', order=order)
+        self.dropdown.items.create(key=u'plop', value=u'Intérnätiônal',
+                                   order=order+1)
         serializer = FormidableSerializer(instance=self.form)
         data = serializer.data['fields'][0]
         for field in RENDER_BASE_FIELDS:
@@ -785,8 +787,13 @@ class UpdateFormTestCase(TestCase):
         self.dropdown_fields.accesses.create(
             access_id='padawan', level='EDITABLE'
         )
-        self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
-        self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
+        order = self.dropdown_fields.get_next_order()
+        self.dropdown_fields.items.create(
+            key=u'gun', value=u'eagle', order=order
+        )
+        self.dropdown_fields.items.create(
+            key=u'sword', value=u'excalibur', order=order+1
+        )
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_items
         serializer = FormidableSerializer(instance=self.form, data=data)
@@ -811,8 +818,11 @@ class UpdateFormTestCase(TestCase):
             slug='dropdown-input', type_id='dropdown', label=u'weapons',
             order=self.form.get_next_field_order()
         )
-        self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
-        self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
+        order = self.dropdown_fields.get_next_order()
+        self.dropdown_fields.items.create(key=u'gun', value=u'eagle',
+                                          order=order)
+        self.dropdown_fields.items.create(key=u'sword', value=u'excalibur',
+                                          order=order+1)
         serializer = FormidableSerializer(instance=self.form, data=self.data)
         self.assertTrue(serializer.is_valid())
         form = serializer.save()
@@ -827,8 +837,13 @@ class UpdateFormTestCase(TestCase):
         self.dropdown_fields.accesses.create(
             access_id='padawan', level='REQUIRED'
         )
-        self.dropdown_fields.items.create(key=u'gun', value=u'eagle')
-        self.dropdown_fields.items.create(key=u'sword', value=u'excalibur')
+        order = self.dropdown_fields.get_next_order()
+        self.dropdown_fields.items.create(
+            key=u'gun', value=u'eagle', order=order
+        )
+        self.dropdown_fields.items.create(
+            key=u'sword', value=u'excalibur', order=order+1
+        )
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)
         data['fields'][0]['items'] = {}
