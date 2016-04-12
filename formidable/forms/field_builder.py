@@ -89,6 +89,11 @@ class FieldBuilder(object):
         return res
 
 
+class FileFieldBuilder(FieldBuilder):
+
+    field_class = forms.FileField
+
+
 class HelpTextBuilder(FieldBuilder):
 
     field_class = fields.HelpTextField
@@ -194,6 +199,7 @@ class FormFieldFactory(object):
         'help_text': HelpTextBuilder,
         'title': TitleFielBuilder,
         'separator': SeparatorBuilder,
+        'file': FileFieldBuilder,
     }
 
     @classmethod
