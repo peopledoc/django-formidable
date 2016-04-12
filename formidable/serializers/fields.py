@@ -12,6 +12,7 @@ from formidable.serializers.validation import ValidationSerializer
 from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers.list import NestedListSerializer
+from formidable.serializers.common import WithNestedSerializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'help_text', 'default',
@@ -43,7 +44,7 @@ class FieldListSerializer(NestedListSerializer):
         return validated_data
 
 
-class FieldidableSerializer(serializers.ModelSerializer):
+class FieldidableSerializer(WithNestedSerializer):
 
     type_id = None
 
@@ -69,43 +70,6 @@ class FieldidableSerializer(serializers.ModelSerializer):
     @cached_property
     def validations_serializer(self):
         return self.fields['validations']
-
-    def create(self, validated_data):
-        nested_data = self.extract_nested_data(validated_data)
-        field = super(FieldidableSerializer, self).create(validated_data)
-        self.create_nested_objects(field, nested_data)
-        return field
-
-    def create_nested_objects(self, field, nested_data):
-        for name, data in nested_data.iteritems():
-            self.fields[name].create(field, nested_data[name])
-
-    def update_nested_objects(self, field, nested_data):
-        for name, data in nested_data.iteritems():
-            self.fields[name].update(
-                getattr(field, name), field, nested_data[name]
-            )
-
-    def extract_nested_data(self, data):
-        """
-        Extract the data for nested object. By default DRF raise an execption
-        when data for nested objet are found.
-        Data are validated before, if nested_object is required we are sure
-        to have the data.
-        """
-        res = {}
-        for nested_object_name in self.nested_objects:
-            if nested_object_name in data:
-                res[nested_object_name] = data.pop(nested_object_name)
-        return res
-
-    def update(self, instance, validated_data):
-        nested_data = self.extract_nested_data(validated_data)
-        field = super(FieldidableSerializer, self).update(
-            instance, validated_data
-        )
-        self.update_nested_objects(field, nested_data)
-        return field
 
 
 class ListContextFieldSerializer(serializers.ListSerializer):

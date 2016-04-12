@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.db import models
 
 from formidable.register import FieldSerializerRegister
@@ -72,3 +74,21 @@ class Validationidable(models.Model):
     value = models.CharField(max_length=256)
     type = models.CharField(max_length=256)
     message = models.TextField(blank=True, null=True)
+
+
+class Preset(models.Model):
+    form = models.ForeignKey(Formidable, related_name='presets')
+    slug = models.CharField(max_length=128)
+    message = models.TextField(null=True, blank=True)
+
+
+class PresetArg(models.Model):
+    preset = models.ForeignKey(Preset, related_name='arguments')
+    slug = models.CharField(max_length=128)
+    value = models.CharField(max_length=128, null=True, blank=True)
+    field_id = models.CharField(max_length=128, null=True, blank=True)
+
+    def __unicode__(self):
+        if self.field_id:
+            return '{} : field {}'.format(self.slug, self.field_id)
+        return '{} : value {}'.format(self.slug, self.value)
