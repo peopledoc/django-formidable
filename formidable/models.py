@@ -56,6 +56,7 @@ class Item(models.Model):
     key = models.CharField(max_length=256)
     value = models.CharField(max_length=256)
     order = models.IntegerField()
+    help_text = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return u'{}: {}'.format(self.key, self.value)

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import copy
 
 from django.test import TestCase
@@ -131,8 +132,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertIn('multiple', data)
         self.assertEquals(data['multiple'], False)
         self.assertIn('items', data)
-        self.assertEquals(len(data['items'].keys()), 2)
-        self.assertEquals(len(data['items'].values()), 2)
+        self.assertEquals(len(data['items']), 2)
 
     def test_helptext_field(self):
         self.form.fields.all().delete()
@@ -281,10 +281,10 @@ class CreateSerializerTestCase(TestCase):
         {
             'type_id': 'dropdown',
             'slug': 'dropdown-input', 'label': 'dropdown label',
-            'multiple': False, 'items': {
-                'tutu': 'toto',
-                'tata': 'plop',
-            },
+            'multiple': False, 'items': [
+                {'key': 'tutu', 'value': 'toto'},
+                {'key': 'tata', 'value': 'plop'},
+            ],
             'accesses': [{
                 'access_id': 'padawan', 'level': 'REQUIRED'
             }]
@@ -324,7 +324,10 @@ class CreateSerializerTestCase(TestCase):
             'label': 'test-radios-buttons',
             'type_id': 'radios_buttons',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'items': {'tutu': 'toto', 'foo': 'bar'}
+            'items': [
+                {'key': 'tutu', 'value': 'toto'},
+                {'key': 'foo', 'value': 'bar'},
+            ]
         }
     ]
 
@@ -557,6 +560,13 @@ class CreateSerializerTestCase(TestCase):
         self.assertEqual(instance.fields.count(), 1)
         field = instance.fields.first()
         self.assertTrue(field.type_id, 'radios_buttons')
+        self.assertEqual(field.items.count(), 2)
+        self.assertTrue(
+            field.items.filter(order=0, key='tutu', value='toto').exists()
+        )
+        self.assertTrue(
+            field.items.filter(order=1, key='foo', value='bar').exists()
+        )
 
     def test_create_helptext(self):
         data = copy.deepcopy(self.data)
@@ -656,10 +666,10 @@ class UpdateFormTestCase(TestCase):
 
     fields_items = [{
         'type_id': 'dropdown', 'label': 'edited field',
-        'slug': 'dropdown-input', 'items': {
-            'gun': u'desert-eagle',
-            'sword': u'Andúril',
-        },
+        'slug': 'dropdown-input', 'items': [
+            {'key': 'gun', 'value': 'desert-eagle'},
+            {'key': 'sword', 'value': 'Andúril'}
+        ],
         'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
     }]
 
@@ -747,7 +757,7 @@ class UpdateFormTestCase(TestCase):
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)
         serializer = FormidableSerializer(instance=self.form, data=data)
-        self.assertTrue(serializer.is_valid())
+        self.assertTrue(serializer.is_valid(), serializer.errors)
         form = serializer.save()
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.fields.count(), 1)
@@ -846,9 +856,9 @@ class UpdateFormTestCase(TestCase):
         )
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)
-        data['fields'][0]['items'] = {}
+        data['fields'][0]['items'] = []
         serializer = FormidableSerializer(instance=self.form, data=data)
-        self.assertTrue(serializer.is_valid())
+        self.assertTrue(serializer.is_valid(), serializer.errors)
         form = serializer.save()
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.fields.count(), 1)

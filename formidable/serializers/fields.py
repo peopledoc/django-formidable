@@ -91,7 +91,7 @@ class ListContextFieldSerializer(serializers.ListSerializer):
 
     def to_representation(self, fields):
         res = []
-        for field in fields.all():
+        for field in fields.order_by('order').all():
             if field.accesses.exists():
                 res.append(self.child.to_representation(field))
 
