@@ -161,3 +161,8 @@ class ChoiceField(ItemField, fields.ChoiceField):
 class MultipleChoiceField(ItemField, fields.MultipleChoiceField):
 
     widget = widgets.SelectMultiple
+
+
+class FileField(Field, fields.FileField):
+
+    widget = widgets.ClearableFileInput

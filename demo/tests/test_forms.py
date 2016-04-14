@@ -61,6 +61,17 @@ class TestDynamicForm(TestCase):
         self.assertEquals(type(text.widget), widgets.HelpTextWidget)
         self.assertEquals(text.text, 'Here a Heptext')
 
+    def test_file_field(self):
+        self.form.fields.create(
+            slug='my-file', type_id='file',
+            order=self.form.get_next_field_order()
+        )
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('my-file', form.fields)
+        field = form.fields['my-file']
+        self.assertEqual(type(field), forms.FileField)
+
     def test_title_field(self):
         self.form.fields.create(
             slug='my-title', type_id='title', label='Hello',
