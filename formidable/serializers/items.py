@@ -17,6 +17,11 @@ class ItemListSerializer(NestedListSerializer):
 
         return data
 
+    def to_representation(self, items):
+        return super(ItemListSerializer, self).to_representation(
+            items.order_by('order')
+        )
+
 
 class ItemSerializer(serializers.ModelSerializer):
 
