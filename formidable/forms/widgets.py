@@ -34,8 +34,9 @@ class ItemsWidget(FormidableWidget):
         field = super(ItemsWidget, self).to_formidable(
             formidable, slug, label, help_text, order
         )
-        for key, value in items:
-            field.items.create(key=key, value=value)
+        for order, item in enumerate(items):
+            key, value = item
+            field.items.create(key=key, value=value, order=order)
         return field
 
 
