@@ -48,10 +48,10 @@ form_data_items = {
             {"access_id": "jedi-master", "level": "READONLY"},
             {"access_id": "human", "level": "HIDDEN"},
         ],
-        "items": {
-            "plop": "coin",
-            "tuto": "toto"
-        },
+        "items": [
+            {'key': 'tuto', 'value': 'toto'},
+            {'key': 'plop', 'value': 'coin'},
+        ],
         "multiple": False
     }]
 }

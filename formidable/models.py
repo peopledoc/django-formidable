@@ -42,11 +42,21 @@ class Fieldidable(models.Model):
     multiple = models.BooleanField(default=False)
     order = models.IntegerField()
 
+    def get_next_order(self):
+        """
+        Get the next order to set on the item to arrive.
+        Try to avoid use this method for performance reason.
+        """
+        agg = self.items.aggregate(models.Max('order'))
+        return agg['order__max'] + 1 if agg['order__max'] is not None else 0
+
 
 class Item(models.Model):
     field = models.ForeignKey(Fieldidable, related_name='items')
     key = models.CharField(max_length=256)
     value = models.CharField(max_length=256)
+    order = models.IntegerField()
+    help_text = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return u'{}: {}'.format(self.key, self.value)

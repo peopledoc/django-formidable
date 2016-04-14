@@ -116,7 +116,7 @@ class TestDynamicForm(TestCase):
             order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
-            drop.items.create(key=key, value=key)
+            drop.items.create(key=key, value=key, order=drop.get_next_order())
 
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -134,7 +134,7 @@ class TestDynamicForm(TestCase):
             order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
-            drop.items.create(key=key, value=key)
+            drop.items.create(key=key, value=key, order=drop.get_next_order())
 
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -152,7 +152,9 @@ class TestDynamicForm(TestCase):
             order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
-            field.items.create(key=key, value=key)
+            field.items.create(
+                key=key, value=key, order=field.get_next_order()
+            )
 
         form_class = self.form.get_django_form_class()
         form = form_class()
