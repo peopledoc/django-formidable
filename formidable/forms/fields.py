@@ -1,4 +1,47 @@
 # -*- coding: utf-8 -*-
+"""
+This module provides custom forms fields in order to describe a Formidable
+object as standard django form.
+
+You can find most of the standard django fields :
+
+..autoclass:: CharField
+
+..autoclass:: BooleanField
+
+..autoclass:: IntegerField
+
+..autoclass:: FileField
+
+..autoclass:: DateField
+
+..autoclass:: MultipleChoiceField
+
+..autoclass:: ChoiceField
+
+
+Extra field are allowed to use with FormidableForm, the Format Field. This kind
+of fields are here in order to put format definition inside the form like
+
+.. autoclass:: TitleField
+
+You can add a title inside the rendering
+
+.. autoclass:: HelpTextField
+
+You can add a description inside the form, to comment a block of inputs or
+just to add some comments.
+
+.. autoclass:: SeparatorField
+
+You can add separators between fields to show blocks of fields for example.
+
+Each field comes with its own widget class. By these classes, we are able
+to maintain the type of fields we are deal with. So, if you want to override
+your own field, please, have a look to :mod:`formidable.forms.widgets`
+
+
+"""
 
 from django.forms import fields
 
