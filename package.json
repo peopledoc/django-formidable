@@ -1,0 +1,15 @@
+{
+  "name": "people-slides",
+  "version": "1.0.0",
+  "authors": [
+    "GreatWizard <guillaume.gerard88@gmail.com>"
+  ],
+  "devDependencies": {
+    "broccoli": "^0.16.9",
+    "broccoli-autoprefixer": "^4.1.0",
+    "broccoli-cli": "^1.0.0",
+    "broccoli-funnel": "^1.0.1",
+    "broccoli-merge-trees": "^1.1.1",
+    "broccoli-sass-source-maps": "^1.6.0"
+  }
+}

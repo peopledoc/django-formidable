@@ -1,0 +1,202 @@
+@import 'variables';
+
+@import 'montserrat-webfont/scss/montserrat-webfont';
+@import 'roboto-fontface/css/roboto-fontface.scss';
+@import 'ubuntu-fontface/_ubuntu.scss';
+
+
+$slide-width: 1210px;
+$slide-height: 681px;
+$logo-width: 150px;
+$logo-height: 60px;
+$title-width: $slide-width;
+$title-height: 320px;
+
+
+body {
+  font-family: 'Roboto';
+  font-weight: 400;
+  color: #384046;
+}
+
+// Dropdown at top left of the page allowing you to select a presentation
+.slides-select__small {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3; /* z-index is at 2 for .remark-visible */
+  max-width: 100px;
+  opacity: 0.5;
+}
+
+
+// TYPOGRAPHY
+
+body {
+  line-height: 1.2;
+}
+
+h1, h2, h3 {
+  font-family: 'Montserrat';
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.remark-slide-content h1 {
+  font-size: 3em;
+}
+
+.remark-slide-content h2 {
+  font-size: 2em;
+}
+
+.remark-slide-content h3 {
+  font-size: 1.6em;
+}
+
+
+// CODE
+
+code {
+  border-radius: 4px;
+}
+
+.remark-code,
+.remark-inline-code {
+  font-family: 'Ubuntu Mono';
+}
+
+.remark-code {
+  line-height: 1.3;
+}
+
+
+// ADD LOGO
+
+.template-logo {
+  &:after {
+    content: ' ';
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: $logo-width $logo-height;
+    background-image: url('/img/peopledoc.png');
+    width: $logo-width;
+    height: $logo-height;
+    position: absolute;
+    bottom: 15px;
+    left: ($slide-width - $logo-width) / 2;
+    z-index: -1;
+  }
+}
+
+
+// SLIDES
+
+.remark-slide-scaler {
+  background-color: $template-base-background;
+}
+
+.remark-slide-content {
+  background-color: transparent;
+  width: 100%;
+}
+
+
+// STANDARD SLIDES
+
+.template-base {
+  a, a > code {
+    color: $template-base-link-color;
+  }
+
+  h1 {
+    color: $template-base-h1-color;
+  }
+
+  h2 {
+    color: $template-base-h2-color;
+    margin-bottom: 3rem;
+  }
+}
+
+
+// TITLE SLIDES
+
+.template-title {
+  &.remark-slide-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  h1 {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  h2 {
+    margin: 0.4rem 0 0;
+  }
+
+  h1, h2 {
+    text-transform: uppercase;
+  }
+
+  h1, h2, h3, p {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+
+  // Insert BG image
+  padding-top: $title-height - 72px; // Image height
+
+  &:before {
+    content: ' ';
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: cover;
+    width: $title-width;
+    height: $title-height;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+}
+
+// BG image variations
+.template-title-coffee {
+  &:before {
+    background-image: url('/img/coffee.jpg');
+  }
+}
+
+.template-title-teamwork {
+  &:before {
+    background-image: url('/img/teamwork.jpg');
+  }
+}
+
+.template-title-desk {
+  &:before {
+    background-image: url('/img/desk.jpg');
+  }
+}
+
+.template-title-transition {
+  h1 {
+    color: #fff;
+    background-color: transparent;
+  }
+
+  h2 {
+    color: $template-base-h1-color;
+  }
+
+  &:before {
+    background-color: #2994e5;
+  }
+}
+
+img[alt=twitter] { height: 16px; }
+img[alt=mail] { height: 16px; }
+
