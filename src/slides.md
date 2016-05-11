@@ -29,6 +29,54 @@ class: template-title-coffee
 ---
 template: slide
 
+# Contexte
+
+PeopleDoc => Editieur de logiciel => PeopleAsk => RH
+
+Permet a un employer de remplir des forms spécifiques (mais pas queue ;)
+
+Laisser la main au client de généré ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
+
+---
+template: slide
+
+# Django-formidable
+## Formulaire dynamique
+
+- Toujours fournir du standard (formulaire, validations, rendering)
+
+- Customisation fortes \o/
+
+  - Widget spécifique
+
+  - Validateurs personnalisé
+
+  - Presets
+
+- Builder full python
+
+- Builder full API
+
+```python
+if lol == "tamere":
+```
+
+---
+template: slide
+
+# API
+## Communication vers le monde
+
+- RESTful
+
+- Création / Edition
+
+- Rendering
+
+
+---
+template: slide
+
 # Formidable-UI
 ## Interface
 
@@ -46,6 +94,13 @@ template: slide
   - Saisie 
   - Builder
 
+--
+
+- Integration
+
+  - Copie static
+
+  - Un peu de code pour les parametres et gerer les evenements
 
 ---
 template: slide
@@ -148,20 +203,12 @@ template: slide
 ---
 template: slide
 
-# API
-## Communication vers le monde
+# Voir plus
 
----
-template: slide
+###
 
-# Django-formidable
-## Formulaire dynamique
 
----
-template: slide
-
-# Utils
-## Open source
+### Open source
 
 - ### ...
 
