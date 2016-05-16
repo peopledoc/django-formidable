@@ -1,6 +1,6 @@
 name: title
 layout: true
-class: template-base, template-title, template-logo
+class: template-base, template-title, template-logo-big
 
 ---
 name: slide
@@ -16,15 +16,15 @@ class: template-title-coffee
 
 **Guillaume Camera**
 <br/>
-![twitter](img/twitter.png) @moumoutt3
+![icon](img/twitter.png) @moumoutt3
 <br/>
-![mail](img/mail.png) camera.g@gmail.com
+![icon](img/mail.png) camera.g@gmail.com
 
 **Guillaume Gérard**
 <br/>
-![twitter](img/twitter.png) @ggerard88
+![icon](img/twitter.png) @ggerard88
 <br/>
-![mail](img/mail.png) guillaume.gerard88@gmail.com
+![icon](img/mail.png) guillaume.gerard88@gmail.com
 
 ---
 template: slide
@@ -67,11 +67,13 @@ template: slide
 # API
 ## Communication vers le monde
 
+- Django REST framework
+
 - RESTful
 
-- Création / Edition
+- API de Création / Edition
 
-- Rendering
+- API de récupération de formulaire
 
 
 ---
@@ -222,13 +224,13 @@ class: template-title-desk
 
 **Guillaume Camera**
 <br/>
-![twitter](img/twitter.png) @moumoutt3
+![icon](img/twitter.png) @moumoutt3
 <br/>
-![mail](img/mail.png) camera.g@gmail.com
+![icon](img/mail.png) camera.g@gmail.com
 
 **Guillaume Gérard**
 <br/>
-![twitter](img/twitter.png) @ggerard88
+![icon](img/twitter.png) @ggerard88
 <br/>
-![mail](img/mail.png) guillaume.gerard88@gmail.com
+![icon](img/mail.png) guillaume.gerard88@gmail.com
 

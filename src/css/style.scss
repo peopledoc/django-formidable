@@ -11,6 +11,8 @@ $logo-width: 150px;
 $logo-height: 60px;
 $title-width: $slide-width;
 $title-height: 320px;
+$logo-big-width: 400px;
+$logo-big-height: 160px;
 
 
 body {
@@ -86,6 +88,22 @@ code {
     position: absolute;
     bottom: 15px;
     left: ($slide-width - $logo-width) / 2;
+    z-index: -1;
+  }
+}
+
+.template-logo-big {
+  &:after {
+    content: ' ';
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: $logo-big-width $logo-big-height;
+    background-image: url('/img/peopledoc.png');
+    width: $logo-big-width;
+    height: $logo-big-height;
+    position: absolute;
+    right: 60px;
+    top: $title-height + 60px;
     z-index: -1;
   }
 }
@@ -197,6 +215,4 @@ code {
   }
 }
 
-img[alt=twitter] { height: 16px; }
-img[alt=mail] { height: 16px; }
-
+img[alt=icon] { height: 16px; }
