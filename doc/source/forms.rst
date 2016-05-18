@@ -159,7 +159,7 @@ And you can get the final django form class from the formidable object
 
 .. code-block:: python
 
-    >>> form_class = formidable.get_django_class(role='padawan')
+    >>> form_class = formidable.get_django_form_class(role='padawan')
 
 For padawan role, the first_name is required
 
