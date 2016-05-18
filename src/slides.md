@@ -137,7 +137,7 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Form Builder
+## Form Builder - Création
 
 - ### Barre d'outils (champs)
 
@@ -162,20 +162,11 @@ template: slide
 
   - ### Accès selon les contextes
 
-
 ---
 template: slide
 
 # Formidable-UI
-## Form Builder
-
-[Builder]
-
----
-template: slide
-
-# Formidable-UI
-## Preset de Validation
+## Form Builder - Preset de Validation
 
 - ### CRUD sur les presets
 
@@ -189,15 +180,7 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Preset de Validation
-
-[Validations]
-
----
-template: slide
-
-# Formidable-UI
-## Preview
+## Preview / Saisie utilisateur
 
 - ### Affichage selon le contexte
 
@@ -216,9 +199,17 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Preview
+## Démo Form Builder
 
-[Preview]
+[Démo]
+
+---
+template: slide
+
+# Formidable-UI
+## Démo Saisie
+
+[Démo]
 
 ---
 template: slide
@@ -237,9 +228,13 @@ template: slide
   $(document).ready(function() {
       Formidable.on('form-is-valid', function(status) {
         // actions
+        console.log(status);
       });
       Formidable.start({
         // options
+        component: 'builder',
+        namespace: 'api',
+        lang: 'fr'
       });
   });
 </script>
