@@ -3,13 +3,18 @@ layout: true
 class: template-base, template-title, template-logo-big
 
 ---
+name: transition
+layout: true
+class: template-base, template-title, template-logo
+
+---
 name: slide
 layout: true
 class: template-base, template-slide, template-logo
 
 ---
 template: title
-class: template-title-coffee
+class: template-title-forms
 
 # Projet Formidable
 ## Django && EmberJS
@@ -38,6 +43,13 @@ Permet a un employer de remplir des forms spécifiques (mais pas queue ;)
 Laisser la main au client de généré ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
 
 ---
+template: transition
+class: template-title-transition
+
+# Django-formidable
+## Communication vers le monde
+
+---
 template: slide
 
 # Django-formidable
@@ -62,6 +74,14 @@ if lol == "tamere":
 ```
 
 ---
+template: transition
+class: template-title-bees
+
+# API
+## Communication vers le monde
+
+
+---
 template: slide
 
 # API
@@ -75,6 +95,13 @@ template: slide
 
 - API de récupération de formulaire
 
+
+---
+template: transition
+class: template-title-transition
+
+# Formidable-UI
+## Une histoire de JS
 
 ---
 template: slide
@@ -217,7 +244,7 @@ template: slide
 
 ---
 template: title
-class: template-title-desk
+class: template-title-poney, template-logo-big
 
 # Merci à vous !
 ## Des questions ?
