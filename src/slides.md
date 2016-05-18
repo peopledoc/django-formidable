@@ -229,6 +229,7 @@ template: slide
 ```html
 <link rel="stylesheet" href=".../vendor.css">
 <link rel="stylesheet" href=".../formidable.css">
+
 <script src=".../vendor.js"></script>
 <script src=".../formidable.js"></script>
 
