@@ -31,19 +31,108 @@ template: slide
 
 # Contexte
 
-PeopleDoc => Editieur de logiciel => PeopleAsk => RH
+- PeopleDoc est un éditieur de logiciel R.H.
 
-Permet a un employer de remplir des forms spécifiques (mais pas queue ;)
+- PeopleAsk, un produit de ticketing
 
-Laisser la main au client de généré ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
+- Permet a un employer de remplir des forms spécifiques (mais pas seulement)
+
+- Laisser la main au client de générer ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
 
 ---
 template: slide
 
-# Django-formidable
-## Formulaire dynamique
+# Pourquoi django-formidable ?
 
-- Toujours fournir du standard (formulaire, validations, rendering)
+- Contraintes métiers fortes
+
+    - Validations Métiers
+
+    - Restriction d'accès
+
+    - Simplicité d'utilisation (R.H.)
+
+- Existant n'est pas complet (Role, ...)
+
+- Besoin d'intégration (UI, API..) pour **nos** applications
+
+
+---
+template: slide
+
+# django-formidable
+## A la recherche des standards
+
+- Application Django
+
+- Un modèle de référence formidable.models.Formidable
+
+- Méthode disponible pour récupérer un django form standard
+
+---
+template: slide
+
+# django-formidable
+## A la recherche des standards
+### Des formulaires Django
+
+
+```python
+
+    >>> formidable = Formidable.objects.get(pk=42)
+    >>> form_class = formidable.get_django_form_class(role='jedi')
+    >>> form = form_class(data={'last_name': 'Kenobi'})
+    >>> isinstance(form, forms.Form)
+    True
+    >>> form.is_valid()
+    False
+    >>> form = form_class(data={'first_name': 'Obiwan', 'last_name': 'Kenobi'})
+    >>> form.is_valid()
+    True
+
+```
+
+---
+template: slide
+
+# django-formidable
+## A la recherche des standards
+### Des formulaires Django
+
+
+```python
+
+    {{ form.as_p }}
+
+```
+
+
+---
+template: slide
+
+# django-formidable
+## Customisation
+### L'usine à champs
+
+- Widgets par défaut django
+
+- Possibilité d'intégerer des widgets spécifiques
+
+```python
+
+    from formidable.forms.field_builder import FieldBuilder
+
+    class MyFieldFactory()
+
+
+```
+
+
+---
+template: slide
+
+# django-formidable
+## 
 
 - Customisation fortes \o/
 
