@@ -5,19 +5,26 @@ object as standard django form.
 
 You can find most of the standard django fields :
 
-..autoclass:: CharField
+.. autoclass:: CharField
+    :members:
 
-..autoclass:: BooleanField
+.. autoclass:: BooleanField
+    :members:
 
-..autoclass:: IntegerField
+.. autoclass:: IntegerField
+    :members:
 
-..autoclass:: FileField
+.. autoclass:: FileField
+    :members:
 
-..autoclass:: DateField
+.. autoclass:: DateField
+    :members:
 
-..autoclass:: MultipleChoiceField
+.. autoclass:: MultipleChoiceField
+    :members:
 
-..autoclass:: ChoiceField
+.. autoclass:: ChoiceField
+    :members:
 
 
 Extra field are allowed to use with FormidableForm, the Format Field. This kind
@@ -25,16 +32,16 @@ of fields are here in order to put format definition inside the form like
 
 .. autoclass:: TitleField
 
-You can add a title inside the rendering
+    You can add a title inside the rendering
 
 .. autoclass:: HelpTextField
 
-You can add a description inside the form, to comment a block of inputs or
-just to add some comments.
+    You can add a description inside the form, to comment a block of inputs or
+    just to add some comments.
 
 .. autoclass:: SeparatorField
 
-You can add separators between fields to show blocks of fields for example.
+    You can add separators between fields to show blocks of fields for example.
 
 Each field comes with its own widget class. By these classes, we are able
 to maintain the type of fields we are deal with. So, if you want to override

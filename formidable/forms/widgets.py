@@ -1,4 +1,48 @@
 # -*- coding: utf-8 -*-
+"""
+Most of django widget are defined here. This widgets are usable with
+any fields defined in :mod:`formidable.forms.fields`. This widget are here
+in order to use with :class:`formidable.forms.FormidableForm` declaration.
+So do not use it directly as normal widget for rendering.
+
+The main goal of the Widget class declaration is to provide a reliable type
+of associated field.
+
+
+.. autoclass:: FormidableWidget
+    :members:
+
+.. autoclass:: TextInput
+
+.. autoclass:: Textarea
+
+.. autoclass:: ItemsWidget
+
+.. autoclass:: ItemsWidgetMultiple
+
+.. autoclass:: Select
+
+.. autoclass:: RadioSelect
+
+.. autoclass:: SelectMultiple
+
+.. autoclass:: CheckboxInput
+
+.. autoclass:: CheckboxSelectMultiple
+
+.. autoclass:: DateInput
+
+.. autoclass:: NumberInput
+
+.. autoclass:: ClearableFileInput
+
+.. autoclass:: SeparatorWidget
+
+.. autoclass:: TitleWidget
+
+.. autoclass:: HelpTextWidget
+
+"""
 
 from django.forms import widgets
 
@@ -6,11 +50,22 @@ from markdown import markdown
 
 
 class FormidableWidget(widgets.Widget):
+    """
+    Base Widget define, implements the basic method to create a field in
+    database associated with a form.
+    """
 
     type_id = None
+    """define the type of the field """
     multiple = False
+    """ If true, the widget is multiple selection items """
 
     def to_formidable(self, formidable, slug, label, help_text, order):
+        """
+        Create the associated in database with the formidable reference object.
+        :attr:`slug`, :attr:`label`, :attr:`help_text` come from the
+        :class:`formidable.forms.fields.Field` associated object.
+        """
         return formidable.fields.create(
             slug=slug, label=label, type_id=self.type_id,
             help_text=help_text, multiple=self.multiple,

@@ -11,9 +11,16 @@ class Formidable(models.Model):
     label = models.CharField(max_length=256)
     description = models.TextField()
 
-    def get_django_form_class(self, role=None):
+    def get_django_form_class(self, role=None, field_factory=None):
+        """
+        return the django form class assiociated to the formidable definition.
+        If no role_id is provided all the field are fetch with ``EDITABLE``
+        access.
+        :params role: Fetch defined access for the specified role.
+        :params field_factory: Custom field factory if needed.
+        """
         from formidable.forms import get_dynamic_form_class
-        return get_dynamic_form_class(self, role)
+        return get_dynamic_form_class(self, role, field_factory)
 
     def get_next_field_order(self):
         """
