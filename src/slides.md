@@ -21,15 +21,15 @@ class: template-title-forms
 
 **Guillaume Camera**
 <br/>
-![icon](img/twitter.png) @moumoutt3
+![icon-16](img/twitter.png) @moumoutt3
 <br/>
-![icon](img/mail.png) camera.g@gmail.com
+![icon-16](img/mail.png) camera.g@gmail.com
 
 **Guillaume Gérard**
 <br/>
-![icon](img/twitter.png) @ggerard88
+![icon-16](img/twitter.png) @ggerard88
 <br/>
-![icon](img/mail.png) guillaume.gerard88@gmail.com
+![icon-16](img/mail.png) guillaume.gerard88@gmail.com
 
 ---
 template: slide
@@ -87,13 +87,21 @@ template: slide
 # API
 ## Communication vers le monde
 
-- Django REST framework
+- ### Django REST framework
 
-- RESTful
 
-- API de Création / Edition
+--
 
-- API de récupération de formulaire
+- ### RESTful
+
+
+--
+
+- ### Deux namespaces :
+
+  - ### API de Création / Edition de formulaire
+
+  - ### API de récupération de formulaire selon un contexte
 
 
 ---
@@ -109,27 +117,21 @@ template: slide
 # Formidable-UI
 ## Interface
 
-- ### Framework EmberJS
-
-
---
-
 - ### Utilise l'API
 
 
 --
 
-- ### Deux composants: 
-  - Saisie 
-  - Builder
+- ### Framework EmberJS ![ember](img/emberjs.png)
+
 
 --
 
-- Integration
+- ### Deux composants: 
 
-  - Copie static
+  - ### Constructeur de formulaire
 
-  - Un peu de code pour les parametres et gerer les evenements
+  - ### Saisie utilisateur
 
 ---
 template: slide
@@ -137,24 +139,27 @@ template: slide
 # Formidable-UI
 ## Form Builder
 
-- ### Barre de composant
+- ### Barre d'outils (champs)
 
 
 --
 
-- ### Drag'n'drop pour ajout et tri
+- ### Drag'n'drop
 
 
 --
 
-- ### Mise en page
+- ### Templates spécifiques
 
 
 --
 
-- ### Paramètres pour chaque champ
+- ### Paramètres :
+
   - ### Affichage && saisie
+
   - ### Validation simple
+
   - ### Accès selon les contextes
 
 
@@ -172,18 +177,12 @@ template: slide
 # Formidable-UI
 ## Preset de Validation
 
-- ### Ajout des validations
-
-
-- ### Supression des validations
-
-
-- ### Edition des validations
+- ### CRUD sur les presets
 
 
 --
 
-- ### Chaque preset est affiché sous forme de formulaire
+- ### Preset => Mini formulaire dynamique
 
 
 ---
@@ -200,17 +199,17 @@ template: slide
 # Formidable-UI
 ## Preview
 
-- ### Affichage des formulaire avec validations
+- ### Affichage selon le contexte
 
 
 --
 
-- ### Changement de contexte
+- ### Validations sur les champs
 
 
 --
 
-- ### Vérifier que vos formulaires sont correct
+- ### Vérifier que les saisies sont valides
 
 
 ---
@@ -225,9 +224,25 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Preview
+## Intégration
 
-[Inputs]
+```html
+<link rel="stylesheet" href=".../vendor.css">
+<link rel="stylesheet" href=".../formidable.css">
+<script src=".../vendor.js"></script>
+<script src=".../formidable.js"></script>
+
+<script>
+  $(document).ready(function() {
+      Formidable.on('form-is-valid', function(status) {
+        // actions
+      });
+      Formidable.start({
+        // options
+      });
+  });
+</script>
+```
 
 ---
 template: slide
@@ -251,13 +266,12 @@ class: template-title-poney, template-logo-big
 
 **Guillaume Camera**
 <br/>
-![icon](img/twitter.png) @moumoutt3
+![icon-16](img/twitter.png) @moumoutt3
 <br/>
-![icon](img/mail.png) camera.g@gmail.com
+![icon-16](img/mail.png) camera.g@gmail.com
 
 **Guillaume Gérard**
 <br/>
-![icon](img/twitter.png) @ggerard88
+![icon-16](img/twitter.png) @ggerard88
 <br/>
-![icon](img/mail.png) guillaume.gerard88@gmail.com
-
+![icon-16](img/mail.png) guillaume.gerard88@gmail.com

@@ -215,4 +215,10 @@ code {
   }
 }
 
-img[alt=icon] { height: 16px; }
+img[alt=icon-16] { height: 16px; }
+img[alt=ember] {
+  height: 200px;
+  position: absolute;
+  top: 160px;
+  right: 160px;
+}
