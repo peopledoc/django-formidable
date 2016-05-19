@@ -47,7 +47,7 @@ template: slide
 <br/>
 --
 
-- ### Permet a un employer de remplir des forms spécifiques (mais pas seulement)
+- ### Permet à un employé de remplir des forms spécifiques (mais pas seulement)
 
 <br/>
 
@@ -60,7 +60,7 @@ template: transition
 class: template-title-transition
 
 # django-formidable
-## Les poneys dans tout ses états
+## Des poneys dans tout leurs états
 
 ---
 template: slide
@@ -121,7 +121,7 @@ template: slide
 <br/>
 --
 
-- ### Gestion des accèss par rôle
+- ### Gestion des accès par rôle
 
   - #### EDITABLE
   - #### REQUIRED
