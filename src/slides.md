@@ -594,12 +594,17 @@ template: slide
 
 - #### compat django1.8 , python2.7 => python3.2
 
+<br/>
+
 - #### Not Prod-Ready
 
 
 ### Open source
 
-- #### Now ! https://github.com/peopledoc/django-formidable/settings
+- #### GPLv3
+<br/>
+
+- #### <a href=" https://github.com/peopledoc/django-formidable/settings">Now !</a>
 
 ---
 template: title
