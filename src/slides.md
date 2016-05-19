@@ -114,7 +114,7 @@ template: slide
 template: slide
 
 # django-formidable
-## Gestions des accés
+## Gestions des accès
 
 - ### Définitions des rôles par applications
 
