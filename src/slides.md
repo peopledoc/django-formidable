@@ -590,21 +590,21 @@ template: slide
 
 # Voir plus
 
-### Warning
+### Warning ![icon-32](img/warning.png)
 
 - #### compat django1.8 , python2.7 => python3.2
 
-<br/>
 
 - #### Not Prod-Ready
 
+<br />
 
 ### Open source
 
 - #### GPLv3
-<br/>
 
-- #### <a href=" https://github.com/peopledoc/django-formidable/settings">Now !</a>
+
+- #### <a target="_blank" href=" https://github.com/peopledoc/django-formidable">Now !</a>
 
 ---
 template: title
