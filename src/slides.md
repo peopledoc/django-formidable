@@ -233,12 +233,12 @@ template: slide
 
 - ### Django REST framework
 
-
+<br />
 --
 
 - ### RESTful
 
-
+<br />
 --
 
 - ### Deux namespaces :
@@ -259,16 +259,17 @@ class: template-title-transition
 template: slide
 
 # Formidable-UI
-## Interface
+## Interfaces
 
 - ### Utilise l'API
 
 
+<br />
 --
 
 - ### Framework EmberJS ![ember](img/emberjs.png)
 
-
+<br />
 --
 
 - ### Deux composants: 
@@ -281,21 +282,19 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Form Builder - Création
+## Création
 
 - ### Barre d'outils (champs)
 
-
+<br />
 --
 
 - ### Drag'n'drop
 
 
---
-
 - ### Templates spécifiques
 
-
+<br />
 --
 
 - ### Paramètres :
@@ -310,12 +309,9 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Form Builder - Preset de Validation
+## Presets
 
 - ### CRUD sur les presets
-
-
---
 
 - ### Preset => Mini formulaire dynamique
 
@@ -328,32 +324,15 @@ template: slide
 
 - ### Affichage selon le contexte
 
-
+<br />
 --
 
 - ### Validations sur les champs
 
-
+<br />
 --
 
 - ### Vérifier que les saisies sont valides
-
-
----
-template: slide
-
-# Formidable-UI
-## Démo Form Builder
-
-[Démo]
-
----
-template: slide
-
-# Formidable-UI
-## Démo Saisie
-
-[Démo]
 
 ---
 template: slide
