@@ -55,6 +55,12 @@ template: slide
 
 - ### Laisser la main au client de générer ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
 
+---
+template: transition
+class: template-title-transition
+
+# django-formidable
+## Les poneys dans tout ses états
 
 ---
 template: slide
@@ -102,7 +108,6 @@ template: slide
 --
 
 - ### Méthode disponible pour récupérer un django form standard
-
 ---
 template: transition
 class: template-title-transition
@@ -195,7 +200,7 @@ template: slide
   - #### Ècrite en python
   - #### Ajout de validations métiers personnalisées
 
---
+---
 template: slide
 
 # django-formidable
