@@ -478,7 +478,7 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Presets
+## Validations Globales (Presets)
 
 - ### CRUD sur les presets
 
@@ -521,11 +521,12 @@ template: slide
 ## Intégration
 
 ```html
-<link rel="stylesheet" href=".../vendor.css">
-<link rel="stylesheet" href=".../formidable.css">
+<link rel="stylesheet" href="vendor.css">
+<link rel="stylesheet" href="formidable.css">
+<script src="vendor.js"></script>
+<script src="formidable.js"></script>
 
-<script src=".../vendor.js"></script>
-<script src=".../formidable.js"></script>
+<div id="formidable"></div>
 
 <script>
   $(document).ready(function() {
