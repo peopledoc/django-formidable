@@ -550,13 +550,16 @@ template: slide
 
 # Voir plus
 
-###
+### Warning
+
+- #### compat django1.8 , python2.7 => python3.2
+
+- #### Not Prod-Ready
 
 
 ### Open source
 
-- ### ...
-
+- #### Now ! https://github.com/peopledoc/django-formidable/settings
 
 ---
 template: title
