@@ -47,7 +47,7 @@ template: slide
 <br/>
 --
 
-- ### Permet a un employer de remplir des forms spécifiques (mais pas seulement)
+- ### Permet à un employé de remplir des forms spécifiques (mais pas seulement)
 
 <br/>
 
@@ -60,7 +60,7 @@ template: transition
 class: template-title-transition
 
 # django-formidable
-## Les poneys dans tout ses états
+## Des poneys dans tout leurs états
 
 ---
 template: slide
@@ -114,14 +114,14 @@ template: slide
 template: slide
 
 # django-formidable
-## Gestions des accés
+## Gestions des accès
 
 - ### Définitions des rôles par applications
 
 <br/>
 --
 
-- ### Gestion des accèss par rôle
+- ### Gestion des accès par rôle
 
   - #### EDITABLE
   - #### REQUIRED
@@ -331,16 +331,19 @@ template: slide
 <br />
 --
 
-- ### RESTful
+- ### Deux cas d'utilisations :
 
-<br />
---
+  - ### Création / Edition de formulaire
 
-- ### Deux namespaces :
+  - ### Récupération de formulaire selon un contexte
 
-  - ### API de Création / Edition de formulaire
+---
+template: slide
 
-  - ### API de récupération de formulaire selon un contexte
+# API
+## Communication vers le monde
+
+![slide-api](img/api.png)
 
 
 ---
@@ -475,7 +478,7 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Presets
+## Validations Globales (Presets)
 
 - ### CRUD sur les presets
 
@@ -518,11 +521,12 @@ template: slide
 ## Intégration
 
 ```html
-<link rel="stylesheet" href=".../vendor.css">
-<link rel="stylesheet" href=".../formidable.css">
+<link rel="stylesheet" href="vendor.css">
+<link rel="stylesheet" href="formidable.css">
+<script src="vendor.js"></script>
+<script src="formidable.js"></script>
 
-<script src=".../vendor.js"></script>
-<script src=".../formidable.js"></script>
+<div id="formidable"></div>
 
 <script>
   $(document).ready(function() {
@@ -534,7 +538,8 @@ template: slide
         // options
         component: 'builder',
         namespace: 'api',
-        lang: 'fr'
+        lang: 'fr',
+        [ ... ]
       });
   });
 </script>
