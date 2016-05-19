@@ -237,6 +237,76 @@ template: slide
 ```
 
 ---
+template: slide
+
+# django-formidable
+## API Python
+
+- ### Ecrire son objet formidable comme en django
+
+<br/>
+--
+
+- ### Utilisation des objects formidables
+
+<br/>
+--
+
+- ### Calquer sur les fields django
+
+<br/>
+--
+- ### Avec les options formidable
+
+
+---
+template: slide
+
+
+# django-formidable
+## API Python
+
+
+```python
+
+    from formidable.forms import FormidableForm
+    from formidable.forms import fields
+
+    class PadawanSubscriptionForm(FormidableForm):
+
+        first_name = fields.CharField(accesses={
+            'padawan': 'REQUIRED',
+            'jedi': 'READ_ONLY',
+        })
+        last_name = fields.CharField(
+            'padawan': 'REQUIRED',
+            'jedi': 'READ_ONLY',
+        )
+        accepted = fields.BooleanField(
+            'padawan': 'HIDDEN',
+            'jedi': 'REQUIRED',
+        )
+
+
+```
+
+---
+template: slide
+
+# django-formidable
+## API Python
+
+
+```python
+
+    >>> formidable = PadawanSubscriptionForm.to_formidable(label='Subscription Form')
+    >>> padawan_form_class = formidable.get_django_form_class(role='padawan')
+    >>> 'accepted' in padawan_form_class.declared_fields
+    False
+
+```
+
+---
 template: transition
 class: template-title-bees
 
