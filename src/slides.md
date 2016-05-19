@@ -177,13 +177,13 @@ template: slide
 ```python
     from formidable.forms import field_builder
 
-    class MyTextFieldFactory(field_builder.TextFieldBuilder):
+    class MyTextFieldBuilder(field_builder.TextFieldBuilder):
         widget_class = B3Textarea
 
 
     class MyFormFieldFactory(field_builder.FormFieldFactory):
         field_maps.update({
-            'text': MyTextFieldFactory,
+            'text': MyTextFieldBuilder,
         })
 
     form_class = formidable.get_django_form_class(field_factory=MyFormFieldFactory)
