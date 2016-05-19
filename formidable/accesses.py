@@ -28,11 +28,11 @@ def get_accesses():
     it in order to return the result.
     The method has to return a list of Access object, the method check that.
     """
-    module, meth_name = settings.FORMIDABLE_ACCESSES_LOADER.rsplit('.', 1)
+    module, meth_name = settings.FORMIDABLE_ACCESS_RIGHTS_LOADER.rsplit('.', 1)
     mod = importlib.import_module(module, [meth_name])
     meth = getattr(mod, meth_name)
     res = meth()
-    assert type(res) == list, 'FORMIDABLE_ACCESSES_LOADER has to return a list'
+    assert type(res) == list, 'FORMIDABLE_ACCESS_RIGHTS_LOADER has to return a list'
     for access in res:
         assert type(access) == AccessObject, u'access must be AccessObject'
     return res
