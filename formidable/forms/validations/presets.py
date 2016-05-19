@@ -22,11 +22,11 @@ presets_register = PresetsRegister()
 class PresetsMetaClass(type):
     """
     Build a new class of Presets.
-    Check if all needed attribute are declared inside the class
-    (slug, label, description, default_message) and Parameters
-    define through MetaParameters inside class.
-    Collect all object declared as arguments on put it inside a specific
-    dictionary (as declared_field in django form).
+    Check that all needed attributes are declared inside the class
+    (slug, label, description, default_message) and that Parameters
+    are defined through MetaParameters inside the class.
+    Collect all objects declared as arguments and put them inside a specific
+    dictionary (as with declared_field in a Django form).
     Finally, register the built class with its slug in presets_register.
     """
 
@@ -46,7 +46,7 @@ class PresetsMetaClass(type):
 
         _declared_arguments = {}
 
-        # Separeted the arguments to injected inside a specific dictionary
+        # Separate the arguments to inject inside a specific dictionary
         for slug, arg in attrs['MetaParameters'].__dict__.items():
             if isinstance(arg, PresetArgument):
                 arg.set_slug(slug)
@@ -76,7 +76,7 @@ class PresetArgument(object):
 
     def set_slug(self, slug):
         """
-        Set a slug only if the original slug is no set before
+        Set a slug only if the original slug is not already previously set.
         """
         if self.slug is None:
             self.slug = slug
@@ -146,8 +146,8 @@ class ConfirmationPresets(Presets):
 
     slug = 'confirmation'
     label = 'Confirmation'
-    description = "Be sure two fields are exacly the same value"
-    default_message = "{left} are not equals to {right}"
+    description = "Ensure both fields are identical"
+    default_message = "{left} is not equal to {right}"
 
     class MetaParameters:
         left = PresetFieldArgument('Reference', help_text='field to compare')

@@ -75,7 +75,7 @@ class GTValidator(FormidableValidator, validators.BaseValidator):
 class LTValidator(FormidableValidator, validators.BaseValidator):
 
     type = 'LT'
-    message = _("Ensure this field is lesser than %(limit_value)s")
+    message = _("Ensure this field is less than %(limit_value)s")
 
     def clean(self, x):
         return x

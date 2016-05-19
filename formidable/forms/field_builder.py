@@ -205,8 +205,8 @@ class FormFieldFactory(object):
     @classmethod
     def produce(cls, field, role=None):
         """
-        Given a :class:`formidable.models.Fieldidable`, the method returns
-        a :class:`django.forms.Field` instance according to the type_id,
+        Given a :class:`formidable.models.Fieldidable`, return a
+        :class:`django.forms.Field` instance according to the type_id,
         validations and rules.
         """
         builder = cls.field_map[field.type_id](field)

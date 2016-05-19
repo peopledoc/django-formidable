@@ -24,15 +24,15 @@ class AccessObject(object):
 
 def get_accesses():
     """
-    Load the method defined in the settings :attr:`ACCESS_LOADER`, and excute
+    Load the method defined in the settings :attr:`ACCESS_LOADER`, and execute
     it in order to return the result.
-    The method has to return a list of Access object, the method check that.
+    The method checks to ensure it returns a list of Access objects.
     """
     module, meth_name = settings.FORMIDABLE_ACCESS_RIGHTS_LOADER.rsplit('.', 1)
     mod = importlib.import_module(module, [meth_name])
     meth = getattr(mod, meth_name)
     res = meth()
-    assert type(res) == list, 'FORMIDABLE_ACCESS_RIGHTS_LOADER has to return a list'
+    assert type(res) == list, 'FORMIDABLE_ACCESS_RIGHTS_LOADER has to return a list'  # noqa
     for access in res:
         assert type(access) == AccessObject, u'access must be AccessObject'
     return res
