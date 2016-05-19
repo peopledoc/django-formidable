@@ -624,3 +624,5 @@ class: template-title-poney, template-logo-big
 ![icon-16](img/twitter.png) @ggerard88
 <br/>
 ![icon-16](img/mail.png) guillaume.gerard88@gmail.com
+
+###<center><font color="red">P.-S.: ON RECRUTE!!!</font></center>
