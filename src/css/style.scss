@@ -182,21 +182,21 @@ code {
 }
 
 // BG image variations
-.template-title-coffee {
+.template-title-forms {
   &:before {
-    background-image: url('/img/coffee.jpg');
+    background-image: url('/img/forms.jpg');
   }
 }
 
-.template-title-teamwork {
+.template-title-bees {
   &:before {
-    background-image: url('/img/teamwork.jpg');
+    background-image: url('/img/bees.jpg');
   }
 }
 
-.template-title-desk {
+.template-title-poney {
   &:before {
-    background-image: url('/img/desk.jpg');
+    background-image: url('/img/poney.jpg');
   }
 }
 
@@ -215,4 +215,10 @@ code {
   }
 }
 
-img[alt=icon] { height: 16px; }
+img[alt=icon-16] { height: 16px; }
+img[alt=ember] {
+  height: 200px;
+  position: absolute;
+  top: 160px;
+  right: 160px;
+}

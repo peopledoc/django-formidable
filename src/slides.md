@@ -3,28 +3,33 @@ layout: true
 class: template-base, template-title, template-logo-big
 
 ---
+name: transition
+layout: true
+class: template-base, template-title, template-logo
+
+---
 name: slide
 layout: true
 class: template-base, template-slide, template-logo
 
 ---
 template: title
-class: template-title-coffee
+class: template-title-forms
 
 # Projet Formidable
 ## Django && EmberJS
 
 **Guillaume Camera**
 <br/>
-![icon](img/twitter.png) @moumoutt3
+![icon-16](img/twitter.png) @moumoutt3
 <br/>
-![icon](img/mail.png) camera.g@gmail.com
+![icon-16](img/mail.png) camera.g@gmail.com
 
 **Guillaume Gérard**
 <br/>
-![icon](img/twitter.png) @ggerard88
+![icon-16](img/twitter.png) @ggerard88
 <br/>
-![icon](img/mail.png) guillaume.gerard88@gmail.com
+![icon-16](img/mail.png) guillaume.gerard88@gmail.com
 
 ---
 template: slide
@@ -97,6 +102,13 @@ template: slide
 --
 
 - ### Méthode disponible pour récupérer un django form standard
+
+---
+template: transition
+class: template-title-transition
+
+# Django-formidable
+## Communication vers le monde
 
 ---
 template: slide
@@ -217,19 +229,42 @@ template: slide
 ```
 
 ---
+template: transition
+class: template-title-bees
+
+# API
+## Communication vers le monde
+
+
+---
 template: slide
 
 # API
 ## Communication vers le monde
 
-- Django REST framework
+- ### Django REST framework
 
-- RESTful
 
-- API de Création / Edition
+--
 
-- API de récupération de formulaire
+- ### RESTful
 
+
+--
+
+- ### Deux namespaces :
+
+  - ### API de Création / Edition de formulaire
+
+  - ### API de récupération de formulaire selon un contexte
+
+
+---
+template: transition
+class: template-title-transition
+
+# Formidable-UI
+## Une histoire de JS
 
 ---
 template: slide
@@ -237,125 +272,128 @@ template: slide
 # Formidable-UI
 ## Interface
 
-- ### Framework EmberJS
-
-
---
-
 - ### Utilise l'API
 
 
 --
 
-- ### Deux composants: 
-  - Saisie 
-  - Builder
+- ### Framework EmberJS ![ember](img/emberjs.png)
+
 
 --
 
-- Integration
+- ### Deux composants: 
 
-  - Copie static
+  - ### Constructeur de formulaire
 
-  - Un peu de code pour les parametres et gerer les evenements
+  - ### Saisie utilisateur
 
 ---
 template: slide
 
 # Formidable-UI
-## Form Builder
+## Form Builder - Création
 
-- ### Barre de composant
-
-
---
-
-- ### Drag'n'drop pour ajout et tri
+- ### Barre d'outils (champs)
 
 
 --
 
-- ### Mise en page
+- ### Drag'n'drop
 
 
 --
 
-- ### Paramètres pour chaque champ
+- ### Templates spécifiques
+
+
+--
+
+- ### Paramètres :
+
   - ### Affichage && saisie
+
   - ### Validation simple
+
   - ### Accès selon les contextes
 
-
 ---
 template: slide
 
 # Formidable-UI
-## Form Builder
+## Form Builder - Preset de Validation
 
-[Builder]
-
----
-template: slide
-
-# Formidable-UI
-## Preset de Validation
-
-- ### Ajout des validations
-
-
-- ### Supression des validations
-
-
-- ### Edition des validations
+- ### CRUD sur les presets
 
 
 --
 
-- ### Chaque preset est affiché sous forme de formulaire
+- ### Preset => Mini formulaire dynamique
 
 
 ---
 template: slide
 
 # Formidable-UI
-## Preset de Validation
+## Preview / Saisie utilisateur
 
-[Validations]
-
----
-template: slide
-
-# Formidable-UI
-## Preview
-
-- ### Affichage des formulaire avec validations
+- ### Affichage selon le contexte
 
 
 --
 
-- ### Changement de contexte
+- ### Validations sur les champs
 
 
 --
 
-- ### Vérifier que vos formulaires sont correct
+- ### Vérifier que les saisies sont valides
 
 
 ---
 template: slide
 
 # Formidable-UI
-## Preview
+## Démo Form Builder
 
-[Preview]
+[Démo]
 
 ---
 template: slide
 
 # Formidable-UI
-## Preview
+## Démo Saisie
 
-[Inputs]
+[Démo]
+
+---
+template: slide
+
+# Formidable-UI
+## Intégration
+
+```html
+<link rel="stylesheet" href=".../vendor.css">
+<link rel="stylesheet" href=".../formidable.css">
+
+<script src=".../vendor.js"></script>
+<script src=".../formidable.js"></script>
+
+<script>
+  $(document).ready(function() {
+      Formidable.on('form-is-valid', function(status) {
+        // actions
+        console.log(status);
+      });
+      Formidable.start({
+        // options
+        component: 'builder',
+        namespace: 'api',
+        lang: 'fr'
+      });
+  });
+</script>
+```
 
 ---
 template: slide
@@ -372,20 +410,19 @@ template: slide
 
 ---
 template: title
-class: template-title-desk
+class: template-title-poney, template-logo-big
 
 # Merci à vous !
 ## Des questions ?
 
 **Guillaume Camera**
 <br/>
-![icon](img/twitter.png) @moumoutt3
+![icon-16](img/twitter.png) @moumoutt3
 <br/>
-![icon](img/mail.png) camera.g@gmail.com
+![icon-16](img/mail.png) camera.g@gmail.com
 
 **Guillaume Gérard**
 <br/>
-![icon](img/twitter.png) @ggerard88
+![icon-16](img/twitter.png) @ggerard88
 <br/>
-![icon](img/mail.png) guillaume.gerard88@gmail.com
-
+![icon-16](img/mail.png) guillaume.gerard88@gmail.com
