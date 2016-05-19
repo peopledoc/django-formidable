@@ -108,12 +108,6 @@ template: slide
 --
 
 - ### Méthode disponible pour récupérer un django form standard
----
-template: transition
-class: template-title-transition
-
-# Django-formidable
-## Communication vers le monde
 
 ---
 template: slide
@@ -124,7 +118,6 @@ template: slide
 
 
 ```python
-
     >>> formidable = Formidable.objects.get(pk=42)
     >>> form_class = formidable.get_django_form_class(role='jedi')
     >>> form = form_class(data={'last_name': 'Kenobi'})
@@ -135,7 +128,6 @@ template: slide
     >>> form = form_class(data={'first_name': 'Obiwan', 'last_name': 'Kenobi'})
     >>> form.is_valid()
     True
-
 ```
 
 ---
@@ -147,9 +139,7 @@ template: slide
 
 
 ```python
-
     {{ form.as_p }}
-
 ```
 
 
@@ -165,7 +155,6 @@ template: slide
 - Possibilité d'intégerer de customiser les champs produits
 
 ```python
-
     from formidable.forms import field_builder
 
     class MyTextFieldFactory(field_builder.TextFieldBuilder):
@@ -210,27 +199,22 @@ template: slide
 - On s'assure que salaire + bonus inférieur à 100 000
 
 ```python
-
     from formidable.forms.validations import Presets, PresetValueArgument, PresetFieldArgument
-
 
     class CAC40limitation(Presets):
 
         slug = 'limitation-gain'
         label = 'Limitation du gain total'
-        description = 'S'assurer que les gains ne sont pas trop élévé'
+        description = 'Vérifier que les gains ne sont pas trop élévé'
         message = '{salary} plus {bonus} cannot be greater than {limitation}'
-
 
         class MetaParameters:
             salary = PresetFieldArgument()
             bonus = PresetFieldArgument()
             limitation = PresetValueArgument()
 
-
         def run(self, salary, bonus, limitation):
             return salary + bonus < limitation
-
 ```
 
 ---
