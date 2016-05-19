@@ -31,30 +31,51 @@ template: slide
 
 # Contexte
 
-- PeopleDoc est un éditieur de logiciel R.H.
+- ### PeopleDoc est un éditieur de logiciel R.H.
 
-- PeopleAsk, un produit de ticketing
+<br/>
 
-- Permet a un employer de remplir des forms spécifiques (mais pas seulement)
+--
 
-- Laisser la main au client de générer ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
+- ### PeopleAsk, un produit de ticketing
+
+<br/>
+--
+
+- ### Permet a un employer de remplir des forms spécifiques (mais pas seulement)
+
+<br/>
+
+--
+
+- ### Laisser la main au client de générer ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
+
 
 ---
 template: slide
 
 # Pourquoi django-formidable ?
 
-- Contraintes métiers fortes
+--
 
-    - Validations Métiers
+- ### Contraintes métiers fortes
 
-    - Restriction d'accès
+--
 
-    - Simplicité d'utilisation (R.H.)
+    - #### Validations Métiers
 
-- Existant n'est pas complet (Role, ...)
+    - #### Restriction d'accès
 
-- Besoin d'intégration (UI, API..) pour **nos** applications
+    - #### Simplicité d'utilisation (R.H.)
+
+--
+
+- ### Existant n'est pas complet (Role, ...)
+
+<br/>
+--
+
+- ### Besoin d'intégration (UI, API..) pour **nos** applications
 
 
 ---
@@ -63,11 +84,19 @@ template: slide
 # django-formidable
 ## A la recherche des standards
 
-- Application Django
+- ### Application Django
 
-- Un modèle de référence formidable.models.Formidable
+<br/>
 
-- Méthode disponible pour récupérer un django form standard
+--
+
+- ### Un modèle de référence, formidable.models.Formidable
+
+<br/>
+
+--
+
+- ### Méthode disponible pour récupérer un django form standard
 
 ---
 template: slide
@@ -114,40 +143,77 @@ template: slide
 ## Customisation
 ### L'usine à champs
 
-- Widgets par défaut django
+- Champ django par défaut (CharField, TextField, ...)
 
-- Possibilité d'intégerer des widgets spécifiques
+- Possibilité d'intégerer de customiser les champs produits
 
 ```python
 
-    from formidable.forms.field_builder import FieldBuilder
+    from formidable.forms import field_builder
 
-    class MyFieldFactory()
+    class MyTextFieldFactory(field_builder.TextFieldBuilder):
+        widget_class = B3Textarea
 
+
+    class MyFormFieldFactory(field_builder.FormFieldFactory):
+        field_maps.update({
+            'text': MyTextFieldFactory,
+        })
+
+    form_class = formidable.get_django_form_class(field_factory=MyFormFieldFactory)
 
 ```
-
 
 ---
 template: slide
 
 # django-formidable
-## 
+## Customisation
+### Les validations
 
-- Customisation fortes \o/
+- ### Validations champs à champs
 
-  - Widget spécifique
+  - #### Validateurs django
+  - #### Validateurs supplémentaires pour les dates (is\_age\_under, ...)
 
-  - Validateurs personnalisé
 
-  - Presets
+- ### Validations globales, des presets
 
-- Builder full python
+  - #### Validation plus complexes (Fournit des validations génériques)
+  - #### Ècrite en python
+  - #### Ajout de validations métiers personnalisées
 
-- Builder full API
+--
+template: slide
+
+# django-formidable
+## Customisation
+### Les Validations customs
+
+- On s'assure que salaire + bonus inférieur à 100 000
 
 ```python
-if lol == "tamere":
+
+    from formidable.forms.validations import Presets, PresetValueArgument, PresetFieldArgument
+
+
+    class CAC40limitation(Presets):
+
+        slug = 'limitation-gain'
+        label = 'Limitation du gain total'
+        description = 'S'assurer que les gains ne sont pas trop élévé'
+        message = '{salary} plus {bonus} cannot be greater than {limitation}'
+
+
+        class MetaParameters:
+            salary = PresetFieldArgument()
+            bonus = PresetFieldArgument()
+            limitation = PresetValueArgument()
+
+
+        def run(self, salary, bonus, limitation):
+            return salary + bonus < limitation
+
 ```
 
 ---
