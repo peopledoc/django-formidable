@@ -286,16 +286,85 @@ template: slide
 
 - ### Barre d'outils (champs)
 
+![slide-tools](img/slide_tools.png)
+
+---
+template: slide
+
+# Formidable-UI
+## Création
+
+- ### Barre d'outils (champs)
+
 <br />
---
 
 - ### Drag'n'drop
 
+- ### Templates spécifiques
+
+![slide-tools](img/slide_tools.png)
+
+---
+template: slide
+
+# Formidable-UI
+## Création
+
+- ### Barre d'outils (champs)
+
+<br />
+
+- ### Drag'n'drop
 
 - ### Templates spécifiques
 
 <br />
---
+
+- ### Paramètres :
+
+  - ### Affichage && saisie
+
+![slide-param](img/slide_param1.png)
+
+---
+template: slide
+
+# Formidable-UI
+## Création
+
+- ### Barre d'outils (champs)
+
+<br />
+
+- ### Drag'n'drop
+
+- ### Templates spécifiques
+
+<br />
+
+- ### Paramètres :
+
+  - ### Affichage && saisie
+
+  - ### Validation simple
+
+![slide-param](img/slide_param2.png)
+
+---
+template: slide
+
+# Formidable-UI
+## Création
+
+- ### Barre d'outils (champs)
+
+<br />
+
+- ### Drag'n'drop
+
+- ### Templates spécifiques
+
+<br />
 
 - ### Paramètres :
 
@@ -304,6 +373,8 @@ template: slide
   - ### Validation simple
 
   - ### Accès selon les contextes
+
+![slide-param](img/slide_param3.png)
 
 ---
 template: slide
@@ -316,6 +387,9 @@ template: slide
 - ### Preset => Mini formulaire dynamique
 
 
+![slide-preset](img/slide_preset.png)
+
+
 ---
 template: slide
 
@@ -325,14 +399,22 @@ template: slide
 - ### Affichage selon le contexte
 
 <br />
---
 
 - ### Validations sur les champs
 
 <br />
+
+- ### Vérifier que les saisies
+
+### sont valides
+
 --
 
-- ### Vérifier que les saisies sont valides
+![slide-preview](img/slide_preview1.png)
+
+--
+
+![slide-preview](img/slide_preview2.png)
 
 ---
 template: slide

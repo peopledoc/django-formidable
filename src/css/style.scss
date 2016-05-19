@@ -215,10 +215,39 @@ code {
   }
 }
 
-img[alt=icon-16] { height: 16px; }
+img[alt=icon-16] {
+  height: 16px;
+}
+
 img[alt=ember] {
   height: 200px;
   position: absolute;
   top: 160px;
   right: 160px;
+}
+
+img[alt=slide-tools] {
+  height: 621px;
+  position: absolute;
+  top: 30px;
+  right: 160px;
+}
+
+img[alt=slide-param] {
+  width: 621px;
+  position: absolute;
+  top: 60px;
+  right: 40px;
+}
+
+img[alt=slide-preset] {
+  height: 390px;
+  padding-left: 180px;
+}
+
+img[alt=slide-preview] {
+  width: 621px;
+  position: absolute;
+  top: 150px;
+  right: 20px;
 }
