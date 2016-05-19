@@ -331,16 +331,19 @@ template: slide
 <br />
 --
 
-- ### RESTful
+- ### Deux cas d'utilisations :
 
-<br />
---
+  - ### Création / Edition de formulaire
 
-- ### Deux namespaces :
+  - ### Récupération de formulaire selon un contexte
 
-  - ### API de Création / Edition de formulaire
+---
+template: slide
 
-  - ### API de récupération de formulaire selon un contexte
+# API
+## Communication vers le monde
+
+![slide-api](img/api.png)
 
 
 ---
