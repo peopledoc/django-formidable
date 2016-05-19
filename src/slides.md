@@ -113,7 +113,7 @@ template: slide
 ---
 template: slide
 
-# django-formadible
+# django-formidable
 ## Gestions des accés
 
 - ### Définitions des rôles par applications
