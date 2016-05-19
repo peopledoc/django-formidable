@@ -408,7 +408,9 @@ template: slide
 
 - ### Templates spécifiques
 
-![slide-tools](img/slide_tools.png)
+<video src="videos/builder.mp4" class="video-builder" controls>
+  Votre navigateur n'est pas compatible avec les vidéos, désolé.
+</video>
 
 ---
 template: slide
