@@ -93,21 +93,42 @@ template: slide
 template: slide
 
 # django-formidable
-## A la recherche des standards
+## Kézako
 
-- ### Application Django
-
-<br/>
-
---
-
-- ### Un modèle de référence, formidable.models.Formidable
+- ### Application Django pur.
 
 <br/>
 
 --
 
-- ### Méthode disponible pour récupérer un django form standard
+- ### Permets de créer, d'éditer, de supprimer et d'utiliser des formulaires.
+
+<br/>
+
+--
+
+- ### Plusieurs points d'entrée (API RESTful et python).
+
+
+---
+=======
+template: slide
+
+# django-formadible
+## Gestions des accés
+
+- ### Définitions des rôles par applications
+
+<br/>
+--
+
+- ### Gestion des accèss par rôle
+
+  - #### EDITABLE
+  - #### REQUIRED
+  - #### READ\_ONLY
+  - #### HIDDEN
+
 
 ---
 template: slide
@@ -119,7 +140,7 @@ template: slide
 
 ```python
     >>> formidable = Formidable.objects.get(pk=42)
-    >>> form_class = formidable.get_django_form_class(role='jedi')
+    >>> form_class = formidable.get_django_form_class(role='padawan')
     >>> form = form_class(data={'last_name': 'Kenobi'})
     >>> isinstance(form, forms.Form)
     True
@@ -182,11 +203,13 @@ template: slide
   - #### Validateurs django
   - #### Validateurs supplémentaires pour les dates (is\_age\_under, ...)
 
+<br/>
+--
 
 - ### Validations globales, des presets
 
   - #### Validation plus complexes (Fournit des validations génériques)
-  - #### Ècrite en python
+  - #### Écrite en python
   - #### Ajout de validations métiers personnalisées
 
 ---
@@ -194,9 +217,6 @@ template: slide
 
 # django-formidable
 ## Customisation
-### Les Validations customs
-
-- On s'assure que salaire + bonus inférieur à 100 000
 
 ```python
     from formidable.forms.validations import Presets, PresetValueArgument, PresetFieldArgument
@@ -204,9 +224,9 @@ template: slide
     class CAC40limitation(Presets):
 
         slug = 'limitation-gain'
-        label = 'Limitation du gain total'
-        description = 'Vérifier que les gains ne sont pas trop élévé'
-        message = '{salary} plus {bonus} cannot be greater than {limitation}'
+        label = "Limitation du gain total"
+        description = "S'assurer que les gains ne sont pas trop élévé"
+        message = "salary plus bonus cannot be greater than {limitation}"
 
         class MetaParameters:
             salary = PresetFieldArgument()
