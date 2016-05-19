@@ -9,12 +9,14 @@ var dirs = {
   src: 'src',
   fonts: 'fonts',
   js: 'js',
-  img: 'img'
+  img: 'img',
+  videos: 'videos'
 };
 
 var fontsFormats = ['*.eot', '*.svg', '*.ttf', '*.woff', '*.woff2'];
 var jsFormats = ['*.js'];
 var imagesFormats = ['**/*.png', '**/*.jpg', '**/*.gif', '**/*.svg'];
+var videosFormats = ['**/*.mp4'];
 var htmlFormats = ['*.html', '*.htm'];
 var slidesFormats = ['**/*.md'];
 
@@ -70,6 +72,12 @@ var images = funnel(path.join(dirs.src, dirs.img), {
   destDir: dirs.img
 });
 
+// Images
+var videos = funnel(path.join(dirs.src, dirs.videos), {
+  include: videosFormats,
+  destDir: dirs.videos
+});
+
 // Pages
 var pages = funnel(dirs.src, {
   include: htmlFormats
@@ -89,6 +97,7 @@ module.exports = mergeTrees([
   prefixedCss,
   js,
   images,
+  videos,
   pages,
   slides
 ]);

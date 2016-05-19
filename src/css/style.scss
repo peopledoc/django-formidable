@@ -233,6 +233,13 @@ img[alt=slide-tools] {
   right: 160px;
 }
 
+.video-builder {
+  width: 621px;
+  position: absolute;
+  top: 60px;
+  right: 40px;
+}
+
 img[alt=slide-param] {
   width: 621px;
   position: absolute;
@@ -255,4 +262,20 @@ img[alt=slide-preview] {
 img[alt=slide-api] {
   height: 400px;
   padding-left: 310px;
+}
+
+img[alt=ui] {
+  position: absolute;
+  top: 150px;
+  max-height: 520px;
+  max-width: 800px;
+  left: 300px;
+}
+
+img[alt=ui2] {
+  position: absolute;
+  top: 200px;
+  max-height: 520px;
+  max-width: 800px;
+  left: 200px;
 }

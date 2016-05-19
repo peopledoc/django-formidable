@@ -382,6 +382,14 @@ template: slide
 # Formidable-UI
 ## Création
 
+![ui](img/ui-builder.png)
+
+---
+template: slide
+
+# Formidable-UI
+## Création
+
 - ### Barre d'outils (champs)
 
 ![slide-tools](img/slide_tools.png)
@@ -400,7 +408,9 @@ template: slide
 
 - ### Templates spécifiques
 
-![slide-tools](img/slide_tools.png)
+<video src="videos/builder.mp4" class="video-builder" controls>
+  Votre navigateur n'est pas compatible avec les vidéos, désolé.
+</video>
 
 ---
 template: slide
@@ -480,6 +490,14 @@ template: slide
 # Formidable-UI
 ## Validations Globales (Presets)
 
+![ui2](img/ui-validations.png)
+
+---
+template: slide
+
+# Formidable-UI
+## Validations Globales (Presets)
+
 - ### CRUD sur les presets
 
 - ### Preset => Mini formulaire dynamique
@@ -487,6 +505,14 @@ template: slide
 
 ![slide-preset](img/slide_preset.png)
 
+
+---
+template: slide
+
+# Formidable-UI
+## Preview / Saisie utilisateur
+
+![ui](img/ui-preview.png)
 
 ---
 template: slide
@@ -506,11 +532,25 @@ template: slide
 
 ### sont valides
 
---
-
 ![slide-preview](img/slide_preview1.png)
 
---
+---
+template: slide
+
+# Formidable-UI
+## Preview / Saisie utilisateur
+
+- ### Affichage selon le contexte
+
+<br />
+
+- ### Validations sur les champs
+
+<br />
+
+- ### Vérifier que les saisies
+
+### sont valides
 
 ![slide-preview](img/slide_preview2.png)
 
