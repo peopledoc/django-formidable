@@ -111,7 +111,6 @@ template: slide
 
 
 ---
-=======
 template: slide
 
 # django-formadible
