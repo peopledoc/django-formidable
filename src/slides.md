@@ -247,7 +247,7 @@ template: slide
 <br/>
 --
 
-- ### Utilisation des objects formidables
+- ### Utilisation des objets formidables
 
 <br/>
 --
@@ -256,6 +256,7 @@ template: slide
 
 <br/>
 --
+
 - ### Avec les options formidable
 
 
@@ -303,6 +304,11 @@ template: slide
     >>> padawan_form_class = formidable.get_django_form_class(role='padawan')
     >>> 'accepted' in padawan_form_class.declared_fields
     False
+    >>> 'first_name' in padawan_form_class.declared_fields
+    True
+    >>> field = padawan_form_declared_fields['first_name']
+    >>> field.required
+    True
 
 ```
 
