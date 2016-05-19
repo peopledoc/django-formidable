@@ -538,7 +538,8 @@ template: slide
         // options
         component: 'builder',
         namespace: 'api',
-        lang: 'fr'
+        lang: 'fr',
+        [ ... ]
       });
   });
 </script>
