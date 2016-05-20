@@ -38,18 +38,13 @@ template: slide
 
 - ### PeopleDoc est un éditieur de logiciel R.H.
 
-<br/>
-
 --
 
 - ### PeopleAsk, un produit de ticketing
 
-<br/>
 --
 
 - ### Permet à un employé de remplir des formulaires spécifiques (mais pas seulement)
-
-<br/>
 
 --
 
@@ -69,9 +64,7 @@ template: slide
 
 --
 
-- ### Contraintes métier fortes
-
---
+- ### Contraintes métier fortes :
 
     - #### Validations Métier
 
@@ -79,16 +72,13 @@ template: slide
 
     - #### Simplicité d'utilisation (R.H.)
 
-<br/>
 --
 
 - ### L'existant n'est pas complet (Role, ...)
 
-<br/>
 --
 
 - ### Besoin d'intégration (UI, API..) pour **nos** applications
-
 
 ---
 template: slide
@@ -98,13 +88,9 @@ template: slide
 
 - ### Application Django pur
 
-<br/>
-
 --
 
 - ### Permet de créer, d'éditer, de supprimer et d'utiliser des formulaires
-
-<br/>
 
 --
 
@@ -119,10 +105,9 @@ template: slide
 
 - ### Définition des rôles par application
 
-<br/>
 --
 
-- ### Gestion des accès par rôle
+- ### Gestion des accès par rôle :
 
   - #### EDITABLE
   - #### REQUIRED
@@ -171,9 +156,10 @@ template: slide
 ## Customisation
 ### L'usine à champs
 
-- Champ django par défaut (CharField, TextField, ...)
-
-- Possibilité d'intégrer et de customiser les champs produits
+<ul class="horizontal">
+  <li><h5>Champ django par défaut (CharField, TextField, ...)</h5></li>
+  <li><h5>Possibilité d'intégrer et de customiser les champs produits</h5></li>
+</ul>
 
 ```python
     from formidable.forms import field_builder
@@ -198,19 +184,31 @@ template: slide
 ## Customisation
 ### Les validations
 
-- ### Validations champ à champ
-
-  - #### Validateurs django
-  - #### Validateurs supplémentaires pour les dates (is\_age\_under, ...)
-
-<br/>
+<div class="half">
+ <ul>
+  <li>
+    <h3>Validations champ à champ</h3>
+    <ul>
+      <li><h4>Validateurs django</h4></li>
+      <li><h4>Validateurs supplémentaires pour les dates (is\_age\_under...)</h4></li>
+    </ul>
+  </li>
+ </ul>
+</div>
 --
 
-- ### Validations globales (ou presets)
-
-  - #### Validations plus complexes (On fournit des validations génériques)
-  - #### Écrites en python
-  - #### Ajout de validations métier personnalisées
+<div class="half">
+ <ul>
+  <li>
+    <h3>Validations globales (ou presets)</h3>
+    <ul>
+      <li><h4>Validations plus complexes (On fournit des validations génériques)</h4></li>
+      <li><h4>Écrites en python</h4></li>
+      <li><h4>Ajout de validations métier personnalisées</h4></li>
+    </ul>
+  </li>
+ </ul>
+</div>
 
 ---
 template: slide
@@ -245,21 +243,17 @@ template: slide
 
 - ### Ecrire son objet Formidable comme en django
 
-<br/>
 --
 
 - ### Utiliser des objets Formidable
 
-<br/>
 --
 
 - ### Calquer sur les fields django
 
-<br/>
 --
 
 - ### Avec les options formidable
-
 
 ---
 template: slide
@@ -270,7 +264,6 @@ template: slide
 
 
 ```python
-
     from formidable.forms import FormidableForm
     from formidable.forms import fields
 
@@ -288,8 +281,6 @@ template: slide
             'padawan': 'HIDDEN',
             'jedi': 'REQUIRED',
         )
-
-
 ```
 
 ---
@@ -328,23 +319,17 @@ template: slide
 ## Communication vers le monde
 
 - ### Django REST framework
-
-<br />
 --
 
 - ### Deux cas d'utilisation :
 
-  - ### Création / Edition de formulaires
+  - #### Création / Edition de formulaires
 
-  - ### Récupération de formulaires selon un contexte
+  - #### Récupération de formulaires selon un contexte
 
----
-template: slide
+--
 
-# API
-## Communication vers le monde
-
-![slide-api](img/api.png)
+<img src="img/api.svg" alt="slide-api" class="api"/>
 
 
 ---
@@ -362,24 +347,19 @@ template: slide
 
 - ### Utilisent l'API
 
-
-<br />
 --
 
 - ### Framework EmberJS ![ember](img/emberjs.png)
 
-
 - ### Template Bootstrap3
 
-
-<br />
 --
 
-- ### Deux composants: 
+- ### Deux composants:
 
-  - ### Constructeur de formulaire
+  - #### Constructeur de formulaire
 
-  - ### Saisie utilisateur
+  - #### Saisie utilisateur
 
 ---
 template: slide
@@ -407,8 +387,6 @@ template: slide
 
 - ### Barre d'outils (champs)
 
-<br />
-
 - ### Drag'n'drop
 
 - ### Templates spécifiques
@@ -425,17 +403,13 @@ template: slide
 
 - ### Barre d'outils (champs)
 
-<br />
-
 - ### Drag'n'drop
 
 - ### Templates spécifiques
 
-<br />
-
 - ### Paramètres :
 
-  - ### Affichage && saisie
+  - #### Affichage && saisie
 
 ![slide-param](img/slide_param1.png)
 
@@ -447,19 +421,15 @@ template: slide
 
 - ### Barre d'outils (champs)
 
-<br />
-
 - ### Drag'n'drop
 
 - ### Templates spécifiques
 
-<br />
-
 - ### Paramètres :
 
-  - ### Affichage && saisie
+  - #### Affichage && saisie
 
-  - ### Validation simple
+  - #### Validation simple
 
 ![slide-param](img/slide_param2.png)
 
@@ -471,21 +441,17 @@ template: slide
 
 - ### Barre d'outils (champs)
 
-<br />
-
 - ### Drag'n'drop
 
 - ### Templates spécifiques
 
-<br />
-
 - ### Paramètres :
 
-  - ### Affichage && saisie
+  - #### Affichage && saisie
 
-  - ### Validation simple
+  - #### Validation simple
 
-  - ### Accès selon les contextes
+  - #### Accès selon les contextes
 
 ![slide-param](img/slide_param3.png)
 
@@ -501,12 +467,14 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Validations Globales (Presets)
+## Validations<br/>Globales (Presets)
 
-- ### CRUD sur les presets
-
-- ### Preset => Mini formulaire dynamique
-
+<div class="half">
+  <ul>
+    <li><h3>CRUD sur les presets</h3></li>
+    <li><h3>Preset => Mini formulaire dynamique</h3></li>
+  </ul>
+</div>
 
 ![slide-preset](img/slide_preset.png)
 
@@ -515,7 +483,7 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Preview / Saisie utilisateur
+## Preview /<br/>Saisie utilisateur
 
 ![ui](img/ui-preview.png)
 
@@ -523,19 +491,15 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Preview / Saisie utilisateur
+## Preview / <br/>Saisie utilisateur
 
-- ### Affichage selon le contexte
-
-<br />
-
-- ### Validations sur les champs
-
-<br />
-
-- ### Vérifier que les saisies
-
-### sont valides
+<div class="half">
+  <ul>
+    <li><h3>Affichage selon le contexte</h3></li>
+    <li><h3>Validations sur les <br/>champs</h3></li>
+    <li><h3>Vérifier que les saisies sont valides</h3></li>
+  </ul>
+</div>
 
 ![slide-preview](img/slide_preview1.png)
 
@@ -543,19 +507,15 @@ template: slide
 template: slide
 
 # Formidable-UI
-## Preview / Saisie utilisateur
+## Preview / <br/>Saisie utilisateur
 
-- ### Affichage selon le contexte
-
-<br />
-
-- ### Validations sur les champs
-
-<br />
-
-- ### Vérifier que les saisies
-
-### sont valides
+<div class="half">
+  <ul>
+    <li><h3>Affichage selon le contexte</h3></li>
+    <li><h3>Validations sur les <br/>champs</h3></li>
+    <li><h3>Vérifier que les saisies sont valides</h3></li>
+  </ul>
+</div>
 
 ![slide-preview](img/slide_preview2.png)
 
@@ -568,9 +528,18 @@ template: slide
 ```html
 <link rel="stylesheet" href="vendor.css">
 <link rel="stylesheet" href="formidable.css">
+
 <script src="vendor.js"></script>
 <script src="formidable.js"></script>
+```
 
+---
+template: slide
+
+# Formidable-UI
+## Intégration
+
+```html
 <div id="formidable"></div>
 
 <script>
@@ -595,21 +564,13 @@ template: slide
 
 # Voir plus
 
-### Warning ![icon-32](img/warning.png)
+- ### Warning ![icon-32](img/warning.png)
+  - #### compat django1.8 , python2.7 => python3.2
+  - #### Not Prod-Ready
 
-- #### compat django1.8 , python2.7 => python3.2
-
-
-- #### Not Prod-Ready
-
-<br />
-
-### Open source
-
-- #### GPLv3
-
-
-- #### <a target="_blank" href=" https://github.com/peopledoc/django-formidable">Now !</a>
+- ### Open source
+  - #### GPLv3
+  - #### <a target="_blank" href=" https://github.com/peopledoc/django-formidable">Now !</a>
 
 ---
 template: title
@@ -629,5 +590,3 @@ class: template-title-poney, template-logo-big
 ![icon-16](img/twitter.png) @ggerard88
 <br/>
 ![icon-16](img/mail.png) guillaume.gerard88@gmail.com
-
-###<center><font color="red">PS: ON RECRUTE !!!</font></center>
