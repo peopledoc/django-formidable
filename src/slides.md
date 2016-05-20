@@ -53,7 +53,7 @@ template: slide
 
 --
 
-- ### Laisser la main au client de générer ses propres forms spécifiques à son métier sans devoir repasser par la case R&D.
+- ### Laisser le soin au client de générer ses propres forms spécifiques à son métier sans devoir repasser par la case R&D
 
 ---
 template: transition
@@ -69,19 +69,20 @@ template: slide
 
 --
 
-- ### Contraintes métiers fortes
+- ### Contraintes métier fortes
 
 --
 
-    - #### Validations Métiers
+    - #### Validations Métier
 
     - #### Restriction d'accès
 
     - #### Simplicité d'utilisation (R.H.)
 
+<br/>
 --
 
-- ### Existant n'est pas complet (Role, ...)
+- ### L'existant n'est pas complet (Role, ...)
 
 <br/>
 --
@@ -95,28 +96,28 @@ template: slide
 # django-formidable
 ## Kézako
 
-- ### Application Django pur.
+- ### Application Django pur
 
 <br/>
 
 --
 
-- ### Permets de créer, d'éditer, de supprimer et d'utiliser des formulaires.
+- ### Permet de créer, d'éditer, de supprimer et d'utiliser des formulaires
 
 <br/>
 
 --
 
-- ### Plusieurs points d'entrée (API RESTful et python).
+- ### Plusieurs points d'entrée (API RESTful et python)
 
 
 ---
 template: slide
 
 # django-formidable
-## Gestions des accès
+## Gestion des accès
 
-- ### Définitions des rôles par applications
+- ### Définition des rôles par application
 
 <br/>
 --
@@ -172,7 +173,7 @@ template: slide
 
 - Champ django par défaut (CharField, TextField, ...)
 
-- Possibilité d'intégerer de customiser les champs produits
+- Possibilité d'intégrer et de customiser les champs produits
 
 ```python
     from formidable.forms import field_builder
@@ -197,7 +198,7 @@ template: slide
 ## Customisation
 ### Les validations
 
-- ### Validations champs à champs
+- ### Validations champ à champ
 
   - #### Validateurs django
   - #### Validateurs supplémentaires pour les dates (is\_age\_under, ...)
@@ -205,11 +206,11 @@ template: slide
 <br/>
 --
 
-- ### Validations globales, des presets
+- ### Validations globales (ou presets)
 
-  - #### Validation plus complexes (Fournit des validations génériques)
-  - #### Écrite en python
-  - #### Ajout de validations métiers personnalisées
+  - #### Validations plus complexes (On fournit des validations génériques)
+  - #### Écrites en python
+  - #### Ajout de validations métier personnalisées
 
 ---
 template: slide
@@ -242,12 +243,12 @@ template: slide
 # django-formidable
 ## API Python
 
-- ### Ecrire son objet formidable comme en django
+- ### Ecrire son objet Formidable comme en django
 
 <br/>
 --
 
-- ### Utilisation des objets formidables
+- ### Utiliser des objets Formidable
 
 <br/>
 --
@@ -331,11 +332,11 @@ template: slide
 <br />
 --
 
-- ### Deux cas d'utilisations :
+- ### Deux cas d'utilisation :
 
-  - ### Création / Edition de formulaire
+  - ### Création / Edition de formulaires
 
-  - ### Récupération de formulaire selon un contexte
+  - ### Récupération de formulaires selon un contexte
 
 ---
 template: slide
@@ -359,7 +360,7 @@ template: slide
 # Formidable-UI
 ## Interfaces
 
-- ### Utilise l'API
+- ### Utilisent l'API
 
 
 <br />
@@ -625,4 +626,4 @@ class: template-title-poney, template-logo-big
 <br/>
 ![icon-16](img/mail.png) guillaume.gerard88@gmail.com
 
-###<center><font color="red">P.-S.: ON RECRUTE!!!</font></center>
+###<center><font color="red">PS: ON RECRUTE !!!</font></center>
