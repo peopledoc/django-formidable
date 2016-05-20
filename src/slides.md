@@ -47,13 +47,13 @@ template: slide
 <br/>
 --
 
-- ### Permet à un employé de remplir des forms spécifiques (mais pas seulement)
+- ### Permet à un employé de remplir des formulaires spécifiques (mais pas seulement)
 
 <br/>
 
 --
 
-- ### Laisser le soin au client de générer ses propres forms spécifiques à son métier sans devoir repasser par la case R&D
+- ### Laisser le soin au client de générer ses propres formulaires spécifiques à son métier sans devoir repasser par la case R&D
 
 ---
 template: transition
