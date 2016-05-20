@@ -1,4 +1,53 @@
 # -*- coding: utf-8 -*-
+"""
+This module provides custom form fields in order to define a Formidable
+object, as with a standard django form.
+
+You can find most of the standard django fields :
+
+.. autoclass:: CharField
+    :members:
+
+.. autoclass:: BooleanField
+    :members:
+
+.. autoclass:: IntegerField
+    :members:
+
+.. autoclass:: FileField
+    :members:
+
+.. autoclass:: DateField
+    :members:
+
+.. autoclass:: MultipleChoiceField
+    :members:
+
+.. autoclass:: ChoiceField
+    :members:
+
+
+Extra fields are allowed to use with FormidableForm, the Format Field. These
+kinds of fields allow us to define format inside the form:
+
+.. autoclass:: TitleField
+
+    Add a title inside the rendering.
+
+.. autoclass:: HelpTextField
+
+    Add a description inside the form, to comment a block of inputs or
+    just to add some text.
+
+.. autoclass:: SeparatorField
+
+    Add separators between fields to separate blocks of fields, for example.
+
+Each field comes with its own widget class. Via these classes, the type of
+fields they deal with can be specified. If you want to override any with
+your own fields, please look at :mod:`formidable.forms.widgets`.
+
+"""
 
 from django.forms import fields
 
@@ -41,10 +90,10 @@ class Field(object):
 
     def get_complete_accesses(self):
         """
-        Return a access dict with all the access defines by client.
-        If access is missing in the :attr:`accesses` it will be added
-        with default value `EDITABLE`.
-        If access is unknow an exception is raised.
+        Return an access dict with all the access-rights defined by the client.
+        If access-rights are missing in the :attr:`accesses` they will be added
+        with a default value of `EDITABLE`.
+        If the access-right is unknown, an exception will be raised.
         """
         accesses = {}
         for access in get_accesses():
@@ -69,19 +118,18 @@ class Field(object):
 
 class FormatField(Field, fields.Field):
     """
-    Format Field just here to handle display information inside the form.
-    The help_text attribut is removed automatically to handle a display.
+    Handles display information inside the form.
 
-    The get_bound_field is define here (has to be implemented in daughter
-    class). Basically, the bound field is here just to retur the good
-    value to display.
+    The help_text attribute is removed automatically to handle display.
 
+    The get_bound_field is defined here (must be implemented in a child class).
+    The bound field is used to return the correct value to display.
 
-    In deed, in the method, if help_text exists it's render under a <span>
-    balise, and the label under <label> balise.
-    We don't want something like that.
-    To avoid this, we override the label and the help_text attribut,
-    to it at None value.
+    Normally, if help_text exists it's rendered inside a <span> tag,
+    and labels are rendered in <label> tags.
+
+    To avoid this, we override the label and the help_text attributes,
+    setting them to blank values.
     """
 
     def __init__(self, *args, **kwargs):
@@ -93,8 +141,8 @@ class HelpTextField(FormatField, fields.Field):
     """
     The help text field is just a field to show some text formatted in
     markdown (implemented in the render widget).
-    Du to the method :meth:`Form._html_output`, we cannot override the
-    mechanism  to render the field correctly.
+    Due to the method :meth:`Form._html_output`, we cannot override the
+    mechanism to render the field correctly.
     """
 
     widget = widgets.HelpTextWidget

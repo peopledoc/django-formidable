@@ -34,8 +34,8 @@ class FieldListSerializer(NestedListSerializer):
 
     def validate(self, validated_data):
         """
-        At this point all the data has been validated. We have to inject the
-        order before the update/create method sorted the validated data
+        At this point all the data have been validated. We have to inject the
+        order before the update/create method sorts the validated data
         by id.
         """
         for index, data in enumerate(validated_data):
