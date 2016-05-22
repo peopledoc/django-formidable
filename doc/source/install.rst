@@ -7,9 +7,11 @@ Install the app
 From PyPI
 ---------
 
+For the moment, no release is available on the PyPi, but you can install it from github
+
 .. code-block:: sh
 
-    pip install django-formidable
+    pip install git+https://github.com/peopledoc/django-formidable.git
 
 
 From Github
@@ -84,7 +86,10 @@ you could write the following function:
 The :attr:`request` is a standard Django request, as found in any view.
 Likewise, :attr:`kwargs` is a standard dictionary of keyword arguments.
 Of course, the user type should correspond to the ``id`` of the AccessObject
-you defined previously.
+
+Next fill the setting key ``FORMIDABLE_CONTEXT_LOADER``
+
+    FORMIDABLE_CONTEXT_LOADER = 'yourproject.access_rights.get_context'
 
 
 Formidable's URLs
