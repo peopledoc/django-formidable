@@ -24,11 +24,13 @@ class FormidableSerializer(WithNestedSerializer):
 
     def validate(self, data):
         """
-        The validation step called the preset validation.
-        The preset validation take care about preset are correctly define
-        and argument defined are correct.
-        But, we cannot check if field setup in preset argument exits inside
-        the form itself. The only moment we can check, is here.
+        The validation step called by the preset validation.
+
+        The preset validation ensures that presets are correctly defined
+        and that defined arguments are correct.
+
+        Since we cannot check if fields set up in preset arguments exist
+        inside the form itself, we must check this here.
         """
         # calling subserializer validate method (fields, and presets)
         data = super(FormidableSerializer, self).validate(data)
