@@ -80,7 +80,7 @@ Next fill the setting key ``FORMIDABLE_CONTEXT_LOADER``
 Define URL's
 ------------
 
-URLs are defined in :mod:``formidable.urls``. You can load them with the
+URLs are defined in ``formidable.urls``. You can load them with the
 following line:
 
 .. code-block:: python
