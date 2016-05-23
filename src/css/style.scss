@@ -1,0 +1,351 @@
+@import 'variables';
+
+@import 'montserrat-webfont/scss/montserrat-webfont';
+@import 'roboto-fontface/css/roboto-fontface.scss';
+@import 'ubuntu-fontface/_ubuntu.scss';
+
+
+$slide-width: 1210px;
+$slide-height: 681px;
+$logo-width: 150px;
+$logo-height: 60px;
+$title-width: $slide-width;
+$title-height: 320px;
+$logo-big-width: 300px;
+$logo-big-height: 169px;
+
+
+body {
+  font-family: 'Roboto';
+  font-weight: 400;
+  color: #384046;
+}
+
+// Dropdown at top left of the page allowing you to select a presentation
+.slides-select__small {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3; /* z-index is at 2 for .remark-visible */
+  max-width: 100px;
+  opacity: 0.5;
+}
+
+
+// TYPOGRAPHY
+
+body {
+  line-height: 1.2;
+}
+
+h1, h2, h3 {
+  font-family: 'Montserrat';
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.remark-slide-content h1 {
+  font-size: 2.5em;
+}
+
+.remark-slide-content h2 {
+  font-size: 2em;
+}
+
+.remark-slide-content h3 {
+  font-size: 1.6em;
+}
+
+ul {
+  margin-top: 20px;
+
+  li {
+    padding: 20px 0;
+
+    h4 {
+      margin: 0;
+    }
+  }
+
+  ul {
+    margin-bottom: 0;
+
+    li  {
+      padding: 10px 0;
+
+      h4 {
+        margin: 0;
+      }
+    }
+  }
+}
+
+ul.horizontal {
+  display: table;
+  padding-left: 0;
+
+  li {
+    display: table-cell;
+    padding: 5px 0 15px;
+
+    h5 {
+      margin: 0;
+    }
+  }
+
+  li:first-of-type {
+    padding-right: 40px;
+  }
+}
+
+.half {
+  width: 45%;
+  float: left;
+}
+
+.half:first-of-type {
+  padding-right: 5%;
+}
+
+.half:last-of-type {
+  padding-left: 5%;
+}
+
+// CODE
+
+code {
+  border-radius: 4px;
+}
+
+.remark-code,
+.remark-inline-code {
+  font-family: 'Ubuntu Mono';
+}
+
+.remark-code {
+  line-height: 1.3;
+}
+
+
+// ADD LOGO
+
+.template-logo {
+  &:after {
+    content: ' ';
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: $logo-width $logo-height;
+    background-image: url('/img/peopledoc.png');
+    width: $logo-width;
+    height: $logo-height;
+    position: absolute;
+    bottom: 15px;
+    left: ($slide-width - $logo-width) / 2;
+    z-index: -1;
+  }
+}
+
+.template-logo-big {
+  &:after {
+    content: ' ';
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: $logo-big-width $logo-big-height;
+    background-image: url('/img/peopledoc-large.png');
+    width: $logo-big-width;
+    height: $logo-big-height;
+    position: absolute;
+    right: 60px;
+    top: $title-height + 65px;
+    z-index: -1;
+  }
+}
+
+
+// SLIDES
+
+.remark-slide-scaler {
+  background-color: $template-base-background;
+}
+
+.remark-slide-content {
+  background-color: transparent;
+  width: 100%;
+}
+
+
+// STANDARD SLIDES
+
+.template-base {
+  a, a > code {
+    color: $template-base-link-color;
+  }
+
+  h1 {
+    color: $template-base-h1-color;
+  }
+
+  h2 {
+    color: $template-base-h2-color;
+    margin-bottom: 3rem;
+  }
+}
+
+
+// TITLE SLIDES
+
+.template-title {
+  &.remark-slide-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  h1 {
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 3em;
+  }
+
+  h2 {
+    font-size: 2em;
+    margin: 0.4rem 0 0;
+  }
+
+  h1, h2 {
+    text-transform: uppercase;
+  }
+
+  h1, h2, h3, p {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+
+  // Insert BG image
+  padding-top: $title-height - 72px; // Image height
+
+  &:before {
+    content: ' ';
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: cover;
+    width: $title-width;
+    height: $title-height;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+}
+
+// BG image variations
+.template-title-forms {
+  &:before {
+    background-image: url('/img/forms.jpg');
+  }
+}
+
+.template-title-bees {
+  &:before {
+    background-image: url('/img/bees.jpg');
+  }
+}
+
+.template-title-poney {
+  &:before {
+    background-image: url('/img/poney.jpg');
+  }
+}
+
+.template-title-transition {
+  h1 {
+    color: #fff;
+    background-color: transparent;
+  }
+
+  h2 {
+    color: $template-base-h1-color;
+  }
+
+  &:before {
+    background-color: #2994e5;
+  }
+}
+
+img[alt=icon-16] {
+  height: 16px;
+}
+
+
+img[alt=icon-32] {
+  height: 32px;
+}
+
+img[alt=ember] {
+  height: 200px;
+  position: absolute;
+  top: 160px;
+  right: 160px;
+}
+
+img[alt=slide-tools] {
+  height: 500px;
+  position: absolute;
+  top: 30px;
+  right: 50px;
+}
+
+.video-builder {
+  width: 621px;
+  position: absolute;
+  top: 60px;
+  right: 40px;
+}
+
+img[alt=slide-param] {
+  width: 621px;
+  position: absolute;
+  top: 60px;
+  right: 40px;
+}
+
+img[alt=slide-preset] {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  height: 350px;
+}
+
+img[alt=slide-preview] {
+  width: 621px;
+  position: absolute;
+  top: 30px;
+  right: 50px;
+}
+
+img[alt=slide-api] {
+  height: 350px;
+  position: absolute;
+  top: 180px;
+  right: 80px;
+  padding-left: 310px;
+}
+
+img[alt=ui] {
+  position: absolute;
+  top: 30px;
+  max-height: 520px;
+  max-width: 800px;
+  right: 50px;
+}
+
+img[alt=ui2] {
+  position: absolute;
+  top: 200px;
+  max-height: 520px;
+  max-width: 800px;
+  left: 200px;
+}
+
+h2#cr-ation {
+  margin-bottom: 0;
+}
