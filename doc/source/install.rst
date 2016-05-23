@@ -4,8 +4,9 @@ Install
 Install the app
 ===============
 
-From PyPI
----------
+
+From Github
+-----------
 
 For the moment, no release is available on the PyPi, but you can install it from github
 
@@ -14,8 +15,8 @@ For the moment, no release is available on the PyPi, but you can install it from
     pip install git+https://github.com/peopledoc/django-formidable.git
 
 
-From Github
------------
+From PyPI
+---------
 
 TODO: Coming soon.
 
