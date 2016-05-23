@@ -29,7 +29,7 @@ No release is available, but we can install it from github.
 
 ::
 
-    $ sudo pip install git+https://github.com/peopledoc/django-formidable.git
+    $ sudo pip install git+https://github.com/novafloss/django-formidable.git
 
 Configure
 ---------
