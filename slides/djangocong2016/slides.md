@@ -571,9 +571,8 @@ template: slide
   - #### Not Prod-Ready
 
 - ### Open source
-  - #### MIT
-  - #### <a target="_blank" href=" https://github.com/peopledoc/django-formidable">django-formidable</a>
-  - #### <a target="_blank" href=" https://github.com/peopledoc/formidable-ui">formidable-ui</a>
+  - #### GPLv3
+  - #### <a target="_blank" href=" https://github.com/peopledoc/django-formidable">Now !</a>
 
 ---
 template: title
