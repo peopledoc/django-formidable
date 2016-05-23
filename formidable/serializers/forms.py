@@ -11,7 +11,7 @@ from formidable.serializers.presets import PresetModelSerializer
 
 class FormidableSerializer(WithNestedSerializer):
 
-    fields = fields.FieldidableSerializer(many=True)
+    fields = fields.FieldSerializer(many=True)
     presets = PresetModelSerializer(many=True, required=False)
 
     nested_objects = ['fields', 'presets']

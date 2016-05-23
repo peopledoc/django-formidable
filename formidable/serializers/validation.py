@@ -5,7 +5,7 @@ import re
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
-from formidable.models import Validationidable
+from formidable.models import Validation
 from formidable.register import ValidationSerializerRegister, load_serializer
 from formidable.serializers.child_proxy import LazyChildProxy
 
@@ -33,7 +33,7 @@ class ListValidationSerializer(serializers.ListSerializer):
 class ValidationSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Validationidable
+        model = Validation
         fields = ('type', 'value', 'message')
         list_serializer_class = ListValidationSerializer
 

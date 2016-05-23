@@ -31,7 +31,7 @@ class Formidable(models.Model):
         return agg['order__max'] + 1 if agg['order__max'] is not None else 0
 
 
-class Fieldidable(models.Model):
+class Field(models.Model):
 
     class Meta:
         unique_together = (('slug', 'form'))
@@ -59,7 +59,7 @@ class Fieldidable(models.Model):
 
 
 class Item(models.Model):
-    field = models.ForeignKey(Fieldidable, related_name='items')
+    field = models.ForeignKey(Field, related_name='items')
     key = models.CharField(max_length=256)
     value = models.CharField(max_length=256)
     order = models.IntegerField()
@@ -74,7 +74,7 @@ class Access(models.Model):
     class Meta:
         unique_together = (('field', 'access_id'),)
 
-    field = models.ForeignKey(Fieldidable, related_name='accesses')
+    field = models.ForeignKey(Field, related_name='accesses')
     access_id = models.CharField(max_length=128)
     level = models.CharField(max_length=128, choices=(
         ('REQUIRED', 'Required'), ('EDITABLE', 'Editable'),
@@ -86,8 +86,8 @@ class Access(models.Model):
     ))
 
 
-class Validationidable(models.Model):
-    field = models.ForeignKey(Fieldidable, related_name='validations')
+class Validation(models.Model):
+    field = models.ForeignKey(Field, related_name='validations')
     value = models.CharField(max_length=256)
     type = models.CharField(max_length=256)
     message = models.TextField(blank=True, null=True)
