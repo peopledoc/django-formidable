@@ -91,3 +91,13 @@ following line:
 .. code-block:: python
 
     url(r'^api/', include('formidable.urls', namespace='formidable'))
+    
+    
+
+formidable-ui
+-------------
+
+Plug in formidable-ui 
+
+https://github.com/peopledoc/formidable-ui#integration
+
