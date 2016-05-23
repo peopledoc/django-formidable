@@ -9,7 +9,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 
-from formidable.models import Formidable, Fieldidable
+from formidable.models import Formidable, Field
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.accesses import get_accesses, get_context
@@ -24,7 +24,7 @@ class FormidableDetail(RetrieveUpdateAPIView):
 
     def get_queryset(self):
         qs = super(FormidableDetail, self).get_queryset()
-        field_qs = Fieldidable.objects.order_by('order')
+        field_qs = Field.objects.order_by('order')
         return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
 
@@ -39,7 +39,7 @@ class ContextFormDetail(RetrieveAPIView):
 
     def get_queryset(self):
         qs = super(ContextFormDetail, self).get_queryset()
-        field_qs = Fieldidable.objects.order_by('order')
+        field_qs = Field.objects.order_by('order')
         return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
     def get_serializer_context(self):

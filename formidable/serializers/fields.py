@@ -5,7 +5,7 @@ from django.db.models import Prefetch
 
 from rest_framework import serializers
 
-from formidable.models import Fieldidable, Access
+from formidable.models import Field, Access
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.access import AccessSerializer
 from formidable.serializers.validation import ValidationSerializer
@@ -44,7 +44,7 @@ class FieldListSerializer(NestedListSerializer):
         return validated_data
 
 
-class FieldidableSerializer(WithNestedSerializer):
+class FieldSerializer(WithNestedSerializer):
 
     type_id = None
 
@@ -59,7 +59,7 @@ class FieldidableSerializer(WithNestedSerializer):
     nested_objects = ['accesses', 'validations']
 
     class Meta:
-        model = Fieldidable
+        model = Field
         list_serializer_class = FieldListSerializer
         fields = '__all__'
 
@@ -107,7 +107,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
 
     class Meta:
         list_serializer_class = ListContextFieldSerializer
-        model = Fieldidable
+        model = Field
         fields = (
             'slug', 'label', 'type_id', 'placeholder', 'help_text', 'default',
             'validations', 'disabled', 'required', 'multiple', 'items'
@@ -144,11 +144,11 @@ class FieldItemMixin(object):
 
 
 @load_serializer(field_register)
-class TextFieldSerializer(FieldidableSerializer):
+class TextFieldSerializer(FieldSerializer):
 
     type_id = 'text'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS
 
 
@@ -159,38 +159,38 @@ class ParagraphFieldSerializer(TextFieldSerializer):
 
 
 @load_serializer(field_register)
-class DropdownFieldSerializer(FieldItemMixin, FieldidableSerializer):
+class DropdownFieldSerializer(FieldItemMixin, FieldSerializer):
 
     type_id = 'dropdown'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS + ('items', 'multiple')
 
 
 @load_serializer(field_register)
-class CheckboxFieldSerializer(FieldidableSerializer):
+class CheckboxFieldSerializer(FieldSerializer):
 
     type_id = 'checkbox'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS
 
 
 @load_serializer(field_register)
-class CheckboxesFieldSerializer(FieldItemMixin, FieldidableSerializer):
+class CheckboxesFieldSerializer(FieldItemMixin, FieldSerializer):
 
     type_id = 'checkboxes'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS + ('items',)
 
 
 @load_serializer(field_register)
-class RadiosFieldSerializer(FieldItemMixin, FieldidableSerializer):
+class RadiosFieldSerializer(FieldItemMixin, FieldSerializer):
 
     type_id = 'radios'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS + ('items',)
 
 
@@ -201,67 +201,67 @@ class RadiosButtonsFieldSerializer(RadiosFieldSerializer):
 
 
 @load_serializer(field_register)
-class FileFieldSerializer(FieldidableSerializer):
+class FileFieldSerializer(FieldSerializer):
 
     type_id = 'file'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS
 
 
 @load_serializer(field_register)
-class DateFieldSerializer(FieldidableSerializer):
+class DateFieldSerializer(FieldSerializer):
 
     type_id = 'date'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS
 
 
 @load_serializer(field_register)
-class EmailFieldSerializer(FieldidableSerializer):
+class EmailFieldSerializer(FieldSerializer):
 
     type_id = 'email'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS
 
 
 @load_serializer(field_register)
-class NumberFieldSerializer(FieldidableSerializer):
+class NumberFieldSerializer(FieldSerializer):
 
     type_id = 'number'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         fields = BASE_FIELDS
 
 
 @load_serializer(field_register)
-class HelpTextFieldSerializer(FieldidableSerializer):
+class HelpTextFieldSerializer(FieldSerializer):
 
     type_id = 'help_text'
     help_text = serializers.CharField(required=True)
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         # Just to remove "label" attribut
         fields = list(set(BASE_FIELDS) - set(['label']))
 
 
 @load_serializer(field_register)
-class TitleFieldSerializer(FieldidableSerializer):
+class TitleFieldSerializer(FieldSerializer):
 
     type_id = 'title'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         # Just to remove "help_text" attribut
         fields = list(set(BASE_FIELDS) - set(['help_text']))
 
 
 @load_serializer(field_register)
-class SeparatorFieldSerializer(FieldidableSerializer):
+class SeparatorFieldSerializer(FieldSerializer):
 
     type_id = 'separator'
 
-    class Meta(FieldidableSerializer.Meta):
+    class Meta(FieldSerializer.Meta):
         # Just to remove "help_text" attribut
         fields = list(set(BASE_FIELDS) - set(['label', 'help_text']))
