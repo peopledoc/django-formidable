@@ -2,17 +2,18 @@
 django-formidable
 =================
 
-django-formidable is a full django application allows you to create,
+django-formidable is a full django application which allows you to create,
 edit, delete and use forms.
 
 Warning
 =======
 
-Python Compatibility : python2.7 (tox said it's compliant until
-python3.2, but I don't) Django compatibility : django1.8
+Python Compatibility : python2.7 (tox says it's compliant up to
+python3.2, but I don't)
+Django compatibility : django1.8
 
-It's not prod-ready for the moment, no version has been released on
-official Pypi.
+It's not production-ready yet, and no official version has currently
+been released on PyPI.
 
 Licence
 =======
@@ -30,7 +31,7 @@ Quick-Start
 Install
 -------
 
-No release is available, but we can install it from github.
+No release is yet available, but it can be installed via github.
 
 ::
 
@@ -42,11 +43,11 @@ Configure
 Define Roles
 ~~~~~~~~~~~~
 
-django-formidable allows to access a single form with different role.
-The same form can be rendered in different way. If you don't have to
-handle multiple roles you have to define at least a default role.
+django-formidable allows access to a single form by different roles.
+The same form can thus be rendered in different ways. If you don't need
+to handle multiple roles you must still define at least one default role.
 
-Define a method which returns a list of formidable.accesses.AccessObject
+Define a method which returns a list of formidable.accesses.AccessObject:
 
 .. code-block:: python
 
@@ -56,7 +57,7 @@ Define a method which returns a list of formidable.accesses.AccessObject
             AccessObject(id='jedi', label='Jedi')
         ]
 
-Fill the settings key
+Fill the settings key:
 
 .. code-block:: python
 
@@ -66,9 +67,9 @@ Get context
 ~~~~~~~~~~~
 
 While accessing a form for a specific role, you need to provide a way in
-order to get the which context to use.
+which to get the correct context to use.
 
-``request`` and ``kwargs`` are fetch from view (self.request,
+``request`` and ``kwargs`` are fetched from the view (self.request,
 self.kwargs)
 
 .. code-block:: python
@@ -82,8 +83,8 @@ Next fill the setting key ``FORMIDABLE_CONTEXT_LOADER``
 
     FORMIDABLE_CONTEXT_LOADER = 'yourprojects.access_rights.get_context'
 
-Define URL's
-------------
+Define URLs
+-----------
 
 URLs are defined in ``formidable.urls``. You can load them with the
 following line:
@@ -91,13 +92,12 @@ following line:
 .. code-block:: python
 
     url(r'^api/', include('formidable.urls', namespace='formidable'))
-    
-    
+
+
 
 formidable-ui
 -------------
 
-Plug in formidable-ui 
+Plug in formidable-ui
 
 https://github.com/peopledoc/formidable-ui#integration
-
