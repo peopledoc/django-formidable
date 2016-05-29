@@ -17,6 +17,90 @@ The main class is :class:`formidable.models.Formidable`. This class is a classic
 This is the main object manipulated in order to create or edit dynamic form through RESTful API or python/django.
 
 
+Django form class
+-----------------
+
+One of the main feature is to provide a standard django form class built from the definition stored as Formidable object. The django form class is accessible throught the :meth:`formidable.models.Formidable.get_django_form_class`.
+
+.. code-block:: python
+
+    >>> formidable = Formidable.objects.get(pk=42)
+    >>> form_class = formidable.get_django_form_class()
+
+
+This form class can be manipulated as all django form class, you can build an instance to validate data
+
+
+.. code-block:: python
+
+    >>> form = form_class(data={'first_name': 'Obiwan'})
+    >>> form.is_valid()
+    False
+    >>> form.errors
+    {'last_name': ['This field is required.']}
+    >>> form = form_class(data={'first_name': 'Obiwan', 'last_name': 'Kenobi'})
+    >>> form.is_valid()
+    True
+
+
+Or to render it
+
+
+.. code-block:: python
+
+    {{ form.as_p }}
+
+
+When a standard mechanism is implemented, you have a method to custom the final objec we get. ``django-formidable`` provides a way in order to custom the form class you get.
+
+Each kind of field is built with an associated FieldBuilder
+
+==========    ======================================  ==========================================================
+    slug                Field / Widgets                 FieldBuilder
+==========    ======================================  ==========================================================
+text           CharField / TextInput                    :class:`formidable.forms.field_builder.TextFieldBuilder`
+paragraph      CharField / TextArea                     :class:`formidable.forms.field_builder.ParagraphFieldBuilder`
+dropdown       ChoiceField / Select                     :class:`formidable.forms.field_builder.DropdownFieldBuilder`
+checkbox       ChoiceField / CheckboxInput              :class:`formidable.forms.field_builder.CheckboxFieldBuilder`
+radios         ChoiceField / RadioSelect                :class:`formidable.forms.field_builder.RadioFieldBuilder`
+checkboxes     ChoiceField / CheckboxSelectMultiple     :class:`formidable.forms.field_builder.CheckboxesFieldBuilder`
+email          EmailField / TextInput                   :class:`formidable.forms.field_builder.EmailFieldBuilder`
+date           DateField                                :class:`formidable.forms.field_builder.DateFieldBuilder`
+number         IntegerField                             :class:`formidable.forms.field_builder.IntegerFieldBuilder`
+==========    ======================================  ==========================================================
+
+So, as describe in django document (https://docs.djangoproject.com/en/1.9/topics/forms/media/#assets-as-a-static-definition), if you want add a CalendarWidget on the date field on your form, you can write your own field builder.
+
+
+.. code-block:: python
+
+    from django import forms
+
+    from formidable.forms.field_builder import DateFieldBuilder, FormFieldFactory
+
+    class CalendarWidget(forms.TextInput):
+
+        class Media:
+            css = {
+                'all': ('pretty.css',)
+            }
+            js = ('animations.js', 'actions.js')
+
+
+    class CalendarDateFieldBuilder(DateFieldBuilder):
+        widget_class = CalendarWidget
+
+
+    class MyFormFieldFactory(FormFieldFactory):
+        field_map = FormFieldFactory.field_map.copy()
+        field_map['date'] = CalendarDateFieldBuilder
+
+
+With this definition you can call
+
+.. code-block:: python
+
+    >>> formidable.get_django_form_class(field_factory=MyFormFieldFactory)
 
 Roles and Accesses
 ==================
