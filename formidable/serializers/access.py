@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
+from formidable.constants import EDITABLE
 from formidable.models import Access
 from formidable.serializers.list import NestedListSerializer
 from formidable.accesses import get_accesses
@@ -37,7 +38,7 @@ class AccessListSerializer(NestedListSerializer):
 
         for access in get_accesses():
             if access.id not in accesses_id:
-                data.append({'access_id': access.id, 'level': 'EDITABLE'})
+                data.append({'access_id': access.id, 'level': EDITABLE})
 
         return data
 
