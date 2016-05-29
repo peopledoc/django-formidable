@@ -178,9 +178,10 @@ There are four different available access-rights:
 
 - ``EDITABLE``, the user may fill-in the field but there is no obligation to do so.
 - ``REQUIRED``, the user must fill-in the field in order to submit the form.
-- ``READ_ONLY``, this will render the field as disabled, allowing the user to view but not modify its contents.
+- ``READONLY``, this will render the field as disabled, allowing the user to view but not modify its contents.
 - ``HIDDEN``, the field will not be available to the user, preventing the user from either viewing or modifying its contents.
 
+All the value are defined in :mod:`formidable.constants`
 
 Python builder
 ==============
@@ -223,7 +224,7 @@ for a previously defined role, the field will be created as ``EDITABLE``:
 
         first_name = fields.CharField(
             label='Your First Name',
-            accesses={'padawan': 'REQUIRED', 'jedi': 'READ_ONLY'}
+            accesses={'padawan': constants.REQUIRED, 'jedi': constants.READONLY}
         )
         last_name = fields.CharField(label='Your Last Name')
         description = fields.TextField(

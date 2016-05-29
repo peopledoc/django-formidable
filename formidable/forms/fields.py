@@ -51,6 +51,7 @@ your own fields, please look at :mod:`formidable.forms.widgets`.
 
 from django.forms import fields
 
+from formidable.constants import EDITABLE
 from formidable.forms import widgets, boundfield
 from formidable.accesses import get_accesses, AccessUnknow
 
@@ -98,7 +99,7 @@ class Field(object):
         accesses = {}
         for access in get_accesses():
             if access.id not in self.accesses.keys():
-                accesses[access.id] = u'EDITABLE'
+                accesses[access.id] = EDITABLE
             else:
                 accesses[access.id] = self.accesses[access.id]
         return accesses

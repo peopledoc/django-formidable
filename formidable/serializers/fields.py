@@ -5,6 +5,7 @@ from django.db.models import Prefetch
 
 from rest_framework import serializers
 
+from formidable import constants
 from formidable.models import Field, Access
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.access import AccessSerializer
@@ -85,7 +86,7 @@ class ListContextFieldSerializer(serializers.ListSerializer):
     def get_attribute(self, instance):
         qs = super(ListContextFieldSerializer, self).get_attribute(instance)
         access_qs = Access.objects.filter(access_id=self.role)
-        access_qs = access_qs.exclude(level=u'HIDDEN')
+        access_qs = access_qs.exclude(level=constants.HIDDEN)
         qs = qs.prefetch_related(Prefetch('accesses', queryset=access_qs))
         return qs
 
@@ -118,10 +119,12 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         return self._context['role']
 
     def get_disabled(self, obj):
-        return obj.accesses.get(access_id=self.role).level == 'READONLY'
+        return obj.accesses.get(access_id=self.role).level == \
+            constants.READONLY
 
     def get_required(self, obj):
-        return obj.accesses.get(access_id=self.role).level == 'REQUIRED'
+        return obj.accesses.get(access_id=self.role).level == \
+            constants.REQUIRED
 
 
 class FieldItemMixin(object):
