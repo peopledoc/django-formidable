@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import unicode_literals
+
+import six
 
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 
@@ -110,14 +111,12 @@ class PresetFieldOrValueArgument(PresetArgument):
         return ['field', 'value']
 
 
-class Presets(object):
+class Presets(six.with_metaclass(PresetsMetaClass)):
 
     slug = ''
     label = ''
     description = ''
     default_message = ''
-
-    __metaclass__ = PresetsMetaClass
 
     class MetaParameters:
         pass
