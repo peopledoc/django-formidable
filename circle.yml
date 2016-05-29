@@ -4,4 +4,4 @@ dependencies:
 
 test:
     override:
-        - tox
+        - tox -e py27,py30,py31,py34
