@@ -3,6 +3,7 @@
 .. autofunction:: get_accesses
     members
 """
+import six
 import importlib
 
 from django.conf import settings
@@ -28,8 +29,13 @@ def get_accesses():
     it in order to return the result.
     The method checks to ensure it returns a list of Access objects.
     """
-    module, meth_name = settings.FORMIDABLE_ACCESS_RIGHTS_LOADER.rsplit('.', 1)
-    mod = importlib.import_module(module, [meth_name])
+    module, meth_name = settings.FORMIDABLE_ACCESS_RIGHTS_LOADER.rsplit(
+        '.', 1
+    )
+    if six.PY3:
+        mod = importlib.import_module(module)
+    else:
+        mod = importlib.import_module(module, [meth_name])
     meth = getattr(mod, meth_name)
     res = meth()
     assert type(res) == list, 'FORMIDABLE_ACCESS_RIGHTS_LOADER has to return a list'  # noqa
