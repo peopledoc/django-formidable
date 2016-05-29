@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import copy
+from functools import reduce
 
 from django.test import TestCase
 

@@ -71,7 +71,7 @@ class RegexpSerializer(ValidationSerializer):
 
         try:
             re.compile(value)
-        except Exception, e:
+        except Exception as e:
             raise ValidationError(u'invalide regexp,  {}'.format(e))
 
         return value
