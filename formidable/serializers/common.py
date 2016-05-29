@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import six
 
 from rest_framework import serializers
 
@@ -14,11 +15,11 @@ class WithNestedSerializer(serializers.ModelSerializer):
         return instance
 
     def create_nested_objects(self, field, nested_data):
-        for name, data in nested_data.iteritems():
+        for name, data in six.iteritems(nested_data):
             self.fields[name].create(field, nested_data[name])
 
     def update_nested_objects(self, field, nested_data):
-        for name, data in nested_data.iteritems():
+        for name, data in six.iteritems(nested_data):
             self.fields[name].update(
                 getattr(field, name), field, nested_data[name]
             )
