@@ -4,70 +4,76 @@ Install
 Install the app
 ===============
 
-from Pypi
+From PyPI
+---------
 
 .. code-block:: sh
 
     pip install django-formidable
 
 
-The installation part from github is coming later.
+From Github
+-----------
+
+TODO: Coming soon.
 
 
 Configure the app
 =================
 
-In order to get the app ready to use, you have couple things to do before
-to get it operational. :mod:`django-formidable` has the ability to handle
-different roles and accesses per forms. It usefull when you have multiple kind
-of user access the same form. If you don't have multiple role to handle, just
-create a unique role, it will be enough.
+Before you can use the app, some things need to be configured in order
+to get it fully operational. :mod:`django-formidable` has the ability to handle
+different roles and accesses on a per form basis. This is useful when you have
+multiple types of user accessing the same form. If you don't need multiple roles,
+just create a single unique role, this will be enough.
 
 
-Configure accesses
-------------------
+Configure access-rights
+-----------------------
 
-First of all, you have to declare available role inside your application. To do
-this, create one :class:`formidable.accesses.AccessObject` per role you need.
+First of all, you need to declare all available roles inside your application.
+To do this, create an :class:`formidable.accesses.AccessObject` per role needed.
 
 .. code-block:: python
 
     from formidable.accesses import AccessObject
 
-    jedi = AccessObject(id='jedi', key='Jedi')
+    jedi = AccessObject(id='jedi', label='Jedi')
     padawan = AccessObject(id='padawan', label='Padawan')
 
 
-Once your roles have been defined create a function to return its, in your
-projects. (Considering the function is created in module yourproject.accesses)
+Once your roles are defined, you will need to create a function to return them,
+in your projects (for the purposes of this example, we're assuming the function
+will be created in the module ``yourproject.access_rights``):
 
 .. code-block:: python
 
-    def get_accesses():
+    def get_access_rights():
         return [jedi, padawan]
 
 
-The main idea is to create a function can be called by :mod:`django-formidable`
-to get the declared roles you defined previously. To tell to django-formidable
-where the function is you have to add a settings ``FORMIDABLE_ACCESSES_LOADER``
+The main idea is to create a function which can be called by :mod:`django-formidable`
+to get the declared roles you defined previously. To tell :mod:`django-formidable`
+where the function is located, you need to add ``FORMIDABLE_ACCESS_RIGHTS_LOADER``
+to your settings:
 
 .. code-block:: python
 
-    FORMIDABLE_ACCESSES_LOADER = 'youproject.accesses.get_accesses'
+    FORMIDABLE_ACCESS_RIGHTS_LOADER = 'yourproject.access_rights.get_access_rights'
 
 
 Fetch the context
 -----------------
 
-When accessing in the javascript form renderer, :mod:`django-formidable` has
-to know which context to fetch in order to render the right fields with the
-right permissions
+When the content of a contextualised form are required, e.g. to render it in
+a JavaScript front-end, :mod:`django-formidable` needs to know which context
+to fetch in order to render the correct fields with the right permissions.
 
-To do this, we need to write a piece of code wich will be called by
+To do this, we'll need to write some code which will be called by
 :mod:`django-formiable`.
 
-Imagine your actual user has an attribute to know which kind of user he is.
-You can right a function like this.
+Let's assume your user model has a ``user_type`` attribute on it. In this case,
+you could write the following function:
 
 .. code-block:: python
 
@@ -75,17 +81,17 @@ You can right a function like this.
         return request.user.user_type
 
 
-The :attr:`request` is the usual django request you can find in the view. It's
-the same for :attr:`kwargs` arguments.
-Of course, the user type has to be the ``id`` of the AccessObject you defined
-previously.
+The :attr:`request` is a standard Django request, as found in any view.
+Likewise, :attr:`kwargs` is a standard dictionary of keyword arguments.
+Of course, the user type should correspond to the ``id`` of the AccessObject
+you defined previously.
 
 
 Formidable's URLs
 -----------------
 
-Url's are define in :mod:`formidale.urls`, in order to use it, you can load it
-with:
+URLs are defined in :mod:`formidable.urls`. You can load them with the
+following line:
 
 .. code-block:: python
 

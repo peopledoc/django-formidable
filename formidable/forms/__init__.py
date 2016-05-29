@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-This module expose entire part to get a standard django form class from
-a formidable object.
+This module exposes everything needed to generate a standard django form class
+from a formidable object.
 
-The main end point to consider is :func:`get_dynamic_form_class`, with this
-function and given a formidable object, you can get the django form class
-corresponding to form built.
+Given a formidable object, you can use :func:`get_dynamic_form_class` to get
+its corresponding django form class.
 """
 from collections import OrderedDict
 
@@ -18,13 +17,12 @@ from formidable.forms.validations.presets import presets_register
 
 class FormidableBoundFieldCache(dict):
     """
-    In django 1.8 boundfield per field are handle in the form context
-    (__getitem__).
-    But, we want to inject our own BoundField for FormatField in order to
-    handle label differently.
-    This goal is reached by implementing in our field get_bound_field
-    (available in django >= 1.9), for the moment the if the method exist
-    the bound_field is switched in the form level.
+    In Django 1.8, bound fields are handled in the form context (__getitem__).
+    However, we want to inject our own BoundField for FormatField in order to
+    handle labels differently.
+    This can be achieved by implementing the get_bound_field method in our
+    field (available in Django >= 1.9). For now, if the method exists,
+    the bound_field is switched-in at the form level.
     """
     def __setitem__(self, key, bf):
         form, field, name = bf.form, bf.field, bf.name
@@ -35,9 +33,11 @@ class FormidableBoundFieldCache(dict):
 
 class BaseDynamicForm(forms.Form):
     """
-    This class is used to build the final django form class corresponding to
-    the formidable object. Please do not use directly this class, consider the
-    end point :func:`get_dynamic_form_class`
+    This class is used to generate the final Django form class corresponding to
+    the formidable object.
+
+    Please do not use this class directly, rather, you should check the
+    endpoint :func:`get_dynamic_form_class`
     """
 
     def __init__(self, *args, **kwargs):
@@ -53,17 +53,18 @@ class BaseDynamicForm(forms.Form):
 
 def get_dynamic_form_class(formidable, role=None, field_factory=None):
     """
-    This is the main method to get a django form class corresponding to
-    a formidable object.
+    This is the main method for getting a django form class from a formidable
+    object.
 
     .. code-block:: python
 
         form_obj = Formidable.objects.get(pk=42)
         django_form_class = get_dynamic_form_class(form_obj)
 
-    The optional role argument provides to you a way to get the form class
-    according to access you specify by role. The :params:`role` has be
-    a role id defined by yourself.
+    The optional :params:`role` argument provides a way to get the form class
+    according to the access rights you specify by role. The :params:`role` must
+    be a role id, as defined by the code pointed to in
+    settings.FORMIDABLE_ACCESS_RIGHTS_LOADER.
 
     .. code-block:: python
 
@@ -89,13 +90,14 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None):
 
 class FormidableForm(forms.Form):
     """
-    This is the main class available to build a formidable object with django
-    syntax form API. Its provides a classmethod :meth:`to_formidable` in order
-    to save the declared form as a formidable objects.
+    This is the main class available to build a formidable object with Django's
+    form API syntax.
 
-    Consider the fields declared in formidable.forms.fields module in order to
-    describe your form.
+    It provides a class method :meth:`to_formidable` which saves the declared
+    form as a formidable objects.
 
+    Check the formidable.forms.fields module to see what fields are available
+    when defining your form.
 
     .. code-block:: python
 

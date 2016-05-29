@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Most of django widget are defined here. This widgets are usable with
-any fields defined in :mod:`formidable.forms.fields`. This widget are here
+Most of Django's widgets are defined here. These widgets are usable with
+any fields defined in :mod:`formidable.forms.fields`. These widgets are here
 in order to use with :class:`formidable.forms.FormidableForm` declaration.
-So do not use it directly as normal widget for rendering.
+Do not use them directly as normal widgets for rendering!
 
 The main goal of the Widget class declaration is to provide a reliable type
 of associated field.
@@ -51,8 +51,8 @@ from markdown import markdown
 
 class FormidableWidget(widgets.Widget):
     """
-    Base Widget define, implements the basic method to create a field in
-    database associated with a form.
+    Base Widget definition, implements the basic method to create a field in a
+    database, associated with a form.
     """
 
     type_id = None
@@ -62,7 +62,7 @@ class FormidableWidget(widgets.Widget):
 
     def to_formidable(self, formidable, slug, label, help_text, order):
         """
-        Create the associated in database with the formidable reference object.
+        Create an association in database with the formidable reference object.
         :attr:`slug`, :attr:`label`, :attr:`help_text` come from the
         :class:`formidable.forms.fields.Field` associated object.
         """

@@ -25,10 +25,13 @@ class WithNestedSerializer(serializers.ModelSerializer):
 
     def extract_nested_data(self, data):
         """
-        Extract the data for nested object. By default DRF raise an execption
-        when data for nested objet are found.
-        Data are validated before, if nested_object is required we are sure
-        to have the data.
+        Extract the data from nested objects.
+
+        By default, DRF will raise an execption when data for nested objects
+        are found.
+
+        Data are validated beforehand, so if nested_objects is required we are
+        certain to have the data.
         """
         res = {}
         for nested_object_name in self.nested_objects:

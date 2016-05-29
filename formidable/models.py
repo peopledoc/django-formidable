@@ -13,9 +13,9 @@ class Formidable(models.Model):
 
     def get_django_form_class(self, role=None, field_factory=None):
         """
-        return the django form class assiociated to the formidable definition.
-        If no role_id is provided all the field are fetch with ``EDITABLE``
-        access.
+        Return the django form class associated with the formidable definition.
+        If no role_id is provided all the fields are fetched with an
+        ``EDITABLE`` access-right.
         :params role: Fetch defined access for the specified role.
         :params field_factory: Custom field factory if needed.
         """
@@ -25,7 +25,7 @@ class Formidable(models.Model):
     def get_next_field_order(self):
         """
         Get the next order to set on the field to arrive.
-        Try to avoid use this method for performance reason.
+        Try to avoid using this method for performance reasons.
         """
         agg = self.fields.aggregate(models.Max('order'))
         return agg['order__max'] + 1 if agg['order__max'] is not None else 0
@@ -52,7 +52,7 @@ class Fieldidable(models.Model):
     def get_next_order(self):
         """
         Get the next order to set on the item to arrive.
-        Try to avoid use this method for performance reason.
+        Try to avoid using this method for performance reasons.
         """
         agg = self.items.aggregate(models.Max('order'))
         return agg['order__max'] + 1 if agg['order__max'] is not None else 0
