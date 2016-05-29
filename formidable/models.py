@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 from formidable.register import FieldSerializerRegister
+from formidable import constants
 
 
 class Formidable(models.Model):
@@ -77,8 +78,8 @@ class Access(models.Model):
     field = models.ForeignKey(Field, related_name='accesses')
     access_id = models.CharField(max_length=128)
     level = models.CharField(max_length=128, choices=(
-        ('REQUIRED', 'Required'), ('EDITABLE', 'Editable'),
-        ('HIDDEN', 'Hidden'), ('READONLY', 'Readonly'),
+        (constants.REQUIRED, 'Required'), (constants.EDITABLE, 'Editable'),
+        (constants.HIDDEN, 'Hidden'), (constants.READONLY, 'Readonly'),
     ))
     display = models.CharField(max_length=128, null=True, blank=True, choices=(
         ('FORM', 'Form'),

@@ -5,6 +5,7 @@ from functools import reduce
 
 from django.test import TestCase
 
+from formidable import constants
 from formidable.models import Formidable
 from formidable.forms import FormidableForm, fields
 from formidable.serializers.forms import FormidableSerializer
@@ -36,10 +37,10 @@ class RenderSerializerTestCase(TestCase):
             order=self.form.get_next_field_order()
         )
         self.text_field.accesses.create(
-            level=u'REQUIRED', access_id=u'padawan'
+            level=constants.REQUIRED, access_id=u'padawan'
         )
         self.text_field2.accesses.create(
-            level=u'EDITABLE', access_id=u'jedi', display='TABLE'
+            level=constants.EDITABLE, access_id=u'jedi', display='TABLE'
         )
         self.text_field.validations.create(
             type=u'MINLENGTH', value=u'5'
@@ -96,7 +97,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(len(text_field['accesses']), 1)
         accesses = text_field['accesses'][0]
         self.assertEquals(accesses['access_id'], u'padawan')
-        self.assertEquals(accesses['level'], u'REQUIRED')
+        self.assertEquals(accesses['level'], constants.REQUIRED)
         self.assertEquals(accesses['display'], None)
 
     def test_text_field2(self):
@@ -113,7 +114,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(len(text_field['accesses']), 1)
         accesses = text_field['accesses'][0]
         self.assertEquals(accesses['access_id'], u'jedi')
-        self.assertEquals(accesses['level'], u'EDITABLE')
+        self.assertEquals(accesses['level'], constants.EDITABLE)
         self.assertEquals(accesses['display'], 'TABLE')
 
     def test_dropdown_field(self):
@@ -183,7 +184,7 @@ class RenderContextSerializer(TestCase):
 
         class TestForm(FormidableForm):
             name = fields.CharField(label=u'Your Name', accesses={
-                'jedi': 'REQUIRED',
+                'jedi': constants.REQUIRED,
             })
 
         form = TestForm.to_formidable(label='title')
@@ -203,7 +204,7 @@ class RenderContextSerializer(TestCase):
 
         class TestForm(FormidableForm):
             name = fields.CharField(label=u'Your Name', accesses={
-                'jedi': 'EDITABLE',
+                'jedi': constants.EDITABLE,
             })
 
         form = TestForm.to_formidable(label='title')
@@ -223,7 +224,7 @@ class RenderContextSerializer(TestCase):
 
         class TestForm(FormidableForm):
             name = fields.CharField(label=u'Your Name', accesses={
-                'jedi': 'READONLY',
+                'jedi': constants.READONLY,
             })
 
         form = TestForm.to_formidable(label='title')
@@ -243,7 +244,7 @@ class RenderContextSerializer(TestCase):
 
         class TestForm(FormidableForm):
             name = fields.CharField(label=u'Your Name', accesses={
-                'jedi': 'HIDDEN',
+                'jedi': constants.HIDDEN,
             })
 
         form = TestForm.to_formidable(label='title')
@@ -297,7 +298,9 @@ class CreateSerializerTestCase(TestCase):
             'slug': 'text_input',
             'label': 'text label',
             'type_id': 'text',
-            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
             'validations': [
                 {
                     'type': 'MINLENGTH',
@@ -309,7 +312,9 @@ class CreateSerializerTestCase(TestCase):
             'slug': 'input-date',
             'label': 'licence driver',
             'type_id': 'date',
-            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
             'validations': [
                 {
                     'type': 'IS_DATE_IN_THE_FUTURE',
@@ -324,7 +329,9 @@ class CreateSerializerTestCase(TestCase):
             'slug': 'test-radios',
             'label': 'test-radios-buttons',
             'type_id': 'radios_buttons',
-            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
             'items': [
                 {'key': 'tutu', 'value': 'toto'},
                 {'key': 'foo', 'value': 'bar'},
@@ -621,7 +628,9 @@ class UpdateFormTestCase(TestCase):
     fields = [
         {
             'type_id': 'text', 'label': 'edited field', 'slug': 'text-slug',
-            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
             'validations': [{'type': 'MAXLENGTH', 'value': '128'}]
         }
     ]
@@ -631,7 +640,9 @@ class UpdateFormTestCase(TestCase):
             'slug': 'text_input',
             'label': 'text label',
             'type_id': 'text',
-            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
             'validations': [
                 {
                     'type': 'MINLENGTH',
@@ -643,7 +654,9 @@ class UpdateFormTestCase(TestCase):
             'slug': 'input-date',
             'label': 'licence driver',
             'type_id': 'date',
-            'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
             'validations': [
                 {
                     'type': 'IS_DATE_IN_THE_FUTURE',
@@ -671,7 +684,9 @@ class UpdateFormTestCase(TestCase):
             {'key': 'gun', 'value': 'desert-eagle'},
             {'key': 'sword', 'value': 'Andúril'}
         ],
-        'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
+        'accesses': [
+            {'access_id': 'padawan', 'level': constants.REQUIRED}
+        ],
     }]
 
     def setUp(self):
@@ -778,7 +793,7 @@ class UpdateFormTestCase(TestCase):
             order=self.form.get_next_field_order()
         )
         self.text_field.accesses.create(
-            access_id='padawan', level='REQUIRED'
+            access_id='padawan', level=constants.REQUIRED
         )
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields
@@ -796,7 +811,7 @@ class UpdateFormTestCase(TestCase):
             order=self.form.get_next_field_order()
         )
         self.dropdown_fields.accesses.create(
-            access_id='padawan', level='EDITABLE'
+            access_id='padawan', level=constants.EDITABLE
         )
         order = self.dropdown_fields.get_next_order()
         self.dropdown_fields.items.create(
@@ -821,7 +836,9 @@ class UpdateFormTestCase(TestCase):
         self.assertTrue(
             field.items.filter(key='sword', value=u'Andúril').exists()
         )
-        qs = field.accesses.filter(access_id='padawan', level=u'REQUIRED')
+        qs = field.accesses.filter(
+            access_id='padawan', level=constants.REQUIRED
+        )
         self.assertTrue(qs.exists())
 
     def test_delete_on_update(self):
@@ -846,7 +863,7 @@ class UpdateFormTestCase(TestCase):
             order=self.form.get_next_field_order()
         )
         self.dropdown_fields.accesses.create(
-            access_id='padawan', level='REQUIRED'
+            access_id='padawan', level=constants.REQUIRED
         )
         order = self.dropdown_fields.get_next_order()
         self.dropdown_fields.items.create(

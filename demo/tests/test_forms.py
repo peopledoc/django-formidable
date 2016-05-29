@@ -3,6 +3,7 @@ from django import forms
 from django.test import TestCase
 from freezegun import freeze_time
 
+from formidable.constants import REQUIRED, EDITABLE, READONLY, HIDDEN
 from formidable.models import Formidable
 from formidable.forms import widgets, fields
 
@@ -199,21 +200,21 @@ class TestDynamicForm(TestCase):
         self.assertEquals(type(number), forms.IntegerField)
 
     def test_required_field(self):
-        self.text_field.accesses.create(access_id=u'human', level=u'REQUIRED')
+        self.text_field.accesses.create(access_id=u'human', level=REQUIRED)
         form_class = self.form.get_django_form_class(role=u'human')
         form = form_class()
         self.assertIn('text-input', form.fields)
         self.assertEquals(form.fields['text-input'].required, True)
 
     def test_editable_field(self):
-        self.text_field.accesses.create(access_id=u'human', level=u'EDITABLE')
+        self.text_field.accesses.create(access_id=u'human', level=EDITABLE)
         form_class = self.form.get_django_form_class(role=u'human')
         form = form_class()
         self.assertIn('text-input', form.fields)
         self.assertEquals(form.fields['text-input'].required, False)
 
     def test_readonly_field(self):
-        self.text_field.accesses.create(access_id=u'human', level=u'READONLY')
+        self.text_field.accesses.create(access_id=u'human', level=READONLY)
         form_class = self.form.get_django_form_class(role=u'human')
         form = form_class()
         self.assertIn('text-input', form.fields)
@@ -222,7 +223,7 @@ class TestDynamicForm(TestCase):
         self.assertEquals(field.widget.attrs['disabled'], True)
 
     def test_hidden_field(self):
-        self.text_field.accesses.create(access_id=u'human', level=u'HIDDEN')
+        self.text_field.accesses.create(access_id=u'human', level=HIDDEN)
         form_class = self.form.get_django_form_class(role=u'human')
         form = form_class()
         self.assertNotIn('text-input', form.fields)
