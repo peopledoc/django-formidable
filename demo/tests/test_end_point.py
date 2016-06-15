@@ -124,8 +124,8 @@ class RenderSerializerTestCase(TestCase):
             order=self.form.get_next_field_order()
         )
         order = self.dropdown.get_next_order()
-        self.dropdown.items.create(key='tutu', value='toto', order=order)
-        self.dropdown.items.create(key=u'plop', value=u'Intérnätiônal',
+        self.dropdown.items.create(value='tutu', label='toto', order=order)
+        self.dropdown.items.create(value='plop', label=u'Intérnätiônal',
                                    order=order+1)
         serializer = FormidableSerializer(instance=self.form)
         data = serializer.data['fields'][0]
@@ -284,8 +284,8 @@ class CreateSerializerTestCase(TestCase):
             'type_id': 'dropdown',
             'slug': 'dropdown-input', 'label': 'dropdown label',
             'multiple': False, 'items': [
-                {'key': 'tutu', 'value': 'toto'},
-                {'key': 'tata', 'value': 'plop'},
+                {'value': 'tutu', 'label': 'toto'},
+                {'value': 'tata', 'label': 'plop'},
             ],
             'accesses': [{
                 'access_id': 'padawan', 'level': 'REQUIRED'
@@ -333,8 +333,8 @@ class CreateSerializerTestCase(TestCase):
                 {'access_id': 'padawan', 'level': constants.REQUIRED}
             ],
             'items': [
-                {'key': 'tutu', 'value': 'toto'},
-                {'key': 'foo', 'value': 'bar'},
+                {'value': 'tutu', 'label': 'toto'},
+                {'value': 'foo', 'label': 'bar'},
             ]
         }
     ]
@@ -525,8 +525,8 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
-        self.assertEquals(instance.label, u'test_create')
-        self.assertEquals(instance.description, u'description create')
+        self.assertEquals(instance.label, 'test_create')
+        self.assertEquals(instance.description, 'description create')
         self.assertEquals(instance.fields.count(), 1)
         field = instance.fields.first()
         self.assertEquals(field.type_id, 'dropdown')
@@ -534,10 +534,10 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(field.slug, 'dropdown-input')
         self.assertEquals(field.items.count(), 2)
         self.assertTrue(
-            field.items.filter(key='tutu', value='toto').exists()
+            field.items.filter(value='tutu', label='toto').exists()
         )
         self.assertTrue(
-            field.items.filter(key='tata', value='plop').exists()
+            field.items.filter(value='tata', label='plop').exists()
         )
         self.assertEquals(field.accesses.count(), 4)
 
@@ -570,10 +570,10 @@ class CreateSerializerTestCase(TestCase):
         self.assertTrue(field.type_id, 'radios_buttons')
         self.assertEqual(field.items.count(), 2)
         self.assertTrue(
-            field.items.filter(order=0, key='tutu', value='toto').exists()
+            field.items.filter(order=0, value='tutu', label='toto').exists()
         )
         self.assertTrue(
-            field.items.filter(order=1, key='foo', value='bar').exists()
+            field.items.filter(order=1, value='foo', label='bar').exists()
         )
 
     def test_create_helptext(self):
@@ -681,8 +681,8 @@ class UpdateFormTestCase(TestCase):
     fields_items = [{
         'type_id': 'dropdown', 'label': 'edited field',
         'slug': 'dropdown-input', 'items': [
-            {'key': 'gun', 'value': 'desert-eagle'},
-            {'key': 'sword', 'value': 'Andúril'}
+            {'value': 'gun', 'label': 'desert-eagle'},
+            {'value': 'sword', 'label': 'Andúril'}
         ],
         'accesses': [
             {'access_id': 'padawan', 'level': constants.REQUIRED}
@@ -780,10 +780,10 @@ class UpdateFormTestCase(TestCase):
         field = form.fields.first()
         self.assertEquals(field.items.count(), 2)
         self.assertTrue(
-            field.items.filter(key=u'sword', value=u'Andúril').exists()
+            field.items.filter(value='sword', label='Andúril').exists()
         )
         self.assertTrue(
-            field.items.filter(key=u'gun', value=u'desert-eagle').exists()
+            field.items.filter(value='gun', label='desert-eagle').exists()
         )
 
     def test_update_fields(self):
@@ -815,10 +815,10 @@ class UpdateFormTestCase(TestCase):
         )
         order = self.dropdown_fields.get_next_order()
         self.dropdown_fields.items.create(
-            key=u'gun', value=u'eagle', order=order
+            value='gun', label='eagle', order=order
         )
         self.dropdown_fields.items.create(
-            key=u'sword', value=u'excalibur', order=order+1
+            value=u'sword', label='excalibur', order=order+1
         )
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_items
@@ -828,13 +828,13 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.pk, self.form.pk)
         field = form.fields.first()
         self.assertEquals(self.dropdown_fields.pk, field.pk)
-        self.assertEquals(field.label, u'edited field')
+        self.assertEquals(field.label, 'edited field')
         self.assertEquals(field.items.count(), 2)
         self.assertTrue(
-            field.items.filter(key='gun', value='desert-eagle').exists()
+            field.items.filter(value='gun', label='desert-eagle').exists()
         )
         self.assertTrue(
-            field.items.filter(key='sword', value=u'Andúril').exists()
+            field.items.filter(value='sword', label='Andúril').exists()
         )
         qs = field.accesses.filter(
             access_id='padawan', level=constants.REQUIRED
@@ -847,9 +847,9 @@ class UpdateFormTestCase(TestCase):
             order=self.form.get_next_field_order()
         )
         order = self.dropdown_fields.get_next_order()
-        self.dropdown_fields.items.create(key=u'gun', value=u'eagle',
+        self.dropdown_fields.items.create(value=u'gun', label='eagle',
                                           order=order)
-        self.dropdown_fields.items.create(key=u'sword', value=u'excalibur',
+        self.dropdown_fields.items.create(value=u'sword', label=u'excalibur',
                                           order=order+1)
         serializer = FormidableSerializer(instance=self.form, data=self.data)
         self.assertTrue(serializer.is_valid())
@@ -867,10 +867,10 @@ class UpdateFormTestCase(TestCase):
         )
         order = self.dropdown_fields.get_next_order()
         self.dropdown_fields.items.create(
-            key=u'gun', value=u'eagle', order=order
+            value='gun', label='eagle', order=order
         )
         self.dropdown_fields.items.create(
-            key=u'sword', value=u'excalibur', order=order+1
+            value='sword', label=u'excalibur', order=order+1
         )
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)
