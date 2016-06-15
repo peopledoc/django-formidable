@@ -10,8 +10,9 @@ setup(
     version='0.1.0dev0',
     packages=find_packages(),
     include_package_data=True,
-    license='BSD License',  # example license
-    description='A simple Django app to conduct Web-based polls.',
+    license='BSD License',
+    description='django-formidable is a full django application which '
+                'allows you to create, edit, delete and use forms.',
     long_description=README,
     url='https://www.example.com/',
     author='Your Name',
