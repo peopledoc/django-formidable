@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import os
 from setuptools import setup, find_packages
 
@@ -14,9 +17,10 @@ setup(
     description='django-formidable is a full django application which '
                 'allows you to create, edit, delete and use forms.',
     long_description=README,
-    url='https://www.example.com/',
-    author='Your Name',
-    author_email='yourname@example.com',
+    url='https://github.com/novafloss/django-formidable',
+    author='Guillaume Camera, Guillaume Gérard',
+    author_email='guillaume.camera@people-doc.com, '
+                 'guillaume.gerard@people-doc.com',
     install_requires=[
         'django<1.9',
         'djangorestframework',
