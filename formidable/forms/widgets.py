@@ -90,8 +90,8 @@ class ItemsWidget(FormidableWidget):
             formidable, slug, label, help_text, order
         )
         for order, item in enumerate(items):
-            key, value = item
-            field.items.create(key=key, value=value, order=order)
+            value, label = item
+            field.items.create(value=value, label=label, order=order)
         return field
 
 
