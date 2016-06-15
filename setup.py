@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import os
 from setuptools import setup, find_packages
 
@@ -10,12 +13,14 @@ setup(
     version='0.1.0dev0',
     packages=find_packages(),
     include_package_data=True,
-    license='BSD License',  # example license
-    description='A simple Django app to conduct Web-based polls.',
+    license='BSD License',
+    description='django-formidable is a full django application which '
+                'allows you to create, edit, delete and use forms.',
     long_description=README,
-    url='https://www.example.com/',
-    author='Your Name',
-    author_email='yourname@example.com',
+    url='https://github.com/novafloss/django-formidable',
+    author='Guillaume Camera, Guillaume Gérard',
+    author_email='guillaume.camera@people-doc.com, '
+                 'guillaume.gerard@people-doc.com',
     install_requires=[
         'django<1.9',
         'djangorestframework',
@@ -27,9 +32,14 @@ setup(
         'Framework :: Django',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        # Replace these appropriately if you are stuck on Python 2.
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.1',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
