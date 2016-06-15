@@ -1,6 +1,8 @@
 =================
-django-formidable
+django-formidable 
 =================
+
+.. image:: https://raw.githubusercontent.com/novafloss/django-formidable/master/formidable.png
 
 .. image:: https://circleci.com/gh/novafloss/django-formidable.svg?style=svg&circle-token=6f273f564e1e44f702aef7c1d00baff74609c791
     :target: https://circleci.com/gh/novafloss/django-formidable
