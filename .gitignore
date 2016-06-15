@@ -2,4 +2,4 @@
 *.pyc
 demo/var
 .tox/
-django_formidable.egg-info/
+*.egg-info
