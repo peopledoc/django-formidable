@@ -7,7 +7,7 @@ from formidable.serializers.list import NestedListSerializer
 
 class ItemListSerializer(NestedListSerializer):
 
-    field_id = 'key'
+    field_id = 'value'
     parent_name = 'field_id'
 
     def validate(self, data):
@@ -28,4 +28,4 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         list_serializer_class = ItemListSerializer
-        fields = ('key', 'value', 'help_text')
+        fields = ('value', 'label', 'help_text')
