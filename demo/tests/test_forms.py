@@ -117,7 +117,9 @@ class TestDynamicForm(TestCase):
             order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
-            drop.items.create(key=key, value=key, order=drop.get_next_order())
+            drop.items.create(
+                value=key, label=key, order=drop.get_next_order()
+            )
 
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -135,7 +137,9 @@ class TestDynamicForm(TestCase):
             order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
-            drop.items.create(key=key, value=key, order=drop.get_next_order())
+            drop.items.create(
+                value=key, label=key, order=drop.get_next_order()
+            )
 
         form_class = self.form.get_django_form_class()
         form = form_class()
@@ -148,13 +152,13 @@ class TestDynamicForm(TestCase):
 
     def test_radio_input(self):
         field = self.form.fields.create(
-            slug=u'input-radio', type_id=u'radios',
-            label=u'chose you weapon',
+            slug='input-radio', type_id='radios',
+            label='chose you weapon',
             order=self.form.get_next_field_order()
         )
         for key in ['sword', 'gun']:
             field.items.create(
-                key=key, value=key, order=field.get_next_order()
+                value=key, label=key, order=field.get_next_order()
             )
 
         form_class = self.form.get_django_form_class()
