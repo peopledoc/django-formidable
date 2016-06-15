@@ -2,6 +2,9 @@
 django-formidable
 =================
 
+.. image:: https://circleci.com/gh/novafloss/django-formidable.svg?style=svg&circle-token=6f273f564e1e44f702aef7c1d00baff74609c791
+    :target: https://circleci.com/gh/novafloss/django-formidable
+
 django-formidable is a full django application which allows you to create,
 edit, delete and use forms.
 
