@@ -61,17 +61,17 @@ class FieldBuilder(object):
 
     def get_disabled(self):
         if self.access:
-            return self.access.level == u'READONLY'
+            return self.access.level == 'READONLY'
 
         return False
 
     def get_required(self):
         if self.access:
 
-            if self.access.level == u'HIDDEN':
+            if self.access.level == 'HIDDEN':
                 raise SkipField()
 
-            return self.access.level == u'REQUIRED'
+            return self.access.level == 'REQUIRED'
 
         return False
 
@@ -155,7 +155,7 @@ class ChoiceFieldBuilder(FieldBuilder):
         return kwargs
 
     def get_choices(self):
-        return [(item.key, item.value) for item in self.field.items.all()]
+        return [(item.value, item.label) for item in self.field.items.all()]
 
 
 class DropdownFieldBuilder(ChoiceFieldBuilder):

@@ -61,8 +61,8 @@ class Field(models.Model):
 
 class Item(models.Model):
     field = models.ForeignKey(Field, related_name='items')
-    key = models.CharField(max_length=256)
     value = models.CharField(max_length=256)
+    label = models.CharField(max_length=256)
     order = models.IntegerField()
     help_text = models.TextField(blank=True, null=True)
 

@@ -49,8 +49,8 @@ form_data_items = {
             {"access_id": "human", "level": "HIDDEN"},
         ],
         "items": [
-            {'key': 'tuto', 'value': 'toto'},
-            {'key': 'plop', 'value': 'coin'},
+            {'value': 'tuto', 'label': 'toto'},
+            {'value': 'plop', 'label': 'coin'},
         ],
         "multiple": False
     }]
@@ -116,7 +116,7 @@ class UpdateFormTestCase(APITestCase):
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
         self.form = Formidable.objects.create(
-            label=u'test', description='test'
+            label='test', description='test'
         )
 
     @property
@@ -136,8 +136,8 @@ class UpdateFormTestCase(APITestCase):
         self.assertEquals(res.status_code, 200)
         formidable = Formidable.objects.order_by('pk').last()
         self.assertEquals(formidable.pk, self.form.pk)
-        self.assertEquals(formidable.label, u'edited label')
-        self.assertEquals(formidable.description, u'edited description')
+        self.assertEquals(formidable.label, 'edited label')
+        self.assertEquals(formidable.description, 'edited description')
         self.assertEquals(Formidable.objects.count(), initial_count)
 
     def test_update_simple_fields(self):
@@ -146,23 +146,23 @@ class UpdateFormTestCase(APITestCase):
             order=self.form.get_next_field_order()
         )
         for access in get_accesses():
-            field.accesses.create(access_id=access.id, level=u'EDITABLE')
+            field.accesses.create(access_id=access.id, level='EDITABLE')
         res = self.client.put(self.edit_url, form_data,  format='json')
         self.assertEquals(res.status_code, 200)
         form = Formidable.objects.order_by('pk').last()
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
-        self.assertEquals(field.label, u'hello')
+        self.assertEquals(field.label, 'hello')
         self.assertEquals(field.accesses.count(), 4)
 
     def test_create_field_on_update(self):
         field = self.form.fields.create(
-            type_id='text', slug='textslug', label=u'mytext',
+            type_id='text', slug='textslug', label='mytext',
             order=self.form.get_next_field_order()
         )
         for access in get_accesses():
-            field.accesses.create(access_id=access.id, level=u'EDITABLE')
+            field.accesses.create(access_id=access.id, level='EDITABLE')
 
         data = deepcopy(form_data)
         data['fields'].extend(form_data_items['fields'])
@@ -226,11 +226,11 @@ class TestChain(APITestCase):
 
     class MyTestForm(FormidableForm):
 
-        name = fields.CharField(label=u'Name', accesses={'jedi': 'REQUIRED'})
+        name = fields.CharField(label='Name', accesses={'jedi': 'REQUIRED'})
         birth_date = fields.DateField(
             label='Your Birth Date', validators=[
                 validators.AgeAboveValidator(
-                    21, message=u'You cannot be a jedi until your 21'
+                    21, message='You cannot be a jedi until your 21'
                 ),
                 validators.DateIsInFuture(False)
             ],
