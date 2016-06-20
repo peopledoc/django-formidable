@@ -10,14 +10,15 @@ from formidable.models import Field, Access
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.access import AccessSerializer
 from formidable.serializers.validation import ValidationSerializer
+from formidable.serializers.defaults import DefaultSerializer
 from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers.list import NestedListSerializer
 from formidable.serializers.common import WithNestedSerializer
 
 BASE_FIELDS = (
-    'slug', 'label', 'type_id', 'placeholder', 'help_text', 'default',
-    'accesses', 'validations', 'order'
+    'slug', 'label', 'type_id', 'placeholder', 'help_text',
+    'accesses', 'validations', 'order', 'defaults'
 )
 
 
@@ -56,8 +57,9 @@ class FieldSerializer(WithNestedSerializer):
     # The order is automatically calculated, if the order is define in
     # incomming payload, it will be automatically overrided.
     order = serializers.IntegerField(write_only=True, required=False)
+    defaults = DefaultSerializer(many=True, required=False)
 
-    nested_objects = ['accesses', 'validations']
+    nested_objects = ['accesses', 'validations', 'defaults']
 
     class Meta:
         model = Field
@@ -71,6 +73,10 @@ class FieldSerializer(WithNestedSerializer):
     @cached_property
     def validations_serializer(self):
         return self.fields['validations']
+
+    @cached_property
+    def defaults_serializer(self):
+        return self.fields['defaults']
 
 
 class ListContextFieldSerializer(serializers.ListSerializer):
@@ -110,8 +116,9 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         list_serializer_class = ListContextFieldSerializer
         model = Field
         fields = (
-            'slug', 'label', 'type_id', 'placeholder', 'help_text', 'default',
-            'validations', 'disabled', 'required', 'multiple', 'items'
+            'slug', 'label', 'type_id', 'placeholder', 'help_text',
+            'validations', 'disabled', 'required', 'multiple', 'items',
+            'defaults',
         )
 
     @property
