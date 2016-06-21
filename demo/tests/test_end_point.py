@@ -36,6 +36,7 @@ class RenderSerializerTestCase(TestCase):
             placeholder='put your name here', help_text=u'your name',
             order=self.form.get_next_field_order()
         )
+        self.text_field2.defaults.create(value='Roméo')
         self.text_field.accesses.create(
             level=constants.REQUIRED, access_id=u'padawan'
         )
@@ -90,7 +91,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['label'], u'test text')
         self.assertEquals(text_field['placeholder'], 'put your name here')
         self.assertEquals(text_field['help_text'], 'your name')
-        self.assertEquals(text_field['default'], None)
+        self.assertEquals(text_field['defaults'], [])
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
         self.assertIn('accesses', text_field)
@@ -107,7 +108,6 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['label'], u'test text 2')
         self.assertEquals(text_field['placeholder'], 'put your name here')
         self.assertEquals(text_field['help_text'], 'your name')
-        self.assertEquals(text_field['default'], None)
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
         self.assertIn('accesses', text_field)
@@ -116,6 +116,11 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(accesses['access_id'], u'jedi')
         self.assertEquals(accesses['level'], constants.EDITABLE)
         self.assertEquals(accesses['display'], 'TABLE')
+        self.assertIn('defaults', text_field)
+        defaults = text_field['defaults']
+        self.assertEqual(type(defaults), list)
+        self.assertEqual(len(defaults), 1)
+        self.assertEqual(defaults[0], 'Roméo')
 
     def test_dropdown_field(self):
         self.form.fields.all().delete()
@@ -324,6 +329,23 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    fields_with_defaults = [{
+        'slug': 'text',
+        'label': 'state',
+        'type_id': 'dropdown',
+        'accesses': [
+            {'access_id': 'padawan', 'level': constants.REQUIRED}
+        ],
+        'defaults': ['france'],
+        'items': [{
+            'value': 'france',
+            'label': 'France',
+        }, {
+            'value': 'england',
+            'label': 'England'
+        }]
+    }]
+
     radios_buttons_fields = [
         {
             'slug': 'test-radios',
@@ -511,6 +533,17 @@ class CreateSerializerTestCase(TestCase):
         validation = field.validations.first()
         self.assertEquals(validation.value, 'false')
 
+    def test_create_fields_with_defaults(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_with_defaults
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
+        self.assertEqual(instance.fields.count(), 1)
+        field = instance.fields.first()
+        self.assertEqual(field.defaults.count(), 1)
+        self.assertTrue(field.defaults.filter(value='france').exists())
+
     def test_create_field_error_validations(self):
         data = copy.deepcopy(self.data)
         fields_data = copy.deepcopy(self.fields_with_validation)
@@ -689,6 +722,17 @@ class UpdateFormTestCase(TestCase):
         ],
     }]
 
+    fields_with_defaults = [{
+        'slug': 'state',
+        'label': 'state',
+        'type_id': 'dropdown',
+        'accesses': [
+            {'access_id': 'padawan', 'level': constants.REQUIRED}
+        ],
+        'items': [{'value': 'france', 'label': 'France'}],
+        'defaults': ['france'],
+    }]
+
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
         self.form = Formidable.objects.create(
@@ -701,6 +745,35 @@ class UpdateFormTestCase(TestCase):
         form = serializer.save()
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.label, u'edited form')
+
+    def test_create_defaults_on_update(self):
+        self.form.fields.create(
+            type_id='dropdown', label='state', slug='text',
+            order=3,
+        )
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_defaults)
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
+        field = instance.fields.get(slug='state')
+        self.assertEqual(field.defaults.count(), 1)
+        self.assertTrue(field.defaults.filter(value='france').exists())
+
+    def test_update_defaults(self):
+        field = self.form.fields.create(
+            type_id='dropdown', label='state', slug='text',
+            order=3,
+        )
+        field.defaults.create(value='england')
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_defaults)
+        serializer = FormidableSerializer(instance=self.form, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
+        field = instance.fields.get(slug='state')
+        self.assertEqual(field.defaults.count(), 1)
+        self.assertTrue(field.defaults.filter(value='france').exists())
 
     def test_order_on_update(self):
         self.form.fields.create(type_id='text', slug='already-there', order=0)

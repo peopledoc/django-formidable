@@ -46,7 +46,6 @@ class Field(models.Model):
     )
     placeholder = models.CharField(max_length=256, null=True, blank=True)
     help_text = models.TextField(null=True, blank=True)
-    default = models.TextField(null=True, blank=True)
     multiple = models.BooleanField(default=False)
     order = models.IntegerField()
 
@@ -57,6 +56,12 @@ class Field(models.Model):
         """
         agg = self.items.aggregate(models.Max('order'))
         return agg['order__max'] + 1 if agg['order__max'] is not None else 0
+
+
+class Default(models.Model):
+
+    value = models.CharField(max_length=256)
+    field = models.ForeignKey(Field, related_name='defaults')
 
 
 class Item(models.Model):
