@@ -253,7 +253,7 @@ class HelpTextFieldSerializer(FieldSerializer):
     help_text = serializers.CharField(required=True)
 
     class Meta(FieldSerializer.Meta):
-        # Just to remove "label" attribut
+        # Just to remove "label" attribute
         fields = list(set(BASE_FIELDS) - set(['label']))
 
 
@@ -263,7 +263,7 @@ class TitleFieldSerializer(FieldSerializer):
     type_id = 'title'
 
     class Meta(FieldSerializer.Meta):
-        # Just to remove "help_text" attribut
+        # Just to remove "help_text" attribute
         fields = list(set(BASE_FIELDS) - set(['help_text']))
 
 
@@ -273,5 +273,5 @@ class SeparatorFieldSerializer(FieldSerializer):
     type_id = 'separator'
 
     class Meta(FieldSerializer.Meta):
-        # Just to remove "help_text" attribut
+        # Just to remove "help_text" attribute
         fields = list(set(BASE_FIELDS) - set(['label', 'help_text']))
