@@ -18,4 +18,5 @@ class Command(BaseCommand):
                     serializer.save()
                     self.stdout.write('Successfully populate "%s"' % filename)
                 else:
-                    self.stdout.write('Broken "%s" %s' % (filename, serializer.errors))
+                    self.stdout.write('Broken "%s" %s' % (
+                        filename, serializer.errors))
