@@ -20,9 +20,9 @@
         <tr>
           <th>{{ form.label }}</th>
           {% for role in roles %}
-            <td><a href="{% url 'builder:formidable-detail' form.id role.id %}">&#x1f441;</a></td>
+            <td><a href="{% url 'builder:formidable-detail' form.id role.id %}">View</a></td>
           {% endfor %}
-          <td><a href="{% url 'builder:formidable-edit' form.id %}">&#x1f589;</a></td>
+          <td><a href="{% url 'builder:formidable-edit' form.id %}">Edit</a></td>
         </tr>
         {% empty %}
           <tr>
