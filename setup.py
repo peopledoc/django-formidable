@@ -22,10 +22,10 @@ setup(
     author_email='guillaume.camera@people-doc.com, '
                  'guillaume.gerard@people-doc.com',
     install_requires=[
-        'django<1.9',
+        'Django<1.9',
         'djangorestframework',
-        'dateutils',
         'markdown',
+        'python-dateutil',
     ],
     classifiers=[
         'Environment :: Web Environment',
