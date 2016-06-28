@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from formidable.serializers.forms import FormidableSerializer
 import json
 
@@ -18,4 +18,5 @@ class Command(BaseCommand):
                     serializer.save()
                     self.stdout.write('Successfully populate "%s"' % filename)
                 else:
-                    self.stdout.write('Broken "%s" %s' % (filename, serializer.errors))
+                    self.stdout.write('Broken "%s" %s' % (
+                        filename, serializer.errors))
