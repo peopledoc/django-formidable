@@ -60,7 +60,8 @@ class Field(object):
 
     widget = widgets.TextInput
 
-    def __init__(self, accesses=None, *args, **kwargs):
+    def __init__(self, accesses=None, default=None, *args, **kwargs):
+        self.defaults = [default] if default is not None else []
         self.accesses = accesses or {}
         super(Field, self).__init__(*args, **kwargs)
 
@@ -78,11 +79,16 @@ class Field(object):
         field = widget.to_formidable(**kwargs)
         self.create_accesses(field)
         self.create_validators(field)
+        self.create_defaults(field)
         return field
 
     def create_accesses(self, field):
         for access, level in self.get_complete_accesses().items():
             field.accesses.create(access_id=access, level=level)
+
+    def create_defaults(self, field):
+        for default in self.defaults:
+            field.defaults.create(value=default)
 
     def create_validators(self, field):
         for validator in self.validators:
@@ -195,6 +201,10 @@ class IntegerField(Field, fields.IntegerField):
 
 
 class ItemField(Field):
+
+    def __init__(self, defaults=None, *args, **kwargs):
+        super(ItemField, self).__init__(*args, **kwargs)
+        self.defaults = defaults or []
 
     def get_extra_formidable_kwargs(self):
         kwargs = super(ItemField, self).get_extra_formidable_kwargs()
