@@ -13,6 +13,12 @@
 <script src="{% static "assets/formidable.js" %}"></script>
 <script>
   $(document).ready(function() {
+    Formidable.on('saved.form', function() {
+        window.location = '{% url "builder:formidable-list" %}';
+    });
+    Formidable.on('cancel.form', function() {
+        window.location = '{% url "builder:formidable-edit" object.pk %}';
+    });
     Formidable.start({
       formID: {{ object.pk }},
       component: 'builder',

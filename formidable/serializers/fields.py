@@ -111,6 +111,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
     required = serializers.SerializerMethodField()
     validations = ValidationSerializer(many=True, required=False)
     items = ItemSerializer(many=True, required=False)
+    defaults = DefaultSerializer(many=True, required=False)
 
     class Meta:
         list_serializer_class = ListContextFieldSerializer
