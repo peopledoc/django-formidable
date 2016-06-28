@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 import copy
 from functools import reduce
@@ -267,6 +268,23 @@ class RenderContextSerializer(TestCase):
         data = serializer.data
         self.assertIn('fields', data)
         self.assertEquals(len(data['fields']), 1)
+
+    def test_with_defaults(self):
+
+        class TestForm(FormidableForm):
+            name = fields.CharField(label='Your name', default='Roméo')
+
+        form = TestForm.to_formidable(label='title')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('fields', data)
+        self.assertEquals(len(data['fields']), 1)
+        field = data['fields'][0]
+        self.assertIn('defaults', field)
+        defaults = field['defaults']
+        self.assertEqual(defaults, ['Roméo'])
 
 
 class CreateSerializerTestCase(TestCase):
