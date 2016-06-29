@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 from formidable.models import Formidable
 from formidable.accesses import get_accesses
 from formidable.forms import FormidableForm, fields
-from formidable import validators
+from formidable import validators, constants
 
 form_data = {
     "label": "test create",
@@ -275,3 +275,49 @@ class TestChain(APITestCase):
             form.errors['birth_date'][0],
             'You cannot be a jedi until your 21'
         )
+
+
+class MyForm(FormidableForm):
+    first_name = fields.CharField(
+        accesses={'padawan': constants.REQUIRED},
+    )
+    last_name = fields.CharField(
+        accesses={'padawan': constants.REQUIRED},
+        validators=[validators.MinLengthValidator(5)]
+    )
+
+
+class TestValidationEndPoint(APITestCase):
+
+    def setUp(self):
+        super(TestValidationEndPoint, self).setUp()
+        self.formidable = MyForm.to_formidable(label='title')
+
+    def test_validate_data_ok(self):
+        parameters = {
+            'first_name': 'Guillaume',
+            'last_name': 'Gérard',
+        }
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.get(
+            reverse('formidable:form_validation', args=[self.formidable.pk]),
+            parameters, format='json'
+        )
+        self.assertEqual(res.status_code, 204)
+
+    def test_validate_data_ko(self):
+        parameters = {
+            'last_name': 'Gérard',
+        }
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.get(
+            reverse('formidable:form_validation', args=[self.formidable.pk]),
+            parameters, format='json'
+        )
+        self.assertEqual(res.status_code, 400)
+        errors = res.data
+        self.assertIn('first_name', errors)
