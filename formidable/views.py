@@ -8,6 +8,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
 )
 from rest_framework.response import Response
+from rest_framework import exceptions
 
 from formidable.models import Formidable, Field
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
@@ -69,3 +70,20 @@ class PresetsList(APIView):
             instance=presets_declarations
         )
         return Response(serializer.data)
+
+
+class ValidateView(APIView):
+
+    def get(self, request, **kwargs):
+        try:
+            formidable = Formidable.objects.get(pk=kwargs['pk'])
+        except Formidable.DoesNotExist:
+            raise exceptions.Http404()
+
+        role = get_context(request, kwargs)
+        form_class = formidable.get_django_form_class(role)
+        form = form_class(data=request.GET)
+        if form.is_valid():
+            return Response(status=204)
+        else:
+            return Response(form.errors, status=400)

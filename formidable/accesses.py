@@ -46,6 +46,9 @@ def get_accesses():
 
 def get_context(request, kwargs):
     module, meth_name = settings.FORMIDABLE_CONTEXT_LOADER.rsplit('.', 1)
-    mod = importlib.import_module(module, [meth_name])
+    if six.PY3:
+        mod = importlib.import_module(module)
+    else:
+        mod = importlib.import_module(module, [meth_name])
     meth = getattr(mod, meth_name)
     return meth(request, kwargs)
