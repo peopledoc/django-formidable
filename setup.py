@@ -4,13 +4,12 @@ from __future__ import unicode_literals
 import os
 from setuptools import setup, find_packages
 
-
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
-        README = readme.read()
+    README = readme.read()
 
 setup(
     name='django-formidable',
-    version='0.1.0dev0',
+    version='0.1.0',
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',
