@@ -57,7 +57,12 @@ class FieldBuilder(object):
         return {'attrs': self.get_widget_attrs()}
 
     def get_widget_attrs(self):
-        return {'disabled': self.get_disabled()}
+        attrs = {}
+
+        if self.get_disabled():
+            attrs['disabled'] = True
+
+        return attrs
 
     def get_disabled(self):
         if self.access:

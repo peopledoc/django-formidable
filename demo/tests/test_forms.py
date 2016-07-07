@@ -226,6 +226,15 @@ class TestDynamicForm(TestCase):
         self.assertEquals(field.required, False)
         self.assertEquals(field.widget.attrs['disabled'], True)
 
+    def test_no_disabled_attr(self):
+        self.text_field.accesses.create(access_id=u'human', level=EDITABLE)
+        form_class = self.form.get_django_form_class(role=u'human')
+        form = form_class()
+        self.assertIn('text-input', form.fields)
+        field = form.fields['text-input']
+        self.assertEquals(field.required, False)
+        self.assertNotIn('disabled', field.widget.attrs)
+
     def test_hidden_field(self):
         self.text_field.accesses.create(access_id=u'human', level=HIDDEN)
         form_class = self.form.get_django_form_class(role=u'human')
