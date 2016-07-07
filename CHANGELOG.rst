@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+Release 0.1.1 (2016-07-07)
+==========================
+
+* Do not set the "disabled" attribute in "input" type when it's not needed. (#103)
+
 Release 0.1.0 (2016-06-29)
 ==========================
 
