@@ -21,7 +21,7 @@ class TestMetaClassPermissions(TestCase):
         ]
     )
     def test_with_settings_key(self):
-        attrs = {'settings_permissions_key': 'FORMIDABLE_PERMISSION_BUILDER'}
+        attrs = {'settings_permission_key': 'FORMIDABLE_PERMISSION_BUILDER'}
         MyView = MetaClassView('MyView', (APIView,), attrs)
         permission_classes = MyView.permission_classes
         self.assertEqual(len(permission_classes), 1)
@@ -34,7 +34,7 @@ class TestMetaClassPermissions(TestCase):
         ]
     )
     def test_settings_key_not_define(self):
-        attrs = {'settings_permissions_key': 'FORMIDABLE_PERMISSION_BUILDER'}
+        attrs = {'settings_permission_key': 'FORMIDABLE_PERMISSION_BUILDER'}
         MyView = MetaClassView('MyView', (APIView,), attrs)
         permission_classes = MyView.permission_classes
         self.assertEqual(len(permission_classes), 1)
@@ -45,7 +45,7 @@ class TestMetaClassPermissions(TestCase):
         FORMIDABLE_DEFAULT_PERMISSION=None,
     )
     def test_no_settings_key_define(self):
-        attrs = {'settings_permissions_key': 'FORMIDABLE_PERMISSION_BUILDER'}
+        attrs = {'settings_permission_key': 'FORMIDABLE_PERMISSION_BUILDER'}
         MyView = MetaClassView('MyView', (APIView,), attrs)
         permission_classes = MyView.permission_classes
         self.assertEqual(len(permission_classes), 1)

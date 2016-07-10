@@ -41,13 +41,15 @@ class MetaClassView(type):
 
         # Try to get the settings key to load, if the settings key is not
         # define, load the FORMIDABLE_DEFAULT_PERMISSION settings.
-        settings_key = attrs['settings_permissions_key']
+        settings_key = attrs.get(
+            'settings_permission_key', 'FORMIDABLE_DEFAULT_PERMISSION'
+        )
 
         # if the settings key define is not presents in the settings
         # The NoOne permission is loaded.
         modules = getattr(settings, settings_key, None)
         if not modules:
-            modules = getattr(settings, 'FORMIDABLE_DEFAULT_PERMISSION')
+            modules = getattr(settings, 'FORMIDABLE_DEFAULT_PERMISSION', None)
             # Not define or falsy value
             if not modules:
                 modules = ['formidable.permissions.NoOne']
@@ -62,7 +64,7 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
 
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
-    settings_permissions_key = 'FORMIDABLE_PERMISSIONS_BUILDER'
+    settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
     def get_queryset(self):
         qs = super(FormidableDetail, self).get_queryset()
@@ -70,15 +72,17 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
         return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
 
-class FormidableCreate(CreateAPIView):
+class FormidableCreate(six.with_metaclass(MetaClassView, CreateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
+    settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
 
-class ContextFormDetail(RetrieveAPIView):
+class ContextFormDetail(six.with_metaclass(MetaClassView, RetrieveAPIView)):
 
     queryset = Formidable.objects.all()
     serializer_class = ContextFormSerializer
+    settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
 
     def get_queryset(self):
         qs = super(ContextFormDetail, self).get_queryset()
@@ -91,7 +95,9 @@ class ContextFormDetail(RetrieveAPIView):
         return context
 
 
-class AccessList(APIView):
+class AccessList(six.with_metaclass(MetaClassView, APIView)):
+
+    settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
     def get(self, request, format=None):
         serializer = SimpleAccessSerializer(data=get_accesses())
@@ -101,7 +107,9 @@ class AccessList(APIView):
             return Response(data=serializer.errors, status_code=400)
 
 
-class PresetsList(APIView):
+class PresetsList(six.with_metaclass(MetaClassView, APIView)):
+
+    settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
     def get(self, request, format=None):
         presets_declarations = [
@@ -114,7 +122,9 @@ class PresetsList(APIView):
         return Response(serializer.data)
 
 
-class ValidateView(APIView):
+class ValidateView(six.with_metaclass(MetaClassView, APIView)):
+
+    settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
 
     def get(self, request, **kwargs):
         try:
