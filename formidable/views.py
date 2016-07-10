@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import unicode_literals
 
+import six
+
+
 from django.db.models import Prefetch
+from django.conf import settings
 
 from rest_framework import exceptions
 from rest_framework.generics import (
@@ -10,6 +13,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.settings import perform_import
 
 from formidable.accesses import get_accesses, get_context
 from formidable.forms.validations.presets import presets_register
@@ -19,10 +23,46 @@ from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.presets import PresetsSerializer
 
 
-class FormidableDetail(RetrieveUpdateAPIView):
+class MetaClassView(type):
+    """
+    Automatically load the *list* of permissions defined in the settings.
+    The key is defined in the ``settings_permissions_keys`` class
+    attribute.
+
+    If the ``settings_permissions_key`` is not defined, the default
+    setting key is: ``FORMIDABLE_DEFAULT_PERMISSIONS``.
+    If this default setting key is not defined either, the most
+    restricted permission is fetched (e.g. the ``NoOne`` permissions
+    access)
+    .
+    """
+
+    def __new__(mcls, name, bases, attrs):
+
+        # Try to get the settings key to load, if the settings key is not
+        # define, load the FORMIDABLE_DEFAULT_PERMISSION settings.
+        settings_key = attrs['settings_permissions_key']
+
+        # if the settings key define is not presents in the settings
+        # The NoOne permission is loaded.
+        modules = getattr(settings, settings_key, None)
+        if not modules:
+            modules = getattr(settings, 'FORMIDABLE_DEFAULT_PERMISSION')
+            # Not define or falsy value
+            if not modules:
+                modules = ['formidable.permissions.NoOne']
+
+        permissions_classes = perform_import(modules, None)
+        attrs['permission_classes'] = permissions_classes
+        return super(MetaClassView, mcls).__new__(mcls, name, bases, attrs)
+
+
+class FormidableDetail(six.with_metaclass(MetaClassView,
+                       RetrieveUpdateAPIView)):
 
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
+    settings_permissions_key = 'FORMIDABLE_PERMISSIONS_BUILDER'
 
     def get_queryset(self):
         qs = super(FormidableDetail, self).get_queryset()
@@ -36,6 +76,7 @@ class FormidableCreate(CreateAPIView):
 
 
 class ContextFormDetail(RetrieveAPIView):
+
     queryset = Formidable.objects.all()
     serializer_class = ContextFormSerializer
 
