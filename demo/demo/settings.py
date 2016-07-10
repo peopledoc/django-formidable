@@ -88,6 +88,7 @@ DATABASES = {
 
 FORMIDABLE_ACCESS_RIGHTS_LOADER = 'demo.formidable_accesses.get_accesses'
 FORMIDABLE_CONTEXT_LOADER = 'demo.formidable_accesses.get_context'
+FORMIDABLE_PERMISSIONS_BUILDER = ['rest_framework.permissions.AllowAny']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
