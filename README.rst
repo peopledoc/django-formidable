@@ -26,7 +26,7 @@ MIT Licence
 Documentation
 =============
 
-Latest version of the documentation http://django-formidable.readthedocs.io/en/latest/
+Latest version of the documentation: http://django-formidable.readthedocs.io/en/latest/
 
 Quick-Start
 ===========
