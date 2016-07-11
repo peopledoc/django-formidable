@@ -37,8 +37,6 @@ class MetaClassView(type):
 
     def __new__(mcls, name, bases, attrs):
 
-        # Try to get the settings key to load, if the settings key is not
-        # define, load the FORMIDABLE_DEFAULT_PERMISSION settings.
         settings_key = attrs.get(
             'settings_permission_key', 'FORMIDABLE_DEFAULT_PERMISSION'
         )
