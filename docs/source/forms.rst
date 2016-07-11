@@ -1,5 +1,6 @@
+=====
 Forms
-+++++
+=====
 
 The main purpose of this app is to handle Forms. Of course, the app provides an API to Create and Edit forms, but it's not the only option:
 ``django-formidable`` also provides a full python builder in order to create forms. ``django-formidable`` also provides a method to retrieve a standard django form class which can then be used just like an ordinary django form.

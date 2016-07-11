@@ -1,24 +1,26 @@
+=======
 Install
-+++++++
+=======
 
 Install the app
 ===============
 
 
+From PyPI
+---------
+
+.. code-block:: sh
+
+    $ pip install django-formidable
+
 From Github
 -----------
 
-For the moment, no release is available on the PyPi, but you can install it from github
+You can also install ``django-formidable`` via GitHub:
 
 .. code-block:: sh
 
     pip install git+https://github.com/peopledoc/django-formidable.git
-
-
-From PyPI
----------
-
-TODO: Coming soon.
 
 
 Configure the app
