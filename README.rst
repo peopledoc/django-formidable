@@ -17,8 +17,6 @@ Python Compatibility : python2.7 (tox says it's compliant up to
 python3.2, but I don't)
 Django compatibility : django1.8
 
-It's not production-ready yet, and no official version has currently
-been released on PyPI.
 
 Licence
 =======
@@ -36,11 +34,9 @@ Quick-Start
 Install
 -------
 
-No release is yet available, but it can be installed via github.
+.. code:: sh
 
-::
-
-    $ sudo pip install git+https://github.com/novafloss/django-formidable.git
+    $ pip install django-formidable
 
 Configure
 ---------
