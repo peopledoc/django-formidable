@@ -41,14 +41,11 @@ class MetaClassView(type):
             'settings_permission_key', 'FORMIDABLE_DEFAULT_PERMISSION'
         )
 
-        # if the settings key define is not presents in the settings
-        # The NoOne permission is loaded.
-        modules = getattr(settings, settings_key, None)
-        if not modules:
-            modules = getattr(settings, 'FORMIDABLE_DEFAULT_PERMISSION', None)
-            # Not define or falsy value
-            if not modules:
-                modules = ['formidable.permissions.NoOne']
+        # If the settings key define is not present in the settings
+        # The ``NoOne`` permission is loaded.
+        modules = getattr(settings, settings_key,
+                  getattr(settings, 'FORMIDABLE_DEFAULT_PERMISSION',  # noqa
+                  ['formidable.permissions.NoOne']))                  # noqa
 
         permissions_classes = perform_import(modules, None)
         attrs['permission_classes'] = permissions_classes

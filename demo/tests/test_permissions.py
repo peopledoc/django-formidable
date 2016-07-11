@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.test import TestCase, override_settings
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
@@ -28,23 +29,22 @@ class TestMetaClassPermissions(TestCase):
         self.assertEqual(permission_classes[0], IsAuthenticated)
 
     @override_settings(
-        FORMIDABLE_PERMISSION_BUILDER=None,
         FORMIDABLE_DEFAULT_PERMISSION=[
             'rest_framework.permissions.AllowAny'
         ]
     )
     def test_settings_key_not_define(self):
+        del settings.FORMIDABLE_PERMISSION_BUILDER
+
         attrs = {'settings_permission_key': 'FORMIDABLE_PERMISSION_BUILDER'}
         MyView = MetaClassView('MyView', (APIView,), attrs)
         permission_classes = MyView.permission_classes
         self.assertEqual(len(permission_classes), 1)
         self.assertEqual(permission_classes[0], AllowAny)
 
-    @override_settings(
-        FORMIDABLE_PERMISSION_BUILDER=None,
-        FORMIDABLE_DEFAULT_PERMISSION=None,
-    )
     def test_no_settings_key_define(self):
+        del settings.FORMIDABLE_DEFAULT_PERMISSION
+
         attrs = {'settings_permission_key': 'FORMIDABLE_PERMISSION_BUILDER'}
         MyView = MetaClassView('MyView', (APIView,), attrs)
         permission_classes = MyView.permission_classes
