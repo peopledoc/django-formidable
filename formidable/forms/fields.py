@@ -200,6 +200,11 @@ class IntegerField(Field, fields.IntegerField):
     widget = widgets.NumberInput
 
 
+class EmailField(Field, fields.EmailField):
+
+    widget = widgets.EmailInput
+
+
 class ItemField(Field):
 
     def __init__(self, defaults=None, *args, **kwargs):
