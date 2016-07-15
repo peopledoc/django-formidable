@@ -123,8 +123,7 @@ class FormidableForm(forms.Form):
                 label=label, description=description
             )
         else:
-            form = Formidable.objects.get(pk=instance.pk)
-            form = cls.clean_form(form, label, description)
+            form = cls.get_clean_form(form, label, description)
 
         order = 0
         for slug, field in cls.declared_fields.items():
@@ -133,7 +132,7 @@ class FormidableForm(forms.Form):
         return form
 
     @classmethod
-    def clean_form(cls, form, label, description):
+    def get_clean_form(cls, form, label, description):
         form.presets.all().delete()
         form.fields.all().delete()
         if description or label:
@@ -142,6 +141,7 @@ class FormidableForm(forms.Form):
                 'label': label or form.label,
             }
             Formidable.objects.filter(pk=form.pk).update(**kwargs)
-            form.refresh_from_db()
+            form.label = kwargs['label']
+            form.description = kwargs['description']
 
         return form
