@@ -123,7 +123,7 @@ class FormidableForm(forms.Form):
                 label=label, description=description
             )
         else:
-            form = cls.get_clean_form(form, label, description)
+            form = cls.get_clean_form(instance, label, description)
 
         order = 0
         for slug, field in cls.declared_fields.items():
