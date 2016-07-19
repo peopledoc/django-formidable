@@ -472,8 +472,12 @@ class TestFromDjangoForm(TestCase):
 
             myfile = fields.FileField(label='social-health-care')
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError) as context:
             MyForm.to_formidable()
+            self.assertEqual(
+                context.exception.message,
+                'Label is required on creation mode'
+            )
 
 
 class CreationForm(FormidableForm):

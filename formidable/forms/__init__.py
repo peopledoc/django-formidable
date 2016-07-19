@@ -117,7 +117,7 @@ class FormidableForm(forms.Form):
     def to_formidable(cls, label=None, description=None, instance=None):
         if not instance:
             if not label:
-                raise ValueError("On creation mode, label value is mandatory.")
+                raise ValueError("Label is required on creation mode")
             description = description or ''
             form = Formidable.objects.create(
                 label=label, description=description
