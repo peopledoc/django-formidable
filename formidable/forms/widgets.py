@@ -158,14 +158,14 @@ class TitleWidget(FormidableWidget):
 
     type_id = u'title'
 
-    def __init__(self, balise='h4', *args, **kwargs):
-        self.balise = balise
+    def __init__(self, tag='h4', *args, **kwargs):
+        self.tag = tag
         super(TitleWidget, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
-        balise = attrs.get('balise', None) or self.balise
-        return u'<{balise}>{value}</{balise}>'.format(
-            balise=balise, value=value
+        tag = attrs.get('tag', None) or self.tag
+        return u'<{tag}>{value}</{tag}>'.format(
+            tag=tag, value=value
         )
 
 
