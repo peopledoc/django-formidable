@@ -174,4 +174,4 @@ class SeparatorWidget(FormidableWidget):
     type_id = 'separator'
 
     def render(self, name, value, attrs=None):
-        return '<tr>'
+        return '<hr>'

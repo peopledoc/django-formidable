@@ -31,4 +31,4 @@ class RenderingFormatField(TestCase):
         form = TestForm()
         text = form.as_p()
         self.assertNotIn("id_sepa", text)
-        self.assertIn('<tr>', text)
+        self.assertIn('<hr>', text)
