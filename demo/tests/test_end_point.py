@@ -171,6 +171,18 @@ class RenderSerializerTestCase(TestCase):
                          'This is on onboarding form.')
         self.assertNotIn('help_text', data)
 
+    def test_email_field(self):
+        self.form.fields.all().delete()
+        self.email = self.form.fields.create(
+            type_id='email', slug='email',
+            label='Your email',
+            order=self.form.get_next_field_order()
+        )
+        serializer = FormidableSerializer(instance=self.form)
+        data = serializer.data['fields'][0]
+        for field in RENDER_BASE_FIELDS:
+            self.assertIn(field, data)
+
     def test_separator_field(self):
         self.form.fields.all().delete()
         self.sepa = self.form.fields.create(

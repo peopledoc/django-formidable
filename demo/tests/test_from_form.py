@@ -343,6 +343,21 @@ class TestFromDjangoForm(TestCase):
             slug='checkboxinput', type_id='checkbox', label='Do you agree ?'
         ).exists())
 
+    def test_email_field(self):
+
+        class MyForm(FormidableForm):
+
+            email = fields.EmailField(label='Your email')
+
+        initial_count = Formidable.objects.count()
+        form = MyForm.to_formidable(label='form-with-email')
+        self.assertEquals(initial_count + 1, Formidable.objects.count())
+        self.assertTrue(form.pk)
+        self.assertEquals(form.fields.count(), 1)
+        self.assertTrue(form.fields.filter(
+            slug='email', type_id='email', label='Your email',
+        ).exists())
+
     def test_checkbox_multiple_field(self):
 
         choices = (

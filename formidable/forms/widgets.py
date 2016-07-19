@@ -136,6 +136,11 @@ class NumberInput(FormidableWidget, widgets.NumberInput):
     type_id = u'number'
 
 
+class EmailInput(FormidableWidget, widgets.EmailInput):
+
+    type_id = 'email'
+
+
 class ClearableFileInput(FormidableWidget, widgets.ClearableFileInput):
 
     type_id = u'file'
