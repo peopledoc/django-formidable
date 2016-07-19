@@ -133,6 +133,15 @@ class FormidableForm(forms.Form):
 
     @classmethod
     def get_clean_form(cls, form, label, description):
+        """
+        From a form definition and label and description value, the method
+        clean all fields and validations attached to the form.
+        If the label or description are not empty, those values are updated
+        in the database *and* in memory.
+
+        The returned object is a form without fields or validations , and
+        new label and description if needed.
+        """
         form.presets.all().delete()
         form.fields.all().delete()
         if description or label:
