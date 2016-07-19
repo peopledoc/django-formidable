@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
@@ -142,7 +145,7 @@ class UpdateFormTestCase(APITestCase):
 
     def test_update_simple_fields(self):
         field = self.form.fields.create(
-            type_id='text', slug='textslug', label=u'mytext',
+            type_id='text', slug='textslug', label='mytext',
             order=self.form.get_next_field_order()
         )
         for access in get_accesses():
@@ -174,7 +177,7 @@ class UpdateFormTestCase(APITestCase):
 
     def test_delete_field_on_update(self):
         self.form.fields.create(
-            type_id='text', slug='textslug', label=u'mytext',
+            type_id='text', slug='textslug', label='mytext',
             order=self.form.get_next_field_order()
         )
         self.form.fields.create(
@@ -184,7 +187,7 @@ class UpdateFormTestCase(APITestCase):
 
         for access in get_accesses():
             for field in self.form.fields.all():
-                field.accesses.create(access_id=access.id, level=u'EDITABLE')
+                field.accesses.create(access_id=access.id, level='EDITABLE')
 
         res = self.client.put(self.edit_url, form_data,  format='json')
         self.assertEquals(res.status_code, 200)
@@ -192,13 +195,13 @@ class UpdateFormTestCase(APITestCase):
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
-        self.assertEquals(field.label, u'hello')
+        self.assertEquals(field.label, 'hello')
         self.assertEquals(field.accesses.count(), 4)
         self.assertTrue(field.accesses.filter(
-            access_id=u'padawan', level='REQUIRED'
+            access_id='padawan', level='REQUIRED'
         ).exists())
         self.assertTrue(field.accesses.filter(
-            access_id=u'human', level='HIDDEN'
+            access_id='human', level='HIDDEN'
         ).exists())
         self.assertTrue(field.accesses.filter(
             access_id="jedi-master", level="READONLY"

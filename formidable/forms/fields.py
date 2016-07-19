@@ -49,6 +49,8 @@ your own fields, please look at :mod:`formidable.forms.widgets`.
 
 """
 
+from __future__ import unicode_literals
+
 from django.forms import fields
 
 from formidable.constants import EDITABLE

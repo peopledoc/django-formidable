@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 
 from django.db import models
@@ -72,7 +73,7 @@ class Item(models.Model):
     help_text = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
-        return u'{}: {}'.format(self.key, self.value)
+        return '{}: {}'.format(self.key, self.value)
 
 
 class Access(models.Model):

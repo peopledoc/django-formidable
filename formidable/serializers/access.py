@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
@@ -54,7 +56,7 @@ class AccessSerializer(serializers.ModelSerializer):
         accesses_ids = [access.id for access in get_accesses()]
         if value not in accesses_ids:
             raise serializers.ValidationError(
-                u'{} is unknown, valide access {}'.format(
+                '{} is unknown, valide access {}'.format(
                     value, accesses_ids
                 )
             )

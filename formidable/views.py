@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django.db.models import Prefetch
 
 from rest_framework.views import APIView

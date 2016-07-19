@@ -3,6 +3,9 @@
 .. autofunction:: get_accesses
     members
 """
+
+from __future__ import unicode_literals
+
 import six
 import importlib
 
@@ -20,7 +23,7 @@ class AccessObject(object):
         self.description = description
 
     def __unicode__(self):
-        return u'{}: {}'.format(self.id, self.label)
+        return '{}: {}'.format(self.id, self.label)
 
 
 def get_accesses():
@@ -40,7 +43,7 @@ def get_accesses():
     res = meth()
     assert type(res) == list, 'FORMIDABLE_ACCESS_RIGHTS_LOADER has to return a list'  # noqa
     for access in res:
-        assert type(access) == AccessObject, u'access must be AccessObject'
+        assert type(access) == AccessObject, 'access must be AccessObject'
     return res
 
 
