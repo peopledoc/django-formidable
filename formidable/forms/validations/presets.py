@@ -10,12 +10,12 @@ from django.core.exceptions import ValidationError, ImproperlyConfigured
 class PresetsRegister(dict):
 
     def build_rules(self, form):
-        rules = []
+        return list(self.gen_rules(form))
+
+    def gen_rules(self, form):
         for preset in form.presets.all():
             klass = self[preset.slug]
-            instance = klass(preset.arguments.all())
-            rules.append(instance)
-        return rules
+            yield klass(preset.arguments.all())
 
 
 presets_register = PresetsRegister()
