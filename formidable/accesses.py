@@ -6,10 +6,11 @@
 
 from __future__ import unicode_literals
 
-import six
 import importlib
 
 from django.conf import settings
+
+import six
 
 
 class AccessUnknow(Exception):

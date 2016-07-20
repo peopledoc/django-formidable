@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from formidable.register import FieldSerializerRegister
 from formidable import constants
+from formidable.register import FieldSerializerRegister
 
 
 class Formidable(models.Model):

@@ -13,9 +13,9 @@ from collections import OrderedDict
 
 from django import forms
 
-from formidable.models import Formidable
 from formidable.forms import field_builder
 from formidable.forms.validations.presets import presets_register
+from formidable.models import Formidable
 
 
 class FormidableBoundFieldCache(dict):

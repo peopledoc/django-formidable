@@ -12,11 +12,11 @@ from __future__ import unicode_literals
 
 from datetime import date
 
-from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
-
 from django.core import validators
 from django.utils.translation import ugettext_lazy as _
+
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 
 
 class FormidableValidator(object):

@@ -2,22 +2,21 @@
 
 from __future__ import unicode_literals
 
-from django.utils.functional import cached_property
 from django.db.models import Prefetch
-
+from django.utils.functional import cached_property
 
 from rest_framework import serializers
 
 from formidable import constants
-from formidable.models import Field, Access
-from formidable.serializers.items import ItemSerializer
-from formidable.serializers.access import AccessSerializer
-from formidable.serializers.validation import ValidationSerializer
-from formidable.serializers.defaults import DefaultSerializer
-from formidable.serializers.child_proxy import LazyChildProxy
+from formidable.models import Access, Field
 from formidable.register import FieldSerializerRegister, load_serializer
-from formidable.serializers.list import NestedListSerializer
+from formidable.serializers.access import AccessSerializer
+from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.serializers.common import WithNestedSerializer
+from formidable.serializers.defaults import DefaultSerializer
+from formidable.serializers.items import ItemSerializer
+from formidable.serializers.list import NestedListSerializer
+from formidable.serializers.validation import ValidationSerializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'help_text',
