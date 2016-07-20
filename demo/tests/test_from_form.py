@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 from django.test import TestCase
 
 from formidable.models import Formidable
@@ -9,9 +12,9 @@ from formidable import validators
 
 class FormTest(FormidableForm):
 
-    title = fields.TitleField(label=u'Jedi Onboarding')
-    helptext = fields.HelpTextField(text=u'youhou')
-    mytext = fields.CharField(label=u'Name', accesses={
+    title = fields.TitleField(label='Jedi Onboarding')
+    helptext = fields.HelpTextField(text='youhou')
+    mytext = fields.CharField(label='Name', accesses={
         'padawan': 'EDITABLE', 'jedi': 'REQUIRED', 'jedi-master': 'HIDDEN',
         'human': 'EDITABLE',
     })
@@ -24,7 +27,7 @@ class FormTest(FormidableForm):
 class TestFromDjangoForm(TestCase):
 
     def test_order_create(self):
-        form = FormTest.to_formidable(label=u'label')
+        form = FormTest.to_formidable(label='label')
         self.assertTrue(
             form.fields.filter(slug='title', order=0).exists()
         )
@@ -42,153 +45,153 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mytext = fields.CharField(
-                label=u'text', validators=[validators.RegexValidator(
+                label='text', validators=[validators.RegexValidator(
                     regex=r'^[0-9]\w+'
                 )]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mytext').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'REGEXP')
+        self.assertEquals(valid.type, 'REGEXP')
         self.assertEquals(valid.value, r'^[0-9]\w+')
 
     def test_max_length_validators(self):
         class MyForm(FormidableForm):
 
             mytext = fields.CharField(
-                label=u'text', validators=[validators.MaxLengthValidator(5)]
+                label='text', validators=[validators.MaxLengthValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mytext').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'MAXLENGTH')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'MAXLENGTH')
+        self.assertEquals(valid.value, '5')
 
     def test_min_length_validators(self):
         class MyForm(FormidableForm):
 
             mytext = fields.CharField(
-                label=u'text', validators=[validators.MinLengthValidator(5)]
+                label='text', validators=[validators.MinLengthValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mytext').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'MINLENGTH')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'MINLENGTH')
+        self.assertEquals(valid.value, '5')
 
     def test_gt_validator(self):
 
         class MyForm(FormidableForm):
 
             mynumber = fields.IntegerField(
-                label=u'number', validators=[validators.GTValidator(5)]
+                label='number', validators=[validators.GTValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mynumber').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'GT')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'GT')
+        self.assertEquals(valid.value, '5')
 
     def test_lt_validator(self):
 
         class MyForm(FormidableForm):
 
             mynumber = fields.IntegerField(
-                label=u'number', validators=[validators.LTValidator(5)]
+                label='number', validators=[validators.LTValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mynumber').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'LT')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'LT')
+        self.assertEquals(valid.value, '5')
 
     def test_gte_validator(self):
 
         class MyForm(FormidableForm):
 
             mynumber = fields.IntegerField(
-                label=u'number', validators=[validators.GTEValidator(5)]
+                label='number', validators=[validators.GTEValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mynumber').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'GTE')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'GTE')
+        self.assertEquals(valid.value, '5')
 
     def test_lte_validator(self):
 
         class MyForm(FormidableForm):
 
             mynumber = fields.IntegerField(
-                label=u'number', validators=[validators.LTEValidator(5)]
+                label='number', validators=[validators.LTEValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mynumber').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'LTE')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'LTE')
+        self.assertEquals(valid.value, '5')
 
     def test_eq_validator(self):
 
         class MyForm(FormidableForm):
 
             mynumber = fields.IntegerField(
-                label=u'number', validators=[validators.EQValidator(5)]
+                label='number', validators=[validators.EQValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mynumber').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'EQ')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'EQ')
+        self.assertEquals(valid.value, '5')
 
     def test_neq_validator(self):
 
         class MyForm(FormidableForm):
 
             mynumber = fields.IntegerField(
-                label=u'number', validators=[validators.NEQValidator(5)]
+                label='number', validators=[validators.NEQValidator(5)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mynumber').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'NEQ')
-        self.assertEquals(valid.value, u'5')
+        self.assertEquals(valid.type, 'NEQ')
+        self.assertEquals(valid.value, '5')
 
     def test_futur_date(self):
 
@@ -198,14 +201,14 @@ class TestFromDjangoForm(TestCase):
                 validators=[validators.DateIsInFuture(False)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mydate').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'IS_DATE_IN_THE_FUTURE')
-        self.assertEquals(valid.value, u'False')
+        self.assertEquals(valid.type, 'IS_DATE_IN_THE_FUTURE')
+        self.assertEquals(valid.value, 'False')
 
     def test_is_age_above(self):
 
@@ -215,13 +218,13 @@ class TestFromDjangoForm(TestCase):
                 validators=[validators.AgeAboveValidator(21)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mydate').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'IS_AGE_ABOVE')
+        self.assertEquals(valid.type, 'IS_AGE_ABOVE')
         self.assertEquals(valid.value, '21')
 
     def test_is_age_under(self):
@@ -232,17 +235,17 @@ class TestFromDjangoForm(TestCase):
                 validators=[validators.AgeUnderValidator(21)]
             )
 
-        form = MyForm.to_formidable(label=u'with-validators')
+        form = MyForm.to_formidable(label='with-validators')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mydate').exists())
         field = form.fields.first()
         self.assertEquals(field.validations.count(), 1)
         valid = field.validations.first()
-        self.assertEquals(valid.type, u'IS_AGE_UNDER')
+        self.assertEquals(valid.type, 'IS_AGE_UNDER')
         self.assertEquals(valid.value, '21')
 
     def test_accesses(self):
-        form = FormTest.to_formidable(label=u'with-accesses')
+        form = FormTest.to_formidable(label='with-accesses')
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mytext').exists())
         field = form.fields.get(slug='mytext')
@@ -251,7 +254,7 @@ class TestFromDjangoForm(TestCase):
         field = form.fields.get(slug='dropdown')
         self.assertEquals(4, field.accesses.count())
         self.assertTrue(field.accesses.filter(
-            access_id='jedi', level=u'EDITABLE').exists()
+            access_id='jedi', level='EDITABLE').exists()
         )
 
     def test_text_field(self):
@@ -260,10 +263,10 @@ class TestFromDjangoForm(TestCase):
             mytext = fields.CharField(label='My Text')
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'tutu')
+        form = MyForm.to_formidable(label='tutu')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.fields.filter(
-            slug=u'mytext', type_id=u'text', label='My Text'
+            slug='mytext', type_id='text', label='My Text'
         ).exists())
 
     def test_integer_field(self):
@@ -272,26 +275,26 @@ class TestFromDjangoForm(TestCase):
             number_children = fields.IntegerField(label='Your Children Number')
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'tutu')
+        form = MyForm.to_formidable(label='tutu')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.fields.filter(
-            slug=u'number_children', type_id=u'number',
+            slug='number_children', type_id='number',
         ).exists())
 
     def test_dropdown_field(self):
 
         class MyForm(FormidableForm):
-            mydropdown = fields.ChoiceField(label=u'Weapons', choices=(
-                ('GUN', 'eagle'), ('SWORD', u'Andúril'))
+            mydropdown = fields.ChoiceField(label='Weapons', choices=(
+                ('GUN', 'eagle'), ('SWORD', 'Andúril'))
             )
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-dropdown')
+        form = MyForm.to_formidable(label='form-with-dropdown')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'mydropdown', type_id=u'dropdown', label='Weapons'
+            slug='mydropdown', type_id='dropdown', label='Weapons'
         ).exists())
         field = form.fields.first()
         self.assertEquals(field.items.count(), 2)
@@ -310,12 +313,12 @@ class TestFromDjangoForm(TestCase):
             )
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-dropdown')
+        form = MyForm.to_formidable(label='form-with-dropdown')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'mydropdown', type_id=u'dropdown', label='Weapons',
+            slug='mydropdown', type_id='dropdown', label='Weapons',
             multiple=True
         ).exists())
         field = form.fields.first()
@@ -332,7 +335,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            checkboxinput = fields.BooleanField(label=u'Do you agree ?')
+            checkboxinput = fields.BooleanField(label='Do you agree ?')
 
         initial_count = Formidable.objects.count()
         form = MyForm.to_formidable(label='form-with-checkbox')
@@ -368,7 +371,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             checkboxinput = fields.MultipleChoiceField(
-                label=u'Beers ?', choices=choices,
+                label='Beers ?', choices=choices,
                 widget=widgets.CheckboxSelectMultiple
             )
 
@@ -392,15 +395,15 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            dateinput = fields.DateField(label=u'Birth Date')
+            dateinput = fields.DateField(label='Birth Date')
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-date')
+        form = MyForm.to_formidable(label='form-with-date')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'dateinput', type_id=u'date', label='Birth Date',
+            slug='dateinput', type_id='date', label='Birth Date',
         ).exists())
         self.assertFalse(form.fields.first().multiple)
 
@@ -408,17 +411,17 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            radioinput = fields.ChoiceField(label=u'Apero ?', choices=(
+            radioinput = fields.ChoiceField(label='Apero ?', choices=(
                 ('Yes', 'Oui'), ('No', 'Non'),
             ), widget=widgets.RadioSelect)
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-radios')
+        form = MyForm.to_formidable(label='form-with-radios')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'radioinput', type_id=u'radios', label='Apero ?',
+            slug='radioinput', type_id='radios', label='Apero ?',
         ).exists())
         self.assertFalse(form.fields.first().multiple)
 
@@ -426,15 +429,15 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            helptext = fields.HelpTextField(text=u'My Help Text')
+            helptext = fields.HelpTextField(text='My Help Text')
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-helptex')
+        form = MyForm.to_formidable(label='form-with-helptex')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'helptext', type_id=u'help_text', help_text='My Help Text',
+            slug='helptext', type_id='help_text', help_text='My Help Text',
         ).exists())
 
     def test_separator(self):
@@ -443,27 +446,27 @@ class TestFromDjangoForm(TestCase):
             sepa = fields.SeparatorField()
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-separator')
+        form = MyForm.to_formidable(label='form-with-separator')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'sepa', type_id=u'separator').exists()
+            slug='sepa', type_id='separator').exists()
         )
 
     def test_title(self):
 
         class MyForm(FormidableForm):
 
-            title = fields.TitleField(label=u'Hello')
+            title = fields.TitleField(label='Hello')
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-title')
+        form = MyForm.to_formidable(label='form-with-title')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'title', type_id=u'title', label='Hello',
+            slug='title', type_id='title', label='Hello',
         ).exists())
 
     def test_file_field(self):
@@ -473,12 +476,12 @@ class TestFromDjangoForm(TestCase):
             myfile = fields.FileField(label='social-health-care')
 
         initial_count = Formidable.objects.count()
-        form = MyForm.to_formidable(label=u'form-with-file')
+        form = MyForm.to_formidable(label='form-with-file')
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)
         self.assertTrue(form.fields.filter(
-            slug=u'myfile', type_id=u'file', label='social-health-care',
+            slug='myfile', type_id='file', label='social-health-care',
         ).exists())
 
     def test_without_label(self):

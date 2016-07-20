@@ -25,27 +25,27 @@ class RenderSerializerTestCase(TestCase):
 
     def setUp(self):
         self.form = Formidable.objects.create(
-            label=u'testform', description=u'test form',
+            label='testform', description='test form',
         )
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='test_text',
-            placeholder='put your name here', help_text=u'your name',
+            placeholder='put your name here', help_text='your name',
             order=self.form.get_next_field_order()
         )
         self.text_field2 = self.form.fields.create(
             type_id='text', label='test text 2', slug='test_text_2',
-            placeholder='put your name here', help_text=u'your name',
+            placeholder='put your name here', help_text='your name',
             order=self.form.get_next_field_order()
         )
         self.text_field2.defaults.create(value='Roméo')
         self.text_field.accesses.create(
-            level=constants.REQUIRED, access_id=u'padawan'
+            level=constants.REQUIRED, access_id='padawan'
         )
         self.text_field2.accesses.create(
-            level=constants.EDITABLE, access_id=u'jedi', display='TABLE'
+            level=constants.EDITABLE, access_id='jedi', display='TABLE'
         )
         self.text_field.validations.create(
-            type=u'MINLENGTH', value=u'5'
+            type='MINLENGTH', value='5'
         )
         self.serializer = FormidableSerializer(instance=self.form)
 
@@ -59,7 +59,7 @@ class RenderSerializerTestCase(TestCase):
     def test_render_in_order(self):
         self.text_field3 = self.form.fields.create(
             type_id='text', label='test text 2', slug='test_text_3',
-            placeholder='put your name here', help_text=u'your name',
+            placeholder='put your name here', help_text='your name',
             order=self.form.get_next_field_order()
         )
         data = self.serializer.data
@@ -70,9 +70,9 @@ class RenderSerializerTestCase(TestCase):
     def test_form_field(self):
         data = self.serializer.data
         self.assertIn('label', data)
-        self.assertEquals(data['label'], u'testform')
+        self.assertEquals(data['label'], 'testform')
         self.assertIn('description', data)
-        self.assertEquals(data['description'], u'test form')
+        self.assertEquals(data['description'], 'test form')
         self.assertEquals(data['id'], self.form.pk)
 
     def test_fields(self):
@@ -88,8 +88,8 @@ class RenderSerializerTestCase(TestCase):
     def test_text_field(self):
         data = self.serializer.data
         text_field = data['fields'][0]
-        self.assertEquals(text_field['type_id'], u'text')
-        self.assertEquals(text_field['label'], u'test text')
+        self.assertEquals(text_field['type_id'], 'text')
+        self.assertEquals(text_field['label'], 'test text')
         self.assertEquals(text_field['placeholder'], 'put your name here')
         self.assertEquals(text_field['help_text'], 'your name')
         self.assertEquals(text_field['defaults'], [])
@@ -98,15 +98,15 @@ class RenderSerializerTestCase(TestCase):
         self.assertIn('accesses', text_field)
         self.assertEquals(len(text_field['accesses']), 1)
         accesses = text_field['accesses'][0]
-        self.assertEquals(accesses['access_id'], u'padawan')
+        self.assertEquals(accesses['access_id'], 'padawan')
         self.assertEquals(accesses['level'], constants.REQUIRED)
         self.assertEquals(accesses['display'], None)
 
     def test_text_field2(self):
         data = self.serializer.data
         text_field = data['fields'][1]
-        self.assertEquals(text_field['type_id'], u'text')
-        self.assertEquals(text_field['label'], u'test text 2')
+        self.assertEquals(text_field['type_id'], 'text')
+        self.assertEquals(text_field['label'], 'test text 2')
         self.assertEquals(text_field['placeholder'], 'put your name here')
         self.assertEquals(text_field['help_text'], 'your name')
         self.assertNotIn('multiple', text_field)
@@ -114,7 +114,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertIn('accesses', text_field)
         self.assertEquals(len(text_field['accesses']), 1)
         accesses = text_field['accesses'][0]
-        self.assertEquals(accesses['access_id'], u'jedi')
+        self.assertEquals(accesses['access_id'], 'jedi')
         self.assertEquals(accesses['level'], constants.EDITABLE)
         self.assertEquals(accesses['display'], 'TABLE')
         self.assertIn('defaults', text_field)
@@ -126,12 +126,12 @@ class RenderSerializerTestCase(TestCase):
     def test_dropdown_field(self):
         self.form.fields.all().delete()
         self.dropdown = self.form.fields.create(
-            type_id='dropdown', label=u'choose your weapon',
+            type_id='dropdown', label='choose your weapon',
             order=self.form.get_next_field_order()
         )
         order = self.dropdown.get_next_order()
         self.dropdown.items.create(value='tutu', label='toto', order=order)
-        self.dropdown.items.create(value='plop', label=u'Intérnätiônal',
+        self.dropdown.items.create(value='plop', label='Intérnätiônal',
                                    order=order+1)
         serializer = FormidableSerializer(instance=self.form)
         data = serializer.data['fields'][0]
@@ -146,7 +146,7 @@ class RenderSerializerTestCase(TestCase):
         self.form.fields.all().delete()
         self.help_text = self.form.fields.create(
             type_id='help_text', slug='your help text',
-            help_text=u'Please enter your information here',
+            help_text='Please enter your information here',
             order=self.form.get_next_field_order()
         )
         serializer = FormidableSerializer(instance=self.form)
@@ -160,7 +160,7 @@ class RenderSerializerTestCase(TestCase):
         self.form.fields.all().delete()
         self.title = self.form.fields.create(
             type_id='title', slug='my title',
-            label=u'This is on onboarding form.',
+            label='This is on onboarding form.',
             order=self.form.get_next_field_order()
         )
         serializer = FormidableSerializer(instance=self.form)
@@ -201,7 +201,7 @@ class RenderContextSerializer(TestCase):
     def test_required_field(self):
 
         class TestForm(FormidableForm):
-            name = fields.CharField(label=u'Your Name', accesses={
+            name = fields.CharField(label='Your Name', accesses={
                 'jedi': constants.REQUIRED,
             })
 
@@ -221,7 +221,7 @@ class RenderContextSerializer(TestCase):
     def test_editable_field(self):
 
         class TestForm(FormidableForm):
-            name = fields.CharField(label=u'Your Name', accesses={
+            name = fields.CharField(label='Your Name', accesses={
                 'jedi': constants.EDITABLE,
             })
 
@@ -241,7 +241,7 @@ class RenderContextSerializer(TestCase):
     def test_readonly_field(self):
 
         class TestForm(FormidableForm):
-            name = fields.CharField(label=u'Your Name', accesses={
+            name = fields.CharField(label='Your Name', accesses={
                 'jedi': constants.READONLY,
             })
 
@@ -261,7 +261,7 @@ class RenderContextSerializer(TestCase):
     def test_hidden_field(self):
 
         class TestForm(FormidableForm):
-            name = fields.CharField(label=u'Your Name', accesses={
+            name = fields.CharField(label='Your Name', accesses={
                 'jedi': constants.HIDDEN,
             })
 
@@ -302,15 +302,15 @@ class RenderContextSerializer(TestCase):
 class CreateSerializerTestCase(TestCase):
 
     data = {
-        'label': u'test_create',
-        'description': u'description create',
+        'label': 'test_create',
+        'description': 'description create',
         'fields': []
     }
     fields_without_items = [
         {
             'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': u'é'}]
+            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': 'é'}]
         }
     ]
 
@@ -455,8 +455,8 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
-        self.assertEquals(instance.label, u'test_create')
-        self.assertEquals(instance.description, u'description create')
+        self.assertEquals(instance.label, 'test_create')
+        self.assertEquals(instance.description, 'description create')
         self.assertEquals(instance.fields.count(), 0)
 
     def test_create_form_presets(self):
@@ -493,10 +493,10 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
-        self.assertEquals(instance.label, u'test_create')
-        self.assertEquals(instance.description, u'description create')
+        self.assertEquals(instance.label, 'test_create')
+        self.assertEquals(instance.description, 'description create')
         self.assertEquals(instance.fields.count(), 1)
-        field = instance.fields.filter(type_id=u'text').first()
+        field = instance.fields.filter(type_id='text').first()
         self.assertEquals(field.type_id, 'text')
         self.assertEquals(field.label, 'text label')
         self.assertEquals(field.slug, 'text_input')
@@ -558,7 +558,7 @@ class CreateSerializerTestCase(TestCase):
         self.assertTrue(serializer.is_valid())
         instance = serializer.save()
         self.assertEquals(instance.fields.count(), 2)
-        field = instance.fields.filter(type_id=u'date').first()
+        field = instance.fields.filter(type_id='date').first()
         self.assertEquals(field.validations.count(), 1)
         validation = field.validations.first()
         self.assertEquals(validation.value, 'false')
@@ -616,7 +616,7 @@ class CreateSerializerTestCase(TestCase):
     def test_create_wrong_access(self):
         data = copy.deepcopy(self.data)
         fields = copy.deepcopy(self.fields_with_items)
-        fields[0]['accesses'][0]['access_id'] = u'wrong'
+        fields[0]['accesses'][0]['access_id'] = 'wrong'
         data['fields'] = fields
         serializer = FormidableSerializer(data=data)
         self.assertFalse(serializer.is_valid())
@@ -683,7 +683,7 @@ class CreateSerializerTestCase(TestCase):
 class UpdateFormTestCase(TestCase):
 
     data = {
-        'label': u'edited form',
+        'label': 'edited form',
         'description': 'description edited',
         'fields': [],
     }
@@ -766,7 +766,7 @@ class UpdateFormTestCase(TestCase):
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
         self.form = Formidable.objects.create(
-            label=u'testform', description=u'test form',
+            label='testform', description='test form',
         )
 
     def test_update_simple(self):
@@ -774,7 +774,7 @@ class UpdateFormTestCase(TestCase):
         self.assertTrue(serializer.is_valid())
         form = serializer.save()
         self.assertEquals(form.pk, self.form.pk)
-        self.assertEquals(form.label, u'edited form')
+        self.assertEquals(form.label, 'edited form')
 
     def test_create_defaults_on_update(self):
         self.form.fields.create(
@@ -867,7 +867,7 @@ class UpdateFormTestCase(TestCase):
 
     def test_create_items_on_update(self):
         self.dropdown_fields = self.form.fields.create(
-            slug='dropdown-input', type_id='dropdown', label=u'weapons',
+            slug='dropdown-input', type_id='dropdown', label='weapons',
             order=self.form.get_next_field_order()
         )
         self.dropdown_fields.accesses.create(
@@ -892,7 +892,7 @@ class UpdateFormTestCase(TestCase):
     def test_update_fields(self):
         self.text_field = self.form.fields.create(
             type_id='text', label='test text', slug='text-slug',
-            placeholder='put your name here', help_text=u'your name',
+            placeholder='put your name here', help_text='your name',
             order=self.form.get_next_field_order()
         )
         self.text_field.accesses.create(
@@ -906,11 +906,11 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(form.pk, self.form.pk)
         field = form.fields.first()
         self.assertEquals(self.text_field.pk, field.pk)
-        self.assertEquals(field.label, u'edited field')
+        self.assertEquals(field.label, 'edited field')
 
     def test_update_fields_items(self):
         self.dropdown_fields = self.form.fields.create(
-            slug='dropdown-input', type_id='dropdown', label=u'weapons',
+            slug='dropdown-input', type_id='dropdown', label='weapons',
             order=self.form.get_next_field_order()
         )
         self.dropdown_fields.accesses.create(
@@ -921,7 +921,7 @@ class UpdateFormTestCase(TestCase):
             value='gun', label='eagle', order=order
         )
         self.dropdown_fields.items.create(
-            value=u'sword', label='excalibur', order=order+1
+            value='sword', label='excalibur', order=order+1
         )
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_items
@@ -946,13 +946,13 @@ class UpdateFormTestCase(TestCase):
 
     def test_delete_on_update(self):
         self.dropdown_fields = self.form.fields.create(
-            slug='dropdown-input', type_id='dropdown', label=u'weapons',
+            slug='dropdown-input', type_id='dropdown', label='weapons',
             order=self.form.get_next_field_order()
         )
         order = self.dropdown_fields.get_next_order()
-        self.dropdown_fields.items.create(value=u'gun', label='eagle',
+        self.dropdown_fields.items.create(value='gun', label='eagle',
                                           order=order)
-        self.dropdown_fields.items.create(value=u'sword', label=u'excalibur',
+        self.dropdown_fields.items.create(value='sword', label='excalibur',
                                           order=order+1)
         serializer = FormidableSerializer(instance=self.form, data=self.data)
         self.assertTrue(serializer.is_valid())
@@ -962,7 +962,7 @@ class UpdateFormTestCase(TestCase):
 
     def test_delete_items_on_update(self):
         self.dropdown_fields = self.form.fields.create(
-            slug='dropdown-input', type_id='dropdown', label=u'weapons',
+            slug='dropdown-input', type_id='dropdown', label='weapons',
             order=self.form.get_next_field_order()
         )
         self.dropdown_fields.accesses.create(
@@ -973,7 +973,7 @@ class UpdateFormTestCase(TestCase):
             value='gun', label='eagle', order=order
         )
         self.dropdown_fields.items.create(
-            value='sword', label=u'excalibur', order=order+1
+            value='sword', label='excalibur', order=order+1
         )
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_items)

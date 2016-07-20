@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
-from django.utils.functional import cached_property
-from django.db.models import Prefetch
 
+from __future__ import unicode_literals
+
+from django.db.models import Prefetch
+from django.utils.functional import cached_property
 
 from rest_framework import serializers
 
 from formidable import constants
-from formidable.models import Field, Access
-from formidable.serializers.items import ItemSerializer
-from formidable.serializers.access import AccessSerializer
-from formidable.serializers.validation import ValidationSerializer
-from formidable.serializers.defaults import DefaultSerializer
-from formidable.serializers.child_proxy import LazyChildProxy
+from formidable.models import Access, Field
 from formidable.register import FieldSerializerRegister, load_serializer
-from formidable.serializers.list import NestedListSerializer
+from formidable.serializers.access import AccessSerializer
+from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.serializers.common import WithNestedSerializer
+from formidable.serializers.defaults import DefaultSerializer
+from formidable.serializers.items import ItemSerializer
+from formidable.serializers.list import NestedListSerializer
+from formidable.serializers.validation import ValidationSerializer
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'help_text',
@@ -254,7 +256,7 @@ class HelpTextFieldSerializer(FieldSerializer):
     help_text = serializers.CharField(required=True)
 
     class Meta(FieldSerializer.Meta):
-        # Just to remove "label" attribute
+        # Remove "label" attribute
         fields = list(set(BASE_FIELDS) - set(['label']))
 
 
@@ -264,7 +266,7 @@ class TitleFieldSerializer(FieldSerializer):
     type_id = 'title'
 
     class Meta(FieldSerializer.Meta):
-        # Just to remove "help_text" attribute
+        # Remove "help_text" attribute
         fields = list(set(BASE_FIELDS) - set(['help_text']))
 
 
@@ -274,5 +276,5 @@ class SeparatorFieldSerializer(FieldSerializer):
     type_id = 'separator'
 
     class Meta(FieldSerializer.Meta):
-        # Just to remove "help_text" attribute
+        # Remove "help_text" and "label" attributes
         fields = list(set(BASE_FIELDS) - set(['label', 'help_text']))

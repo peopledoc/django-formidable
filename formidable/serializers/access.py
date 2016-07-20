@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
+from formidable.accesses import get_accesses
 from formidable.constants import EDITABLE
 from formidable.models import Access
 from formidable.serializers.list import NestedListSerializer
-from formidable.accesses import get_accesses
 
 
 class SimpleAccessSerializer(serializers.BaseSerializer):
@@ -54,8 +56,8 @@ class AccessSerializer(serializers.ModelSerializer):
         accesses_ids = [access.id for access in get_accesses()]
         if value not in accesses_ids:
             raise serializers.ValidationError(
-                u'{} is unknown, valide access {}'.format(
-                    value, accesses_ids
+                '{value} is unknown, valid access {accesses_ids}'.format(
+                    value=value, accesses_ids=accesses_ids
                 )
             )
         return value

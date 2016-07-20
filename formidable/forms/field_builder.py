@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django import forms
 
-from formidable.validators import ValidatorFactory, DateValidatorFactory
 from formidable.forms import fields
+from formidable.validators import DateValidatorFactory, ValidatorFactory
 
 
 class SkipField(Exception):
@@ -87,11 +89,11 @@ class FieldBuilder(object):
         return self.field.help_text
 
     def get_validators(self):
-        res = []
+        return list(self.gen_validators())
+
+    def gen_validators(self):
         for validation in self.field.validations.all():
-            validator = self.validator_factory.produce(validation)
-            res.append(validator)
-        return res
+            yield self.validator_factory.produce(validation)
 
 
 class FileFieldBuilder(FieldBuilder):

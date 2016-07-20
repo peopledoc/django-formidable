@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 import re
 
 from rest_framework import serializers
@@ -53,26 +55,26 @@ class IntValueChecker(object):
 @load_serializer(validation_register)
 class MinLengthSerializer(IntValueChecker, ValidationSerializer):
 
-    type_id = u'MINLENGTH'
+    type_id = 'MINLENGTH'
 
 
 @load_serializer(validation_register)
 class MaxLengthSerializer(IntValueChecker, ValidationSerializer):
 
-    type_id = u'MAXLENGTH'
+    type_id = 'MAXLENGTH'
 
 
 @load_serializer(validation_register)
 class RegexpSerializer(ValidationSerializer):
 
-    type_id = u'REGEXP'
+    type_id = 'REGEXP'
 
     def validate_value(self, value):
 
         try:
             re.compile(value)
         except Exception as e:
-            raise ValidationError(u'invalide regexp,  {}'.format(e))
+            raise ValidationError('Invalid regexp: {}'.format(e))
 
         return value
 
@@ -80,55 +82,55 @@ class RegexpSerializer(ValidationSerializer):
 @load_serializer(validation_register)
 class EqualSerializer(ValidationSerializer):
 
-    type_id = u'EQ'
+    type_id = 'EQ'
 
 
 @load_serializer(validation_register)
 class NotEqualSerializer(ValidationSerializer):
 
-    type_id = u'NEQ'
+    type_id = 'NEQ'
 
 
 @load_serializer(validation_register)
 class GtSerializer(ValidationSerializer):
 
-    type_id = u'GT'
+    type_id = 'GT'
 
 
 @load_serializer(validation_register)
 class GteSerializer(ValidationSerializer):
 
-    type_id = u'GTE'
+    type_id = 'GTE'
 
 
 @load_serializer(validation_register)
 class LtSerializer(ValidationSerializer):
 
-    type_id = u'LT'
+    type_id = 'LT'
 
 
 @load_serializer(validation_register)
 class LteSerializer(ValidationSerializer):
 
-    type_id = u'LTE'
+    type_id = 'LTE'
 
 
 @load_serializer(validation_register)
 class AgeAboveSerializer(IntValueChecker, ValidationSerializer):
 
-    type_id = u'IS_AGE_ABOVE'
+    type_id = 'IS_AGE_ABOVE'
 
 
 @load_serializer(validation_register)
 class AgeUnderSerializer(IntValueChecker, ValidationSerializer):
 
-    type_id = u'IS_AGE_UNDER'
+    type_id = 'IS_AGE_UNDER'
 
 
 @load_serializer(validation_register)
 class FutureDateSerializer(ValidationSerializer):
 
-    type_id = u'IS_DATE_IN_THE_FUTURE'
+    type_id = 'IS_DATE_IN_THE_FUTURE'
 
     def validate_value(self, value):
         if value in ['t', "true"]:

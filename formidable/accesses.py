@@ -3,10 +3,14 @@
 .. autofunction:: get_accesses
     members
 """
-import six
+
+from __future__ import unicode_literals
+
 import importlib
 
 from django.conf import settings
+
+import six
 
 
 class AccessUnknow(Exception):
@@ -20,7 +24,7 @@ class AccessObject(object):
         self.description = description
 
     def __unicode__(self):
-        return u'{}: {}'.format(self.id, self.label)
+        return '{access.id}: {access.label}'.format(access=self)
 
 
 def get_accesses():
@@ -40,7 +44,7 @@ def get_accesses():
     res = meth()
     assert type(res) == list, 'FORMIDABLE_ACCESS_RIGHTS_LOADER has to return a list'  # noqa
     for access in res:
-        assert type(access) == AccessObject, u'access must be AccessObject'
+        assert type(access) == AccessObject, 'access must be AccessObject'
     return res
 
 

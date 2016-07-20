@@ -44,6 +44,8 @@ of associated field.
 
 """
 
+from __future__ import unicode_literals
+
 from django.forms import widgets
 
 from markdown import markdown
@@ -117,23 +119,23 @@ class SelectMultiple(ItemsWidgetMultiple, widgets.SelectMultiple):
 
 class CheckboxInput(FormidableWidget, widgets.CheckboxInput):
 
-    type_id = u'checkbox'
+    type_id = 'checkbox'
 
 
 class CheckboxSelectMultiple(ItemsWidgetMultiple,
                              widgets.CheckboxSelectMultiple):
 
-    type_id = u'checkboxes'
+    type_id = 'checkboxes'
 
 
 class DateInput(FormidableWidget, widgets.DateInput):
 
-    type_id = u'date'
+    type_id = 'date'
 
 
 class NumberInput(FormidableWidget, widgets.NumberInput):
 
-    type_id = u'number'
+    type_id = 'number'
 
 
 class EmailInput(FormidableWidget, widgets.EmailInput):
@@ -143,12 +145,12 @@ class EmailInput(FormidableWidget, widgets.EmailInput):
 
 class ClearableFileInput(FormidableWidget, widgets.ClearableFileInput):
 
-    type_id = u'file'
+    type_id = 'file'
 
 
 class HelpTextWidget(FormidableWidget):
 
-    type_id = u'help_text'
+    type_id = 'help_text'
 
     def render(self, name, value, attrs=None):
         return markdown(value)
@@ -156,16 +158,16 @@ class HelpTextWidget(FormidableWidget):
 
 class TitleWidget(FormidableWidget):
 
-    type_id = u'title'
+    type_id = 'title'
 
-    def __init__(self, balise='h4', *args, **kwargs):
-        self.balise = balise
+    def __init__(self, tag='h4', *args, **kwargs):
+        self.tag = tag
         super(TitleWidget, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
-        balise = attrs.get('balise', None) or self.balise
-        return u'<{balise}>{value}</{balise}>'.format(
-            balise=balise, value=value
+        tag = attrs.get('tag', None) or self.tag
+        return '<{tag}>{value}</{tag}>'.format(
+            tag=tag, value=value
         )
 
 
@@ -174,4 +176,4 @@ class SeparatorWidget(FormidableWidget):
     type_id = 'separator'
 
     def render(self, name, value, attrs=None):
-        return '<tr>'
+        return '<hr>'

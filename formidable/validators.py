@@ -7,13 +7,16 @@ Validators
     :members:
 
 """
-from datetime import date
 
-from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
+from __future__ import unicode_literals
+
+from datetime import date
 
 from django.core import validators
 from django.utils.translation import ugettext_lazy as _
+
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 
 
 class FormidableValidator(object):
@@ -30,27 +33,27 @@ class FormidableValidator(object):
 
 class GTEValidator(FormidableValidator, validators.MinValueValidator):
 
-    type = u'GTE'
+    type = 'GTE'
 
 
 class LTEValidator(FormidableValidator, validators.MaxValueValidator):
 
-    type = u'LTE'
+    type = 'LTE'
 
 
 class MaxLengthValidator(FormidableValidator, validators.MaxLengthValidator):
 
-    type = u'MAXLENGTH'
+    type = 'MAXLENGTH'
 
 
 class MinLengthValidator(FormidableValidator, validators.MinLengthValidator):
 
-    type = u'MINLENGTH'
+    type = 'MINLENGTH'
 
 
 class RegexValidator(FormidableValidator, validators.RegexValidator):
 
-    type = u'REGEXP'
+    type = 'REGEXP'
 
     def get_formidable_kwargs(self):
         return {
@@ -61,7 +64,7 @@ class RegexValidator(FormidableValidator, validators.RegexValidator):
 
 class GTValidator(FormidableValidator, validators.BaseValidator):
 
-    type = u'GT'
+    type = 'GT'
 
     message = _("Ensure this field is greater than %(limit_value)s")
 
@@ -265,7 +268,7 @@ class DateValidatorFactory(ValidatorFactory):
         return DateNEQValidator(value, message)
 
     def future_date(self, value, message):
-        return DateIsInFuture(value.lower() == u'true', message)
+        return DateIsInFuture(value.lower() == 'true', message)
 
     def age_above(self, value, message):
         return AgeAboveValidator(int(value), message)

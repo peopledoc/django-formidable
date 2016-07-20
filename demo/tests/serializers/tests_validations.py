@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django.test import TestCase
 
 from formidable.models import Formidable
@@ -14,10 +16,10 @@ class ValidationSerializerTest(TestCase):
     def setUp(self):
         super(ValidationSerializerTest, self).setUp()
         self.form = Formidable.objects.create(
-            label=u'test', description=u'test'
+            label='test', description='test'
         )
         self.text = self.form.fields.create(
-            type_id=u'text', slug=u'input-text', label=u'name',
+            type_id='text', slug='input-text', label='name',
         )
 
     def test_int_value(self):
@@ -32,14 +34,14 @@ class ValidationSerializerTest(TestCase):
 
     def test_regexp_value(self):
         data = {
-            'field_id': self.text.id, 'value': u'\w+ly', 'type': 'minlength'
+            'field_id': self.text.id, 'value': '\w+ly', 'type': 'minlength'
         }
         serializer = RegexpSerializer(data=data)
         self.assertTrue(serializer.is_valid())
 
     def test_invalid_regexp_value(self):
         data = {
-            'field_id': self.text.id, 'value': u'\w+ly(', 'type': 'minlength'
+            'field_id': self.text.id, 'value': '\w+ly(', 'type': 'minlength'
         }
         serializer = RegexpSerializer(data=data)
         self.assertFalse(serializer.is_valid())
@@ -47,7 +49,7 @@ class ValidationSerializerTest(TestCase):
     def test_update_validations(self):
         list_serializer = ValidationSerializer(many=True)
         self.text.validations.create(
-            value=u'5', type=u'minlength'
+            value='5', type='minlength'
         )
         list_serializer.update(
             self.text.validations,

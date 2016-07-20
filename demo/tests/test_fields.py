@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django.test import TestCase
 
 from formidable.forms import BaseDynamicForm, fields
@@ -7,7 +9,7 @@ from formidable.forms import BaseDynamicForm, fields
 
 class TestForm(BaseDynamicForm):
 
-    title = fields.TitleField(label=u'Onboarding Form')
+    title = fields.TitleField(label='Onboarding Form')
     helptext = fields.HelpTextField(text='Enter your **address**')
     sepa = fields.SeparatorField()
 
@@ -31,4 +33,4 @@ class RenderingFormatField(TestCase):
         form = TestForm()
         text = form.as_p()
         self.assertNotIn("id_sepa", text)
-        self.assertIn('<tr>', text)
+        self.assertIn('<hr>', text)

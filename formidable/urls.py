@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, url
 
-from formidable.views import FormidableDetail, FormidableCreate, AccessList
-from formidable.views import ContextFormDetail
-from formidable.views import PresetsList, ValidateView
+from formidable.views import (
+    AccessList, ContextFormDetail, FormidableCreate, FormidableDetail,
+    PresetsList, ValidateView
+)
 
 urlpatterns = patterns(
     r'',

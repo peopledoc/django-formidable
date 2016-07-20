@@ -49,11 +49,13 @@ your own fields, please look at :mod:`formidable.forms.widgets`.
 
 """
 
+from __future__ import unicode_literals
+
 from django.forms import fields
 
+from formidable.accesses import AccessUnknow, get_accesses
 from formidable.constants import EDITABLE
-from formidable.forms import widgets, boundfield
-from formidable.accesses import get_accesses, AccessUnknow
+from formidable.forms import boundfield, widgets
 
 
 class Field(object):

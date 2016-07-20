@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django.db.models import Prefetch
 
-from rest_framework.views import APIView
+from rest_framework import exceptions
 from rest_framework.generics import (
-    RetrieveUpdateAPIView, CreateAPIView,
-    RetrieveAPIView,
+    CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 )
 from rest_framework.response import Response
-from rest_framework import exceptions
+from rest_framework.views import APIView
 
-from formidable.models import Formidable, Field
+from formidable.accesses import get_accesses, get_context
+from formidable.forms.validations.presets import presets_register
+from formidable.models import Field, Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
-from formidable.accesses import get_accesses, get_context
 from formidable.serializers.presets import PresetsSerializer
-from formidable.forms.validations.presets import presets_register
 
 
 class FormidableDetail(RetrieveUpdateAPIView):

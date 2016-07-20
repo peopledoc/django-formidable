@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 
-import six
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 
-from django.core.exceptions import ValidationError, ImproperlyConfigured
+import six
 
 
 class PresetsRegister(dict):
 
     def build_rules(self, form):
-        rules = []
+        return list(self.gen_rules(form))
+
+    def gen_rules(self, form):
         for preset in form.presets.all():
             klass = self[preset.slug]
-            instance = klass(preset.arguments.all())
-            rules.append(instance)
-        return rules
+            yield klass(preset.arguments.all())
 
 
 presets_register = PresetsRegister()
@@ -37,12 +38,14 @@ class PresetsMetaClass(type):
         ]
         for attr in needs:
             if attr not in attrs:
-                raise ValidationError("You need to specify {} in {}".format(
-                    attr, name
-                ))
+                raise ValidationError(
+                    "You need to specify {attr} in {name}".format(
+                        attr=attr, name=name)
+                )
             if attrs[attr] is None:
                 raise ValidationError(
-                    "Do not accept None value for {} in {}".format(attr, name)
+                    "Do not accept None value for {attr} in {name}".format(
+                        attr=attr, name=name)
                 )
 
         _declared_arguments = {}
@@ -91,7 +94,7 @@ class PresetArgument(object):
                 return arg.value
 
         raise ImproperlyConfigured(
-            '{} is missing'.format(self.slug)
+            '{slug} is missing'.format(slug=self.slug)
         )
 
 

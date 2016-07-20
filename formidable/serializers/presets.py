@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 
-from rest_framework.serializers import Serializer, ListSerializer
-from rest_framework.serializers import ModelSerializer, ValidationError
-from rest_framework.serializers import CharField
 from rest_framework import fields
+from rest_framework.serializers import (
+    CharField, ListSerializer, ModelSerializer, Serializer, ValidationError
+)
 
-
-from formidable.models import Preset, PresetArg
 from formidable.forms.validations.presets import presets_register
-from formidable.serializers.list import NestedListSerializerDummyUpdate
-from formidable.serializers.common import WithNestedSerializer
+from formidable.models import Preset, PresetArg
 from formidable.serializers.child_proxy import LazyChildProxy
+from formidable.serializers.common import WithNestedSerializer
+from formidable.serializers.list import NestedListSerializerDummyUpdate
 
 
 class ClassAttrSerializer(object):
@@ -115,7 +115,9 @@ class PresetModelSerializer(WithNestedSerializer):
 
     def validate_preset_id(self, slug):
         if slug not in presets_register.keys():
-            raise ValidationError('{} is not an available preset'.format(slug))
+            raise ValidationError(
+                '{slug} is not an available preset'.format(slug=slug)
+            )
         return slug
 
     def validate(self, data):

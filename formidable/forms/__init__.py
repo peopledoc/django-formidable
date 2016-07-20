@@ -6,14 +6,16 @@ from a formidable object.
 Given a formidable object, you can use :func:`get_dynamic_form_class` to get
 its corresponding django form class.
 """
+
 from __future__ import unicode_literals
+
 from collections import OrderedDict
 
 from django import forms
 
-from formidable.models import Formidable
 from formidable.forms import field_builder
 from formidable.forms.validations.presets import presets_register
+from formidable.models import Formidable
 
 
 class FormidableBoundFieldCache(dict):
