@@ -56,8 +56,8 @@ class AccessSerializer(serializers.ModelSerializer):
         accesses_ids = [access.id for access in get_accesses()]
         if value not in accesses_ids:
             raise serializers.ValidationError(
-                '{} is unknown, valide access {}'.format(
-                    value, accesses_ids
+                '{value} is unknown, valid access {accesses_ids}'.format(
+                    value=value, accesses_ids=accesses_ids
                 )
             )
         return value

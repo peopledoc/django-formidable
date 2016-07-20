@@ -38,12 +38,14 @@ class PresetsMetaClass(type):
         ]
         for attr in needs:
             if attr not in attrs:
-                raise ValidationError("You need to specify {} in {}".format(
-                    attr, name
-                ))
+                raise ValidationError(
+                    "You need to specify {attr} in {name}".format(
+                        attr=attr, name=name)
+                )
             if attrs[attr] is None:
                 raise ValidationError(
-                    "Do not accept None value for {} in {}".format(attr, name)
+                    "Do not accept None value for {attr} in {name}".format(
+                        attr=attr, name=name)
                 )
 
         _declared_arguments = {}
@@ -92,7 +94,7 @@ class PresetArgument(object):
                 return arg.value
 
         raise ImproperlyConfigured(
-            '{} is missing'.format(self.slug)
+            '{slug} is missing'.format(slug=self.slug)
         )
 
 

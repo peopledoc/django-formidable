@@ -23,7 +23,7 @@ class AccessObject(object):
         self.description = description
 
     def __unicode__(self):
-        return '{}: {}'.format(self.id, self.label)
+        return '{access.id}: {access.label}'.format(access=self)
 
 
 def get_accesses():

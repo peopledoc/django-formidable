@@ -116,7 +116,9 @@ class PresetModelSerializer(WithNestedSerializer):
 
     def validate_preset_id(self, slug):
         if slug not in presets_register.keys():
-            raise ValidationError('{} is not an available preset'.format(slug))
+            raise ValidationError(
+                '{slug} is not an available preset'.format(slug=slug)
+            )
         return slug
 
     def validate(self, data):

@@ -54,8 +54,8 @@ class FormidableSerializer(WithNestedSerializer):
                 field_id = argument.get('field_id')
                 if field_id and field_id not in fields_slug:
                     raise ValidationError(
-                        'Preset ({}) argument is using an undefined field ({})'.format(  # noqa
-                            preset['slug'], field_id
+                        'Preset ({slug}) argument is using an undefined field ({id})'.format(  # noqa
+                            slug=preset['slug'], id=field_id
                         )
                     )
         return data

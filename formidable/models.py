@@ -73,7 +73,7 @@ class Item(models.Model):
     help_text = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
-        return '{}: {}'.format(self.key, self.value)
+        return '{item.key}: {item.value}'.format(item=self)
 
 
 class Access(models.Model):
@@ -114,5 +114,7 @@ class PresetArg(models.Model):
 
     def __unicode__(self):
         if self.field_id:
-            return '{} : field {}'.format(self.slug, self.field_id)
-        return '{} : value {}'.format(self.slug, self.value)
+            return '{preset_arg.slug}: field #{preset_arg.field_id}'.format(
+                preset_arg=self)
+        return '{preset_arg.slug}: value {preset_arg.value}'.format(
+            preset_arg=self)
