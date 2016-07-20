@@ -480,3 +480,61 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(form.fields.filter(
             slug=u'myfile', type_id=u'file', label='social-health-care',
         ).exists())
+
+    def test_without_label(self):
+
+        class MyForm(FormidableForm):
+
+            myfile = fields.FileField(label='social-health-care')
+
+        with self.assertRaises(ValueError) as context:
+            MyForm.to_formidable()
+            self.assertEqual(
+                context.exception.message,
+                'Label is required on creation mode'
+            )
+
+
+class CreationForm(FormidableForm):
+    first_name = fields.CharField()
+
+
+class TestEditForm(TestCase):
+
+    def setUp(self):
+        super(TestEditForm, self).setUp()
+        self.formidable = CreationForm.to_formidable(
+            label='create', description='my creation form'
+        )
+
+    def test_edit_label(self):
+        self.formidable = CreationForm.to_formidable(
+            label='edit', instance=self.formidable
+        )
+        self.assertEqual(self.formidable.label, 'edit')
+        self.assertEqual(self.formidable.description, 'my creation form')
+
+    def test_edit_description(self):
+        self.formidable = CreationForm.to_formidable(
+            description='my edit', instance=self.formidable)
+        self.assertEqual(self.formidable.label, 'create')
+        self.assertEqual(self.formidable.description, 'my edit')
+
+    def test_edit_desc_label(self):
+        self.formidable = CreationForm.to_formidable(
+            description='my edit', label='edit', instance=self.formidable
+        )
+        self.assertEqual(self.formidable.description, 'my edit')
+        self.assertEqual(self.formidable.label, 'edit')
+
+    def test_edit_fields(self):
+
+        class EditForm(FormidableForm):
+            first_name = fields.CharField()
+            last_name = fields.CharField()
+
+        form = EditForm.to_formidable(instance=self.formidable)
+        self.assertEqual(form.pk, self.formidable.pk)
+        self.assertEqual(form.fields.count(), 2)
+        self.assertTrue(self.formidable.fields.filter(
+            slug='last_name').exists())

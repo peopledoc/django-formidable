@@ -6,6 +6,7 @@ from a formidable object.
 Given a formidable object, you can use :func:`get_dynamic_form_class` to get
 its corresponding django form class.
 """
+from __future__ import unicode_literals
 from collections import OrderedDict
 
 from django import forms
@@ -85,7 +86,7 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None):
             attrs[field.slug] = form_field
 
     attrs['rules'] = presets_register.build_rules(formidable)
-    return type('DynamicForm', (BaseDynamicForm,), attrs)
+    return type(str('DynamicForm'), (BaseDynamicForm,), attrs)
 
 
 class FormidableForm(forms.Form):
@@ -113,10 +114,43 @@ class FormidableForm(forms.Form):
     """
 
     @classmethod
-    def to_formidable(cls, label, description=u''):
-        form = Formidable.objects.create(label=label, description=description)
+    def to_formidable(cls, label=None, description=None, instance=None):
+        if not instance:
+            if not label:
+                raise ValueError("Label is required on creation mode")
+            description = description or ''
+            form = Formidable.objects.create(
+                label=label, description=description
+            )
+        else:
+            form = cls.get_clean_form(instance, label, description)
+
         order = 0
         for slug, field in cls.declared_fields.items():
             field.to_formidable(form, order, slug)
             order += 1
+        return form
+
+    @classmethod
+    def get_clean_form(cls, form, label, description):
+        """
+        From a form definition and label and description value, the method
+        clean all fields and validations attached to the form.
+        If the label or description are not empty, those values are updated
+        in the database *and* in memory.
+
+        The returned object is a form without fields or validations , and
+        new label and description if needed.
+        """
+        form.presets.all().delete()
+        form.fields.all().delete()
+        if description or label:
+            kwargs = {
+                'description': description or form.description,
+                'label': label or form.label,
+            }
+            Formidable.objects.filter(pk=form.pk).update(**kwargs)
+            form.label = kwargs['label']
+            form.description = kwargs['description']
+
         return form
