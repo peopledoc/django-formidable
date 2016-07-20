@@ -5,3 +5,4 @@ dependencies:
 test:
     override:
         - tox -e py27,py30,py31,py34
+        - make check-python-imports
