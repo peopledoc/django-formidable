@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import six
-
-
-from django.db.models import Prefetch
 from django.conf import settings
+from django.db.models import Prefetch
 
+import six
 from rest_framework import exceptions
 from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 )
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.settings import perform_import
+from rest_framework.views import APIView
 
 from formidable.accesses import get_accesses, get_context
 from formidable.forms.validations.presets import presets_register
