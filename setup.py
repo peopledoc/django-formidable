@@ -21,7 +21,7 @@ setup(
     author_email='guillaume.camera@people-doc.com, '
                  'guillaume.gerard@people-doc.com',
     install_requires=[
-        'Django<1.9',
+        'Django<1.10',
         'djangorestframework',
         'markdown',
         'python-dateutil',
@@ -34,8 +34,6 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.1',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
