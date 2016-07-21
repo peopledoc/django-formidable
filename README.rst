@@ -95,6 +95,17 @@ following line:
     url(r'^api/', include('formidable.urls', namespace='formidable'))
 
 
+By default, the views are not accessible, the permissions loaded are fully
+restrictive. To allow any access to the view fill your settings with
+
+.. code-block:: python
+
+    FORMIDABLE_DEFAULT_PERMISSION=['rest_framework.permissions.AllowAll']
+
+
+To handle special permissions, please refer to the online documentation.
+
+
 
 formidable-ui
 -------------

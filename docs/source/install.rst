@@ -104,3 +104,33 @@ following line:
 .. code-block:: python
 
     url(r'^api/', include('formidable.urls', namespace='formidable'))
+
+
+URLs accesses
+-------------
+
+The ``Formidable`` views are built with ``djangorestframework`` and use the
+related permissions in order to handle accesses. So, you can write your
+own permissions with ``djangorestframework`` and use it in ``django-formidable``
+views.
+
+
+By default, a restrictive permission is applied on all API views if nothing is
+specified in django settings.
+
+You can specified a list of permissions classes to all the API views by
+providing the configuration key ``FORMIDABLE_DEFAULT_PERMISSION``
+
+.. code-block:: python
+
+    FORMIDABLE_DEFAULT_PERMISSION = ['rest_framework.permissions.AllowAll']
+
+
+There are two kinds of views,
+
+1. views which allow to create or edit forms (handled
+by ``FORMIDABLE_PERMISSION_BUILDER``)
+2. views to use the form previously defined (handled by.
+``FORMIDABLE_PERMISSION_USING``).
+
+You can provide any permissions you want.
