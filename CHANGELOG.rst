@@ -2,6 +2,15 @@
 ChangeLog
 =========
 
+Release 0.2.0 (2016-07-21)
+==========================
+
+* Cleans up python method (#111)
+* Add dummy edition mode on python builder (#109)
+* Enable custom permission on API view (#105)
+* Add email Field (#100)
+
+
 Release 0.1.1 (2016-07-07)
 ==========================
 
