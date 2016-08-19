@@ -2,6 +2,12 @@
 ChangeLog
 =========
 
+Release 0.3.0dev (unreleased)
+=============================
+
+* Nothing change
+
+
 Release 0.2.1 (2016-08-19)
 ==========================
 
