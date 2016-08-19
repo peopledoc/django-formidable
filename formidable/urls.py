@@ -8,7 +8,7 @@ from formidable.views import (
 urlpatterns = patterns(
     r'',
     url(r'^forms/(?P<pk>\d+)/$', ContextFormDetail.as_view(),
-        name='form_detail'),
+        name='form_context'),
     url(r'^forms/(?P<pk>\d+)/validate/$', ValidateView.as_view(),
         name='form_validation'),
     url(r'^builder/forms/(?P<pk>\d+)/$', FormidableDetail.as_view(),
