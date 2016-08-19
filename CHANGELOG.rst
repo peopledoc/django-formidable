@@ -2,6 +2,12 @@
 ChangeLog
 =========
 
+Release 0.2.1 (2016-08-19)
+==========================
+
+* Fix name URL's form_detail has been rename to form_context
+
+
 Release 0.2.0 (2016-07-21)
 ==========================
 
