@@ -37,18 +37,21 @@ class MetaClassView(type):
 
     def __new__(mcls, name, bases, attrs):
 
-        settings_key = attrs.get(
-            'settings_permission_key', 'FORMIDABLE_DEFAULT_PERMISSION'
-        )
+        if not attrs.get('permissions_classes', None):
 
-        # If the settings key define is not present in the settings
-        # The ``NoOne`` permission is loaded.
-        modules = getattr(settings, settings_key,
-                  getattr(settings, 'FORMIDABLE_DEFAULT_PERMISSION',  # noqa
-                  ['formidable.permissions.NoOne']))                  # noqa
+            settings_key = attrs.get(
+                'settings_permission_key', 'FORMIDABLE_DEFAULT_PERMISSION'
+            )
 
-        permissions_classes = perform_import(modules, None)
-        attrs['permission_classes'] = permissions_classes
+            # If the settings key define is not present in the settings
+            # The ``NoOne`` permission is loaded.
+            modules = getattr(settings, settings_key,
+                      getattr(settings, 'FORMIDABLE_DEFAULT_PERMISSION',  # noqa
+                      ['formidable.permissions.NoOne']))                  # noqa
+
+            permissions_classes = perform_import(modules, None)
+            attrs['permission_classes'] = permissions_classes
+
         return super(MetaClassView, mcls).__new__(mcls, name, bases, attrs)
 
 
