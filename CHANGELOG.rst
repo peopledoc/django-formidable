@@ -2,10 +2,10 @@
 ChangeLog
 =========
 
-Release 0.3.0dev (unreleased)
-=============================
+Release 0.2.2 (2016-08-25)
+==========================
 
-* Nothing change
+* Fix the generation of checkboxes field (#115)
 
 
 Release 0.2.1 (2016-08-19)
