@@ -144,6 +144,18 @@ class TestDynamicForm(TestCase):
         email = form.fields['email']
         self.assertEqual(type(email), forms.EmailField)
 
+    def test_checkboxes(self):
+        self.form.fields.create(
+            slug='checkboxes', type_id='checkboxes', label='checkboxes',
+            order=self.form.get_next_field_order(),
+        )
+
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('checkboxes', form.fields)
+        email = form.fields['checkboxes']
+        self.assertEqual(type(email), forms.MultipleChoiceField)
+
     def test_dropdown_input_multiple(self):
         drop = self.form.fields.create(
             slug='multiple-weapons', type_id='dropdown',

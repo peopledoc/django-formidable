@@ -187,6 +187,7 @@ class RadioFieldBuilder(ChoiceFieldBuilder):
 
 class CheckboxesFieldBuilder(ChoiceFieldBuilder):
 
+    field_class = forms.MultipleChoiceField
     widget_class = forms.CheckboxSelectMultiple
 
 
