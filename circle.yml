@@ -1,8 +1,12 @@
+machine:
+  post:
+    - pyenv global 2.7.10 3.3.3 3.4.3 3.5.0
+
 dependencies:
     pre:
         - pip install tox
 
 test:
     override:
-        - tox -e py27,py30,py31,py34
+        - tox -r
         - make check-python-imports
