@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-Release 0.3.0dev0 (unreleased)
-==============================
+Release 0.3.0 (2016-10-11)
+==========================
 
 * Can add custom permission to custom view
 
