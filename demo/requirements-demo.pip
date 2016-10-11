@@ -1,6 +1,4 @@
-django<1.9
 django-cors-headers
-djangorestframework
 ipdb
 django-extensions
 freezegun
