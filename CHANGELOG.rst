@@ -2,10 +2,10 @@
 ChangeLog
 =========
 
-Release 0.4.0dev0 (unreleased)
-==============================
+Release 0.3.1 (2016-11-04)
+==========================
 
-* No changes yet.
+* Can override the way to get the formidable object in the validation view.
 
 
 Release 0.3.0 (2016-10-11)

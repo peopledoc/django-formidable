@@ -9,7 +9,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 
 setup(
     name='django-formidable',
-    version='0.4.0.dev0',
+    version='0.3.1',
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',
