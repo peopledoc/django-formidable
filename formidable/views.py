@@ -120,9 +120,12 @@ class ValidateView(six.with_metaclass(MetaClassView, APIView)):
 
     settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
 
+    def get_formidable_object(self, kwargs):
+        return Formidable.objects.get(pk=kwargs['pk'])
+
     def get(self, request, **kwargs):
         try:
-            formidable = Formidable.objects.get(pk=kwargs['pk'])
+            formidable = self.get_formidable_object(kwargs)
         except Formidable.DoesNotExist:
             raise exceptions.Http404()
 
