@@ -2,7 +2,11 @@
 
 from __future__ import unicode_literals
 
+import json
+import os
+
 from django import forms
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from freezegun import freeze_time
 
@@ -708,3 +712,34 @@ class TestFormValidation(TestCase):
         form_class = self.form.get_django_form_class()
         form = form_class(data={'input-date': '01/01/2000'})
         self.assertTrue(form.is_valid())
+
+
+class FormidableModelTestCase(TestCase):
+
+    def test_from_json(self):
+        """
+        We try to build a ``Formidable`` object from a valid JSON.
+        We should have an instance of ``Formidable``.
+
+        """
+        filepath = os.path.join(os.path.dirname(__file__),
+                                '../fixtures/augmentation_heures.json')
+        with open(filepath) as f:
+            schema_definition = json.load(f)
+
+        form = Formidable.from_json(schema_definition)
+
+        self.assertTrue(isinstance(form, Formidable))
+
+    def test_from_json_raised_error(self):
+        """
+        We try to create a ``Formidable`` object with an invalid JSON.
+        This will raise a ``ValidationError``.
+
+        """
+        with self.assertRaises(ValidationError) as context:
+            form = Formidable.from_json({'json_invalid': True})
+
+        self.assertEqual(len(context.exception.messages), 3)
+        for message in context.exception.messages:
+            self.assertEqual(message, 'This field is required.')
