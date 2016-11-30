@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from formidable import constants
@@ -31,6 +32,26 @@ class Formidable(models.Model):
         """
         agg = self.fields.aggregate(models.Max('order'))
         return agg['order__max'] + 1 if agg['order__max'] is not None else 0
+
+    @staticmethod
+    def from_json(definition_schema, **kwargs):
+        """
+        Proxy static method to create an instance of ``Formidable`` more
+        easily with a given ``definition_schema``.
+
+        :params definition_schema: Schema in JSON/dict
+
+        >>> Formidable.from_json(definition_schema)
+        <Formidable: Formidable object>
+
+        """
+        from formidable.serializers import FormidableSerializer
+
+        serializer = FormidableSerializer(data=definition_schema)
+        if serializer.is_valid():
+            return serializer.save(**kwargs)
+
+        raise ValidationError(serializer.errors)
 
 
 class Field(models.Model):
