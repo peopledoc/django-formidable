@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 import six
 
@@ -147,7 +148,7 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
 class ConfirmationPresets(Presets):
 
     slug = 'confirmation'
-    label = 'Confirmation'
+    label = _('Confirmation')
     description = "Ensure both fields are identical"
     default_message = "{left} is not equal to {right}"
 
@@ -164,7 +165,7 @@ class ConfirmationPresets(Presets):
 class ComparisonPresets(Presets):
 
     slug = 'comparison'
-    label = 'comparison'
+    label = _('Comparison')
     description = "Compare two fields with standard operation"
     default_message = "{left} is not {operator} to {right}"
 
