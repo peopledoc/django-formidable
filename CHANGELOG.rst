@@ -8,6 +8,7 @@ Release 0.4.0dev (unreleased)
 * A few typo fixes in documentation (#128).
 * Added a Makefile autodocumentation (#127).
 * Added a tox target to build documentation (#130).
+* Fix autodoc generation (#131).
 
 Release 0.3.1 (2016-11-04)
 ==========================
