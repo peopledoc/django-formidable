@@ -75,7 +75,7 @@ a JavaScript front-end, :mod:`django-formidable` needs to know which context
 to fetch in order to render the correct fields with the right permissions.
 
 To do this, we'll need to write some code which will be called by
-:mod:`django-formiable`.
+:mod:`django-formidable`.
 
 Let's assume your user model has a ``user_type`` attribute on it. In this case,
 you could write the following function:
@@ -90,7 +90,9 @@ The :attr:`request` is a standard Django request, as found in any view.
 Likewise, :attr:`kwargs` is a standard dictionary of keyword arguments.
 Of course, the user type should correspond to the ``id`` of the AccessObject
 
-Next fill the setting key ``FORMIDABLE_CONTEXT_LOADER``
+Next fill the setting key ``FORMIDABLE_CONTEXT_LOADER``:
+
+.. code-block:: python
 
     FORMIDABLE_CONTEXT_LOADER = 'yourproject.access_rights.get_context'
 
@@ -119,7 +121,7 @@ By default, a restrictive permission is applied on all API views if nothing is
 specified in django settings.
 
 You can specified a list of permissions classes to all the API views by
-providing the configuration key ``FORMIDABLE_DEFAULT_PERMISSION``
+providing the configuration key ``FORMIDABLE_DEFAULT_PERMISSION``:
 
 .. code-block:: python
 

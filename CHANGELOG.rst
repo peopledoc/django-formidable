@@ -5,7 +5,7 @@ ChangeLog
 Release 0.4.0dev (unreleased)
 ============================
 
-* Nothing change yet
+* A few typo fixes in documentation (#128).
 
 Release 0.3.1 (2016-11-04)
 ==========================

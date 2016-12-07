@@ -28,7 +28,7 @@ One of the main feature is to provide a standard django form class built from th
     >>> form_class = formidable.get_django_form_class()
 
 
-This form class can be manipulated as all django form class, you can build an instance to validate data
+This form class can be manipulated as all django form class, you can build an instance to validate data:
 
 
 .. code-block:: python
@@ -43,7 +43,7 @@ This form class can be manipulated as all django form class, you can build an in
     True
 
 
-Or to render it
+Or to render it:
 
 
 .. code-block:: python
@@ -53,7 +53,7 @@ Or to render it
 
 When a standard mechanism is implemented, you have a method to custom the final objec we get. ``django-formidable`` provides a way in order to custom the form class you get.
 
-Each kind of field is built with an associated FieldBuilder
+Each kind of field is built with an associated FieldBuilder:
 
 ==========    ======================================  ==========================================================
     slug                Field / Widgets                 FieldBuilder
@@ -96,7 +96,7 @@ So, as describe in django document (https://docs.djangoproject.com/en/1.9/topics
         field_map['date'] = CalendarDateFieldBuilder
 
 
-With this definition you can call
+With this definition you can call:
 
 .. code-block:: python
 
