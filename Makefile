@@ -20,3 +20,9 @@ endif
 check-python-imports: install-isort
 	@cat setup.cfg
 	isort --check-only --recursive --verbose formidable
+
+
+# target: docs - build the sphinx documentation
+.PHONY: docs
+docs:
+	tox -e docs

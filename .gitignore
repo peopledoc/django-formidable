@@ -3,3 +3,5 @@
 demo/var
 .tox/
 *.egg-info
+# Documentation builds
+docs/build/
