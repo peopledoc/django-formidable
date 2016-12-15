@@ -34,7 +34,7 @@ class NestedListSerializer(ListSerializer):
                 self.child.create(data)
                 ajust += 1
             else:
-                self.child.update(objects_list[index-ajust], data)
+                self.child.update(objects_list[index - ajust], data)
 
     def create(self, parent, validated_data):
 
@@ -55,4 +55,4 @@ class NestedListSerializerDummyUpdate(NestedListSerializer):
 
     def update(self, qs, parent, validated_data):
         qs.all().delete()
-        return self.create(parent,  validated_data)
+        return self.create(parent, validated_data)
