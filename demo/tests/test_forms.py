@@ -738,7 +738,7 @@ class FormidableModelTestCase(TestCase):
 
         """
         with self.assertRaises(ValidationError) as context:
-            form = Formidable.from_json({'json_invalid': True})
+            Formidable.from_json({'json_invalid': True})
 
         self.assertEqual(len(context.exception.messages), 3)
         for message in context.exception.messages:

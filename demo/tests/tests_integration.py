@@ -150,7 +150,7 @@ class UpdateFormTestCase(APITestCase):
         )
         for access in get_accesses():
             field.accesses.create(access_id=access.id, level='EDITABLE')
-        res = self.client.put(self.edit_url, form_data,  format='json')
+        res = self.client.put(self.edit_url, form_data, format='json')
         self.assertEquals(res.status_code, 200)
         form = Formidable.objects.order_by('pk').last()
         self.assertEquals(form.pk, self.form.pk)
@@ -169,7 +169,7 @@ class UpdateFormTestCase(APITestCase):
 
         data = deepcopy(form_data)
         data['fields'].extend(form_data_items['fields'])
-        res = self.client.put(self.edit_url, data,  format='json')
+        res = self.client.put(self.edit_url, data, format='json')
         self.assertEquals(res.status_code, 200)
         form = Formidable.objects.order_by('pk').last()
         self.assertEquals(form.pk, self.form.pk)
@@ -189,7 +189,7 @@ class UpdateFormTestCase(APITestCase):
             for field in self.form.fields.all():
                 field.accesses.create(access_id=access.id, level='EDITABLE')
 
-        res = self.client.put(self.edit_url, form_data,  format='json')
+        res = self.client.put(self.edit_url, form_data, format='json')
         self.assertEquals(res.status_code, 200)
         form = Formidable.objects.order_by('pk').last()
         self.assertEquals(form.pk, self.form.pk)
@@ -239,16 +239,17 @@ class TestChain(APITestCase):
             ],
             accesses={'jedi': 'REQUIRED'},
         )
-        out_date = fields.DateField(validators=[
-            validators.DateIsInFuture(True)
-            ]
+        out_date = fields.DateField(
+            validators=[validators.DateIsInFuture(True)]
         )
         weapons = fields.ChoiceField(choices=[
             ('gun', 'blaster'), ('sword', 'light saber')
         ])
-        salary = fields.IntegerField(validators=[
-            validators.GTValidator(0), validators.LTEValidator(25)
-            ], accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
+        salary = fields.IntegerField(
+            validators=[
+                validators.GTValidator(0), validators.LTEValidator(25)
+            ],
+            accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
         )
 
     def setUp(self):
