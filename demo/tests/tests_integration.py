@@ -14,50 +14,7 @@ from formidable.accesses import get_accesses
 from formidable.forms import FormidableForm, fields
 from formidable import validators, constants
 
-form_data = {
-    "label": "test create",
-    "description": "my first formidable by api",
-    "fields": [
-        {
-            "label": "hello",
-            "slug": "textslug",
-            "type_id": "text",
-            "placeholder": None,
-            "help_text": None,
-            "default": None,
-            "accesses": [
-                {"access_id": "padawan", "level": "REQUIRED"},
-                {"access_id": "jedi", "level": "EDITABLE"},
-                {"access_id": "jedi-master", "level": "READONLY"},
-                {"access_id": "human", "level": "HIDDEN"},
-            ]
-        },
-    ]
-}
-
-form_data_items = {
-    "label": "test create",
-    "description": "my first formidable by api",
-    "fields": [{
-        "label": "my_dropdwon",
-        "slug": "dropdown_slug",
-        "type_id": "dropdown",
-        "placeholder": None,
-        "help_text": "Lesfrites c'est bon",
-        "default": None,
-        "accesses": [
-            {"access_id": "padawan", "level": "REQUIRED"},
-            {"access_id": "jedi", "level": "EDITABLE"},
-            {"access_id": "jedi-master", "level": "READONLY"},
-            {"access_id": "human", "level": "HIDDEN"},
-        ],
-        "items": [
-            {'value': 'tuto', 'label': 'toto'},
-            {'value': 'plop', 'label': 'coin'},
-        ],
-        "multiple": False
-    }]
-}
+from . import form_data, form_data_items
 
 
 class CreateFormTestCase(APITestCase):
