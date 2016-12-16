@@ -90,6 +90,43 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
+    def perform_update(self, serializer):
+        response = super(FormidableDetail, self).perform_update(serializer)
+        # Extract the callback function
+        callback = getattr(
+            settings, 'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS', None)
+        func = extract_function(callback)
+        try:
+            # Call function only if existing
+            if func:
+                func(self.request)
+        except Exception:
+            logger.error(
+                "An error has occurred with post_update function %s", func
+            )
+        return response
+
+    def handle_exception(self, exc):
+        response = super(FormidableDetail, self).handle_exception(exc)
+        # Don't bother with the callback if it was a wrong method
+        if isinstance(exc, exceptions.MethodNotAllowed):
+            return response
+
+        # Extract the callback function
+        callback = getattr(
+            settings, 'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL', None)
+        func = extract_function(callback)
+        try:
+            # Call function only if existing
+            if func:
+                func(self.request)
+        except Exception:
+            logger.error(
+                "An error has occurred with post_update failure function %s",
+                func
+            )
+        return response
+
     def get_queryset(self):
         qs = super(FormidableDetail, self).get_queryset()
         field_qs = Field.objects.order_by('order')
