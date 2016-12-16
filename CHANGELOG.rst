@@ -10,6 +10,7 @@ Release 0.4.0dev (unreleased)
 * Added a tox target to build documentation (#130).
 * Fix autodoc generation (#131).
 * Added flake8 checks via tox (#133).
+* Added tox posargs to pass extra arguments when running tests (#135).
 
 Release 0.3.1 (2016-11-04)
 ==========================

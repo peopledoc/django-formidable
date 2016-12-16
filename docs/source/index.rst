@@ -9,6 +9,7 @@ Contents:
    intro
    install
    forms
+   dev
 
 
 Indices and tables
