@@ -15,8 +15,21 @@ CALLBACK = 'demo.callback_save'
 
 class CreateFormTestCase(APITestCase):
 
+    @override_settings(
+        FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS=CALLBACK,
+        FORMIDABLE_POST_CREATE_CALLBACK_FAIL=CALLBACK
+    )
+    def test_do_no_call_on_get(self):
+        with patch(CALLBACK) as patched_callback:
+            res = self.client.get(
+                reverse('formidable:form_create')
+            )
+            self.assertEqual(res.status_code, 405)
+            # No call on GET
+            self.assertEqual(patched_callback.call_count, 0)
+
     @override_settings(FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS=CALLBACK)
-    def test_create_no_error(self):
+    def test_create_no_error_post(self):
         with patch(CALLBACK) as patched_callback:
             res = self.client.post(
                 reverse('formidable:form_create'), form_data, format='json'
@@ -24,8 +37,8 @@ class CreateFormTestCase(APITestCase):
             self.assertEqual(res.status_code, 201)
             self.assertEqual(patched_callback.call_count, 1)
 
-    @override_settings(FORMIDABLE_POST_CREATE_CALLBACK_FAIL='demo.callback_save')
-    def test_create_error(self):
+    @override_settings(FORMIDABLE_POST_CREATE_CALLBACK_FAIL=CALLBACK)
+    def test_create_error_post(self):
         with patch(CALLBACK) as patched_callback:
             form_data_without_items = deepcopy(form_data_items)
             form_data_without_items['fields'][0].pop('items')

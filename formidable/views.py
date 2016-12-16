@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import importlib
+
 from django.conf import settings
 from django.db.models import Prefetch
 
@@ -70,6 +72,34 @@ class FormidableCreate(six.with_metaclass(MetaClassView, CreateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Being forced to do this in dispatch() rather than post() because
+        # ValidationErrors can be raised in dispatch and we don't go through
+        # the post() method
+        response = super(FormidableCreate, self).dispatch(
+            request, *args, **kwargs)
+
+        # Is the response a success or a failure?
+        if request.method == 'POST':
+            success = response.status_code == 201
+            if success:
+                callback = getattr(
+                    settings, 'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS', None)
+            else:
+                callback = getattr(
+                    settings, 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL', None)
+
+            if callback:
+                module, meth_name = callback.rsplit('.', 1)
+                if six.PY3:
+                    imported_module = importlib.import_module(module)
+                else:
+                    imported_module = importlib.import_module(
+                        module, [meth_name])
+                func = getattr(imported_module, meth_name)
+                func(request)
+        return response
 
 
 class ContextFormDetail(six.with_metaclass(MetaClassView, RetrieveAPIView)):
