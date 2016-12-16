@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import importlib
+import logging
 
 from django.conf import settings
 from django.db.models import Prefetch
@@ -24,6 +25,9 @@ from formidable.models import Field, Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.presets import PresetsSerializer
+
+
+logger = logging.getLogger(__name__)
 
 
 class MetaClassView(type):
@@ -101,7 +105,13 @@ class FormidableCreate(six.with_metaclass(MetaClassView, CreateAPIView)):
                     imported_module = importlib.import_module(
                         module, [meth_name])
                 func = getattr(imported_module, meth_name)
-                func(request)
+                try:
+                    func(request)
+                except Exception:
+                    logger.error(
+                        "An error has occurred with post_create function %s",
+                        func
+                    )
         return response
 
 
