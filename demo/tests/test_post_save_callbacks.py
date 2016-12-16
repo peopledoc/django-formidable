@@ -2,13 +2,17 @@
 from __future__ import unicode_literals
 
 from copy import deepcopy
-from mock import patch
-
 from django.core.urlresolvers import reverse
 from django.test import override_settings
 
 from rest_framework.test import APITestCase
 from . import form_data, form_data_items
+
+import six
+if six.PY3:
+    from unittest.mock import patch
+else:
+    from mock import patch
 
 CALLBACK = 'demo.callback_save'
 
