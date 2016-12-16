@@ -2,3 +2,4 @@ django-cors-headers
 ipdb
 django-extensions
 freezegun
+mock
