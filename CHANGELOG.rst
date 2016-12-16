@@ -6,6 +6,7 @@ Release 0.5.0dev (unreleased)
 =============================
 
 * Fix the demo site to work with Django 1.8 *and* with logged-in users (#146).
+* Added a callback on success / failure mechanism (#134).
 
 
 Release 0.4.0 (2017-04-01)
