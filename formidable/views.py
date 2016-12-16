@@ -30,6 +30,27 @@ from formidable.serializers.presets import PresetsSerializer
 logger = logging.getLogger(__name__)
 
 
+def extract_function(func_name):
+    """
+    Return a function out of a namespace
+    """
+    func = None
+    if func_name:
+        module, meth_name = func_name.rsplit('.', 1)
+        try:
+            if six.PY3:
+                imported_module = importlib.import_module(module)
+            else:
+                imported_module = importlib.import_module(
+                    module, [meth_name])
+            func = getattr(imported_module, meth_name)
+        except ImportError:
+            logger.error(
+                "An error has occurred impossible to import %s", func_name
+            )
+    return func
+
+
 class MetaClassView(type):
     """
     Automatically load the *list* of permissions defined in the settings.
@@ -80,47 +101,49 @@ class FormidableCreate(six.with_metaclass(MetaClassView, CreateAPIView)):
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
+    def perform_create(self, serializer):
+        response = super(FormidableCreate, self).perform_create(serializer)
+        # Extract the callback function
+        callback = getattr(
+            settings, 'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS', None)
+        func = extract_function(callback)
+        try:
+            # Call function only if existing
+            if func:
+                func(self.request)
+        except Exception:
+            logger.error(
+                "An error has occurred with post_create function %s", func
+            )
+        return response
+
+    def handle_exception(self, exc):
+        response = super(FormidableCreate, self).handle_exception(exc)
+        # Don't bother with the callback if it was a wrong method
+        if isinstance(exc, exceptions.MethodNotAllowed):
+            return response
+
+        # Extract the callback function
+        callback = getattr(
+            settings, 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL', None)
+        func = extract_function(callback)
+        try:
+            # Call function only if existing
+            if func:
+                func(self.request)
+        except Exception:
+            logger.error(
+                "An error has occurred with post_create failure function %s",
+                func
+            )
+        return response
+
     def dispatch(self, request, *args, **kwargs):
         # Being forced to do this in dispatch() rather than post() because
         # ValidationErrors can be raised in dispatch and we don't go through
         # the post() method
         response = super(FormidableCreate, self).dispatch(
             request, *args, **kwargs)
-
-        # Is the response a success or a failure?
-        if request.method == 'POST':
-            success = response.status_code == 201
-            if success:
-                callback = getattr(
-                    settings, 'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS', None)
-            else:
-                callback = getattr(
-                    settings, 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL', None)
-
-            if callback:
-                module, meth_name = callback.rsplit('.', 1)
-                try:
-                    if six.PY3:
-                        imported_module = importlib.import_module(module)
-                    else:
-                        imported_module = importlib.import_module(
-                            module, [meth_name])
-                    func = getattr(imported_module, meth_name)
-                except ImportError:
-                    logger.error(
-                        "An error has occurred impossible to import %s",
-                        callback
-                    )
-                    return response
-
-                # it's possible to import. Let's try to run it
-                try:
-                    func(request)
-                except Exception:
-                    logger.error(
-                        "An error has occurred with post_create function %s",
-                        func
-                    )
         return response
 
 
