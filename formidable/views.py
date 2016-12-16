@@ -48,6 +48,62 @@ def extract_function(func_name):
     return func
 
 
+class CallbackMixin(object):
+    success_callback_settings = ''
+    failure_callback_settings = ''
+    callback_error_message = "An error has occurred with function: `%s`"
+
+    def _call_callback(self, callback):
+        """
+        Tool to simply call the callback function and handle edge-cases.
+        """
+        func = extract_function(callback)
+        # Call function only if existing
+        if not func:
+            return
+        try:
+            func(self.request)
+        except Exception:
+            logger.error(
+                self.callback_error_message, callback
+            )
+
+    def success_callback(self):
+        """
+        Call the failure callback function
+        """
+        callback = getattr(settings, self.success_callback_settings, None)
+        self._call_callback(callback)
+
+    def failure_callback(self):
+        """
+        Call the failure callback function
+        """
+        # Extract the callback function
+        callback = getattr(settings, self.failure_callback_settings, None)
+        self._call_callback(callback)
+
+    def perform_create(self, serializer):
+        response = super(CallbackMixin, self).perform_create(serializer)
+        self.success_callback()
+        return response
+
+    def perform_update(self, serializer):
+        "Perform update (overridden to handle callbacks)"
+        response = super(CallbackMixin, self).perform_update(serializer)
+        self.success_callback()
+        return response
+
+    def handle_exception(self, exc):
+        "Handle errors/exceptions (overridden to handle callbacks)"
+        response = super(CallbackMixin, self).handle_exception(exc)
+        # Don't bother with the callback if it was a wrong method
+        if isinstance(exc, exceptions.MethodNotAllowed):
+            return response
+        self.failure_callback()
+        return response
+
+
 class MetaClassView(type):
     """
     Automatically load the *list* of permissions defined in the settings.
@@ -81,48 +137,12 @@ class MetaClassView(type):
 
 
 class FormidableDetail(six.with_metaclass(MetaClassView,
-                       RetrieveUpdateAPIView)):
-
+                       CallbackMixin, RetrieveUpdateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
-
-    def perform_update(self, serializer):
-        response = super(FormidableDetail, self).perform_update(serializer)
-        # Extract the callback function
-        callback = getattr(
-            settings, 'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS', None)
-        func = extract_function(callback)
-        try:
-            # Call function only if existing
-            if func:
-                func(self.request)
-        except Exception:
-            logger.error(
-                "An error has occurred with post_update function %s", func
-            )
-        return response
-
-    def handle_exception(self, exc):
-        response = super(FormidableDetail, self).handle_exception(exc)
-        # Don't bother with the callback if it was a wrong method
-        if isinstance(exc, exceptions.MethodNotAllowed):
-            return response
-
-        # Extract the callback function
-        callback = getattr(
-            settings, 'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL', None)
-        func = extract_function(callback)
-        try:
-            # Call function only if existing
-            if func:
-                func(self.request)
-        except Exception:
-            logger.error(
-                "An error has occurred with post_update failure function %s",
-                func
-            )
-        return response
+    success_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS'
+    failure_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL'
 
     def get_queryset(self):
         qs = super(FormidableDetail, self).get_queryset()
@@ -130,55 +150,13 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
         return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
 
-class FormidableCreate(six.with_metaclass(MetaClassView, CreateAPIView)):
+class FormidableCreate(six.with_metaclass(MetaClassView,
+                       CallbackMixin, CreateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
-
-    def perform_create(self, serializer):
-        response = super(FormidableCreate, self).perform_create(serializer)
-        # Extract the callback function
-        callback = getattr(
-            settings, 'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS', None)
-        func = extract_function(callback)
-        try:
-            # Call function only if existing
-            if func:
-                func(self.request)
-        except Exception:
-            logger.error(
-                "An error has occurred with post_create function %s", func
-            )
-        return response
-
-    def handle_exception(self, exc):
-        response = super(FormidableCreate, self).handle_exception(exc)
-        # Don't bother with the callback if it was a wrong method
-        if isinstance(exc, exceptions.MethodNotAllowed):
-            return response
-
-        # Extract the callback function
-        callback = getattr(
-            settings, 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL', None)
-        func = extract_function(callback)
-        try:
-            # Call function only if existing
-            if func:
-                func(self.request)
-        except Exception:
-            logger.error(
-                "An error has occurred with post_create failure function %s",
-                func
-            )
-        return response
-
-    def dispatch(self, request, *args, **kwargs):
-        # Being forced to do this in dispatch() rather than post() because
-        # ValidationErrors can be raised in dispatch and we don't go through
-        # the post() method
-        response = super(FormidableCreate, self).dispatch(
-            request, *args, **kwargs)
-        return response
+    success_callback_settings = 'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS'
+    failure_callback_settings = 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL'
 
 
 class ContextFormDetail(six.with_metaclass(MetaClassView, RetrieveAPIView)):
