@@ -13,6 +13,7 @@ Release 0.4.0dev (unreleased)
 * Added tox posargs to pass extra arguments when running tests (#135).
 * Solve ``setup.py install`` "zip" error. Skip global package installation (#139).
 * Moving ``check-python-imports`` test to the tox file (#138).
+* Added a callback on success / failure mechanism (#137).
 
 Release 0.3.1 (2016-11-04)
 ==========================
