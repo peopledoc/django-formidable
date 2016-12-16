@@ -15,6 +15,7 @@ else:
     from mock import patch
 
 CALLBACK = 'demo.callback_save'
+CALLBACK_EXCEPTION = 'demo.callback_exception'
 
 
 class CreateFormTestCase(APITestCase):
@@ -53,3 +54,27 @@ class CreateFormTestCase(APITestCase):
             )
             self.assertEquals(res.status_code, 400)
             self.assertEqual(patched_callback.call_count, 1)
+
+    @override_settings(
+        FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS=CALLBACK_EXCEPTION
+    )
+    def test_create_exception(self):
+        # The called function raises an error, but the treatment proceeds
+        # as if nothing has happened
+        res = self.client.post(
+            reverse('formidable:form_create'), form_data, format='json'
+        )
+        self.assertEqual(res.status_code, 201)
+
+    @override_settings(
+        FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS=CALLBACK_EXCEPTION
+    )
+    def test_create_exception_logger(self):
+        # The called function raises an error, but the treatment proceeds
+        # as if nothing has happened
+        with patch('formidable.views.logger.error') as logger_error:
+            res = self.client.post(
+                reverse('formidable:form_create'), form_data, format='json'
+            )
+            self.assertEqual(res.status_code, 201)
+            self.assertEqual(logger_error.call_count, 1)
