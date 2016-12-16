@@ -78,3 +78,13 @@ class CreateFormTestCase(APITestCase):
             )
             self.assertEqual(res.status_code, 201)
             self.assertEqual(logger_error.call_count, 1)
+
+    @override_settings(FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS='non.existent')
+    def test_create_callback_is_non_existent(self):
+        # A non-existing module is treated separately.
+        with patch('formidable.views.logger.error') as logger_error:
+            res = self.client.post(
+                reverse('formidable:form_create'), form_data, format='json'
+            )
+            self.assertEqual(res.status_code, 201)
+            self.assertEqual(logger_error.call_count, 1)
