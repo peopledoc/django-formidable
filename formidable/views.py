@@ -99,12 +99,21 @@ class FormidableCreate(six.with_metaclass(MetaClassView, CreateAPIView)):
 
             if callback:
                 module, meth_name = callback.rsplit('.', 1)
-                if six.PY3:
-                    imported_module = importlib.import_module(module)
-                else:
-                    imported_module = importlib.import_module(
-                        module, [meth_name])
-                func = getattr(imported_module, meth_name)
+                try:
+                    if six.PY3:
+                        imported_module = importlib.import_module(module)
+                    else:
+                        imported_module = importlib.import_module(
+                            module, [meth_name])
+                    func = getattr(imported_module, meth_name)
+                except ImportError:
+                    logger.error(
+                        "An error has occurred impossible to import %s",
+                        callback
+                    )
+                    return response
+
+                # it's possible to import. Let's try to run it
                 try:
                     func(request)
                 except Exception:
