@@ -21,6 +21,10 @@ check-python-imports: install-isort
 	@cat setup.cfg
 	isort --check-only --recursive --verbose formidable
 
+# target: test - run all tests (unittests + linters)
+.PHONY: test
+test:
+    tox -r
 
 # target: docs - build the sphinx documentation
 .PHONY: docs
