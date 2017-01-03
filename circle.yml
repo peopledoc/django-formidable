@@ -9,4 +9,3 @@ dependencies:
 test:
     override:
         - tox -r
-        - make check-python-imports
