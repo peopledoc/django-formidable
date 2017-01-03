@@ -3,8 +3,8 @@ machine:
     - pyenv global 2.7.10 3.3.3 3.4.3 3.5.0
 
 dependencies:
-    pre:
-        - pip install tox
+    override:
+        - pip install --upgrade tox
 
 test:
     override:
