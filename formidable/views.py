@@ -14,6 +14,7 @@ from rest_framework.settings import perform_import
 from rest_framework.views import APIView
 
 from formidable.accesses import get_accesses, get_context
+from formidable.forms.field_builder import FileFieldBuilder, SkipField
 from formidable.forms.validations.presets import presets_register
 from formidable.models import Field, Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
@@ -117,8 +118,23 @@ class PresetsList(six.with_metaclass(MetaClassView, APIView)):
 
 
 class ValidateView(six.with_metaclass(MetaClassView, APIView)):
+    """
+    This view is usually called by the UI front-end in order to validate
+    data inside a form to avoid uploading file.
+    The main idea is to call this view in order to validate the entire data
+    except the File part. The UI front-end is not able to compute complex
+    validation (through validation presets), and to avoid heavy files exchanges
+    this view can validate first the data (without the file).
+
+    The final errors in the form are sent to UI in order to display it.
+    """
 
     settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
+
+    class ValidationFileFieldBuilder(FileFieldBuilder):
+
+        def build(self, role):
+            raise SkipField
 
     def get_formidable_object(self, kwargs):
         return Formidable.objects.get(pk=kwargs['pk'])
@@ -129,10 +145,32 @@ class ValidateView(six.with_metaclass(MetaClassView, APIView)):
         except Formidable.DoesNotExist:
             raise exceptions.Http404()
 
-        role = get_context(request, kwargs)
-        form_class = formidable.get_django_form_class(role)
-        form = form_class(data=request.GET)
+        form_class = self.get_form_class(formidable)
+        form = self.get_form(form_class)
         if form.is_valid():
-            return Response(status=204)
+            return self.form_valid(form)
         else:
-            return Response(form.errors, status=400)
+            return self.form_invalid(form)
+
+    def get_form_class(self, formidable):
+        return formidable.get_django_form_class(
+            **self.get_form_class_kwargs()
+        )
+
+    def get_form_class_kwargs(self):
+        return {
+            'role': get_context(self.request, self.kwargs),
+            'field_map': {'file': self.ValidationFileFieldBuilder}
+        }
+
+    def form_valid(self, form):
+        return Response(status=204)
+
+    def form_invalid(self, form):
+        return Response(form.errors, status=400)
+
+    def get_form(self, form_class):
+        return form_class(**self.get_form_kwargs())
+
+    def get_form_kwargs(self):
+        return {'data': self.request.GET}
