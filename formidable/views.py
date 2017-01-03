@@ -12,7 +12,7 @@ from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 )
 from rest_framework.response import Response
-from rest_framework.settings import perform_import, import_from_string
+from rest_framework.settings import import_from_string, perform_import
 from rest_framework.views import APIView
 
 from formidable.accesses import get_accesses, get_context
@@ -21,7 +21,6 @@ from formidable.models import Field, Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.presets import PresetsSerializer
-
 
 logger = logging.getLogger(__name__)
 
