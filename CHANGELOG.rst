@@ -11,6 +11,7 @@ Release 0.4.0dev (unreleased)
 * Fix autodoc generation (#131).
 * Added flake8 checks via tox (#133).
 * Added tox posargs to pass extra arguments when running tests (#135).
+* Solve ``setup.py install`` "zip" error. Skip global package installation (#139).
 
 Release 0.3.1 (2016-11-04)
 ==========================
