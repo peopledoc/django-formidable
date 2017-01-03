@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import importlib
 import logging
 
 from django.conf import settings
@@ -13,7 +12,7 @@ from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 )
 from rest_framework.response import Response
-from rest_framework.settings import perform_import
+from rest_framework.settings import perform_import, import_from_string
 from rest_framework.views import APIView
 
 from formidable.accesses import get_accesses, get_context
@@ -32,19 +31,12 @@ def extract_function(func_name):
     Return a function out of a namespace
     """
     func = None
-    if func_name:
-        module, meth_name = func_name.rsplit('.', 1)
-        try:
-            if six.PY3:
-                imported_module = importlib.import_module(module)
-            else:
-                imported_module = importlib.import_module(
-                    module, [meth_name])
-            func = getattr(imported_module, meth_name)
-        except ImportError:
-            logger.error(
-                "An error has occurred impossible to import %s", func_name
-            )
+    try:
+        func = import_from_string(func_name, '')
+    except ImportError:
+        logger.error(
+            "An error has occurred impossible to import %s", func_name
+        )
     return func
 
 
@@ -57,6 +49,10 @@ class CallbackMixin(object):
         """
         Tool to simply call the callback function and handle edge-cases.
         """
+        # If there's no callback value, it's pointless to try to extract it
+        if not callback:
+            return
+
         func = extract_function(callback)
         # Call function only if existing
         if not func:
