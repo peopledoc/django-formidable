@@ -20,7 +20,8 @@ class Formidable(models.Model):
         If no role_id is provided all the fields are fetched with an
         ``EDITABLE`` access-right.
         :params role: Fetch defined access for the specified role.
-        :params field_factory: Custom field factory if needed.
+        :params field_factory: Instance of Custom field factory if needed.
+        :params field_map: Custom Field Builder used by the field_factory.
         """
         from formidable.forms import get_dynamic_form_class
         return get_dynamic_form_class(self, role, field_factory)

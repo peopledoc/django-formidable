@@ -325,3 +325,20 @@ class TestValidationEndPoint(APITestCase):
         self.assertEqual(res.status_code, 400)
         errors = res.data
         self.assertIn('first_name', errors)
+
+    def test_validate_with_mandatory_file(self):
+        class WithFile(FormidableForm):
+            mandatory = fields.FileField(
+                accesses={'padawan': constants.REQUIRED}
+            )
+
+        formidable = WithFile.to_formidable(label='test with file')
+        parameters = {}
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.get(
+            reverse('formidable:form_validation', args=[formidable.pk]),
+            parameters, format='json'
+        )
+        self.assertEqual(res.status_code, 204)

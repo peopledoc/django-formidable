@@ -210,14 +210,17 @@ class FormFieldFactory(object):
         'file': FileFieldBuilder,
     }
 
-    @classmethod
-    def produce(cls, field, role=None):
+    def __init__(self, field_map=None):
+        self.map = self.field_map.copy()
+        self.map.update(field_map or {})
+
+    def produce(self, field, role=None):
         """
         Given a :class:`formidable.models.Fieldidable`, return a
         :class:`django.forms.Field` instance according to the type_id,
         validations and rules.
         """
-        builder = cls.field_map[field.type_id](field)
+        builder = self.map[field.type_id](field)
         return builder.build(role)
 
 

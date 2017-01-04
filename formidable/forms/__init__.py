@@ -77,7 +77,7 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None):
     """
 
     attrs = OrderedDict()
-    field_factory = field_factory or field_builder.FormFieldFactory
+    field_factory = field_factory or field_builder.FormFieldFactory()
 
     for field in formidable.fields.order_by('order').all():
         try:
