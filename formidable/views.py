@@ -14,7 +14,9 @@ from rest_framework.settings import perform_import
 from rest_framework.views import APIView
 
 from formidable.accesses import get_accesses, get_context
-from formidable.forms.field_builder import FileFieldBuilder, SkipField
+from formidable.forms.field_builder import (
+    FileFieldBuilder, FormFieldFactory, SkipField
+)
 from formidable.forms.validations.presets import presets_register
 from formidable.models import Field, Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
@@ -158,9 +160,12 @@ class ValidateView(six.with_metaclass(MetaClassView, APIView)):
         )
 
     def get_form_class_kwargs(self):
+        factory = FormFieldFactory(
+            field_map={'file': self.ValidationFileFieldBuilder}
+        )
         return {
             'role': get_context(self.request, self.kwargs),
-            'field_map': {'file': self.ValidationFileFieldBuilder}
+            'field_factory': factory,
         }
 
     def form_valid(self, form):

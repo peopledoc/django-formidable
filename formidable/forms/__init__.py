@@ -54,8 +54,7 @@ class BaseDynamicForm(forms.Form):
         return cleaned_data
 
 
-def get_dynamic_form_class(formidable, role=None, field_factory=None,
-                           field_map=None):
+def get_dynamic_form_class(formidable, role=None, field_factory=None):
     """
     This is the main method for getting a django form class from a formidable
     object.
@@ -78,11 +77,11 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None,
     """
 
     attrs = OrderedDict()
-    field_factory = field_factory or field_builder.FormFieldFactory
+    field_factory = field_factory or field_builder.FormFieldFactory()
 
     for field in formidable.fields.order_by('order').all():
         try:
-            form_field = field_factory.produce(field, role, field_map)
+            form_field = field_factory.produce(field, role)
         except field_builder.SkipField:
             pass
         else:
