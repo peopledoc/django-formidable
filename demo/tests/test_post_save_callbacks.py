@@ -2,12 +2,15 @@
 from __future__ import unicode_literals
 
 from copy import deepcopy
+from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.test import override_settings
+from django.conf import settings
+from django.test import TestCase, override_settings
 
 from rest_framework.test import APITestCase
 
 from formidable.models import Formidable
+from formidable.views import check_callback_configuration
 
 from . import form_data, form_data_items
 
@@ -173,3 +176,60 @@ class UpdateFormTestCase(APITestCase):
             )
             self.assertEqual(res.status_code, 200)
             self.assertEqual(logger_error.call_count, 1)
+
+
+class ConfigurationLoadingTestCases(TestCase):
+
+    @override_settings()
+    def test_all_deleted(self):
+        del settings.FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS
+        del settings.FORMIDABLE_POST_UPDATE_CALLBACK_FAIL
+        del settings.FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS
+        del settings.FORMIDABLE_POST_CREATE_CALLBACK_FAIL
+        self.assertTrue(check_callback_configuration())
+
+    @override_settings(
+        FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS=None,
+        FORMIDABLE_POST_UPDATE_CALLBACK_FAIL=None,
+        FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS=None,
+        FORMIDABLE_POST_CREATE_CALLBACK_FAIL=None
+    )
+    def test_all_none(self):
+        self.assertTrue(check_callback_configuration())
+
+    @override_settings(
+        FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS='',
+        FORMIDABLE_POST_UPDATE_CALLBACK_FAIL='',
+        FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS='',
+        FORMIDABLE_POST_CREATE_CALLBACK_FAIL=''
+    )
+    def test_all_empty(self):
+        self.assertTrue(check_callback_configuration())
+
+    @override_settings(
+        FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS='non.existing',
+    )
+    def test_update_success_unknown(self):
+        with self.assertRaises(ImproperlyConfigured):
+            check_callback_configuration()
+
+    @override_settings(
+        FORMIDABLE_POST_UPDATE_CALLBACK_FAIL='non.existing',
+    )
+    def test_update_fail_unknown(self):
+        with self.assertRaises(ImproperlyConfigured):
+            check_callback_configuration()
+
+    @override_settings(
+        FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS='non.existing',
+    )
+    def test_create_success_unknown(self):
+        with self.assertRaises(ImproperlyConfigured):
+            check_callback_configuration()
+
+    @override_settings(
+        FORMIDABLE_POST_CREATE_CALLBACK_FAIL='non.existing',
+    )
+    def test_create_fail_unknown(self):
+        with self.assertRaises(ImproperlyConfigured):
+            check_callback_configuration()

@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Prefetch
 
 import six
@@ -31,15 +32,37 @@ logger = logging.getLogger(__name__)
 def extract_function(func_name):
     """
     Return a function out of a namespace
+
+    Return None if the function is not loadable
     """
     func = None
     try:
         func = import_from_string(func_name, '')
-    except ImportError:
+    except (ImportError, ValueError):
         logger.error(
             "An error has occurred impossible to import %s", func_name
         )
     return func
+
+
+def check_callback_configuration():
+    settings_names = (
+        'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS',
+        'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL',
+        'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS',
+        'FORMIDABLE_POST_CREATE_CALLBACK_FAIL',
+    )
+    settings_values = map(
+        lambda k: (k, getattr(settings, k, None)),
+        settings_names)
+    settings_values = filter(lambda item: item[1], settings_values)
+    for key, value in settings_values:
+        func = extract_function(value)
+        if not func:
+            raise ImproperlyConfigured(
+                "Settings {} points to a non-existant function: `{}`".format(
+                    key, value))
+    return True
 
 
 class CallbackMixin(object):
