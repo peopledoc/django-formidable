@@ -3,7 +3,6 @@ from django.conf.urls import url
 from demo.builder import views
 
 urlpatterns = [
-    r'',
     url(r'^$',
         views.FormidableListView.as_view(),
         name='formidable-list'),
