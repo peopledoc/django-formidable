@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-Release 0.4.0dev (unreleased)
-============================
+Release 0.4.0 (2017-04-01)
+==========================
 
 * Fix the validation view with mandatory file (#140)
 * A few typo fixes in documentation (#128).
