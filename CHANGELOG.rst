@@ -5,6 +5,7 @@ ChangeLog
 Release 0.4.0dev (unreleased)
 ============================
 
+* Fix the validation view with mandatory file (#140)
 * A few typo fixes in documentation (#128).
 * Added a Makefile autodocumentation (#127).
 * Added a tox target to build documentation (#130).
