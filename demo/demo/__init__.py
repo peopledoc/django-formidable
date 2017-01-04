@@ -1,3 +1,8 @@
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class DemoCallbackException(Exception):
     "A dummy callback exception"
@@ -19,3 +24,23 @@ def callback_exception(*args, **kwargs):
     It'll raise an exception
     """
     raise DemoCallbackException()
+
+
+def callback_success_message(request):
+    """
+    This function will be called a form post-save/create.
+
+    It adds a logging message
+    """
+    logger.info('Sucessfully recorded form :)')
+    return True
+
+
+def callback_fail_message(request):
+    """
+    This function will be called a form post-save/create.
+
+    It adds a logging message (error)
+    """
+    logger.error('Form storing has failed :(')
+    return True
