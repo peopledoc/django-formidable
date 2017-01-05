@@ -5,7 +5,7 @@ ChangeLog
 Release 0.5.0dev (unreleased)
 =============================
 
-* Nothing change yet.
+* Fix the demo site to work with Django 1.8 *and* with logged-in users (#146).
 
 
 Release 0.4.0 (2017-04-01)

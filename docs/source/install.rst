@@ -136,3 +136,28 @@ by ``FORMIDABLE_PERMISSION_BUILDER``)
 ``FORMIDABLE_PERMISSION_USING``).
 
 You can provide any permissions you want.
+
+CSRF
+----
+
+If you're dealing with logged-in users (you surely do), you're going to need to provide a CSRF Token when validating a creation or an edit form. If you don't provide it *or* if your CSRF is misconfigured, you'll receive a ``403`` error when trying to save your forms.
+
+In order to do so, you'll have to use a code similar to this:
+
+.. literalinclude:: ../../demo/demo/builder/static/assets/csrftoken.js
+    :language: javascript
+
+.. warning:: you'll have to make sure that your CSRF configuration is properly set (middlewares, context managers, etc).
+
+Then in your templates, those that'll have to display and handle the form editor, you'll have to call this function like this:
+
+.. code-block:: js
+
+    <script src="{% static "assets/csrftoken.js" %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            setupCRSFToken('{{ csrf_token }}');
+        });
+    </script>
+
+This way, every AJAX call coming from this template will provide a token that'll fit Django's (and Django REST Framework) requirements.
