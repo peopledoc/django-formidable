@@ -73,6 +73,12 @@ class CallbackMixin(object):
     def _call_callback(self, callback):
         """
         Tool to simply call the callback function and handle edge-cases.
+
+        **WARNING!** the DRF request is not inherited from django core,
+        `HTTPRequest`, and you should not assume they'll behave the same way.
+
+        If you need the "true" HTTPRequest object,
+        use ``self.request._request`` in your callback functions.
         """
         # If there's no callback value, it's pointless to try to extract it
         if not callback:
@@ -83,6 +89,11 @@ class CallbackMixin(object):
         if not func:
             return
         try:
+            # WARNING! the DRF request is not inherited from django core,
+            # `HTTPRequest`, and you should not assume they'll behave the same
+            # way.
+            # If you need the "true" HTTPRequest object, use
+            # ``self.request._request``
             func(self.request)
         except Exception:
             logger.error(

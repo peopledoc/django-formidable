@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +32,11 @@ def callback_success_message(request):
     This function will be called a form post-save/create.
 
     It adds a logging message
+
     """
-    logger.info('Sucessfully recorded form :)')
-    return True
+    msg = 'Sucessfully recorded form :)'
+    logger.info(msg)
+    messages.info(request._request, msg)
 
 
 def callback_fail_message(request):
@@ -42,5 +45,6 @@ def callback_fail_message(request):
 
     It adds a logging message (error)
     """
-    logger.error('Form storing has failed :(')
-    return True
+    msg = 'Form storing has failed :('
+    logger.error(msg)
+    messages.error(request._request, msg)
