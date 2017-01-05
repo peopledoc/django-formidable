@@ -145,13 +145,13 @@ If you're dealing with logged-in users (you surely do), you're going to need to 
 In order to do so, you'll have to use a code similar to this:
 
 .. literalinclude:: ../../demo/demo/builder/static/assets/csrftoken.js
-    :language: javascript
+    :language: js
 
 .. warning:: you'll have to make sure that your CSRF configuration is properly set (middlewares, context managers, etc).
 
 Then in your templates, those that'll have to display and handle the form editor, you'll have to call this function like this:
 
-.. code-block:: js
+.. code-block:: django
 
     <script src="{% static "assets/csrftoken.js" %}"></script>
     <script type="text/javascript">
