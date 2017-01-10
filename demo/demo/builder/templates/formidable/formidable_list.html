@@ -4,6 +4,15 @@
 <div class="title">
   <h1>May the Form be with you!</h1>
 </div>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 <div>
   <table>
     <thead>

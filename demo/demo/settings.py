@@ -115,3 +115,10 @@ STATICFILES_DIRS = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+# Formidable call back post-create/update
+FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS = 'demo.callback_success_message'
+FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS = 'demo.callback_success_message'
+FORMIDABLE_POST_CREATE_CALLBACK_FAIL = 'demo.callback_fail_message'
+FORMIDABLE_POST_UPDATE_CALLBACK_FAIL = 'demo.callback_fail_message'

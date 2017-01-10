@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import logging
+
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Prefetch
 
 import six
@@ -10,7 +13,7 @@ from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 )
 from rest_framework.response import Response
-from rest_framework.settings import perform_import
+from rest_framework.settings import import_from_string, perform_import
 from rest_framework.views import APIView
 
 from formidable.accesses import get_accesses, get_context
@@ -22,6 +25,115 @@ from formidable.models import Field, Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.presets import PresetsSerializer
+
+logger = logging.getLogger(__name__)
+
+
+def extract_function(func_name):
+    """
+    Return a function out of a namespace
+
+    Return None if the function is not loadable
+    """
+    func = None
+    try:
+        func = import_from_string(func_name, '')
+    except (ImportError, ValueError):
+        logger.error(
+            "An error has occurred impossible to import %s", func_name
+        )
+    return func
+
+
+def check_callback_configuration():
+    settings_names = (
+        'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS',
+        'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL',
+        'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS',
+        'FORMIDABLE_POST_CREATE_CALLBACK_FAIL',
+    )
+    settings_values = map(
+        lambda k: (k, getattr(settings, k, None)),
+        settings_names)
+    settings_values = filter(lambda item: item[1], settings_values)
+    for key, value in settings_values:
+        func = extract_function(value)
+        if not func:
+            raise ImproperlyConfigured(
+                "Settings {} points to a non-existant function: `{}`".format(
+                    key, value))
+    return True
+
+
+class CallbackMixin(object):
+    success_callback_settings = ''
+    failure_callback_settings = ''
+    callback_error_message = "An error has occurred with function: `%s`"
+
+    def _call_callback(self, callback):
+        """
+        Tool to simply call the callback function and handle edge-cases.
+
+        **WARNING!** the DRF request is not inherited from django core,
+        `HTTPRequest`, and you should not assume they'll behave the same way.
+
+        If you need the "true" HTTPRequest object,
+        use ``self.request._request`` in your callback functions.
+        """
+        # If there's no callback value, it's pointless to try to extract it
+        if not callback:
+            return
+
+        func = extract_function(callback)
+        # Call function only if existing
+        if not func:
+            return
+        try:
+            # WARNING! the DRF request is not inherited from django core,
+            # `HTTPRequest`, and you should not assume they'll behave the same
+            # way.
+            # If you need the "true" HTTPRequest object, use
+            # ``self.request._request``
+            func(self.request)
+        except Exception:
+            logger.error(
+                self.callback_error_message, callback
+            )
+
+    def success_callback(self):
+        """
+        Call the failure callback function
+        """
+        callback = getattr(settings, self.success_callback_settings, None)
+        self._call_callback(callback)
+
+    def failure_callback(self):
+        """
+        Call the failure callback function
+        """
+        # Extract the callback function
+        callback = getattr(settings, self.failure_callback_settings, None)
+        self._call_callback(callback)
+
+    def perform_create(self, serializer):
+        response = super(CallbackMixin, self).perform_create(serializer)
+        self.success_callback()
+        return response
+
+    def perform_update(self, serializer):
+        "Perform update (overridden to handle callbacks)"
+        response = super(CallbackMixin, self).perform_update(serializer)
+        self.success_callback()
+        return response
+
+    def handle_exception(self, exc):
+        "Handle errors/exceptions (overridden to handle callbacks)"
+        response = super(CallbackMixin, self).handle_exception(exc)
+        # Don't bother with the callback if it was a wrong method
+        if isinstance(exc, exceptions.MethodNotAllowed):
+            return response
+        self.failure_callback()
+        return response
 
 
 class MetaClassView(type):
@@ -57,11 +169,12 @@ class MetaClassView(type):
 
 
 class FormidableDetail(six.with_metaclass(MetaClassView,
-                       RetrieveUpdateAPIView)):
-
+                       CallbackMixin, RetrieveUpdateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
+    success_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS'
+    failure_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL'
 
     def get_queryset(self):
         qs = super(FormidableDetail, self).get_queryset()
@@ -69,10 +182,13 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
         return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
 
-class FormidableCreate(six.with_metaclass(MetaClassView, CreateAPIView)):
+class FormidableCreate(six.with_metaclass(MetaClassView,
+                       CallbackMixin, CreateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
+    success_callback_settings = 'FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS'
+    failure_callback_settings = 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL'
 
 
 class ContextFormDetail(six.with_metaclass(MetaClassView, RetrieveAPIView)):
