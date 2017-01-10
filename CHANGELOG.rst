@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-Release 0.5.0dev (unreleased)
-=============================
+Release 0.5.0 (2017-01-10)
+==========================
 
 * Fix the demo site to work with Django 1.8 *and* with logged-in users (#146).
 * Added a callback on success / failure mechanism (#134).
