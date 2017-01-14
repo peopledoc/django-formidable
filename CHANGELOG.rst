@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-* Nothing changed yet.
+* Added a make target to install the demo site.
 
 
 Release 0.5.0 (2017-01-10)
