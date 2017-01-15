@@ -1,13 +1,8 @@
 TestContextFormEndPoint.test_queryset:
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
 - db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
-- db: SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" IN (#) ORDER BY "formidable_field"."order" ASC
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 - db: 'SELECT ... FROM "formidable_access" WHERE ("formidable_access"."access_id" = # AND NOT ("formidable_access"."level" = #) AND "formidable_access"."field_id" IN (...))'
 - db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
 - db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
-- db: 'SELECT ... FROM "formidable_access" WHERE ("formidable_access"."field_id" = # AND "formidable_access"."access_id" = #)'
-- db: 'SELECT ... FROM "formidable_access" WHERE ("formidable_access"."field_id" = # AND "formidable_access"."access_id" = #)'
-- db: 'SELECT ... FROM "formidable_access" WHERE ("formidable_access"."field_id" = # AND "formidable_access"."access_id" = #)'
-- db: 'SELECT ... FROM "formidable_access" WHERE ("formidable_access"."field_id" = # AND "formidable_access"."access_id" = #)'
