@@ -47,6 +47,14 @@ class FieldListSerializer(NestedListSerializer):
 
         return validated_data
 
+    def get_attribute(self, instance):
+        qs = super(FieldListSerializer, self).get_attribute(instance)
+        qs = qs.prefetch_related(
+            Prefetch('items', queryset=Item.objects.order_by('order')),
+            'defaults', 'validations', 'accesses'
+        )
+        return qs.order_by('order')
+
 
 class FieldSerializer(WithNestedSerializer):
 
