@@ -105,7 +105,9 @@ class ListContextFieldSerializer(serializers.ListSerializer):
     def to_representation(self, fields):
         res = []
         for field in fields.all():
-            if field.accesses.exists():
+            # Avoid to hit the database, the righ access is currently loaded,
+            # unless its an hidden access
+            if field.accesses.count() > 0:
                 res.append(self.child.to_representation(field))
 
         return res
@@ -133,20 +135,24 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         return self._context['role']
 
     def get_disabled(self, obj):
-        # accesses object are already loaded, a "get" a related object will
-        # hit the database, a "all" not.
-        for access in obj.accesses.all():
-            if self.role == access.access_id:
-                return access.level == constants.READONLY
-        return False
+        # accesses object are already loaded through prefetch inside the
+        # "get_attribute" method, a "get" on related object will
+        # hit the database, a "all" method not.
+        # With the prefetch method and the "exists" check at the
+        # ListContextFieldSerializer.to_representation method, you are sure
+        # to have the access matching the role
+        access = obj.accesses.all()[0]
+        return access.level == constants.READONLY
 
     def get_required(self, obj):
-        # accesses object are already loaded, a "get" a related object will
-        # hit the database, a "all" not.
-        for access in obj.accesses.all():
-            if self.role == access.access_id:
-                return access.level == constants.REQUIRED
-        return False
+        # accesses object are already loaded through prefetch inside the
+        # "get_attribute" method, a "get" on related object will
+        # hit the database, a "all" method not.
+        # With the prefetch method and the "exists" check at the
+        # ListContextFieldSerializer.to_representation method, you are sure
+        # to have the access matching the role
+        access = obj.accesses.all()[0]
+        return access.level == constants.REQUIRED
 
 
 class FieldItemMixin(object):
