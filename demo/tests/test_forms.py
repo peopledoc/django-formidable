@@ -8,11 +8,12 @@ import os
 from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+import django_perf_rec
 from freezegun import freeze_time
 
 from formidable.constants import REQUIRED, EDITABLE, READONLY, HIDDEN
 from formidable.models import Formidable
-from formidable.forms import widgets, fields
+from formidable.forms import FormidableForm, widgets, fields
 
 
 class TestDynamicForm(TestCase):
@@ -270,6 +271,38 @@ class TestDynamicForm(TestCase):
         form_class = self.form.get_django_form_class(role='human')
         form = form_class()
         self.assertNotIn('text-input', form.fields)
+
+    def test_queryset_with_role(self):
+        class MyForm(FormidableForm):
+            first_name = fields.CharField(default='foo')
+            last_name = fields.CharField(default='bar')
+            origin = fields.ChoiceField(
+                choices=(('fr', 'France'), ('en', 'England'))
+            )
+            weapons = fields.ChoiceField(
+                choices=(('gun', 'Gun'), ('sword', 'Sword'))
+            )
+
+        form = MyForm.to_formidable(label='test')
+
+        with django_perf_rec.record(path='perfs/'):
+            form.get_django_form_class(role='jedi')
+
+    def test_queryset_without_role(self):
+        class MyForm(FormidableForm):
+            first_name = fields.CharField(default='foo')
+            last_name = fields.CharField(default='bar')
+            origin = fields.ChoiceField(
+                choices=(('fr', 'France'), ('en', 'England'))
+            )
+            weapons = fields.ChoiceField(
+                choices=(('gun', 'Gun'), ('sword', 'Sword'))
+            )
+
+        form = MyForm.to_formidable(label='test')
+
+        with django_perf_rec.record(path='perfs/'):
+            form.get_django_form_class(role='jedi')
 
 
 class TestFormValidation(TestCase):
