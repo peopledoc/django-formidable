@@ -248,6 +248,29 @@ class MyForm(FormidableForm):
     )
 
 
+class TestContextFormEndPoint(APITestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        class MyTestForm(MyForm):
+            phone = fields.IntegerField()
+
+        super(TestContextFormEndPoint, cls).setUpClass()
+        cls.form = MyForm.to_formidable(label='test')
+
+    def test_queryset(self):
+        import django_perf_rec
+
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+
+        with django_perf_rec.record(path='perfs/'):
+            self.client.get(reverse(
+                'formidable:context_form_detail', args=[self.form.pk])
+            )
+
+
 class TestValidationEndPoint(APITestCase):
 
     def setUp(self):
