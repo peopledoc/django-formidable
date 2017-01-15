@@ -23,7 +23,7 @@ class FieldBuilder(object):
         self.validator_factory = self.validator_factory_class()
 
     def build(self, role=None):
-        self.access = self.field.accesses.get(access_id=role) if role else None
+        self.access = self.field.accesses.all()[0] if role else None
         field_class = self.get_field_class()
         return field_class(**self.get_field_kwargs())
 
