@@ -8,7 +8,7 @@ from django.utils.functional import cached_property
 from rest_framework import serializers
 
 from formidable import constants
-from formidable.models import Access, Field
+from formidable.models import Access, Field, Item
 from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers.access import AccessSerializer
 from formidable.serializers.child_proxy import LazyChildProxy
@@ -95,7 +95,11 @@ class ListContextFieldSerializer(serializers.ListSerializer):
         qs = super(ListContextFieldSerializer, self).get_attribute(instance)
         access_qs = Access.objects.filter(access_id=self.role)
         access_qs = access_qs.exclude(level=constants.HIDDEN)
-        qs = qs.prefetch_related(Prefetch('accesses', queryset=access_qs))
+        qs = qs.prefetch_related(
+            Prefetch('accesses', queryset=access_qs),
+            Prefetch('items', queryset=Item.objects.order_by('order')),
+            'validations', 'defaults',
+        )
         return qs
 
     def to_representation(self, fields):
