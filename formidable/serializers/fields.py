@@ -100,11 +100,11 @@ class ListContextFieldSerializer(serializers.ListSerializer):
             Prefetch('items', queryset=Item.objects.order_by('order')),
             'validations', 'defaults',
         )
-        return qs
+        return qs.order_by('order')
 
     def to_representation(self, fields):
         res = []
-        for field in fields.order_by('order').all():
+        for field in fields.all():
             if field.accesses.exists():
                 res.append(self.child.to_representation(field))
 
@@ -133,12 +133,20 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         return self._context['role']
 
     def get_disabled(self, obj):
-        return obj.accesses.get(access_id=self.role).level == \
-            constants.READONLY
+        # accesses object are already loaded, a "get" a related object will
+        # hit the database, a "all" not.
+        for access in obj.accesses.all():
+            if self.role == access.access_id:
+                return access.level == constants.READONLY
+        return False
 
     def get_required(self, obj):
-        return obj.accesses.get(access_id=self.role).level == \
-            constants.REQUIRED
+        # accesses object are already loaded, a "get" a related object will
+        # hit the database, a "all" not.
+        for access in obj.accesses.all():
+            if self.role == access.access_id:
+                return access.level == constants.REQUIRED
+        return False
 
 
 class FieldItemMixin(object):
