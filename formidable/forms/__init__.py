@@ -12,10 +12,11 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from django import forms
+from django.db.models import Prefetch
 
 from formidable.forms import field_builder
 from formidable.forms.validations.presets import presets_register
-from formidable.models import Formidable
+from formidable.models import Access, Formidable, Item
 
 
 class FormidableBoundFieldCache(dict):
@@ -79,7 +80,17 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None):
     attrs = OrderedDict()
     field_factory = field_factory or field_builder.FormFieldFactory()
 
-    for field in formidable.fields.order_by('order').all():
+    access_qs = Access.objects.all()
+    if role:
+        access_qs = access_qs.filter(access_id=role)
+
+    fields = formidable.fields.prefetch_related(
+        Prefetch('items', queryset=Item.objects.order_by('order')),
+        Prefetch('accesses', queryset=access_qs),
+        'validations', 'defaults'
+    )
+
+    for field in fields.order_by('order').all():
         try:
             form_field = field_factory.produce(field, role)
         except field_builder.SkipField:
