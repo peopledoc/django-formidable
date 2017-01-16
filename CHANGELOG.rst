@@ -7,6 +7,7 @@ master (unreleased)
 
 * Added a make target to install the demo site.
 * Added django-perf-rec module for tests and improved SQL queries in `ContextFormDetailView` (#54, #154, #160).
+* Added test to count queries on dynamic form queryset + improve performances (#155, #156, #162).
 
 
 Release 0.5.0 (2017-01-10)
