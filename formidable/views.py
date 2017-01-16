@@ -5,7 +5,6 @@ import logging
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Prefetch
 
 import six
 from rest_framework import exceptions
@@ -21,7 +20,7 @@ from formidable.forms.field_builder import (
     FileFieldBuilder, FormFieldFactory, SkipField
 )
 from formidable.forms.validations.presets import presets_register
-from formidable.models import Field, Formidable
+from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.presets import PresetsSerializer
@@ -175,11 +174,6 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
     success_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS'
     failure_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL'
-
-    def get_queryset(self):
-        qs = super(FormidableDetail, self).get_queryset()
-        field_qs = Field.objects.order_by('order')
-        return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
 
 
 class FormidableCreate(six.with_metaclass(MetaClassView,
