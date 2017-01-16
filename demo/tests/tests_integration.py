@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
+import django_perf_rec
 
 from freezegun import freeze_time
 from rest_framework.test import APITestCase
@@ -15,6 +16,33 @@ from formidable.forms import FormidableForm, fields
 from formidable import validators, constants
 
 from . import form_data, form_data_items
+
+
+class MyTestForm(FormidableForm):
+
+    name = fields.CharField(label='Name', accesses={'jedi': 'REQUIRED'})
+    birth_date = fields.DateField(
+        label='Your Birth Date',
+        validators=[
+            validators.AgeAboveValidator(
+                21, message='You cannot be a jedi until your 21'
+            ),
+            validators.DateIsInFuture(False)
+        ],
+        accesses={'jedi': 'REQUIRED'},
+    )
+    out_date = fields.DateField(
+        validators=[validators.DateIsInFuture(True)]
+    )
+    weapons = fields.ChoiceField(choices=[
+        ('gun', 'blaster'), ('sword', 'light saber')
+    ])
+    salary = fields.IntegerField(
+        validators=[
+            validators.GTValidator(0), validators.LTEValidator(25)
+        ],
+        accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
+    )
 
 
 class CreateFormTestCase(APITestCase):
@@ -72,6 +100,11 @@ class CreateFormTestCase(APITestCase):
 
 
 class UpdateFormTestCase(APITestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super(UpdateFormTestCase, cls).setUpClass()
+        cls.formidable_form = MyTestForm.to_formidable(label='test')
 
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
@@ -164,6 +197,12 @@ class UpdateFormTestCase(APITestCase):
             access_id="jedi-master", level="READONLY"
         ).exists())
 
+    def test_queryset_on_get(self):
+        with django_perf_rec.record(path='perfs/'):
+            self.client.get(reverse(
+                'formidable:form_detail', args=[self.formidable_form.pk])
+            )
+
 
 class TestAccess(APITestCase):
 
@@ -184,34 +223,9 @@ class TestAccess(APITestCase):
 
 class TestChain(APITestCase):
 
-    class MyTestForm(FormidableForm):
-
-        name = fields.CharField(label='Name', accesses={'jedi': 'REQUIRED'})
-        birth_date = fields.DateField(
-            label='Your Birth Date', validators=[
-                validators.AgeAboveValidator(
-                    21, message='You cannot be a jedi until your 21'
-                ),
-                validators.DateIsInFuture(False)
-            ],
-            accesses={'jedi': 'REQUIRED'},
-        )
-        out_date = fields.DateField(
-            validators=[validators.DateIsInFuture(True)]
-        )
-        weapons = fields.ChoiceField(choices=[
-            ('gun', 'blaster'), ('sword', 'light saber')
-        ])
-        salary = fields.IntegerField(
-            validators=[
-                validators.GTValidator(0), validators.LTEValidator(25)
-            ],
-            accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
-        )
-
     def setUp(self):
         super(APITestCase, self).setUp()
-        self.form = self.MyTestForm.to_formidable(label='Jedi Form')
+        self.form = MyTestForm.to_formidable(label='Jedi Form')
         self.assertTrue(self.form.pk)
 
     @freeze_time('2021-01-01')
@@ -246,6 +260,29 @@ class MyForm(FormidableForm):
         accesses={'padawan': constants.REQUIRED},
         validators=[validators.MinLengthValidator(5)]
     )
+
+
+class TestContextFormEndPoint(APITestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        class MyTestForm(MyForm):
+            phone = fields.IntegerField()
+
+        super(TestContextFormEndPoint, cls).setUpClass()
+        cls.form = MyForm.to_formidable(label='test')
+
+    def test_queryset(self):
+        import django_perf_rec
+
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+
+        with django_perf_rec.record(path='perfs/'):
+            self.client.get(reverse(
+                'formidable:context_form_detail', args=[self.form.pk])
+            )
 
 
 class TestValidationEndPoint(APITestCase):
