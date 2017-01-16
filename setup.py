@@ -4,12 +4,15 @@ from __future__ import unicode_literals
 import os
 from setuptools import setup, find_packages
 
+import formidable
+
+
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
     README = readme.read()
 
 setup(
     name='django-formidable',
-    version='0.6.0.dev0',
+    version=formidable.version,
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',
