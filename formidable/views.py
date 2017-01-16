@@ -197,11 +197,6 @@ class ContextFormDetail(six.with_metaclass(MetaClassView, RetrieveAPIView)):
     serializer_class = ContextFormSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
 
-    def get_queryset(self):
-        qs = super(ContextFormDetail, self).get_queryset()
-        field_qs = Field.objects.order_by('order')
-        return qs.prefetch_related(Prefetch('fields', queryset=field_qs))
-
     def get_serializer_context(self):
         context = super(ContextFormDetail, self).get_serializer_context()
         context['role'] = get_context(self.request, self.kwargs)

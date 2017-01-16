@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import django
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -80,9 +81,14 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+if django.VERSION[:2] == (1, 8):
+    engine = 'django18_sqlite3_backend'
+else:
+    engine = 'django.db.backends.sqlite3',
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': engine,
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
@@ -122,3 +128,9 @@ FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS = 'demo.callback_success_message'
 FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS = 'demo.callback_success_message'
 FORMIDABLE_POST_CREATE_CALLBACK_FAIL = 'demo.callback_fail_message'
 FORMIDABLE_POST_UPDATE_CALLBACK_FAIL = 'demo.callback_fail_message'
+
+
+# django-perf-rec settings
+PERF_REC = {
+    'MODE': 'all'
+}

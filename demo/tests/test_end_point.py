@@ -5,6 +5,7 @@ import copy
 from functools import reduce
 
 from django.test import TestCase
+import django_perf_rec
 
 from formidable import constants
 from formidable.models import Formidable
@@ -297,6 +298,21 @@ class RenderContextSerializer(TestCase):
         self.assertIn('defaults', field)
         defaults = field['defaults']
         self.assertEqual(defaults, ['Roméo'])
+
+    def test_queryset(self):
+
+        class TestForm(FormidableForm):
+            name = fields.CharField(label='Your name', default='Roméo')
+            label = fields.CharField(label='label', default='Roméo')
+            salary = fields.IntegerField()
+            birthdate = fields.DateField()
+
+        form = TestForm.to_formidable(label='title')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+
+        with django_perf_rec.record(path='perfs/'):
+            serializer.data
 
 
 class CreateSerializerTestCase(TestCase):

@@ -8,7 +8,7 @@ from django.utils.functional import cached_property
 from rest_framework import serializers
 
 from formidable import constants
-from formidable.models import Access, Field
+from formidable.models import Access, Field, Item
 from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers.access import AccessSerializer
 from formidable.serializers.child_proxy import LazyChildProxy
@@ -95,13 +95,19 @@ class ListContextFieldSerializer(serializers.ListSerializer):
         qs = super(ListContextFieldSerializer, self).get_attribute(instance)
         access_qs = Access.objects.filter(access_id=self.role)
         access_qs = access_qs.exclude(level=constants.HIDDEN)
-        qs = qs.prefetch_related(Prefetch('accesses', queryset=access_qs))
-        return qs
+        qs = qs.prefetch_related(
+            Prefetch('accesses', queryset=access_qs),
+            Prefetch('items', queryset=Item.objects.order_by('order')),
+            'validations', 'defaults',
+        )
+        return qs.order_by('order')
 
     def to_representation(self, fields):
         res = []
-        for field in fields.order_by('order').all():
-            if field.accesses.exists():
+        for field in fields.all():
+            # Avoid to hit the database, the righ access is currently loaded,
+            # unless its an hidden access
+            if field.accesses.count() > 0:
                 res.append(self.child.to_representation(field))
 
         return res
@@ -129,12 +135,24 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         return self._context['role']
 
     def get_disabled(self, obj):
-        return obj.accesses.get(access_id=self.role).level == \
-            constants.READONLY
+        # accesses object are already loaded through prefetch inside the
+        # "get_attribute" method, a "get" on related object will
+        # hit the database, a "all" method not.
+        # With the prefetch method and the "exists" check at the
+        # ListContextFieldSerializer.to_representation method, you are sure
+        # to have the access matching the role
+        access = obj.accesses.all()[0]
+        return access.level == constants.READONLY
 
     def get_required(self, obj):
-        return obj.accesses.get(access_id=self.role).level == \
-            constants.REQUIRED
+        # accesses object are already loaded through prefetch inside the
+        # "get_attribute" method, a "get" on related object will
+        # hit the database, a "all" method not.
+        # With the prefetch method and the "exists" check at the
+        # ListContextFieldSerializer.to_representation method, you are sure
+        # to have the access matching the role
+        access = obj.accesses.all()[0]
+        return access.level == constants.REQUIRED
 
 
 class FieldItemMixin(object):
