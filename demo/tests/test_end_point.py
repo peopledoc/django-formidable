@@ -196,6 +196,20 @@ class RenderSerializerTestCase(TestCase):
         self.assertNotIn('label', data)
         self.assertNotIn('help_text', data)
 
+    def test_queryset(self):
+        class MyTestForm(FormidableForm):
+            first_name = fields.CharField(default='foo')
+            last_name = fields.CharField()
+            origin = fields.ChoiceField(choices=(
+                ('fr', 'France'),
+                ('us', 'United States'),
+            ))
+
+        formidable = MyTestForm.to_formidable(label='test')
+        serializer = FormidableSerializer(instance=formidable)
+        with django_perf_rec.record(path='perfs/'):
+            serializer.data
+
 
 class RenderContextSerializer(TestCase):
 
