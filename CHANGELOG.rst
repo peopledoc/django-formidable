@@ -2,10 +2,10 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.6.0 (2017-01-17)
+==========================
 
-* Added a make target to install the demo site.
+* Added a make target to install the demo site (#152).
 * Added django-perf-rec module for tests and improved SQL queries in `ContextFormDetailView` (#54, #154, #160).
 * Added test to count queries on dynamic form queryset + improve performances (#155, #156, #162).
 * Added test to count queries on retrieve builder view + improve performances by removing duplicate queries (#157, #158, #163).
