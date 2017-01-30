@@ -54,6 +54,9 @@ class Formidable(models.Model):
 
         raise ValidationError(serializer.errors)
 
+    def __str__(self):
+        return '{formidable.label}'.format(formidable=self)
+
 
 class Field(models.Model):
 
@@ -80,11 +83,17 @@ class Field(models.Model):
         agg = self.items.aggregate(models.Max('order'))
         return agg['order__max'] + 1 if agg['order__max'] is not None else 0
 
+    def __str__(self):
+        return '{field.label}'.format(field=self)
+
 
 class Default(models.Model):
 
     value = models.CharField(max_length=256)
     field = models.ForeignKey(Field, related_name='defaults')
+
+    def __str__(self):
+        return '{default.value}'.format(default=self)
 
 
 class Item(models.Model):
@@ -94,8 +103,8 @@ class Item(models.Model):
     order = models.IntegerField()
     help_text = models.TextField(blank=True, null=True)
 
-    def __unicode__(self):
-        return '{item.key}: {item.value}'.format(item=self)
+    def __str__(self):
+        return '{item.label}: {item.value}'.format(item=self)
 
 
 class Access(models.Model):
@@ -114,6 +123,10 @@ class Access(models.Model):
         ('TABLE', 'Table'),
     ))
 
+    def __str__(self):
+        return '{access.access_id}: {access.level}'.format(
+            access=self)
+
 
 class Validation(models.Model):
     field = models.ForeignKey(Field, related_name='validations')
@@ -121,11 +134,18 @@ class Validation(models.Model):
     type = models.CharField(max_length=256)
     message = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return '{validation.value}: {validation.type}'.format(
+            validation=self)
+
 
 class Preset(models.Model):
     form = models.ForeignKey(Formidable, related_name='presets')
     slug = models.CharField(max_length=128)
     message = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return '{preset.slug}'.format(preset=self)
 
 
 class PresetArg(models.Model):
@@ -134,7 +154,7 @@ class PresetArg(models.Model):
     value = models.CharField(max_length=128, null=True, blank=True)
     field_id = models.CharField(max_length=128, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.field_id:
             return '{preset_arg.slug}: field #{preset_arg.field_id}'.format(
                 preset_arg=self)
