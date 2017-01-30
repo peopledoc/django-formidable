@@ -13,10 +13,6 @@ from django.conf import settings
 import six
 
 
-class AccessUnknow(Exception):
-    pass
-
-
 class AccessObject(object):
     def __init__(self, id, label, description=''):
         self.id = id
