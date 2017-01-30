@@ -53,8 +53,9 @@ from __future__ import unicode_literals
 
 from django.forms import fields
 
-from formidable.accesses import AccessUnknow, get_accesses
+from formidable.accesses import get_accesses
 from formidable.constants import EDITABLE
+from formidable.exceptions import UnknownAccess
 from formidable.forms import boundfield, widgets
 
 
@@ -116,7 +117,7 @@ class Field(object):
         accesses_id = [access.id for access in get_accesses()]
         for access in self.accesses.keys():
             if access not in accesses_id:
-                raise AccessUnknow(access)
+                raise UnknownAccess(access)
 
     def get_widget(self):
         return self.widget
