@@ -5,7 +5,8 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+* Renamed exception class for unknown access (#166)
+* Added str() methods to models (#167)
 
 Release 0.6.0 (2017-01-17)
 ==========================
