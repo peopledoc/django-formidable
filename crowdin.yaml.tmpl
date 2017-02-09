@@ -1,0 +1,19 @@
+# Template for crowdin.com translation service
+project_identifier: django-formidable
+api_key: CROWDIN-API-KEY
+base_path: ./formidable/locale
+
+files:
+  -
+    source: /en/LC_MESSAGES/django.po
+    translation: /%locale_with_underscore%/LC_MESSAGES/%original_file_name%
+    languages_mapping:
+      locale_with_underscore:
+          'de': 'de'
+          'es-ES': 'es'
+          'en': 'en'
+          'fr': 'fr'
+          'it': 'it'
+          'nl': 'nl'
+          'no': 'nb'
+          'pt-BR': 'pt_BR'
