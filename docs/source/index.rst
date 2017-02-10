@@ -11,6 +11,7 @@ Contents:
    forms
    callbacks
    dev
+   translations
 
 
 Indices and tables

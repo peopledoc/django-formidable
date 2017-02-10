@@ -134,3 +134,7 @@ FORMIDABLE_POST_UPDATE_CALLBACK_FAIL = 'demo.callback_fail_message'
 PERF_REC = {
     'MODE': 'all'
 }
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, '..', 'formidable', 'locale')
+]
