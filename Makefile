@@ -53,3 +53,7 @@ crowdin-gettext-makemessages: crowdin-venv
 # target: gettext-makemessages - generate .po files for all the available languages
 gettext-makemessages: crowdin-venv
 	./.crowdin/bin/django-admin makemessages --all
+
+# target: crowdin-upload - Upload updated strings to crowdin.com
+crowdin-upload: crowdin-venv
+	./.crowdin/bin/crowdin-cli-py upload sources
