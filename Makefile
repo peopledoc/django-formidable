@@ -65,3 +65,6 @@ crowdin-upload: crowdin-venv
 # target: crowdin-download - Download the translations from crowdin.com
 crowdin-download: crowdin-venv
 	./.crowdin/bin/crowdin-cli-py download
+
+# target: crowdin-download-compile - Download the translations from crowdin.com *and* convert them into .mo files.
+crowdin-download-compile: crowdin-download gettext-compilemessages

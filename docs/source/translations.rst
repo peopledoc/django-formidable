@@ -125,3 +125,5 @@ You surely know that you need to compile all your ``.po`` files into ``.mo`` so 
 .. code-block:: console
 
     make gettext-compile
+
+.. tip:: you can download **AND** compile the whole thing using the ``make crowdin-download-compile`` Makefile target.
