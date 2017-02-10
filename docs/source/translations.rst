@@ -83,15 +83,45 @@ If you have access to crowdin via its API, you can make sure that the ``makemess
 
 This will call the API to list available languages, update the ``.po`` files for languages that were already there, and eventually create the missing ``.po`` files.
 
+
+.. tip::
+
+    This handy command would also help you create the ``.po`` files for a new language added to crowdin.
+
 So you want to upload updated translatable strings to crowdin
 -------------------------------------------------------------
 
 .. note::
 
-    * Target: core contributor
+    Target: core contributor
 
 Now that your ``.po`` files have been updated, you may want to push them to crowdin.com. Simply run this:
 
 .. code-block:: console
 
     make crowdin-upload
+
+
+You know that new strings are available on crowdin
+--------------------------------------------------
+
+.. note::
+
+    Target: core contributor
+
+Eventually, somebody has provided translations, (new or updated). You need to download them and update the ``.po`` files accordingly.
+
+.. code-block:: console
+
+    make crowdin-download
+
+You want updated translations to be available in your applications
+------------------------------------------------------------------
+
+.. note:: Available to any contributor
+
+You surely know that you need to compile all your ``.po`` files into ``.mo`` so gettext can pick them up.
+
+.. code-block:: console
+
+    make gettext-compile

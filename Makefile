@@ -54,6 +54,14 @@ crowdin-gettext-makemessages: crowdin-venv
 gettext-makemessages: crowdin-venv
 	./.crowdin/bin/django-admin makemessages --all
 
+# target: gettext-compilemessages - compile .mo files for available translations
+gettext-compilemessages: crowdin-venv
+	cd formidable; ../.crowdin/bin/django-admin compilemessages; cd ..
+
 # target: crowdin-upload - Upload updated strings to crowdin.com
 crowdin-upload: crowdin-venv
 	./.crowdin/bin/crowdin-cli-py upload sources
+
+# target: crowdin-download - Download the translations from crowdin.com
+crowdin-download: crowdin-venv
+	./.crowdin/bin/crowdin-cli-py download
