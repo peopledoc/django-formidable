@@ -52,6 +52,10 @@ This virtualenv lives in the ``.crowdin`` directory. If you want to check your s
 
     It's important to NEVER EVER commit and push the API Key anywhere. It's **like a password** and it gives *full access* to the formidable project data and can even make **changes** in the project settings.
 
+.. tip:: You can set your whole crowdin-ready environment just by using the following command::
+
+        make crowdin-setup
+
 Use cases
 =========
 

@@ -46,24 +46,33 @@ crowdin-venv:
 crowdin-build-yaml: crowdin.yaml.tmpl .crowdin-cli-key
 	python -c "content = open('crowdin.yaml.tmpl').read(); key = open('.crowdin-cli-key').read().strip(); content = content.replace('CROWDIN-API-KEY', key); open('crowdin.yaml', 'w').write(content)"
 
+# target: crowdin-setup - Set the crowdin environment up.
+crowdin-setup: crowdin-venv crowdin-build-yaml
+
+# "fake" target that would build the crowdin env if needed
+crowdin-check:
+	if [ ! -f ./.crowdin/bin/crowdin-cli-py ]; \
+	then make crowdin-venv; \
+	fi
+
 # target: crowdin-gettext-makemessages - generate .po files for all the available languages - NEEDS CROWDIN CREDENTIALS
-crowdin-gettext-makemessages: crowdin-venv
+crowdin-gettext-makemessages: crowdin-check
 	./.crowdin/bin/django-admin makemessages `.crowdin/bin/crowdin-cli-py list translations | cut -d '/' -f 1 | sed 's/.*/-l & /'`
 
 # target: gettext-makemessages - generate .po files for all the available languages
-gettext-makemessages: crowdin-venv
+gettext-makemessages: crowdin-check
 	./.crowdin/bin/django-admin makemessages --all
 
 # target: gettext-compilemessages - compile .mo files for available translations
-gettext-compilemessages: crowdin-venv
+gettext-compilemessages: crowdin-check
 	cd formidable; ../.crowdin/bin/django-admin compilemessages; cd ..
 
 # target: crowdin-upload - Upload updated strings to crowdin.com
-crowdin-upload: crowdin-venv
+crowdin-upload: crowdin-check
 	./.crowdin/bin/crowdin-cli-py upload sources
 
 # target: crowdin-download - Download the translations from crowdin.com
-crowdin-download: crowdin-venv
+crowdin-download: crowdin-check
 	./.crowdin/bin/crowdin-cli-py download
 
 # target: crowdin-download-compile - Download the translations from crowdin.com *and* convert them into .mo files.
