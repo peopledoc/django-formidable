@@ -57,3 +57,18 @@ class TestFormFromSchema(TestCase):
         self.assertEqual(type(charfield), forms.CharField)
         self.assertEqual(type(charfield.widget), forms.Textarea)
         self.assertFalse(charfield.required)
+
+    def test_checkbox_field(self):
+        class TestCheckBoxField(FormidableForm):
+            """ Test checkbox """
+            checkbox = fields.BooleanField()
+
+        formidable = TestCheckBoxField.to_formidable(label='label')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form = get_dynamic_form_class_from_schema(schema)()
+        self.assertIn('checkbox', form.fields)
+        checkbox = form.fields['checkbox']
+        self.assertEqual(type(checkbox), forms.BooleanField)

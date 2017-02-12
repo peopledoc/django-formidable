@@ -41,11 +41,16 @@ class ParagraphFieldBuilder(FieldBuilder):
     widget_class = forms.Textarea
 
 
+class CheckboxFieldBuilder(FieldBuilder):
+    field_class = forms.BooleanField
+
+
 class FormFieldFactory(FF):
 
     field_map = {
         'text': TextFieldBuilder,
         'paragraph': ParagraphFieldBuilder,
+        'checkbox': CheckboxFieldBuilder,
     }
 
     def get_type_id(self, field):
