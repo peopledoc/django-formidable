@@ -220,8 +220,12 @@ class FormFieldFactory(object):
         :class:`django.forms.Field` instance according to the type_id,
         validations and rules.
         """
-        builder = self.map[field.type_id](field)
+        type_id = self.get_type_id(field)
+        builder = self.map[type_id](field)
         return builder.build(role)
+
+    def get_type_id(self, field):
+        return field.type_id
 
 
 form_field_factory = FormFieldFactory()

@@ -13,10 +13,9 @@ from collections import OrderedDict
 
 from django import forms
 from django.db.models import Prefetch
-
 import six
 
-from formidable.forms import field_builder
+from formidable.forms import field_builder, field_builder_from_schema
 from formidable.forms.validations.presets import presets_register
 from formidable.models import Access, Formidable, Item
 
@@ -55,6 +54,22 @@ class BaseDynamicForm(forms.Form):
         for rule in self.rules:
             rule(cleaned_data)
         return cleaned_data
+
+
+def get_dynamic_form_class_from_schema(schema, field_factory=None):
+    """
+    Return a dynamically generated and contextualized form class
+
+    """
+    attrs = OrderedDict()
+    field_factory = field_factory or field_builder_from_schema.FormFieldFactory()  # noqa
+    doc = schema['description']
+    for field in schema['fields']:
+        attrs[field['slug']] = field_factory.produce(field)
+
+    klass = type(str('DynamicForm'), (BaseDynamicForm,), attrs)
+    klass.__doc__ = doc
+    return klass
 
 
 def get_dynamic_form_class(formidable, role=None, field_factory=None):
