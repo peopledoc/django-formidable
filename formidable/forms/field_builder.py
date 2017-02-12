@@ -23,9 +23,16 @@ class FieldBuilder(object):
         self.validator_factory = self.validator_factory_class()
 
     def build(self, role=None):
-        self.access = self.field.accesses.all()[0] if role else None
+        self.access = self.get_accesses(role)
         field_class = self.get_field_class()
         return field_class(**self.get_field_kwargs())
+
+    def get_accesses(self, role):
+        if role:
+            # The role is previously "prefetch" in order to avoid database
+            # hit, we don't use a get() method in queryset.
+            return self.field.accesses.all()[0]
+        return None
 
     def get_field_class(self):
         return self.field_class

@@ -26,6 +26,10 @@ class FieldBuilder(FB):
     def get_validators(self):
         return []
 
+    def get_accesses(self, role):
+        # No need to compute accesses, the schema is already contextualized.
+        return None
+
 
 class TextFieldBuilder(FieldBuilder):
 
