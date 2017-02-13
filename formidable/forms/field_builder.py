@@ -99,8 +99,14 @@ class FieldBuilder(object):
         return list(self.gen_validators())
 
     def gen_validators(self):
-        for validation in self.field.validations.all():
+        for validation in self.get_validations():
             yield self.validator_factory.produce(validation)
+
+    def get_validations(self):
+        """
+        return iterator over field validation
+        """
+        return self.field.validations.all()
 
 
 class FileFieldBuilder(FieldBuilder):
