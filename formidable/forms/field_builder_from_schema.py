@@ -4,12 +4,20 @@ from django import forms
 from formidable.forms.field_builder import (
     FieldBuilder as FB, FormFieldFactory as FF
 )
+from formidable.validators import ValidatorFactory as VF
+
+
+class ValidatorFactory(VF):
+
+    def extract_validation_attribute(self, validation):
+        return validation['type'], validation['message'], validation['value']
 
 
 class FieldBuilder(FB):
 
     field_class = forms.CharField
     widget_class = None
+    validator_factory_class = ValidatorFactory
 
     def get_required(self):
         return self.field['required']
@@ -23,8 +31,8 @@ class FieldBuilder(FB):
     def get_help_text(self):
         return self.field['description']
 
-    def get_validators(self):
-        return []
+    def get_validations(self):
+        return self.field['validations']
 
     def get_accesses(self, role):
         # No need to compute accesses, the schema is already contextualized.
