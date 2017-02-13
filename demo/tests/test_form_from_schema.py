@@ -117,3 +117,18 @@ class TestFormFromSchema(TestCase):
         self.assertIn('file_', form.fields)
         file_ = form.fields['file_']
         self.assertEqual(type(file_), forms.FileField)
+
+    def test_date_field(self):
+        class TestdateField(FormidableForm):
+            """ Test date """
+            date = fields.DateField()
+
+        formidable = TestdateField.to_formidable(label='label')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form = get_dynamic_form_class_from_schema(schema)()
+        self.assertIn('date', form.fields)
+        date = form.fields['date']
+        self.assertEqual(type(date), forms.DateField)

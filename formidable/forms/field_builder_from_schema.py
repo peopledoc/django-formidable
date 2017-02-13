@@ -57,6 +57,10 @@ class FileFieldBuilder(FieldBuilder):
     field_class = forms.FileField
 
 
+class DateFieldBuilder(FieldBuilder):
+    field_class = forms.DateField
+
+
 class FormFieldFactory(FF):
 
     field_map = {
@@ -66,6 +70,7 @@ class FormFieldFactory(FF):
         'email': EmailFieldBuilder,
         'number': IntegerFieldBuilder,
         'file': FileFieldBuilder,
+        'date': DateFieldBuilder,
     }
 
     def get_type_id(self, field):
