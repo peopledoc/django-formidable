@@ -67,6 +67,7 @@ def get_dynamic_form_class_from_schema(schema, field_factory=None):
     for field in schema['fields']:
         attrs[field['slug']] = field_factory.produce(field)
 
+    attrs['rules'] = []
     klass = type(str('DynamicForm'), (BaseDynamicForm,), attrs)
     klass.__doc__ = doc
     return klass
