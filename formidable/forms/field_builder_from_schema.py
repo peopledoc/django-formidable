@@ -45,12 +45,17 @@ class CheckboxFieldBuilder(FieldBuilder):
     field_class = forms.BooleanField
 
 
+class EmailFieldBuilder(FieldBuilder):
+    field_class = forms.EmailField
+
+
 class FormFieldFactory(FF):
 
     field_map = {
         'text': TextFieldBuilder,
         'paragraph': ParagraphFieldBuilder,
         'checkbox': CheckboxFieldBuilder,
+        'email': EmailFieldBuilder,
     }
 
     def get_type_id(self, field):

@@ -72,3 +72,18 @@ class TestFormFromSchema(TestCase):
         self.assertIn('checkbox', form.fields)
         checkbox = form.fields['checkbox']
         self.assertEqual(type(checkbox), forms.BooleanField)
+
+    def test_email_field(self):
+        class TestemailField(FormidableForm):
+            """ Test email """
+            email = fields.EmailField()
+
+        formidable = TestemailField.to_formidable(label='label')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form = get_dynamic_form_class_from_schema(schema)()
+        self.assertIn('email', form.fields)
+        email = form.fields['email']
+        self.assertEqual(type(email), forms.EmailField)
