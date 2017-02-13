@@ -49,6 +49,10 @@ class EmailFieldBuilder(FieldBuilder):
     field_class = forms.EmailField
 
 
+class IntegerFieldBuilder(FieldBuilder):
+    field_class = forms.IntegerField
+
+
 class FormFieldFactory(FF):
 
     field_map = {
@@ -56,6 +60,7 @@ class FormFieldFactory(FF):
         'paragraph': ParagraphFieldBuilder,
         'checkbox': CheckboxFieldBuilder,
         'email': EmailFieldBuilder,
+        'number': IntegerFieldBuilder,
     }
 
     def get_type_id(self, field):

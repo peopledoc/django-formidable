@@ -87,3 +87,18 @@ class TestFormFromSchema(TestCase):
         self.assertIn('email', form.fields)
         email = form.fields['email']
         self.assertEqual(type(email), forms.EmailField)
+
+    def test_integer_field(self):
+        class TestintegerField(FormidableForm):
+            """ Test integer """
+            integer = fields.IntegerField()
+
+        formidable = TestintegerField.to_formidable(label='label')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form = get_dynamic_form_class_from_schema(schema)()
+        self.assertIn('integer', form.fields)
+        integer = form.fields['integer']
+        self.assertEqual(type(integer), forms.IntegerField)
