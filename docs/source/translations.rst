@@ -17,9 +17,9 @@ To set up your crowdin environment, you'll have to do the following:
 1. copy-paste the value of the API key in a file named :file:`.crowdin-cli-key`
 2. run the following command:
 
-.. code-block:: shell
+.. code-block:: console
 
-    make crowdin-build-yaml
+    $ make crowdin-build-yaml
 
 It'll build (or rebuild) the :file:`crowdin.yaml` configuration file.
 
@@ -27,7 +27,7 @@ You can now eventually build the "crowdin-enabled" virtualenv with:
 
 .. code-block:: console
 
-    make crowdin-venv
+    $ make crowdin-venv
 
 This virtualenv lives in the ``.crowdin`` directory. If you want to check your setup, you can run the following command and see an output that'd look like this:
 
@@ -74,7 +74,7 @@ Run this command:
 
 .. code-block:: console
 
-    make gettext-makemessages
+    $ make gettext-makemessages
 
 Variant: with a Crowdin access
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,7 +83,7 @@ If you have access to crowdin via its API, you can make sure that the ``makemess
 
 .. code-block:: console
 
-    make crowdin-gettext-makemessages
+    $ make crowdin-gettext-makemessages
 
 This will call the API to list available languages, update the ``.po`` files for languages that were already there, and eventually create the missing ``.po`` files.
 
@@ -103,7 +103,7 @@ Now that your ``.po`` files have been updated, you may want to push them to crow
 
 .. code-block:: console
 
-    make crowdin-upload
+    $ make crowdin-upload
 
 
 You know that new strings are available on crowdin
@@ -117,7 +117,7 @@ Eventually, somebody has provided translations, (new or updated). You need to do
 
 .. code-block:: console
 
-    make crowdin-download
+    $ make crowdin-download
 
 You want updated translations to be available in your applications
 ------------------------------------------------------------------
@@ -128,6 +128,6 @@ You surely know that you need to compile all your ``.po`` files into ``.mo`` so 
 
 .. code-block:: console
 
-    make gettext-compile
+    $ make gettext-compile
 
-.. tip:: you can download **AND** compile the whole thing using the ``make crowdin-download-compile`` Makefile target.
+.. tip:: you can download **AND** compile the whole thing using the ``crowdin-download-compile`` Makefile target.
