@@ -7,6 +7,7 @@ from formidable.forms import (
     FormidableForm, fields, get_dynamic_form_class_from_schema
 )
 from formidable.forms import widgets
+from formidable.validators import (GTEValidator, MinLengthValidator)
 from formidable.serializers.forms import ContextFormSerializer
 
 
@@ -132,3 +133,20 @@ class TestFormFromSchema(TestCase):
         self.assertIn('date', form.fields)
         date = form.fields['date']
         self.assertEqual(type(date), forms.DateField)
+
+    def test_with_validations(self):
+        class FormWithValidations(FormidableForm):
+            text = fields.CharField(validators=[MinLengthValidator(4)])
+            integer = fields.IntegerField(validators=[GTEValidator(42)])
+
+        formidable = FormWithValidations.to_formidable(label='validation')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class(data={'text': 'tut', 'integer': 21})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(len(form.errors), 2)
+        form = form_class(data={'text': 'tutu', 'integer': 43})
+        self.assertTrue(form.is_valid())
