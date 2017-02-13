@@ -102,3 +102,18 @@ class TestFormFromSchema(TestCase):
         self.assertIn('integer', form.fields)
         integer = form.fields['integer']
         self.assertEqual(type(integer), forms.IntegerField)
+
+    def test_file_field(self):
+        class TestfileField(FormidableForm):
+            """ Test file """
+            file_ = fields.FileField()
+
+        formidable = TestfileField.to_formidable(label='label')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form = get_dynamic_form_class_from_schema(schema)()
+        self.assertIn('file_', form.fields)
+        file_ = form.fields['file_']
+        self.assertEqual(type(file_), forms.FileField)

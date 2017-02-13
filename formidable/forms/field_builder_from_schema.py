@@ -53,6 +53,10 @@ class IntegerFieldBuilder(FieldBuilder):
     field_class = forms.IntegerField
 
 
+class FileFieldBuilder(FieldBuilder):
+    field_class = forms.FileField
+
+
 class FormFieldFactory(FF):
 
     field_map = {
@@ -61,6 +65,7 @@ class FormFieldFactory(FF):
         'checkbox': CheckboxFieldBuilder,
         'email': EmailFieldBuilder,
         'number': IntegerFieldBuilder,
+        'file': FileFieldBuilder,
     }
 
     def get_type_id(self, field):
