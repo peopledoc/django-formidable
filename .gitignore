@@ -5,3 +5,7 @@ demo/var
 *.egg-info
 # Documentation builds
 docs/build/
+
+# Ignore setup.py-generated directories
+./build/
+./dist/
