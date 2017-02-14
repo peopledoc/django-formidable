@@ -57,11 +57,11 @@ crowdin-check:
 
 # target: crowdin-gettext-makemessages - generate .po files for all the available languages - NEEDS CROWDIN CREDENTIALS
 crowdin-gettext-makemessages: crowdin-check
-	./.crowdin/bin/django-admin makemessages `.crowdin/bin/crowdin-cli-py list translations | cut -d '/' -f 1 | sed 's/.*/-l & /'`
+	cd formidable; ../.crowdin/bin/django-admin makemessages `.crowdin/bin/crowdin-cli-py list translations | cut -d '/' -f 1 | sed 's/.*/-l & /'`; cd ..
 
 # target: gettext-makemessages - generate .po files for all the available languages
 gettext-makemessages: crowdin-check
-	./.crowdin/bin/django-admin makemessages --all
+	cd formidable; ../.crowdin/bin/django-admin makemessages --all; cd ..
 
 # target: gettext-compilemessages - compile .mo files for available translations
 gettext-compilemessages: crowdin-check
