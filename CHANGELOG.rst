@@ -7,6 +7,7 @@ master (unreleased)
 
 * Renamed exception class for unknown access (#166)
 * Added str() methods to models (#167)
+* Added ``build/`` and ``dist/`` directories to ``.gitignore`` (#174)
 
 Release 0.6.0 (2017-01-17)
 ==========================
