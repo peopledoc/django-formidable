@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-formidable\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-14 16:36+0100\n"
-"PO-Revision-Date: 2017-02-14 09:33-0500\n"
+"POT-Creation-Date: 2017-02-14 15:13+0100\n"
+"PO-Revision-Date: 2017-02-14 11:12-0500\n"
 "Last-Translator: peopledoc <antonin.messinger@people-doc.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -19,17 +19,17 @@ msgstr ""
 #: forms/validations/presets.py:43
 #, python-brace-format
 msgid "You need to specify {attr} in {name}"
-msgstr ""
+msgstr "Il vous faut spécifier {attr} pour {name}"
 
 #: forms/validations/presets.py:48
 #, python-brace-format
 msgid "Empty value not accepted for {attr} in {name}"
-msgstr ""
+msgstr "Valeur vide refusée pour {attr} dans {name}"
 
 #: forms/validations/presets.py:98
 #, python-brace-format
 msgid "{slug} is missing"
-msgstr ""
+msgstr "{slug} est absent"
 
 #: forms/validations/presets.py:151
 msgid "Confirmation"
@@ -37,30 +37,28 @@ msgstr "Confirmation"
 
 #: forms/validations/presets.py:152
 msgid "Ensure both fields are identical"
-msgstr ""
+msgstr "S'assurer que les deux champs sont identiques"
 
 #: forms/validations/presets.py:153
 #, python-brace-format
 msgid "{left} is not equal to {right}"
-msgstr ""
+msgstr "{left} est différent de {right}"
 
 #: forms/validations/presets.py:157 forms/validations/presets.py:183
 msgid "Reference"
-msgstr ""
+msgstr "Référence"
 
 #: forms/validations/presets.py:157
 msgid "field to compare"
-msgstr ""
+msgstr "champ à comparer"
 
 #: forms/validations/presets.py:159 forms/validations/presets.py:188
-#, fuzzy
-#| msgid "Comparison"
 msgid "Compare to"
-msgstr "Comparaison"
+msgstr "Comparer à"
 
 #: forms/validations/presets.py:159
 msgid "compare with"
-msgstr ""
+msgstr "comparer à"
 
 #: forms/validations/presets.py:169
 msgid "Comparison"
@@ -68,16 +66,16 @@ msgstr "Comparaison"
 
 #: forms/validations/presets.py:170
 msgid "Compare two fields with standard operation"
-msgstr ""
+msgstr "Comparer deux champs avec une opération standard"
 
 #: forms/validations/presets.py:171
 #, python-brace-format
 msgid "{left} is not {operator} to {right}"
-msgstr ""
+msgstr "{left} n'est pas {operator} {right}"
 
 #: forms/validations/presets.py:184
 msgid "Operator"
-msgstr ""
+msgstr "Opérateur"
 
 #: validators.py:69
 #, python-format
@@ -98,3 +96,4 @@ msgstr "Vérifie que ce champ est égal à %(limit_value)s"
 #, python-format
 msgid "Ensure this field is not equal to %(limit_value)s"
 msgstr "Vérifie que ce champ est différent de %(limit_value)s"
+
