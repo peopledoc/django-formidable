@@ -4,10 +4,18 @@ from django import forms
 from formidable.forms.field_builder import (
     FieldBuilder as FB, FormFieldFactory as FF
 )
-from formidable.validators import ValidatorFactory as VF
+from formidable.validators import (
+    DateValidatorFactory as DVF, ValidatorFactory as VF
+)
 
 
 class ValidatorFactory(VF):
+
+    def extract_validation_attribute(self, validation):
+        return validation['type'], validation['message'], validation['value']
+
+
+class DateValidatorFactory(DVF):
 
     def extract_validation_attribute(self, validation):
         return validation['type'], validation['message'], validation['value']
@@ -67,6 +75,7 @@ class FileFieldBuilder(FieldBuilder):
 
 class DateFieldBuilder(FieldBuilder):
     field_class = forms.DateField
+    validator_factory_class = DateValidatorFactory
 
 
 class FormFieldFactory(FF):

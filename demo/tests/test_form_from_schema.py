@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from django import forms
+from freezegun import freeze_time
 
 from formidable.constants import REQUIRED
 from formidable.forms import (
     FormidableForm, fields, get_dynamic_form_class_from_schema
 )
 from formidable.forms import widgets
-from formidable.validators import (GTEValidator, MinLengthValidator)
+from formidable.validators import (
+    GTEValidator, MinLengthValidator, AgeAboveValidator
+)
 from formidable.serializers.forms import ContextFormSerializer
 
 
@@ -133,6 +136,27 @@ class TestFormFromSchema(TestCase):
         self.assertIn('date', form.fields)
         date = form.fields['date']
         self.assertEqual(type(date), forms.DateField)
+
+    @freeze_time('2021-01-01')
+    def test_date_field_with_validation(self):
+        class TestdateField(FormidableForm):
+            """ Test date """
+            date = fields.DateField(validators=[AgeAboveValidator(21)])
+
+        formidable = TestdateField.to_formidable(label='label')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class(data={'date': '1990-01-01'})
+        self.assertIn('date', form.fields)
+        date = form.fields['date']
+        self.assertEqual(type(date), forms.DateField)
+        self.assertTrue(form.is_valid())
+
+        form = form_class(data={'date': '2015-01-01'})
+        self.assertFalse(form.is_valid())
 
     def test_with_validations(self):
         class FormWithValidations(FormidableForm):
