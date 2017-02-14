@@ -1,2 +1,4 @@
 include LICENSE
 include README.rst
+recursive-include formidable/locale *.mo
+recursive-include formidable/locale *.po
