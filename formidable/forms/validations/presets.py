@@ -40,12 +40,12 @@ class PresetsMetaClass(type):
         for attr in needs:
             if attr not in attrs:
                 raise ValidationError(
-                    "You need to specify {attr} in {name}".format(
+                    _("You need to specify {attr} in {name}").format(
                         attr=attr, name=name)
                 )
             if attrs[attr] is None:
                 raise ValidationError(
-                    "Do not accept None value for {attr} in {name}".format(
+                    _("Empty value not accepted for {attr} in {name}").format(
                         attr=attr, name=name)
                 )
 
@@ -95,7 +95,7 @@ class PresetArgument(object):
                 return arg.value
 
         raise ImproperlyConfigured(
-            '{slug} is missing'.format(slug=self.slug)
+            _('{slug} is missing').format(slug=self.slug)
         )
 
 
@@ -149,13 +149,14 @@ class ConfirmationPresets(Presets):
 
     slug = 'confirmation'
     label = _('Confirmation')
-    description = "Ensure both fields are identical"
-    default_message = "{left} is not equal to {right}"
+    description = _("Ensure both fields are identical")
+    default_message = _("{left} is not equal to {right}")
 
     class MetaParameters:
-        left = PresetFieldArgument('Reference', help_text='field to compare')
+        left = PresetFieldArgument(
+            _('Reference'), help_text=_('field to compare'))
         right = PresetFieldOrValueArgument(
-            'Compare to', help_text='compare with'
+            _('Compare to'), help_text=_('compare with')
         )
 
     def run(self, left, right):
@@ -166,8 +167,8 @@ class ComparisonPresets(Presets):
 
     slug = 'comparison'
     label = _('Comparison')
-    description = "Compare two fields with standard operation"
-    default_message = "{left} is not {operator} to {right}"
+    description = _("Compare two fields with standard operation")
+    default_message = _("{left} is not {operator} to {right}")
 
     mapper = {
         'eq': lambda x, y: x == y,
@@ -179,12 +180,12 @@ class ComparisonPresets(Presets):
     }
 
     class MetaParameters:
-        left = PresetFieldArgument('Reference')
-        operator = PresetValueArgument('Operator', items={
+        left = PresetFieldArgument(_('Reference'))
+        operator = PresetValueArgument(_('Operator'), items={
             'eq': '=', 'lt': '<', 'lte': '<=', 'gt': '>',
             'gte': '>=', 'neq': '!='
         })
-        right = PresetFieldArgument('Compare to')
+        right = PresetFieldArgument(_('Compare to'))
 
     def run(self, left, operator, right):
         meth = self.mapper[operator]

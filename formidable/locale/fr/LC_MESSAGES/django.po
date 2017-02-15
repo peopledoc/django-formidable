@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: django-formidable\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-14 15:13+0100\n"
+"PO-Revision-Date: 2017-02-14 11:12-0500\n"
+"Last-Translator: peopledoc <antonin.messinger@people-doc.com>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: django-formidable\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: django.po\n"
+
+#: forms/validations/presets.py:43
+#, python-brace-format
+msgid "You need to specify {attr} in {name}"
+msgstr "Il vous faut spécifier {attr} pour {name}"
+
+#: forms/validations/presets.py:48
+#, python-brace-format
+msgid "Empty value not accepted for {attr} in {name}"
+msgstr "Valeur vide refusée pour {attr} dans {name}"
+
+#: forms/validations/presets.py:98
+#, python-brace-format
+msgid "{slug} is missing"
+msgstr "{slug} est absent"
+
+#: forms/validations/presets.py:151
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: forms/validations/presets.py:152
+msgid "Ensure both fields are identical"
+msgstr "S'assurer que les deux champs sont identiques"
+
+#: forms/validations/presets.py:153
+#, python-brace-format
+msgid "{left} is not equal to {right}"
+msgstr "{left} est différent de {right}"
+
+#: forms/validations/presets.py:157 forms/validations/presets.py:183
+msgid "Reference"
+msgstr "Référence"
+
+#: forms/validations/presets.py:157
+msgid "field to compare"
+msgstr "champ à comparer"
+
+#: forms/validations/presets.py:159 forms/validations/presets.py:188
+msgid "Compare to"
+msgstr "Comparer à"
+
+#: forms/validations/presets.py:159
+msgid "compare with"
+msgstr "comparer à"
+
+#: forms/validations/presets.py:169
+msgid "Comparison"
+msgstr "Comparaison"
+
+#: forms/validations/presets.py:170
+msgid "Compare two fields with standard operation"
+msgstr "Comparer deux champs avec une opération standard"
+
+#: forms/validations/presets.py:171
+#, python-brace-format
+msgid "{left} is not {operator} to {right}"
+msgstr "{left} n'est pas {operator} {right}"
+
+#: forms/validations/presets.py:184
+msgid "Operator"
+msgstr "Opérateur"
+
+#: validators.py:69
+#, python-format
+msgid "Ensure this field is greater than %(limit_value)s"
+msgstr "Vérifie que ce champ est supérieur à %(limit_value)s"
+
+#: validators.py:81
+#, python-format
+msgid "Ensure this field is less than %(limit_value)s"
+msgstr "Vérifie que ce champ est inférieur à %(limit_value)s"
+
+#: validators.py:93
+#, python-format
+msgid "Ensure this field is equal to %(limit_value)s"
+msgstr "Vérifie que ce champ est égal à %(limit_value)s"
+
+#: validators.py:106
+#, python-format
+msgid "Ensure this field is not equal to %(limit_value)s"
+msgstr "Vérifie que ce champ est différent de %(limit_value)s"
+
