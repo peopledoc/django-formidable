@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+
+- Nothing here yet.
+
 Release 0.7.0 (2016-02-15)
 ==========================
 
