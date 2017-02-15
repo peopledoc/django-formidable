@@ -1,0 +1,477 @@
+swagger: '2.0'
+info:
+  title: Formidable API
+  description: |
+    django-formidable is a full django application which allows you to create,
+    edit, delete and use forms.
+
+    ##### Field types
+
+    List of known types available:
+
+    | Type | Description | HTML Component |
+    | ---- | ----------- | -------------- |
+    | title | Title | h2 |
+    | helpText | Helptext | p |
+    | fieldset | Group of fields (iterable) | fieldset |
+    | fieldsetTable | Group of fields display as table (iterable) | table |
+    | separation | Separator line (design only) | hr |
+    | checkbox | Checkbox alone | input type=checkbox |
+    | checkboxes | Some checkboxes, all checkable | input type=checkbox, all have the same name |
+    | dropdown | Dropdown with values | select |
+    | radios | Some radios, only one is selected at once | input type=radio |
+    | radiosButtons | Some radios display as toggle button | input type=radio |
+    | text | Input for one line text | input type=text |
+    | paragraph | Input for multiline text | textarea |
+    | file | Field to select a local file to be uploaded | input type=file |
+    | date | Input for a date (datepicker with it, lang know by application parameter, validation by momentjs) | input type=date |
+    | email | Input for an email (validation by regexp) | input |
+    | number | Input for a number | input |
+
+    ##### Validations types
+
+    List of validations available by types:
+
+    | Field | Validation type |
+    | ----- | ----------- |
+    | text | MINLENGTH, MAXLENGTH, REGEXP |
+    | paragraph | MINLENGTH, MAXLENGTH, REGEXP |
+    | date | GT, GTE, LT, LTE, EQ, NEQ, IS_AGE_ABOVE (>=), IS_AGE_UNDER (<), IS_DATE_IN_THE_PAST (< today), IS_DATE_IN_THE_FUTURE (< today) |
+    | number | GT, GTE, LT, LTE, EQ, NEQ |
+
+  version: '1.0.0'
+# the domain of the service
+host: localhost:8000
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /api
+produces:
+  - application/json
+paths:
+  /builder/accesses/:
+    get:
+      summary: Get accesses
+      description: List of accesses available.
+      responses:
+        200:
+          description: A list of accesses
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Access'
+
+  /builder/presets/:
+    get:
+      summary: Get available presets
+      description: |
+        Presets description.
+      responses:
+        200:
+          description: A list of presets
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Preset'
+
+  /builder/forms/:
+    post:
+      summary: Create a new form
+      description: Create Form Description
+      parameters:
+        - name: form
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BuilderForm'
+      responses:
+        201:
+          description: Newly created form
+          schema:
+            $ref: '#/definitions/BuilderForm'
+        400:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/BuilderError'
+
+  /builder/forms/{id}/:
+    get:
+      summary: Retrieve a Form
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+      responses:
+        200:
+          description: Form
+          schema:
+            $ref: '#/definitions/BuilderForm'
+    put:
+      summary: Update a Form
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+        - name: form
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BuilderForm'
+      responses:
+        200:
+          description: Form
+          schema:
+            $ref: '#/definitions/BuilderForm'
+        400:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/BuilderError'
+
+  /forms/{id}/:
+    get:
+      summary: Get a contextualized form
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+      responses:
+        200:
+          description: A form
+          schema:
+            $ref: '#/definitions/BuilderForm'
+
+  /client/fake_path/forms/{id}/:
+    get:
+      summary: Get a contextualized form
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+      responses:
+        200:
+          description: A form
+          schema:
+            $ref: '#/definitions/InputForm'
+
+  /forms/{id}/validate/:
+    get:
+      summary: Validate a form
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+      responses:
+        204:
+          description:  Validation OK
+        400:
+          description: Validation KO
+          schema:
+            $ref: '#/definitions/InputError'
+
+
+definitions:
+  Access:
+    type: object
+    description: Different contexts that helps to render a form
+    required:
+      - id
+      - label
+      - description
+    properties:
+      id:
+        type: string
+        description: ID of the access
+      label:
+        type: string
+        description: Label of the access
+      description:
+        type: string
+        description: Help text of the access
+      preview_as:
+        type: string
+        description: How to display the preview, default is `FORM`. Values are `FORM`, `TABLE`
+        enum:
+          - FORM
+          - TABLE
+
+  Preset:
+    type: object
+    description: Preset are validation rules on the form, which can interact with multiple fields
+    required:
+      - slug
+      - label
+      - description
+      - arguments
+    properties:
+      slug:
+        type: string
+        description: Slug of the preset
+      label:
+        type: string
+        description: Label of the preset
+      description:
+        type: string
+        description: Description of the preset
+      message:
+        type: string
+        description: Error message if the preset is not verified
+      arguments:
+        type: array
+        description: List of arguments ordered of the preset
+        items:
+          $ref: '#/definitions/PresetArgument'
+
+  PresetArgument:
+    type: object
+    description: Preset's arguments are the fields needed to perfrom a preset
+    required:
+      - slug
+      - label
+      - types
+    properties:
+      slug:
+        type: string
+        description: Slug of the argument in the preset
+      label:
+        type: string
+        description: Label of the argument
+      description:
+        type: string
+        description: Description of the argument
+      placeholder:
+        type: string
+        description: Placeholder of the argument
+      types:
+        type: array
+        description: Types of the field, can be one or more in (`field`, `value`)
+        items:
+          type: string
+      items:
+        type: array
+        description: List of items ordered for the type `value` (shown as dropdown)
+        items:
+          type: string
+
+  Form:
+    type: object
+    description: The central piece of this project
+    required:
+      - id
+      - label
+      - description
+    properties:
+      id:
+        type: integer
+        description: ID of the form
+        readOnly: true
+      label:
+        type: string
+        description: Title of the form
+      description:
+        type: string
+        description: Description of the form
+      presets:
+        type: array
+        description: List of presets used in the form
+        items:
+          $ref: '#/definitions/FormPreset'
+
+  BuilderForm:
+    allOf:
+      - $ref: "#/definitions/Form"
+      - properties:
+          fields:
+            type: array
+            description: List of fields ordered in the form
+            items:
+              $ref: '#/definitions/Field'
+
+  InputForm:
+    allOf:
+      - $ref: "#/definitions/Form"
+      - properties:
+          fields:
+            type: array
+            description: List of fields ordered in the form
+            items:
+              $ref: '#/definitions/InputField'
+
+  Field:
+    type: object
+    description: Field in a form
+    required:
+      - id
+      - slug
+      - label
+      - type_id
+      - description
+      - accesses
+    properties:
+      id:
+        type: integer
+        description: ID of the field
+        readOnly: true
+      slug:
+        type: string
+        description: Slug of the field (us as uniq identifier of the field on the form)
+      label:
+        type: string
+        description: Label of the field
+      type_id:
+        type: string
+        description: Type of field (see Field types table)
+      placeholder:
+        type: string
+        description: Placeholder of the field
+      description:
+        type: string
+        description: Description of the field
+      multiple:
+        type: boolean
+        description: Is the field can have multiple values?
+      items:
+        type: array
+        description: Values available
+        items:
+          $ref: '#/definitions/Item'
+      accesses:
+        type: array
+        description: List of accesses of the field with a level
+        items:
+          $ref: '#/definitions/FieldAccess'
+      validations:
+        type: array
+        description: List of validations of the field
+        items:
+          $ref: '#/definitions/FieldValidation'
+      defaults:
+        type: array
+        description: Default values selected/inputed when the form is newly displayed
+        items:
+          type: string
+
+  InputField:
+    allOf:
+      - $ref: "#/definitions/Field"
+    properties:
+      values:
+        type: array
+        description: Values selected/inputed when the form is in edition mode
+        items:
+          type: string
+
+  Item:
+    type: object
+    description: Describe an item in a list
+    required:
+      - label
+      - value
+    properties:
+      label:
+        type: string
+        description: Label of the item
+      description:
+        type: string
+        description: Description of the item
+      value:
+        type: string
+        description: Value which defined the item
+
+  FieldAccess:
+    type: object
+    description: The access is the way to use the field in the context
+    required:
+      - access_id
+      - level
+    properties:
+      access_id:
+        type: string
+        description: Access reference
+      level:
+        type: string
+        description: Level of this access for the field
+        enum:
+          - REQUIRED
+          - EDITABLE
+          - HIDDEN
+          - READONLY
+
+  FieldValidation:
+    type: object
+    description: This validation can only be performed on a single field
+    required:
+      - type
+      - value
+    properties:
+      type:
+        type: string
+        description: Type of validation (see Validation types table)
+      value:
+        type: string
+        description: Value of the validation
+      message:
+        type: string
+        description:  Error message if the validation is not verified
+
+  FormPreset:
+    type: object
+    description: Form's preset are data which can perform a preset
+    required:
+      - preset_id
+      - arguments
+    properties:
+      preset_id:
+        type: string
+        description: ID of the preset
+      message:
+        type: string
+        description: Error message if the preset is not verified
+      arguments:
+        type: array
+        description: Arguments of the preset
+        items:
+          $ref: '#/definitions/FormPresetArgument'
+
+  FormPresetArgument:
+    type: object
+    description: Argument in form's preset can be a reference to a field OR a value
+    required:
+      - slug
+    properties:
+      slug:
+        type: string
+        description: Slug of the argument in the parent definied preset
+      field_id:
+        type: string
+        description: Reference to a field in the form
+      value:
+        type: string
+        description: Value of the argument
+
+  BuilderError:
+    type: object
+    properties:
+      fields:
+        type: object
+        description: Errors on fields (key => field; value => list of messages)
+      non_field_errors:
+        type: array
+        description: Errors on anything except fields (validations...)
+        items:
+          type: string
+
+  InputError:
+    type: object
+    description: Object that contains field errors as key with a list of string in value
+    properties:
+      __all__:
+        type: array
+        description: Errors on anything except form's fields
+        items:
+          type: string
