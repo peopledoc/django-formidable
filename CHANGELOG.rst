@@ -7,6 +7,7 @@ master (unreleased)
 
 * Fix: excluding the `.crowdin` directory in the flake8 tox job (#179).
 * Return the preview mode (form or table) with the accesses list (#121)
+* Fix: avoid installing formidable when not needed in tests - flake8 + isort checks (#181).
 
 Release 0.7.0 (2016-02-15)
 ==========================
