@@ -54,7 +54,7 @@ This virtualenv lives in the ``.crowdin`` directory. If you want to check your s
 
 .. tip:: You can set your whole crowdin-ready environment just by using the following command::
 
-        make crowdin-setup
+        $ make crowdin-setup
 
 Use cases
 =========
