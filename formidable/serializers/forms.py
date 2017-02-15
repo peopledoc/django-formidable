@@ -63,10 +63,11 @@ class FormidableSerializer(WithNestedSerializer):
 class ContextFormSerializer(serializers.ModelSerializer):
 
     fields = fields.ContextFieldSerializer(read_only=True, many=True)
+    presets = PresetModelSerializer(read_only=True, many=True)
 
     class Meta:
         model = Formidable
-        fields = ('id', 'label', 'description', 'fields')
+        fields = ('id', 'label', 'description', 'fields', 'presets')
         depth = 2
 
     def __init__(self, *args, **kwargs):
