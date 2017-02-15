@@ -328,14 +328,22 @@ class RenderContextSerializer(TestCase):
 
     def test_presets(self):
 
-        form = Formidable.objects.create(label='my_test_form')
+        class MyTestForm(FormidableForm):
+            value = fields.IntegerField()
+            threshold = fields.IntegerField(
+                    accesses={'padawan': constants.READONLY,
+                              'jedi': constants.REQUIRED})
 
-        preset1 = form.presets.create(slug='foo', message='message1')
-        preset1.arguments.create(slug='arg_field', field_id='field_A')
-        preset1.arguments.create(slug='arg_value', value='42')
+        form = MyTestForm.to_formidable(label='test')
 
-        preset2 = form.presets.create(slug='bar', message='message2')
-        preset2.arguments.create(slug='arg_field1', field_id='field_A')
+        preset1 = form.presets.create(slug='confirmation', message='message1')
+        preset1.arguments.create(slug='left', field_id='threshold')
+        preset1.arguments.create(slug='right', value='100')
+
+        preset2 = form.presets.create(slug='comparison', message='message2')
+        preset2.arguments.create(slug='left', field_id='value')
+        preset2.arguments.create(slug='right', field_id='threshold')
+        preset2.arguments.create(slug='operator', value='lte')
 
         serializer = ContextFormSerializer(form, context={'role': 'jedi'})
         self.assertTrue(serializer.data)
@@ -347,7 +355,7 @@ class RenderContextSerializer(TestCase):
         self.assertIn('id', data_preset1)
         self.assertEquals(data_preset1['id'], preset1.id)
         self.assertIn('preset_id', data_preset1)
-        self.assertEquals(data_preset1['preset_id'], 'foo')
+        self.assertEquals(data_preset1['preset_id'], 'confirmation')
         self.assertIn('message', data_preset1)
         self.assertEquals(data_preset1['message'], 'message1')
         self.assertIn('arguments', data_preset1)
@@ -356,26 +364,32 @@ class RenderContextSerializer(TestCase):
         data_arg = data_preset1["arguments"][0]
         self.assertIn('id', data_arg)
         self.assertIn('slug', data_arg)
-        self.assertEquals(data_arg['slug'], 'arg_field')
+        self.assertEquals(data_arg['slug'], 'left')
         self.assertIn('field_id', data_arg)
-        self.assertEquals(data_arg['field_id'], 'field_A')
+        self.assertEquals(data_arg['field_id'], 'threshold')
         self.assertIn('value', data_arg)
         self.assertIsNone(data_arg['value'])
 
         data_arg = data_preset1["arguments"][1]
-        self.assertEquals(data_arg['slug'], 'arg_value')
+        self.assertEquals(data_arg['slug'], 'right')
         self.assertIsNone(data_arg['field_id'])
-        self.assertEquals(data_arg['value'], '42')
+        self.assertEquals(data_arg['value'], '100')
 
         data_preset2 = data['presets'][1]
-        self.assertEquals(data_preset2['preset_id'], 'bar')
+        self.assertEquals(data_preset2['preset_id'], 'comparison')
         self.assertEquals(data_preset2['message'], 'message2')
         self.assertIn('arguments', data_preset2)
-        self.assertEquals(len(data_preset2['arguments']), 1)
+        self.assertEquals(len(data_preset2['arguments']), 3)
 
     def test_no_preset(self):
 
-        form = Formidable.objects.create(label='my_test_form')
+        class MyTestForm(FormidableForm):
+            value = fields.IntegerField()
+            threshold = fields.IntegerField(
+                    accesses={'padawan': constants.READONLY,
+                              'jedi': constants.REQUIRED})
+
+        form = MyTestForm.to_formidable(label='test')
         serializer = ContextFormSerializer(form, context={'role': 'jedi'})
         self.assertTrue(serializer.data)
         data = serializer.data
