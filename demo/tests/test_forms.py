@@ -856,7 +856,7 @@ class TestInnerPresets(TestCase):
         self.assertIn('left', form.errors)
         self.assertIn('right', form.errors)
 
-    def test_comparison(self):
+    def test_confirmation_fields(self):
         class TestPresets(FormidableForm):
             left = fields.IntegerField()
             right = fields.IntegerField()
@@ -876,3 +876,25 @@ class TestInnerPresets(TestCase):
         self.assertFalse(form.is_valid())
         form = form_class(data={'left': 42, 'right': "21"})
         self.assertFalse(form.is_valid())
+
+    def test_confirmation_value(self):
+        class TestPresets(FormidableForm):
+            number = fields.IntegerField()
+
+        formidable = TestPresets.to_formidable(label='presets')
+
+        preset = Preset.objects.create(form=formidable, slug='confirmation')
+        PresetArg.objects.create(slug='right', field_id=None, value=42, preset=preset)
+        PresetArg.objects.create(slug='left', field_id='number', value=None, preset=preset)
+
+        form_class = formidable.get_django_form_class()
+        form = form_class(data={'number': 33})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors,
+            {'__all__': ['33 is not equal to 42']}
+        )
+
+        form = form_class(data={'number': 42})
+        # 42 should equal 42...
+        self.assertTrue(form.is_valid(), form.errors)
