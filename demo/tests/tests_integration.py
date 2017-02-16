@@ -275,7 +275,16 @@ class TestContextFormEndPoint(APITestCase):
             phone = fields.IntegerField()
 
         super(TestContextFormEndPoint, cls).setUpClass()
-        cls.form = MyForm.to_formidable(label='test')
+        form = MyForm.to_formidable(label='test')
+        preset1 = form.presets.create(slug='confirmation', message='message1')
+        preset1.arguments.create(slug='left', field_id='threshold')
+        preset1.arguments.create(slug='right', value='100')
+
+        preset2 = form.presets.create(slug='comparison', message='message2')
+        preset2.arguments.create(slug='left', field_id='value')
+        preset2.arguments.create(slug='right', field_id='threshold')
+        preset2.arguments.create(slug='operator', value='lte')
+        cls.form = form
 
     def test_queryset(self):
         import django_perf_rec

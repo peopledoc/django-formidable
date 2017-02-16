@@ -99,6 +99,11 @@ class PresetArgModelSerializer(ModelSerializer):
 class PresetListSerializer(NestedListSerializerDummyUpdate):
     parent_name = 'form_id'
 
+    def get_attribute(self, instance):
+        qs = super(PresetListSerializer, self).get_attribute(instance)
+        qs = qs.prefetch_related('arguments')
+        return qs
+
 
 class PresetModelSerializer(WithNestedSerializer):
 

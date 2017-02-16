@@ -7,6 +7,7 @@ TestContextFormEndPoint.test_queryset:
 - db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
 - db: 'SELECT ... FROM "formidable_preset" WHERE "formidable_preset"."form_id" = #'
+- db: SELECT ... FROM "formidable_presetarg" WHERE "formidable_presetarg"."preset_id" IN (...)
 UpdateFormTestCase.test_queryset_on_get:
 - db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
