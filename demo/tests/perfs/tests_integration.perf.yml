@@ -16,3 +16,4 @@ UpdateFormTestCase.test_queryset_on_get:
 - db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
 - db: 'SELECT ... FROM "formidable_preset" WHERE "formidable_preset"."form_id" = #'
+- db: SELECT ... FROM "formidable_presetarg" WHERE "formidable_presetarg"."preset_id" IN (...)

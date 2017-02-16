@@ -204,6 +204,15 @@ class RenderSerializerTestCase(TestCase):
             ))
 
         formidable = MyTestForm.to_formidable(label='test')
+
+        # add multiple presets to see how arguments are fetched
+        p = formidable.presets.create(slug='confirmation', message='first')
+        p.arguments.create(slug='left', field_id='first_name')
+        p.arguments.create(slug='right', value='Obi-Wan')
+        p = formidable.presets.create(slug='confirmation', message='last')
+        p.arguments.create(slug='left', field_id='last_name')
+        p.arguments.create(slug='right', value='Kenobi')
+
         serializer = FormidableSerializer(instance=formidable)
         with django_perf_rec.record(path='perfs/'):
             serializer.data
@@ -320,6 +329,14 @@ class RenderContextSerializer(TestCase):
             birthdate = fields.DateField()
 
         form = TestForm.to_formidable(label='title')
+
+        # add multiple presets to see how arguments are fetched
+        p = form.presets.create(slug='confirmation', message='name')
+        p.arguments.create(slug='left', field_id='name')
+        p.arguments.create(slug='right', value='Roméo')
+        p = form.presets.create(slug='confirmation', message='label')
+        p.arguments.create(slug='left', field_id='label')
+        p.arguments.create(slug='right', value='Roméo')
 
         serializer = ContextFormSerializer(form, context={'role': 'jedi'})
 

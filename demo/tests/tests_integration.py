@@ -44,6 +44,20 @@ class MyTestForm(FormidableForm):
         accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
     )
 
+    @classmethod
+    def to_formidable_with_presets(cls, **kwargs):
+        form = super(MyTestForm, cls).to_formidable(**kwargs)
+        preset = form.presets.create(slug='confirmation', message='msg1')
+        preset.arguments.create(slug='left', field_id='name')
+        preset.arguments.create(slug='right', value='Obi-Wan')
+
+        preset = form.presets.create(slug='comparison', message='msg2')
+        preset.arguments.create(slug='left', field_id='name')
+        preset.arguments.create(slug='right', field_id='weapons')
+        preset.arguments.create(slug='operator', value='neq')
+
+        return form
+
 
 class CreateFormTestCase(APITestCase):
 
@@ -100,11 +114,6 @@ class CreateFormTestCase(APITestCase):
 
 
 class UpdateFormTestCase(APITestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        super(UpdateFormTestCase, cls).setUpClass()
-        cls.formidable_form = MyTestForm.to_formidable(label='test')
 
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
@@ -198,9 +207,10 @@ class UpdateFormTestCase(APITestCase):
         ).exists())
 
     def test_queryset_on_get(self):
+        formidable_form = MyTestForm.to_formidable_with_presets(label='test')
         with django_perf_rec.record(path='perfs/'):
             self.client.get(reverse(
-                'formidable:form_detail', args=[self.formidable_form.pk])
+                'formidable:form_detail', args=[formidable_form.pk])
             )
 
 
@@ -257,34 +267,12 @@ class TestChain(APITestCase):
         )
 
 
-class MyForm(FormidableForm):
-    first_name = fields.CharField(
-        accesses={'padawan': constants.REQUIRED},
-    )
-    last_name = fields.CharField(
-        accesses={'padawan': constants.REQUIRED},
-        validators=[validators.MinLengthValidator(5)]
-    )
-
-
 class TestContextFormEndPoint(APITestCase):
 
     @classmethod
     def setUpClass(cls):
-        class MyTestForm(MyForm):
-            phone = fields.IntegerField()
-
         super(TestContextFormEndPoint, cls).setUpClass()
-        form = MyForm.to_formidable(label='test')
-        preset1 = form.presets.create(slug='confirmation', message='message1')
-        preset1.arguments.create(slug='left', field_id='threshold')
-        preset1.arguments.create(slug='right', value='100')
-
-        preset2 = form.presets.create(slug='comparison', message='message2')
-        preset2.arguments.create(slug='left', field_id='value')
-        preset2.arguments.create(slug='right', field_id='threshold')
-        preset2.arguments.create(slug='operator', value='lte')
-        cls.form = form
+        cls.form = MyTestForm.to_formidable_with_presets(label='test')
 
     def test_queryset(self):
         import django_perf_rec
@@ -297,6 +285,16 @@ class TestContextFormEndPoint(APITestCase):
             self.client.get(reverse(
                 'formidable:context_form_detail', args=[self.form.pk])
             )
+
+
+class MyForm(FormidableForm):
+    first_name = fields.CharField(
+        accesses={'padawan': constants.REQUIRED},
+    )
+    last_name = fields.CharField(
+        accesses={'padawan': constants.REQUIRED},
+        validators=[validators.MinLengthValidator(5)]
+    )
 
 
 class TestValidationEndPoint(APITestCase):
