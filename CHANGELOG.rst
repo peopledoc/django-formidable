@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Nothing here yet.
+- Fix: excluding the `.crowdin` directory in the flake8 tox job (#179).
 
 Release 0.7.0 (2016-02-15)
 ==========================
