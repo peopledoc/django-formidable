@@ -10,9 +10,12 @@ import django_perf_rec
 from freezegun import freeze_time
 from rest_framework.test import APITestCase
 
-from formidable.models import Formidable
+from formidable.models import Formidable, PresetArg
 from formidable.accesses import get_accesses
 from formidable.forms import FormidableForm, fields
+from formidable.forms.validations.presets import (
+    ComparisonPresets, ConfirmationPresets
+)
 from formidable import validators, constants
 
 from . import form_data, form_data_items
@@ -44,19 +47,21 @@ class MyTestForm(FormidableForm):
         accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
     )
 
-    @classmethod
-    def to_formidable_with_presets(cls, **kwargs):
-        form = super(MyTestForm, cls).to_formidable(**kwargs)
-        preset = form.presets.create(slug='confirmation', message='msg1')
-        preset.arguments.create(slug='left', field_id='name')
-        preset.arguments.create(slug='right', value='Obi-Wan')
 
-        preset = form.presets.create(slug='comparison', message='msg2')
-        preset.arguments.create(slug='left', field_id='name')
-        preset.arguments.create(slug='right', field_id='weapons')
-        preset.arguments.create(slug='operator', value='neq')
+class MyTestFormPresets(MyTestForm):
 
-        return form
+    class Meta:
+        presets = [
+            ConfirmationPresets(
+                [PresetArg(slug='left', field_id='name'),
+                    PresetArg(slug='right', value='Obi-Wan')],
+                message='msg1'),
+            ComparisonPresets(
+                [PresetArg(slug='left', field_id='name'),
+                    PresetArg(slug='right', field_id='weapons'),
+                    PresetArg(slug='operator', value='neq')],
+                message='msg2')
+        ]
 
 
 class CreateFormTestCase(APITestCase):
@@ -207,7 +212,7 @@ class UpdateFormTestCase(APITestCase):
         ).exists())
 
     def test_queryset_on_get(self):
-        formidable_form = MyTestForm.to_formidable_with_presets(label='test')
+        formidable_form = MyTestFormPresets.to_formidable(label='test')
         with django_perf_rec.record(path='perfs/'):
             self.client.get(reverse(
                 'formidable:form_detail', args=[formidable_form.pk])
@@ -272,7 +277,7 @@ class TestContextFormEndPoint(APITestCase):
     @classmethod
     def setUpClass(cls):
         super(TestContextFormEndPoint, cls).setUpClass()
-        cls.form = MyTestForm.to_formidable_with_presets(label='test')
+        cls.form = MyTestFormPresets.to_formidable(label='test')
 
     def test_queryset(self):
         import django_perf_rec
@@ -297,11 +302,23 @@ class MyForm(FormidableForm):
     )
 
 
+class MyFormPresets(MyForm):
+    class Meta:
+        presets = [
+            ComparisonPresets(
+                [PresetArg(slug='left', field_id='first_name'),
+                    PresetArg(slug='right', field_id='last_name'),
+                    PresetArg(slug='operator', value='neq')],
+                message='l:{left} o:{operator} r:{right}')
+        ]
+
+
 class TestValidationEndPoint(APITestCase):
 
     def setUp(self):
         super(TestValidationEndPoint, self).setUp()
         self.formidable = MyForm.to_formidable(label='title')
+        self.formidable_p = MyFormPresets.to_formidable(label='title')
 
     def test_validate_data_ok(self):
         parameters = {

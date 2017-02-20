@@ -8,14 +8,17 @@ from django.test import TestCase
 import django_perf_rec
 
 from formidable import constants
-from formidable.models import Formidable
+from formidable.models import Formidable, PresetArg
 from formidable.forms import FormidableForm, fields
 from formidable.serializers.forms import FormidableSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
-from formidable.serializers.presets import PresetsSerializer
-from formidable.serializers.presets import PresetsArgsSerializer
-from formidable.serializers.presets import PresetsArgSerializerWithItems
+from formidable.serializers.presets import (
+    PresetsSerializer, PresetsArgsSerializer, PresetsArgSerializerWithItems,
+)
+from formidable.forms.validations.presets import (
+    ConfirmationPresets, ComparisonPresets
+)
 from formidable.forms.validations import presets
 
 
@@ -203,16 +206,19 @@ class RenderSerializerTestCase(TestCase):
                 ('us', 'United States'),
             ))
 
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='first_name'),
+                         PresetArg(slug='right', value='Obi-Wan')],
+                        message='first'),
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='last_name'),
+                         PresetArg(slug='right', value='Kenobi')],
+                        message='last')
+                ]
+
         formidable = MyTestForm.to_formidable(label='test')
-
-        # add multiple presets to see how arguments are fetched
-        p = formidable.presets.create(slug='confirmation', message='first')
-        p.arguments.create(slug='left', field_id='first_name')
-        p.arguments.create(slug='right', value='Obi-Wan')
-        p = formidable.presets.create(slug='confirmation', message='last')
-        p.arguments.create(slug='left', field_id='last_name')
-        p.arguments.create(slug='right', value='Kenobi')
-
         serializer = FormidableSerializer(instance=formidable)
         with django_perf_rec.record(path='perfs/'):
             serializer.data
@@ -328,16 +334,19 @@ class RenderContextSerializer(TestCase):
             salary = fields.IntegerField()
             birthdate = fields.DateField()
 
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='name'),
+                         PresetArg(slug='right', value='Roméo')],
+                        message='name'),
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='label'),
+                         PresetArg(slug='right', value='Roméo')],
+                        message='label')
+                ]
+
         form = TestForm.to_formidable(label='title')
-
-        # add multiple presets to see how arguments are fetched
-        p = form.presets.create(slug='confirmation', message='name')
-        p.arguments.create(slug='left', field_id='name')
-        p.arguments.create(slug='right', value='Roméo')
-        p = form.presets.create(slug='confirmation', message='label')
-        p.arguments.create(slug='left', field_id='label')
-        p.arguments.create(slug='right', value='Roméo')
-
         serializer = ContextFormSerializer(form, context={'role': 'jedi'})
 
         with django_perf_rec.record(path='perfs/'):
@@ -348,20 +357,23 @@ class RenderContextSerializer(TestCase):
         class MyTestForm(FormidableForm):
             value = fields.IntegerField()
             threshold = fields.IntegerField(
-                    accesses={'padawan': constants.READONLY,
-                              'jedi': constants.REQUIRED})
+                accesses={'padawan': constants.READONLY,
+                          'jedi': constants.REQUIRED})
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='threshold'),
+                         PresetArg(slug='right', value='100')],
+                        message='message1'),
+                    ComparisonPresets(
+                        [PresetArg(slug='left', field_id='value'),
+                         PresetArg(slug='right', field_id='threshold'),
+                         PresetArg(slug='operator', value='lte')],
+                        message='message2')
+                ]
 
         form = MyTestForm.to_formidable(label='test')
-
-        preset1 = form.presets.create(slug='confirmation', message='message1')
-        preset1.arguments.create(slug='left', field_id='threshold')
-        preset1.arguments.create(slug='right', value='100')
-
-        preset2 = form.presets.create(slug='comparison', message='message2')
-        preset2.arguments.create(slug='left', field_id='value')
-        preset2.arguments.create(slug='right', field_id='threshold')
-        preset2.arguments.create(slug='operator', value='lte')
-
         serializer = ContextFormSerializer(form, context={'role': 'jedi'})
         self.assertTrue(serializer.data)
         data = serializer.data
@@ -369,8 +381,6 @@ class RenderContextSerializer(TestCase):
         self.assertEquals(len(data['presets']), 2)
 
         data_preset1 = data['presets'][0]
-        self.assertIn('id', data_preset1)
-        self.assertEquals(data_preset1['id'], preset1.id)
         self.assertIn('preset_id', data_preset1)
         self.assertEquals(data_preset1['preset_id'], 'confirmation')
         self.assertIn('message', data_preset1)
@@ -1121,10 +1131,11 @@ class TestPresetsSerializerRender(TestCase):
         default_message = 'you shouldnt see this'
 
         class MetaParameters(object):
-            lhs = presets.PresetFieldArgument(label='lhs')
+            lhs = presets.PresetFieldArgument(label='lhs', order=0)
             rhs = presets.PresetValueArgument(
                 label='Rhs', slug='test-rhs',
                 items={'tutu': 'toto', 'foo': 'bar'},
+                order=1
             )
 
     def test_render_preset_attr(self):

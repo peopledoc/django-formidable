@@ -5,24 +5,18 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 
-from formidable.forms.validations.presets import ConfirmationPresets
-from formidable.forms.validations.presets import ComparisonPresets
-
-
-class FakeArgument(object):
-
-    def __init__(self, slug, field_id=None, value=None):
-        self.slug = slug
-        self.value = value
-        self.field_id = field_id
+from formidable.forms.validations.presets import (
+    ConfirmationPresets, ComparisonPresets
+)
+from formidable.models import PresetArg
 
 
 class PresetsTestCase(TestCase):
 
     def test_confirmation_ok_value(self):
         args = [
-            FakeArgument('left', field_id='name'),
-            FakeArgument('right', value='toto')
+            PresetArg(slug='left', field_id='name'),
+            PresetArg(slug='right', value='toto')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'name': 'toto'}
@@ -30,8 +24,8 @@ class PresetsTestCase(TestCase):
 
     def test_confirmation_ok_field(self):
         args = [
-            FakeArgument('left', field_id='password'),
-            FakeArgument('right', field_id='confirm_password')
+            PresetArg(slug='left', field_id='password'),
+            PresetArg(slug='right', field_id='confirm_password')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'toto'}
@@ -39,8 +33,8 @@ class PresetsTestCase(TestCase):
 
     def test_confirmation_ko_value(self):
         args = [
-            FakeArgument('left', field_id='name'),
-            FakeArgument('right', value='toto')
+            PresetArg(slug='left', field_id='name'),
+            PresetArg(slug='right', value='toto')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'name': 'tutu'}
@@ -49,8 +43,8 @@ class PresetsTestCase(TestCase):
 
     def test_confirmation_ko_field(self):
         args = [
-            FakeArgument('left', field_id='password'),
-            FakeArgument('right', field_id='confirm_password')
+            PresetArg(slug='left', field_id='password'),
+            PresetArg(slug='right', field_id='confirm_password')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
@@ -59,7 +53,7 @@ class PresetsTestCase(TestCase):
 
     def test_missing_left_operand(self):
         args = [
-            FakeArgument('right', field_id='confirm_password')
+            PresetArg(slug='right', field_id='confirm_password')
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
@@ -68,7 +62,7 @@ class PresetsTestCase(TestCase):
 
     def test_missing_right_operand(self):
         args = [
-            FakeArgument('left', field_id='password'),
+            PresetArg(slug='left', field_id='password'),
         ]
         rule = ConfirmationPresets(args)
         cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
@@ -77,9 +71,9 @@ class PresetsTestCase(TestCase):
 
     def test_comparison_eq_ok(self):
         args = [
-            FakeArgument('left', field_id='hours'),
-            FakeArgument('operator', value='eq'),
-            FakeArgument('right', field_id='hours-2')
+            PresetArg(slug='left', field_id='hours'),
+            PresetArg(slug='operator', value='eq'),
+            PresetArg(slug='right', field_id='hours-2')
         ]
         rule = ComparisonPresets(args)
         cleaned_data = {'hours': 12, 'hours-2': 12}
@@ -87,9 +81,9 @@ class PresetsTestCase(TestCase):
 
     def test_comparison_eq_ko(self):
         args = [
-            FakeArgument('left', field_id='hours'),
-            FakeArgument('operator', value='eq'),
-            FakeArgument('right', field_id='hours-2')
+            PresetArg(slug='left', field_id='hours'),
+            PresetArg(slug='operator', value='eq'),
+            PresetArg(slug='right', field_id='hours-2')
         ]
         rule = ComparisonPresets(args)
         cleaned_data = {'hours': 11, 'hours-2': 12}
@@ -98,9 +92,9 @@ class PresetsTestCase(TestCase):
 
     def test_comparison_neq_ok(self):
         args = [
-            FakeArgument('left', field_id='hours'),
-            FakeArgument('operator', value='neq'),
-            FakeArgument('right', field_id='hours-2')
+            PresetArg(slug='left', field_id='hours'),
+            PresetArg(slug='operator', value='neq'),
+            PresetArg(slug='right', field_id='hours-2')
         ]
         rule = ComparisonPresets(args)
         cleaned_data = {'hours': 12, 'hours-2': 11}
@@ -108,9 +102,9 @@ class PresetsTestCase(TestCase):
 
     def test_comparison_neq_ko(self):
         args = [
-            FakeArgument('left', field_id='hours'),
-            FakeArgument('operator', value='neq'),
-            FakeArgument('right', field_id='hours-2')
+            PresetArg(slug='left', field_id='hours'),
+            PresetArg(slug='operator', value='neq'),
+            PresetArg(slug='right', field_id='hours-2')
         ]
         rule = ComparisonPresets(args)
         cleaned_data = {'hours': 12, 'hours-2': 12}
