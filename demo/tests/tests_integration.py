@@ -57,7 +57,7 @@ class CreateFormTestCase(APITestCase):
         formidable = Formidable.objects.order_by('pk').last()
         self.assertEquals(formidable.fields.count(), 1)
         field = formidable.fields.first()
-        self.assertEquals(field.accesses.count(), 4)
+        self.assertEquals(field.accesses.count(), 5)
         accesses = [
             ('padawan', 'REQUIRED'), ('jedi', 'EDITABLE'),
             ('jedi-master', 'READONLY'), ('human', 'HIDDEN'),
@@ -147,7 +147,7 @@ class UpdateFormTestCase(APITestCase):
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
         self.assertEquals(field.label, 'hello')
-        self.assertEquals(field.accesses.count(), 4)
+        self.assertEquals(field.accesses.count(), 5)
 
     def test_create_field_on_update(self):
         field = self.form.fields.create(
@@ -186,7 +186,7 @@ class UpdateFormTestCase(APITestCase):
         self.assertEquals(form.fields.count(), 1)
         field = form.fields.first()
         self.assertEquals(field.label, 'hello')
-        self.assertEquals(field.accesses.count(), 4)
+        self.assertEquals(field.accesses.count(), 5)
         self.assertTrue(field.accesses.filter(
             access_id='padawan', level='REQUIRED'
         ).exists())
@@ -209,7 +209,7 @@ class TestAccess(APITestCase):
     def test_get(self):
         response = self.client.get(reverse('formidable:accesses_list'))
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.data), 4)
+        self.assertEquals(len(response.data), 5)
         for access in response.data:
             self.assertIn('id', access)
             self.assertIn('label', access)
@@ -219,6 +219,11 @@ class TestAccess(APITestCase):
             self.assertIn(
                 access['label'], [obj.label for obj in get_accesses()]
             )
+            self.assertIn('preview_as', access)
+            if access['id'] == 'robot':
+                self.assertEqual(access['preview_as'], 'TABLE')
+            else:
+                self.assertEqual(access['preview_as'], 'FORM')
 
 
 class TestChain(APITestCase):

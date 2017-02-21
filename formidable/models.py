@@ -118,10 +118,6 @@ class Access(models.Model):
         (constants.REQUIRED, 'Required'), (constants.EDITABLE, 'Editable'),
         (constants.HIDDEN, 'Hidden'), (constants.READONLY, 'Readonly'),
     ))
-    display = models.CharField(max_length=128, null=True, blank=True, choices=(
-        ('FORM', 'Form'),
-        ('TABLE', 'Table'),
-    ))
 
     def __str__(self):
         return '{access.access_id}: {access.level}'.format(

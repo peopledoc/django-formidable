@@ -19,6 +19,7 @@ class SimpleAccessSerializer(serializers.BaseSerializer):
                 'id': access.id,
                 'label': access.label,
                 'description': access.description,
+                'preview_as': access.preview_as,
             } for access in objects
         ]
 
@@ -49,7 +50,7 @@ class AccessSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Access
-        fields = ('access_id', 'level', 'display')
+        fields = ('access_id', 'level')
         list_serializer_class = AccessListSerializer
 
     def validate_access_id(self, value):

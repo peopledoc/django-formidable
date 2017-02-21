@@ -13,14 +13,31 @@ from django.conf import settings
 import six
 
 
+class PreviewMode:
+    """
+    constants for AccessObject preview_as parameter
+    """
+    FORM = 'FORM'
+    TABLE = 'TABLE'
+
+
 class AccessObject(object):
-    def __init__(self, id, label, description=''):
+    """
+    This class is used to build roles that will be checked in fields accesses
+
+    Depending on the type of role (e.g., API or end-user), `preview_as` is
+    used by the UI to render a preview of a form as a table
+    (`PreviewMode.TABLE`) or as a form (`PreviewMode.FORM`).
+    """
+    def __init__(self, id, label, description='', preview_as=None):
         self.id = id
         self.label = label
         self.description = description
+        self.preview_as = preview_as or PreviewMode.FORM
 
     def __unicode__(self):
-        return '{access.id}: {access.label}'.format(access=self)
+        return ('{access.id}: {access.label} [preview_as={access.preview_as}]'
+                .format(access=self))
 
 
 def get_accesses():

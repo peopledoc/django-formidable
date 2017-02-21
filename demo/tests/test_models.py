@@ -50,13 +50,14 @@ class UnicodeTestCase(TestCase):
 
     def test_access(self):
         field = self.formidable.fields.get(slug='mytext')
-        self.assertEqual(field.accesses.all().count(), 4)
+        self.assertEqual(field.accesses.all().count(), 5)
 
-        human, jedi, jedi_master, padawan = field.accesses.all().order_by('access_id')  # noqa
+        human, jedi, jedi_master, padawan, robot = field.accesses.all().order_by('access_id')  # noqa
         self.assertEqual(str(human), 'human: EDITABLE')
         self.assertEqual(str(jedi), 'jedi: REQUIRED')
         self.assertEqual(str(jedi_master), 'jedi-master: HIDDEN')
         self.assertEqual(str(padawan), 'padawan: EDITABLE')
+        self.assertEqual(str(robot), 'robot: EDITABLE')
 
     def test_validation(self):
         field = self.formidable.fields.get(slug='dropdown')

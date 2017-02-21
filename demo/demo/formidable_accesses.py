@@ -2,13 +2,16 @@
 
 from __future__ import unicode_literals
 
-from formidable.accesses import AccessObject
+from formidable.accesses import AccessObject, PreviewMode
 
 
 def get_accesses():
     return [
-        AccessObject(id=key, label=key)
-        for key in ['padawan', 'jedi', 'jedi-master', 'human']
+        AccessObject(id='padawan', label='padawan'),
+        AccessObject(id='jedi', label='jedi'),
+        AccessObject(id='jedi-master', label='jedi-master'),
+        AccessObject(id='human', label='human'),
+        AccessObject(id='robot', label='robot', preview_as=PreviewMode.TABLE),
     ]
 
 

@@ -249,10 +249,10 @@ class TestFromDjangoForm(TestCase):
         self.assertTrue(form.pk)
         self.assertTrue(form.fields.filter(slug='mytext').exists())
         field = form.fields.get(slug='mytext')
-        self.assertEquals(4, field.accesses.count())
+        self.assertEquals(5, field.accesses.count())
         self.assertTrue(form.fields.filter(slug='dropdown').exists())
         field = form.fields.get(slug='dropdown')
-        self.assertEquals(4, field.accesses.count())
+        self.assertEquals(5, field.accesses.count())
         self.assertTrue(field.accesses.filter(
             access_id='jedi', level='EDITABLE').exists()
         )
