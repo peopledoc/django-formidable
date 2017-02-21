@@ -43,7 +43,7 @@ class RenderSerializerTestCase(TestCase):
             level=constants.REQUIRED, access_id='padawan'
         )
         self.text_field2.accesses.create(
-            level=constants.EDITABLE, access_id='jedi', display='TABLE'
+            level=constants.EDITABLE, access_id='jedi'
         )
         self.text_field.validations.create(
             type='MINLENGTH', value='5'
@@ -101,7 +101,6 @@ class RenderSerializerTestCase(TestCase):
         accesses = text_field['accesses'][0]
         self.assertEquals(accesses['access_id'], 'padawan')
         self.assertEquals(accesses['level'], constants.REQUIRED)
-        self.assertEquals(accesses['display'], None)
 
     def test_text_field2(self):
         data = self.serializer.data
@@ -117,7 +116,6 @@ class RenderSerializerTestCase(TestCase):
         accesses = text_field['accesses'][0]
         self.assertEquals(accesses['access_id'], 'jedi')
         self.assertEquals(accesses['level'], constants.EDITABLE)
-        self.assertEquals(accesses['display'], 'TABLE')
         self.assertIn('defaults', text_field)
         defaults = text_field['defaults']
         self.assertEqual(type(defaults), list)
@@ -532,7 +530,7 @@ class CreateSerializerTestCase(TestCase):
         self.assertEquals(field.items.count(), 0)
         # just one access has been specified, check the the other are created
         # with default value
-        self.assertEquals(field.accesses.count(), 4)
+        self.assertEquals(field.accesses.count(), 5)
 
     def test_create_ordering(self):
         # aggregate fields
@@ -631,7 +629,7 @@ class CreateSerializerTestCase(TestCase):
         self.assertTrue(
             field.items.filter(value='tata', label='plop').exists()
         )
-        self.assertEquals(field.accesses.count(), 4)
+        self.assertEquals(field.accesses.count(), 5)
 
     def test_create_field_without_items(self):
         data = copy.deepcopy(self.data)
@@ -892,7 +890,7 @@ class UpdateFormTestCase(TestCase):
         field = form.fields.first()
         self.assertEquals(field.type_id, 'text')
         # check accesses are fully created
-        self.assertEquals(field.accesses.count(), 4)
+        self.assertEquals(field.accesses.count(), 5)
 
     def test_create_items_on_update(self):
         self.dropdown_fields = self.form.fields.create(
