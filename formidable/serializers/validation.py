@@ -4,12 +4,11 @@ from __future__ import unicode_literals
 
 import re
 
-from rest_framework import serializers
-from rest_framework.serializers import ValidationError
-
 from formidable.models import Validation
 from formidable.register import ValidationSerializerRegister, load_serializer
 from formidable.serializers.child_proxy import LazyChildProxy
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 validation_register = ValidationSerializerRegister.get_instance()
 

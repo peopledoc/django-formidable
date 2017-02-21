@@ -2,10 +2,9 @@
 
 from __future__ import unicode_literals
 
-from rest_framework import serializers
-
 from formidable.models import Item
 from formidable.serializers.list import NestedListSerializer
+from rest_framework import serializers
 
 
 class ItemListSerializer(NestedListSerializer):

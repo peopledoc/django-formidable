@@ -4,12 +4,11 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
 
-from rest_framework import serializers
-
 from formidable.models import Formidable
 from formidable.serializers import fields
 from formidable.serializers.common import WithNestedSerializer
 from formidable.serializers.presets import PresetModelSerializer
+from rest_framework import serializers
 
 
 class FormidableSerializer(WithNestedSerializer):

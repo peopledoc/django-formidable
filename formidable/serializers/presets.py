@@ -2,16 +2,15 @@
 
 from __future__ import unicode_literals
 
-from rest_framework import fields
-from rest_framework.serializers import (
-    CharField, ListSerializer, ModelSerializer, Serializer, ValidationError
-)
-
 from formidable.forms.validations.presets import presets_register
 from formidable.models import Preset, PresetArg
 from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.serializers.common import WithNestedSerializer
 from formidable.serializers.list import NestedListSerializerDummyUpdate
+from rest_framework import fields
+from rest_framework.serializers import (
+    CharField, ListSerializer, ModelSerializer, Serializer, ValidationError
+)
 
 
 class ClassAttrSerializer(object):
