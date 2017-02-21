@@ -5,7 +5,8 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Fix: excluding the `.crowdin` directory in the flake8 tox job (#179).
+* Fix: excluding the `.crowdin` directory in the flake8 tox job (#179).
+* Return the preview mode (form or table) with the accesses list (#121)
 
 Release 0.7.0 (2016-02-15)
 ==========================
