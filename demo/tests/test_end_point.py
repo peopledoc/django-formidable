@@ -8,14 +8,17 @@ from django.test import TestCase
 import django_perf_rec
 
 from formidable import constants
-from formidable.models import Formidable
+from formidable.models import Formidable, PresetArg
 from formidable.forms import FormidableForm, fields
 from formidable.serializers.forms import FormidableSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
-from formidable.serializers.presets import PresetsSerializer
-from formidable.serializers.presets import PresetsArgsSerializer
-from formidable.serializers.presets import PresetsArgSerializerWithItems
+from formidable.serializers.presets import (
+    PresetsSerializer, PresetsArgsSerializer, PresetsArgSerializerWithItems,
+)
+from formidable.forms.validations.presets import (
+    ConfirmationPresets, ComparisonPresets
+)
 from formidable.forms.validations import presets
 
 
@@ -203,6 +206,18 @@ class RenderSerializerTestCase(TestCase):
                 ('us', 'United States'),
             ))
 
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='first_name'),
+                         PresetArg(slug='right', value='Obi-Wan')],
+                        message='first'),
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='last_name'),
+                         PresetArg(slug='right', value='Kenobi')],
+                        message='last')
+                ]
+
         formidable = MyTestForm.to_formidable(label='test')
         serializer = FormidableSerializer(instance=formidable)
         with django_perf_rec.record(path='perfs/'):
@@ -319,12 +334,94 @@ class RenderContextSerializer(TestCase):
             salary = fields.IntegerField()
             birthdate = fields.DateField()
 
-        form = TestForm.to_formidable(label='title')
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='name'),
+                         PresetArg(slug='right', value='Roméo')],
+                        message='name'),
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='label'),
+                         PresetArg(slug='right', value='Roméo')],
+                        message='label')
+                ]
 
+        form = TestForm.to_formidable(label='title')
         serializer = ContextFormSerializer(form, context={'role': 'jedi'})
 
         with django_perf_rec.record(path='perfs/'):
             serializer.data
+
+    def test_presets(self):
+
+        class MyTestForm(FormidableForm):
+            value = fields.IntegerField()
+            threshold = fields.IntegerField(
+                accesses={'padawan': constants.READONLY,
+                          'jedi': constants.REQUIRED})
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='threshold'),
+                         PresetArg(slug='right', value='100')],
+                        message='message1'),
+                    ComparisonPresets(
+                        [PresetArg(slug='left', field_id='value'),
+                         PresetArg(slug='right', field_id='threshold'),
+                         PresetArg(slug='operator', value='lte')],
+                        message='message2')
+                ]
+
+        form = MyTestForm.to_formidable(label='test')
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('presets', data)
+        self.assertEquals(len(data['presets']), 2)
+
+        data_preset1 = data['presets'][0]
+        self.assertIn('preset_id', data_preset1)
+        self.assertEquals(data_preset1['preset_id'], 'confirmation')
+        self.assertIn('message', data_preset1)
+        self.assertEquals(data_preset1['message'], 'message1')
+        self.assertIn('arguments', data_preset1)
+        self.assertEquals(len(data_preset1['arguments']), 2)
+
+        data_arg = data_preset1["arguments"][0]
+        self.assertIn('id', data_arg)
+        self.assertIn('slug', data_arg)
+        self.assertEquals(data_arg['slug'], 'left')
+        self.assertIn('field_id', data_arg)
+        self.assertEquals(data_arg['field_id'], 'threshold')
+        self.assertIn('value', data_arg)
+        self.assertIsNone(data_arg['value'])
+
+        data_arg = data_preset1["arguments"][1]
+        self.assertEquals(data_arg['slug'], 'right')
+        self.assertIsNone(data_arg['field_id'])
+        self.assertEquals(data_arg['value'], '100')
+
+        data_preset2 = data['presets'][1]
+        self.assertEquals(data_preset2['preset_id'], 'comparison')
+        self.assertEquals(data_preset2['message'], 'message2')
+        self.assertIn('arguments', data_preset2)
+        self.assertEquals(len(data_preset2['arguments']), 3)
+
+    def test_no_preset(self):
+
+        class MyTestForm(FormidableForm):
+            value = fields.IntegerField()
+            threshold = fields.IntegerField(
+                    accesses={'padawan': constants.READONLY,
+                              'jedi': constants.REQUIRED})
+
+        form = MyTestForm.to_formidable(label='test')
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('presets', data)
+        self.assertEquals(len(data['presets']), 0)
 
 
 class CreateSerializerTestCase(TestCase):
@@ -1034,10 +1131,11 @@ class TestPresetsSerializerRender(TestCase):
         default_message = 'you shouldnt see this'
 
         class MetaParameters(object):
-            lhs = presets.PresetFieldArgument(label='lhs')
+            lhs = presets.PresetFieldArgument(label='lhs', order=0)
             rhs = presets.PresetValueArgument(
                 label='Rhs', slug='test-rhs',
                 items={'tutu': 'toto', 'foo': 'bar'},
+                order=1
             )
 
     def test_render_preset_attr(self):

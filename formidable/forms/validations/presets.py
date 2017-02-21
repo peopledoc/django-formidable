@@ -2,10 +2,14 @@
 
 from __future__ import unicode_literals
 
+from collections import OrderedDict
+
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 import six
+
+from formidable.models import Preset
 
 
 class PresetsRegister(dict):
@@ -49,13 +53,14 @@ class PresetsMetaClass(type):
                         attr=attr, name=name)
                 )
 
-        _declared_arguments = {}
-
         # Separate the arguments to inject inside a specific dictionary
+        current_args = []
         for slug, arg in attrs['MetaParameters'].__dict__.items():
             if isinstance(arg, PresetArgument):
                 arg.set_slug(slug)
-                _declared_arguments[slug] = arg
+                current_args.append((slug, arg))
+        current_args.sort(key=lambda x: x[1].order)
+        _declared_arguments = OrderedDict(current_args)
 
         attrs['_declared_arguments'] = _declared_arguments
         klass = super(PresetsMetaClass, mcls).__new__(mcls, name, base, attrs)
@@ -66,7 +71,7 @@ class PresetsMetaClass(type):
 
 class PresetArgument(object):
 
-    def __init__(self, label, slug=None,
+    def __init__(self, label, slug=None, order=None,
                  help_text='', placeholder='', items=None):
         self.slug = slug
         self.label = label
@@ -75,6 +80,7 @@ class PresetArgument(object):
         self.types = self.get_types()
         self.has_items = items is not None
         self.items = items or {}
+        self.order = order
 
     def get_types(self):
         return [self.__class__.type_]
@@ -96,6 +102,18 @@ class PresetArgument(object):
 
         raise ImproperlyConfigured(
             _('{slug} is missing').format(slug=self.slug)
+        )
+
+    def to_formidable(self, preset, arguments):
+
+        for arg in arguments:
+            if arg.slug == self.slug:
+                arg.preset = preset
+                arg.save()
+                return arg
+
+        raise ImproperlyConfigured(
+            '{slug} is missing'.format(slug=self.slug)
         )
 
 
@@ -144,6 +162,15 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
     def get_message(self, kwargs):
         return self.message.format(**kwargs)
 
+    def to_formidable(self, form):
+        preset = Preset.objects.create(
+            form=form,
+            slug=self.slug,
+            message=self.message
+        )
+        for arg in self._declared_arguments.values():
+            arg.to_formidable(preset, self.arguments)
+
 
 class ConfirmationPresets(Presets):
 
@@ -154,9 +181,10 @@ class ConfirmationPresets(Presets):
 
     class MetaParameters:
         left = PresetFieldArgument(
-            _('Reference'), help_text=_('field to compare'))
+            _('Reference'), help_text=_('field to compare'), order=0
+        )
         right = PresetFieldOrValueArgument(
-            _('Compare to'), help_text=_('compare with')
+            _('Compare to'), help_text=_('compare with'), order=1
         )
 
     def run(self, left, right):
@@ -180,12 +208,12 @@ class ComparisonPresets(Presets):
     }
 
     class MetaParameters:
-        left = PresetFieldArgument(_('Reference'))
+        left = PresetFieldArgument(_('Reference'), order=0)
         operator = PresetValueArgument(_('Operator'), items={
             'eq': '=', 'lt': '<', 'lte': '<=', 'gt': '>',
             'gte': '>=', 'neq': '!='
-        })
-        right = PresetFieldArgument(_('Compare to'))
+        }, order=1)
+        right = PresetFieldArgument(_('Compare to'), order=2)
 
     def run(self, left, operator, right):
         meth = self.mapper[operator]

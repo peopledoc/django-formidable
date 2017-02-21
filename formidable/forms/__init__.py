@@ -14,6 +14,8 @@ from collections import OrderedDict
 from django import forms
 from django.db.models import Prefetch
 
+import six
+
 from formidable.forms import field_builder
 from formidable.forms.validations.presets import presets_register
 from formidable.models import Access, Formidable, Item
@@ -102,7 +104,24 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None):
     return type(str('DynamicForm'), (BaseDynamicForm,), attrs)
 
 
-class FormidableForm(forms.Form):
+class FormidableFormMetaclass(forms.Form.__class__):
+    """
+    Build a new class of FormidableForm.
+    Add the presets to the Formidable form
+    """
+
+    def __new__(mcs, name, base, attrs):
+        presets = []
+        if 'Meta' in attrs:
+            if hasattr(attrs['Meta'], 'presets'):
+                presets = attrs['Meta'].presets
+        attrs['_presets'] = presets
+        klass = (super(FormidableFormMetaclass, mcs)
+                 .__new__(mcs, name, base, attrs))
+        return klass
+
+
+class FormidableForm(six.with_metaclass(FormidableFormMetaclass, forms.Form)):
     """
     This is the main class available to build a formidable object with Django's
     form API syntax.
@@ -113,6 +132,9 @@ class FormidableForm(forms.Form):
     Check the formidable.forms.fields module to see what fields are available
     when defining your form.
 
+    Form validation rules can be defined in the :property:`presets` attribute
+    of :class:`Meta` class .
+
     .. code-block:: python
 
         from formidable.forms import FormidableForm, fields
@@ -121,6 +143,18 @@ class FormidableForm(forms.Form):
         class MyForm(FormidableForm):
             name = fields.CharField()
             first_name = fields.CharField()
+
+            Meta:
+                presets = [
+                    Comparison(
+                        arguments=[
+                            PresetArg(slug='left', field_id='name'),
+                            PresetArg(slug='right',
+                                                field_id='first_name'),
+                            PresetArg(slug='operator', value='neq'),
+                        ],
+                        message='name and first_name must be different')
+                ]
 
         formidable_instance = MyForm.to_formidable()
 
@@ -142,6 +176,9 @@ class FormidableForm(forms.Form):
         for slug, field in cls.declared_fields.items():
             field.to_formidable(form, order, slug)
             order += 1
+
+        for preset in cls._presets:
+            preset.to_formidable(form)
         return form
 
     @classmethod
