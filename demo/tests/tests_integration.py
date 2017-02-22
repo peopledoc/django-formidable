@@ -334,6 +334,38 @@ class TestValidationEndPoint(APITestCase):
         )
         self.assertEqual(res.status_code, 204)
 
+    def test_validate_presets_ok(self):
+        parameters = {
+            'first_name': 'Guillaume',
+            'last_name': 'Gérard',
+        }
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.get(
+            reverse('formidable:form_validation', args=[self.formidable_p.pk]),
+            parameters, format='json'
+        )
+        self.assertEqual(res.status_code, 204)
+
+    def test_validate_presets_ko(self):
+        parameters = {
+            'first_name': 'Albert',
+            'last_name': 'Albert',
+        }
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.get(
+            reverse('formidable:form_validation', args=[self.formidable_p.pk]),
+            parameters, format='json'
+        )
+        self.assertEqual(res.status_code, 400)
+        errors = res.data
+        self.assertIn('__all__', errors)
+        self.assertEqual(len(errors['__all__']), 1)
+        self.assertEqual(errors['__all__'][0], "l:Albert o:neq r:Albert")
+
     def test_validate_data_ko(self):
         parameters = {
             'last_name': 'Gérard',

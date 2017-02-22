@@ -9,6 +9,7 @@ master (unreleased)
 * Return the preview mode (form or table) with the accesses list (#121)
 * Fix: avoid installing formidable when not needed in tests - flake8 + isort checks (#181).
 * add presets to ContextFormSerializer (#176). Add presets creation directly in a FormidableForm declaration. Rework tests with presets.
+* Fix: error message for preset validation is not the one specified (#185)
 
 Release 0.7.0 (2016-02-15)
 ==========================
