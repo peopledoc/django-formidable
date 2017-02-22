@@ -20,7 +20,7 @@ class PresetsRegister(dict):
     def gen_rules(self, form):
         for preset in form.presets.all():
             klass = self[preset.slug]
-            yield klass(preset.arguments.all())
+            yield klass(preset.arguments.all(), message=preset.message)
 
 
 presets_register = PresetsRegister()
