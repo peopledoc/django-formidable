@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.7.1 (2017-02-22)
+==========================
 
 * Fix: excluding the `.crowdin` directory in the flake8 tox job (#179).
 * Return the preview mode (form or table) with the accesses list (#121)
@@ -12,7 +12,7 @@ master (unreleased)
 * Fix: error message for preset validation is not the one specified (#185)
 * Improve isort management in tox file (#147)
 
-Release 0.7.0 (2016-02-15)
+Release 0.7.0 (2017-02-15)
 ==========================
 
 * Renamed exception class for unknown access (#166)
