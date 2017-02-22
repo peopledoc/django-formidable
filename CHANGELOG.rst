@@ -10,6 +10,7 @@ master (unreleased)
 * Fix: avoid installing formidable when not needed in tests - flake8 + isort checks (#181).
 * add presets to ContextFormSerializer (#176). Add presets creation directly in a FormidableForm declaration. Rework tests with presets.
 * Fix: error message for preset validation is not the one specified (#185)
+* Improve isort management in tox file (#147)
 
 Release 0.7.0 (2016-02-15)
 ==========================
