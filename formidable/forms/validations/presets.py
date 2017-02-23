@@ -72,7 +72,7 @@ class PresetsMetaClass(type):
 
 class PresetArgument(object):
 
-    def __init__(self, label, slug=None, order=None,
+    def __init__(self, label, slug=None, order=None, cast_value_with=None,
                  help_text='', placeholder='', items=None):
         self.slug = slug
         self.label = label
@@ -82,6 +82,7 @@ class PresetArgument(object):
         self.has_items = items is not None
         self.items = items or {}
         self.order = order
+        self.cast_value_with = cast_value_with
 
     def get_types(self):
         return [self.__class__.type_]
@@ -98,10 +99,6 @@ class PresetArgument(object):
         if arg.field_id:
             return fields[arg.field_id]
         return arg.value
-
-        raise ImproperlyConfigured(
-            _('{slug} is missing').format(slug=self.slug)
-        )
 
     def to_formidable(self, preset, arguments):
 
@@ -155,8 +152,8 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
                     ', '.join(extra_args))
                 )
         self.arguments = {arg.slug: arg for arg in arguments}
-        # Check if arguments references to fields are valid
         if fields:
+            # Check if `arguments` references to fields are valid
             required_fields = {
                 a.field_id
                 for a in self.arguments.values()
@@ -168,6 +165,13 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
                     _('Bad field references in presets : {}').format(
                         ', '.join(missing_fields))
                     )
+            # Value conversions
+            for arg_name, arg in self._declared_arguments.items():
+                instance = self.arguments[arg_name]
+                if arg.cast_value_with and instance.value is not None:
+                    field_name = self.arguments[arg.cast_value_with].field_id
+                    reference_field = fields[field_name]
+                    instance.value = reference_field.to_python(instance.value)
 
     def has_empty_fields(self, cleaned_data):
         def is_empty_value(data):
@@ -220,20 +224,13 @@ class ConfirmationPresets(Presets):
     description = _("Ensure both fields are identical")
     default_message = _("{left} is not equal to {right}")
 
-    def __init__(self, arguments, fields=None, message=None):
-        super(ConfirmationPresets, self).__init__(
-            arguments, fields=fields, message=message)
-        right_arg = self.arguments['right']
-        if not right_arg.field_id and fields:
-            left_field = fields[self.arguments['left'].field_id]
-            right_arg.value = left_field.to_python(right_arg.value)
-
     class MetaParameters:
         left = PresetFieldArgument(
             _('Reference'), help_text=_('field to compare'), order=0
         )
         right = PresetFieldOrValueArgument(
-            _('Compare to'), help_text=_('compare with'), order=1
+            _('Compare to'), help_text=_('compare with'), order=1,
+            cast_value_with='left'
         )
 
     def run(self, left, right):
