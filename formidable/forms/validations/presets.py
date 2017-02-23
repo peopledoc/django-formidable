@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import (
+    FieldError, ImproperlyConfigured, ValidationError
+)
 from django.utils.translation import ugettext_lazy as _
 
 import six
@@ -20,8 +22,13 @@ class PresetsRegister(dict):
     def gen_rules(self, form, fields):
         for preset in form.presets.all():
             klass = self[preset.slug]
-            yield klass(preset.arguments.all(),
-                        fields=fields, message=preset.message)
+            try:
+                yield klass(preset.arguments.all(),
+                            fields=fields, message=preset.message)
+            except FieldError:
+                # preset defined on a field that is filtered (current role
+                # does not match the accesses)
+                pass
 
 
 presets_register = PresetsRegister()
@@ -94,10 +101,10 @@ class PresetArgument(object):
         if self.slug is None:
             self.slug = slug
 
-    def get_value(self, arguments, fields):
+    def get_value(self, arguments, data):
         arg = arguments[self.slug]
         if arg.field_id:
-            return fields[arg.field_id]
+            return data[arg.field_id]
         return arg.value
 
     def to_formidable(self, preset, arguments):
@@ -152,7 +159,8 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
                     ', '.join(extra_args))
                 )
         self.arguments = {arg.slug: arg for arg in arguments}
-        if fields:
+
+        if fields is not None:
             # Check if `arguments` references to fields are valid
             required_fields = {
                 a.field_id
@@ -161,7 +169,7 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
             }
             missing_fields = required_fields - set(fields.keys())
             if missing_fields:
-                raise ImproperlyConfigured(
+                raise FieldError(
                     _('Bad field references in presets : {}').format(
                         ', '.join(missing_fields))
                     )
