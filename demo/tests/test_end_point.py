@@ -528,6 +528,18 @@ class CreateSerializerTestCase(TestCase):
         }],
     }]
 
+    invalid_presets = [{
+        'preset_id': 'unknown',
+        'message': 'not the same',
+        'arguments': [{
+            'slug': 'left',
+            'field_id': 'input-date',
+        }, {
+            'slug': 'right',
+            'field_id': 'text_input',
+        }],
+    }]
+
     presets_with_wrong_parameters = [{
         'preset_id': 'confirmation',
         'message': 'noteq!',
@@ -599,6 +611,17 @@ class CreateSerializerTestCase(TestCase):
         self.assertTrue(
             preset.arguments.filter(
                 slug='right', field_id='text_input').exists()
+        )
+
+    def test_create_form_presets_invalid_preset(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['presets'] = copy.deepcopy(self.invalid_presets)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid(), serializer.errors)
+        self.assertEqual(
+            serializer.errors['presets'][0]['preset_id'][0],
+            'unknown is not an available preset'  # noqa
         )
 
     def test_create_form_with_presets_invalid_argument(self):
@@ -1232,7 +1255,10 @@ class TestPresetsSerializerRender(TestCase):
         self.assertIn('field', data['types'])
 
     def test_render_preset_with_argument(self):
-        preset_instance = self.PresetsTestWithArgs(arguments=[])
+        preset_instance = self.PresetsTestWithArgs(arguments=[
+            PresetArg(slug='lhs', field_id='foo'),
+            PresetArg(slug='rhs', value='toto'),
+        ])
         serializer = PresetsSerializer(preset_instance)
         self.assertTrue(serializer.data)
         data = serializer.data

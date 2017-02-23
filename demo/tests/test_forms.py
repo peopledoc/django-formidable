@@ -884,8 +884,10 @@ class TestInnerPresets(TestCase):
         formidable = TestPresets.to_formidable(label='presets')
 
         preset = Preset.objects.create(form=formidable, slug='confirmation')
-        PresetArg.objects.create(slug='right', field_id=None, value=42, preset=preset)
-        PresetArg.objects.create(slug='left', field_id='number', value=None, preset=preset)
+        PresetArg.objects.create(slug='right', field_id=None, value=42,
+                                 preset=preset)
+        PresetArg.objects.create(slug='left', field_id='number', value=None,
+                                 preset=preset)
 
         form_class = formidable.get_django_form_class()
         form = form_class(data={'number': 33})

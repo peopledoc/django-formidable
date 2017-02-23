@@ -14,13 +14,14 @@ from formidable.models import Preset
 
 class PresetsRegister(dict):
 
-    def build_rules(self, form):
-        return list(self.gen_rules(form))
+    def build_rules(self, form, fields):
+        return list(self.gen_rules(form, fields))
 
-    def gen_rules(self, form):
+    def gen_rules(self, form, fields):
         for preset in form.presets.all():
             klass = self[preset.slug]
-            yield klass(preset.arguments.all(), message=preset.message)
+            yield klass(preset.arguments.all(),
+                        fields=fields, message=preset.message)
 
 
 presets_register = PresetsRegister()
@@ -93,12 +94,10 @@ class PresetArgument(object):
             self.slug = slug
 
     def get_value(self, arguments, fields):
-
-        for arg in arguments:
-            if arg.slug == self.slug:
-                if arg.field_id:
-                    return fields[arg.field_id]
-                return arg.value
+        arg = arguments[self.slug]
+        if arg.field_id:
+            return fields[arg.field_id]
+        return arg.value
 
         raise ImproperlyConfigured(
             _('{slug} is missing').format(slug=self.slug)
@@ -106,15 +105,10 @@ class PresetArgument(object):
 
     def to_formidable(self, preset, arguments):
 
-        for arg in arguments:
-            if arg.slug == self.slug:
-                arg.preset = preset
-                arg.save()
-                return arg
-
-        raise ImproperlyConfigured(
-            '{slug} is missing'.format(slug=self.slug)
-        )
+        arg = arguments[self.slug]
+        arg.preset = preset
+        arg.save()
+        return arg
 
 
 class PresetFieldArgument(PresetArgument):
@@ -143,16 +137,45 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
     class MetaParameters:
         pass
 
-    def __init__(self, arguments, message=None):
-        self.arguments = arguments
+    def __init__(self, arguments, fields=None, message=None):
         self.message = message or self.default_message
+        # Check if `arguments` match `self._declared_arguments`
+        decl_args_set = set(self._declared_arguments.keys())
+        args_set = {a.slug for a in arguments}
+        missing_args = decl_args_set - args_set
+        if missing_args:
+            raise ImproperlyConfigured(
+                _('Missing presets arguments : {}').format(
+                    ', '.join(missing_args))
+                )
+        extra_args = args_set - decl_args_set
+        if extra_args:
+            raise ImproperlyConfigured(
+                _('Extra presets arguments : {}').format(
+                    ', '.join(extra_args))
+                )
+        self.arguments = {arg.slug: arg for arg in arguments}
+        # Check if arguments references to fields are valid
+        if fields:
+            required_fields = {
+                a.field_id
+                for a in self.arguments.values()
+                if a.field_id
+            }
+            missing_fields = required_fields - set(fields.keys())
+            if missing_fields:
+                raise ImproperlyConfigured(
+                    _('Bad field references in presets : {}').format(
+                        ', '.join(missing_fields))
+                    )
 
     def has_empty_fields(self, cleaned_data):
         def is_empty_value(data):
             return (data is None or
                     (isinstance(data, six.string_types) and not data))
 
-        used_fields = {a.field_id for a in self.arguments if a.field_id}
+        used_fields = {a.field_id
+                       for a in self.arguments.values() if a.field_id}
         # we do not filter out required fields because they can't be empty
         return any(
             is_empty_value(cleaned_data.get(name, None))
@@ -196,6 +219,14 @@ class ConfirmationPresets(Presets):
     label = _('Confirmation')
     description = _("Ensure both fields are identical")
     default_message = _("{left} is not equal to {right}")
+
+    def __init__(self, arguments, fields=None, message=None):
+        super(ConfirmationPresets, self).__init__(
+            arguments, fields=fields, message=message)
+        right_arg = self.arguments['right']
+        if not right_arg.field_id and fields:
+            left_field = fields[self.arguments['left'].field_id]
+            right_arg.value = left_field.to_python(right_arg.value)
 
     class MetaParameters:
         left = PresetFieldArgument(
