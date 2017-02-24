@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+* Change `help_text` to `description` in the API (in order to catch up formidable-ui)
 
 Release 0.7.1 (2017-02-22)
 ==========================
