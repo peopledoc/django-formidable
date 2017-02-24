@@ -16,6 +16,7 @@ Release 0.7.1 (2017-02-22)
 * add presets to ContextFormSerializer (#176). Add presets creation directly in a FormidableForm declaration. Rework tests with presets.
 * Fix: error message for preset validation is not the one specified (#185)
 * Improve isort management in tox file (#147)
+* [ci] Split tox jobs into CircleCI configuration (#189)
 
 Release 0.7.0 (2017-02-15)
 ==========================
