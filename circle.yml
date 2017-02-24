@@ -8,4 +8,7 @@ dependencies:
 
 test:
     override:
-        - tox -r
+        - tox -e $(tox -l | grep django18 | tr '\n' ',')
+        - tox -e $(tox -l | grep django19 | tr '\n' ',')
+        - tox -e flake8
+        - tox -e isort-check
