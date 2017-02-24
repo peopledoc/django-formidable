@@ -22,7 +22,10 @@ class ItemListSerializer(NestedListSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
 
+    description = serializers.CharField(required=False, allow_null=True,
+                                        source='help_text')
+
     class Meta:
         model = Item
         list_serializer_class = ItemListSerializer
-        fields = ('value', 'label', 'help_text')
+        fields = ('value', 'label', 'description')

@@ -58,7 +58,7 @@ class PresetsArgsSerializer(Serializer):
 
     slug = fields.SlugField()
     label = fields.CharField()
-    help_text = fields.CharField(required=False)
+    description = fields.CharField(required=False, source='help_text')
     placehorlder = fields.CharField(required=False)
     types = fields.ListField()
 
