@@ -78,6 +78,37 @@ class DateFieldBuilder(FieldBuilder):
     validator_factory_class = DateValidatorFactory
 
 
+class ChoiceFieldBuilder(FieldBuilder):
+
+    field_class = forms.ChoiceField
+
+    def get_field_kwargs(self):
+        kwargs = super(ChoiceFieldBuilder, self).get_field_kwargs()
+        kwargs['choices'] = self.get_choices()
+        return kwargs
+
+    def get_choices(self):
+        choices = []
+        for item in self.field.get('items', []):
+            choices.append((item['value'], item['label']))
+        return choices
+
+
+class DropdownFieldBuilder(ChoiceFieldBuilder):
+
+    widget_class = forms.Select
+
+    def get_field_class(self):
+        if self.field['multiple']:
+            return forms.MultipleChoiceField
+        return super(DropdownFieldBuilder, self).get_field_class()
+
+    def get_widget_class(self):
+        if self.field['multiple']:
+            return forms.SelectMultiple
+        return super(DropdownFieldBuilder, self).get_widget_class()
+
+
 class FormFieldFactory(FF):
 
     field_map = {
@@ -88,6 +119,8 @@ class FormFieldFactory(FF):
         'number': IntegerFieldBuilder,
         'file': FileFieldBuilder,
         'date': DateFieldBuilder,
+        'dropdown': DropdownFieldBuilder,
+
     }
 
     def get_type_id(self, field):

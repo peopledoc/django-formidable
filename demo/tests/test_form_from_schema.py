@@ -141,6 +141,46 @@ class TestFormFromSchema(TestCase):
         date = form.fields['date']
         self.assertEqual(type(date), forms.DateField)
 
+    def test_dropdown_field(self):
+        class WithDropdown(FormidableForm):
+            weapon = fields.ChoiceField(
+                widget=widgets.Select,
+                choices=(('gun', 'Eagles'), ('sword', 'Excalibur'))
+            )
+
+        formidable = WithDropdown.to_formidable(label='dropdown')
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form = get_dynamic_form_class_from_schema(schema)()
+        self.assertIn('weapon', form.fields)
+        self.assertEqual(type(form.fields['weapon']), forms.ChoiceField)
+        self.assertEqual(type(form.fields['weapon'].widget), forms.Select)
+        self.assertIn(('gun', 'Eagles'), form.fields['weapon'].choices)
+        self.assertIn(('sword', 'Excalibur'), form.fields['weapon'].choices)
+
+    def test_dropdown_multiple(self):
+        class WithDropdown(FormidableForm):
+            weapon = fields.ChoiceField(
+                widget=widgets.SelectMultiple,
+                choices=(('gun', 'Eagles'), ('sword', 'Excalibur'))
+            )
+
+        formidable = WithDropdown.to_formidable(label='dropdown')
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form = get_dynamic_form_class_from_schema(schema)()
+        self.assertIn('weapon', form.fields)
+        self.assertEqual(
+            type(form.fields['weapon']), forms.MultipleChoiceField
+        )
+        self.assertEqual(
+            type(form.fields['weapon'].widget), forms.SelectMultiple
+        )
+        self.assertIn(('gun', 'Eagles'), form.fields['weapon'].choices)
+        self.assertIn(('sword', 'Excalibur'), form.fields['weapon'].choices)
+
     @freeze_time('2021-01-01')
     def test_date_field_with_validation(self):
         class TestdateField(FormidableForm):
