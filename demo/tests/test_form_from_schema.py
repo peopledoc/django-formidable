@@ -8,6 +8,10 @@ from formidable.forms import (
     FormidableForm, fields, get_dynamic_form_class_from_schema
 )
 from formidable.forms import widgets
+from formidable.forms.validations.presets import (
+    ConfirmationPresets
+)
+from formidable.models import PresetArg
 from formidable.validators import (
     GTEValidator, MinLengthValidator, AgeAboveValidator
 )
@@ -173,4 +177,34 @@ class TestFormFromSchema(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(len(form.errors), 2)
         form = form_class(data={'text': 'tutu', 'integer': 43})
+        self.assertTrue(form.is_valid())
+
+    def test_with_presets(self):
+
+        class FormWithPresets(FormidableForm):
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets([
+                        PresetArg(slug='left', field_id='email'),
+                        PresetArg(slug='right', field_id='email_confirm')
+                    ])
+                ]
+
+            email = fields.EmailField()
+            email_confirm = fields.EmailField()
+
+        formidable = FormWithPresets.to_formidable(label='validation')
+
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class(data={
+            'email': 'test@test.tld', 'email_confirm': 'toto@test.tld'
+        })
+        self.assertFalse(form.is_valid())
+        form = form_class(data={
+            'email': 'test@test.tld', 'email_confirm': 'test@test.tld'
+        })
         self.assertTrue(form.is_valid())
