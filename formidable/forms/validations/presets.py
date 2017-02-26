@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 
 import six
 
-from formidable.models import Preset
+from formidable.models import Preset, PresetArg
 
 
 class PresetsRegister(dict):
@@ -29,6 +29,23 @@ class PresetsRegister(dict):
                 # preset defined on a field that is filtered (current role
                 # does not match the accesses)
                 pass
+
+    def build_rules_from_schema(self, schema):
+        rules = []
+        for preset in schema.get('presets', []):
+            klass = self[preset['preset_id']]
+            arguments = self.get_arguments_from_schema(preset.get(
+                'arguments', []
+            ))
+            rules.append(klass(arguments, message=preset['message']))
+
+        return rules
+
+    def get_arguments_from_schema(self, arguments):
+        args = []
+        for argument in arguments:
+            args.append(PresetArg(**argument))
+        return args
 
 
 presets_register = PresetsRegister()
