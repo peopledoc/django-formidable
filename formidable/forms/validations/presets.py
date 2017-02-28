@@ -147,7 +147,25 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
         self.arguments = arguments
         self.message = message or self.default_message
 
+    def has_empty_fields(self, cleaned_data):
+        def is_empty_value(data):
+            return (data is None or
+                    (isinstance(data, six.string_types) and not data))
+
+        used_fields = {a.field_id for a in self.arguments if a.field_id}
+        # we do not filter out required fields because they can't be empty
+        return any(
+            is_empty_value(cleaned_data.get(name, None))
+            for name in used_fields
+        )
+
     def __call__(self, cleaned_data):
+        if self.has_empty_fields(cleaned_data):
+            # We skip rules using empty fields
+            # If the fields were required then it is already reported in
+            # form.errors. If the fields were not required, then it is not
+            # useful to report an error
+            return True
         kwargs = self.collect_kwargs(cleaned_data)
         if not self.run(**kwargs):
             raise ValidationError(self.get_message(kwargs))

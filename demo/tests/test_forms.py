@@ -12,8 +12,9 @@ import django_perf_rec
 from freezegun import freeze_time
 
 from formidable.constants import REQUIRED, EDITABLE, READONLY, HIDDEN
-from formidable.models import Formidable
+from formidable.models import Formidable, PresetArg
 from formidable.forms import FormidableForm, widgets, fields
+from formidable.forms.validations.presets import ConfirmationPresets
 
 
 class TestDynamicForm(TestCase):
@@ -776,3 +777,80 @@ class FormidableModelTestCase(TestCase):
         self.assertEqual(len(context.exception.messages), 3)
         for message in context.exception.messages:
             self.assertEqual(message, 'This field is required.')
+
+
+class TestInnerPresets(TestCase):
+
+    def test_confirmation_not_required_field(self):
+        class TestPresets(FormidableForm):
+            number = fields.IntegerField(accesses={
+                'jedi': EDITABLE,
+            })
+            text = fields.CharField(accesses={
+                'jedi': EDITABLE,
+            })
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='number'),
+                         PresetArg(slug='right', value='42')],
+                    ),
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='text'),
+                         PresetArg(slug='right', value='toto')],
+                    ),
+                ]
+
+        formidable = TestPresets.to_formidable(label='presets')
+        form_class = formidable.get_django_form_class(role='jedi')
+        form = form_class(data={'number': '', 'text': ''})
+        self.assertEqual(len(form.rules), 2)
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_confirmation_not_required_fields(self):
+        class TestPresets(FormidableForm):
+            left = fields.IntegerField(accesses={
+                'jedi': REQUIRED,
+            })
+            right = fields.IntegerField(accesses={
+                'jedi': REQUIRED,
+            })
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='left'),
+                         PresetArg(slug='right', field_id='right')],
+                    ),
+                ]
+
+        formidable = TestPresets.to_formidable(label='presets')
+        form_class = formidable.get_django_form_class(role='padawan')
+        form = form_class(data={'left': '', 'right': ''})
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_confirmation_required_fields(self):
+        class TestPresets(FormidableForm):
+            left = fields.IntegerField(accesses={
+                'jedi': REQUIRED,
+            })
+            right = fields.IntegerField(accesses={
+                'jedi': REQUIRED,
+            })
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='left'),
+                         PresetArg(slug='right', field_id='right')],
+                    ),
+                ]
+
+        formidable = TestPresets.to_formidable(label='presets')
+        form_class = formidable.get_django_form_class(role='jedi')
+        form = form_class(data={'left': '', 'right': ''})
+        self.assertFalse(form.is_valid(), form.errors)
+        self.assertEqual(len(form.errors), 2)
+        self.assertIn('left', form.errors)
+        self.assertIn('right', form.errors)
