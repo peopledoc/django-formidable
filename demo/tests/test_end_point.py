@@ -1264,3 +1264,32 @@ class TestPresetsSerializerRender(TestCase):
         data = serializer.data
         self.assertIn('arguments', data)
         self.assertEqual(len(data['arguments']), 2)
+
+
+class CreateSerializerMigrationTestCase(TestCase):
+    data = {
+        'label': 'test_create',
+        'description': 'description create',
+        'fields': [
+            {
+                'type_id': 'dropdown',
+                'slug': 'dropdown-input', 'label': 'dropdown label',
+                'help_text': 'Field Help',
+                'multiple': False,
+                'items': [
+                    {'value': 'tutu', 'label': 'toto',
+                     'help_text': 'Item Help'},
+                    {'value': 'tata', 'label': 'plop'},
+                ],
+                'accesses': []
+            }
+        ]
+    }
+
+    def test_create(self):
+        serializer = FormidableSerializer(data=self.data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        self.assertEqual(form.fields.all()[0].help_text, 'Field Help')
+        self.assertEqual(form.fields.all()[0].items.all()[0].help_text,
+                         'Item Help')

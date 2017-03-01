@@ -72,6 +72,12 @@ class FieldSerializer(WithNestedSerializer):
 
     nested_objects = ['accesses', 'validations', 'defaults']
 
+    def to_internal_value(self, data):
+        # XXX FIX ME: temporary fix
+        if 'help_text' in data:
+            data['description'] = data.pop('help_text')
+        return super(FieldSerializer, self).to_internal_value(data)
+
     class Meta:
         model = Field
         list_serializer_class = FieldListSerializer
