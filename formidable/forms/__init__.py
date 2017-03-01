@@ -100,7 +100,7 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None):
         else:
             attrs[field.slug] = form_field
 
-    attrs['rules'] = presets_register.build_rules(formidable)
+    attrs['rules'] = presets_register.build_rules(formidable, attrs)
     return type(str('DynamicForm'), (BaseDynamicForm,), attrs)
 
 

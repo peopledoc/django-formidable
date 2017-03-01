@@ -55,19 +55,15 @@ class PresetsTestCase(TestCase):
         args = [
             PresetArg(slug='right', field_id='confirm_password')
         ]
-        rule = ConfirmationPresets(args)
-        cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
         with self.assertRaises(ImproperlyConfigured):
-            self.assertTrue(rule(cleaned_data))
+            ConfirmationPresets(args)
 
     def test_missing_right_operand(self):
         args = [
             PresetArg(slug='left', field_id='password'),
         ]
-        rule = ConfirmationPresets(args)
-        cleaned_data = {'password': 'toto', 'confirm_password': 'tutu'}
         with self.assertRaises(ImproperlyConfigured):
-            self.assertTrue(rule(cleaned_data))
+            ConfirmationPresets(args)
 
     def test_comparison_eq_ok(self):
         args = [

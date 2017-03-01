@@ -781,6 +781,75 @@ class FormidableModelTestCase(TestCase):
 
 class TestInnerPresets(TestCase):
 
+    def test_confirmation_fields(self):
+        class TestPresets(FormidableForm):
+            left = fields.IntegerField()
+            right = fields.IntegerField()
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='left'),
+                         PresetArg(slug='right', field_id='right')],
+                    ),
+                ]
+
+        formidable = TestPresets.to_formidable(label='presets')
+        form_class = formidable.get_django_form_class()
+        form = form_class(data={'left': 42, 'right': 42})
+        self.assertTrue(form.is_valid())
+        form = form_class(data={'left': 42, 'right': "42"})
+        self.assertTrue(form.is_valid())
+        form = form_class(data={'left': 42, 'right': 21})
+        self.assertFalse(form.is_valid())
+        form = form_class(data={'left': 42, 'right': "21"})
+        self.assertFalse(form.is_valid())
+
+    def test_confirmation_value(self):
+        class TestPresets(FormidableForm):
+            number = fields.IntegerField()
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='number'),
+                         PresetArg(slug='right', value='42')],
+                    ),
+                ]
+
+        formidable = TestPresets.to_formidable(label='presets')
+        form_class = formidable.get_django_form_class()
+        form = form_class(data={'number': 33})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors,
+            {'__all__': ['33 is not equal to 42']}
+        )
+
+        form = form_class(data={'number': 42})
+        # 42 should equal 42...
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_confirmation_access(self):
+        class TestPresets(FormidableForm):
+            number = fields.IntegerField(accesses={
+                'jedi': HIDDEN,
+            })
+
+            class Meta:
+                presets = [
+                    ConfirmationPresets(
+                        [PresetArg(slug='left', field_id='number'),
+                         PresetArg(slug='right', value='42')],
+                    ),
+                ]
+
+        formidable = TestPresets.to_formidable(label='presets')
+        form_class = formidable.get_django_form_class(role='jedi')
+        form = form_class(data={'number': 33})
+        self.assertTrue(form.is_valid())
+        self.assertEqual(len(form.rules), 0)
+
     def test_confirmation_not_required_field(self):
         class TestPresets(FormidableForm):
             number = fields.IntegerField(accesses={

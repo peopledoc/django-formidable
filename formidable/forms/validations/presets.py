@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import (
+    FieldError, ImproperlyConfigured, ValidationError
+)
 from django.utils.translation import ugettext_lazy as _
 
 import six
@@ -14,13 +16,19 @@ from formidable.models import Preset
 
 class PresetsRegister(dict):
 
-    def build_rules(self, form):
-        return list(self.gen_rules(form))
+    def build_rules(self, form, fields):
+        return list(self.gen_rules(form, fields))
 
-    def gen_rules(self, form):
+    def gen_rules(self, form, fields):
         for preset in form.presets.all():
             klass = self[preset.slug]
-            yield klass(preset.arguments.all(), message=preset.message)
+            try:
+                yield klass(preset.arguments.all(),
+                            fields=fields, message=preset.message)
+            except FieldError:
+                # preset defined on a field that is filtered (current role
+                # does not match the accesses)
+                pass
 
 
 presets_register = PresetsRegister()
@@ -71,7 +79,7 @@ class PresetsMetaClass(type):
 
 class PresetArgument(object):
 
-    def __init__(self, label, slug=None, order=None,
+    def __init__(self, label, slug=None, order=None, cast_value_with=None,
                  help_text='', placeholder='', items=None):
         self.slug = slug
         self.label = label
@@ -81,6 +89,7 @@ class PresetArgument(object):
         self.has_items = items is not None
         self.items = items or {}
         self.order = order
+        self.cast_value_with = cast_value_with
 
     def get_types(self):
         return [self.__class__.type_]
@@ -92,29 +101,18 @@ class PresetArgument(object):
         if self.slug is None:
             self.slug = slug
 
-    def get_value(self, arguments, fields):
-
-        for arg in arguments:
-            if arg.slug == self.slug:
-                if arg.field_id:
-                    return fields[arg.field_id]
-                return arg.value
-
-        raise ImproperlyConfigured(
-            _('{slug} is missing').format(slug=self.slug)
-        )
+    def get_value(self, arguments, data):
+        arg = arguments[self.slug]
+        if arg.field_id:
+            return data[arg.field_id]
+        return arg.value
 
     def to_formidable(self, preset, arguments):
 
-        for arg in arguments:
-            if arg.slug == self.slug:
-                arg.preset = preset
-                arg.save()
-                return arg
-
-        raise ImproperlyConfigured(
-            '{slug} is missing'.format(slug=self.slug)
-        )
+        arg = arguments[self.slug]
+        arg.preset = preset
+        arg.save()
+        return arg
 
 
 class PresetFieldArgument(PresetArgument):
@@ -143,16 +141,53 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
     class MetaParameters:
         pass
 
-    def __init__(self, arguments, message=None):
-        self.arguments = arguments
+    def __init__(self, arguments, fields=None, message=None):
         self.message = message or self.default_message
+        # Check if `arguments` match `self._declared_arguments`
+        decl_args_set = set(self._declared_arguments.keys())
+        args_set = {a.slug for a in arguments}
+        missing_args = decl_args_set - args_set
+        if missing_args:
+            raise ImproperlyConfigured(
+                _('Missing presets arguments : {}').format(
+                    ', '.join(missing_args))
+                )
+        extra_args = args_set - decl_args_set
+        if extra_args:
+            raise ImproperlyConfigured(
+                _('Extra presets arguments : {}').format(
+                    ', '.join(extra_args))
+                )
+        self.arguments = {arg.slug: arg for arg in arguments}
+
+        if fields is not None:
+            # Check if `arguments` references to fields are valid
+            required_fields = {
+                a.field_id
+                for a in self.arguments.values()
+                if a.field_id
+            }
+            missing_fields = required_fields - set(fields.keys())
+            if missing_fields:
+                raise FieldError(
+                    _('Bad field references in presets : {}').format(
+                        ', '.join(missing_fields))
+                    )
+            # Value conversions
+            for arg_name, arg in self._declared_arguments.items():
+                instance = self.arguments[arg_name]
+                if arg.cast_value_with and instance.value is not None:
+                    field_name = self.arguments[arg.cast_value_with].field_id
+                    reference_field = fields[field_name]
+                    instance.value = reference_field.to_python(instance.value)
 
     def has_empty_fields(self, cleaned_data):
         def is_empty_value(data):
             return (data is None or
                     (isinstance(data, six.string_types) and not data))
 
-        used_fields = {a.field_id for a in self.arguments if a.field_id}
+        used_fields = {a.field_id
+                       for a in self.arguments.values() if a.field_id}
         # we do not filter out required fields because they can't be empty
         return any(
             is_empty_value(cleaned_data.get(name, None))
@@ -202,7 +237,8 @@ class ConfirmationPresets(Presets):
             _('Reference'), help_text=_('field to compare'), order=0
         )
         right = PresetFieldOrValueArgument(
-            _('Compare to'), help_text=_('compare with'), order=1
+            _('Compare to'), help_text=_('compare with'), order=1,
+            cast_value_with='left'
         )
 
     def run(self, left, right):
