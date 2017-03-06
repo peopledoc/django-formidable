@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.8.0 (2016-03-06)
+==========================
 
 * [ci] Split tox jobs into CircleCI configuration (#189).
 * Skip form validation rules if a field is empty (#191).
