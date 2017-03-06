@@ -18,7 +18,7 @@ from formidable.serializers.validation import ValidationSerializer
 from rest_framework import serializers
 
 BASE_FIELDS = (
-    'slug', 'label', 'type_id', 'placeholder', 'help_text',
+    'slug', 'label', 'type_id', 'placeholder', 'description',
     'accesses', 'validations', 'order', 'defaults'
 )
 
@@ -67,8 +67,16 @@ class FieldSerializer(WithNestedSerializer):
     # incomming payload, it will be automatically overrided.
     order = serializers.IntegerField(write_only=True, required=False)
     defaults = DefaultSerializer(many=True, required=False)
+    description = serializers.CharField(required=False, allow_null=True,
+                                        source='help_text')
 
     nested_objects = ['accesses', 'validations', 'defaults']
+
+    def to_internal_value(self, data):
+        # XXX FIX ME: temporary fix
+        if 'help_text' in data:
+            data['description'] = data.pop('help_text')
+        return super(FieldSerializer, self).to_internal_value(data)
 
     class Meta:
         model = Field
@@ -127,12 +135,14 @@ class ContextFieldSerializer(serializers.ModelSerializer):
     validations = ValidationSerializer(many=True, required=False)
     items = ItemSerializer(many=True, required=False)
     defaults = DefaultSerializer(many=True, required=False)
+    description = serializers.CharField(required=False, allow_null=True,
+                                        source='help_text')
 
     class Meta:
         list_serializer_class = ListContextFieldSerializer
         model = Field
         fields = (
-            'slug', 'label', 'type_id', 'placeholder', 'help_text',
+            'slug', 'label', 'type_id', 'placeholder', 'description',
             'validations', 'disabled', 'required', 'multiple', 'items',
             'defaults',
         )
@@ -278,7 +288,7 @@ class NumberFieldSerializer(FieldSerializer):
 class HelpTextFieldSerializer(FieldSerializer):
 
     type_id = 'help_text'
-    help_text = serializers.CharField(required=True)
+    description = serializers.CharField(required=True, source='help_text')
 
     class Meta(FieldSerializer.Meta):
         # Remove "label" attribute
@@ -291,8 +301,8 @@ class TitleFieldSerializer(FieldSerializer):
     type_id = 'title'
 
     class Meta(FieldSerializer.Meta):
-        # Remove "help_text" attribute
-        fields = list(set(BASE_FIELDS) - set(['help_text']))
+        # Remove "description" attribute
+        fields = list(set(BASE_FIELDS) - set(['description']))
 
 
 @load_serializer(field_register)
@@ -301,5 +311,5 @@ class SeparatorFieldSerializer(FieldSerializer):
     type_id = 'separator'
 
     class Meta(FieldSerializer.Meta):
-        # Remove "help_text" and "label" attributes
-        fields = list(set(BASE_FIELDS) - set(['label', 'help_text']))
+        # Remove "description" and "label" attributes
+        fields = list(set(BASE_FIELDS) - set(['label', 'description']))

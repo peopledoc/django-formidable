@@ -22,7 +22,16 @@ class ItemListSerializer(NestedListSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
 
+    description = serializers.CharField(required=False, allow_null=True,
+                                        source='help_text')
+
+    def to_internal_value(self, data):
+        # XXX FIX ME: temporary fix
+        if 'help_text' in data:
+            data['description'] = data.pop('help_text')
+        return super(ItemSerializer, self).to_internal_value(data)
+
     class Meta:
         model = Item
         list_serializer_class = ItemListSerializer
-        fields = ('value', 'label', 'help_text')
+        fields = ('value', 'label', 'description')

@@ -95,7 +95,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['type_id'], 'text')
         self.assertEquals(text_field['label'], 'test text')
         self.assertEquals(text_field['placeholder'], 'put your name here')
-        self.assertEquals(text_field['help_text'], 'your name')
+        self.assertEquals(text_field['description'], 'your name')
         self.assertEquals(text_field['defaults'], [])
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
@@ -111,7 +111,7 @@ class RenderSerializerTestCase(TestCase):
         self.assertEquals(text_field['type_id'], 'text')
         self.assertEquals(text_field['label'], 'test text 2')
         self.assertEquals(text_field['placeholder'], 'put your name here')
-        self.assertEquals(text_field['help_text'], 'your name')
+        self.assertEquals(text_field['description'], 'your name')
         self.assertNotIn('multiple', text_field)
         self.assertNotIn('items', text_field)
         self.assertIn('accesses', text_field)
@@ -155,7 +155,7 @@ class RenderSerializerTestCase(TestCase):
         data = serializer.data['fields'][0]
         for field in list(set(RENDER_BASE_FIELDS) - set(['label'])):
             self.assertIn(field, data)
-        self.assertEqual(data['help_text'],
+        self.assertEqual(data['description'],
                          'Please enter your information here')
 
     def test_title_field(self):
@@ -167,11 +167,11 @@ class RenderSerializerTestCase(TestCase):
         )
         serializer = FormidableSerializer(instance=self.form)
         data = serializer.data['fields'][0]
-        for field in set(RENDER_BASE_FIELDS) - set(['help_text']):
+        for field in set(RENDER_BASE_FIELDS) - set(['description']):
             self.assertIn(field, data)
         self.assertEqual(data['label'],
                          'This is on onboarding form.')
-        self.assertNotIn('help_text', data)
+        self.assertNotIn('description', data)
 
     def test_email_field(self):
         self.form.fields.all().delete()
@@ -560,7 +560,7 @@ class CreateSerializerTestCase(TestCase):
         {
             'slug': 'myhelptext',
             'type_id': 'help_text',
-            'help_text': 'Hello',
+            'description': 'Hello',
             'accesses': [],
         }
     ]
@@ -638,7 +638,7 @@ class CreateSerializerTestCase(TestCase):
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_without_items)
         serializer = FormidableSerializer(data=data)
-        self.assertTrue(serializer.is_valid())
+        self.assertTrue(serializer.is_valid(), serializer.errors)
         instance = serializer.save()
         self.assertEquals(instance.label, 'test_create')
         self.assertEquals(instance.description, 'description create')
@@ -733,7 +733,7 @@ class CreateSerializerTestCase(TestCase):
         data = copy.deepcopy(self.data)
         data['fields'] = self.fields_with_items
         serializer = FormidableSerializer(data=data)
-        self.assertTrue(serializer.is_valid())
+        self.assertTrue(serializer.is_valid(), serializer.errors)
         instance = serializer.save()
         self.assertEquals(instance.label, 'test_create')
         self.assertEquals(instance.description, 'description create')
@@ -1197,8 +1197,8 @@ class TestPresetsSerializerRender(TestCase):
         self.assertEqual(data['slug'], 'test')
         self.assertIn('label', data)
         self.assertEqual(data['label'], 'test')
-        self.assertIn('help_text', data)
-        self.assertEqual(data['help_text'], 'pick up the field to validated')
+        self.assertIn('description', data)
+        self.assertEqual(data['description'], 'pick up the field to validated')
         self.assertIn('types', data)
         self.assertEqual(len(data['types']), 1)
         self.assertIn('field', data['types'])
@@ -1229,8 +1229,8 @@ class TestPresetsSerializerRender(TestCase):
         self.assertEqual(data['slug'], 'test')
         self.assertIn('label', data)
         self.assertEqual(data['label'], 'test')
-        self.assertIn('help_text', data)
-        self.assertEqual(data['help_text'], 'pick up the value to compare')
+        self.assertIn('description', data)
+        self.assertEqual(data['description'], 'pick up the value to compare')
         self.assertIn('types', data)
         self.assertEqual(len(data['types']), 1)
         self.assertIn('value', data['types'])
@@ -1247,8 +1247,8 @@ class TestPresetsSerializerRender(TestCase):
         self.assertEqual(data['slug'], 'test')
         self.assertIn('label', data)
         self.assertEqual(data['label'], 'test')
-        self.assertIn('help_text', data)
-        self.assertEqual(data['help_text'], 'pick up the value to compare')
+        self.assertIn('description', data)
+        self.assertEqual(data['description'], 'pick up the value to compare')
         self.assertIn('types', data)
         self.assertEqual(len(data['types']), 2)
         self.assertIn('value', data['types'])
@@ -1264,3 +1264,32 @@ class TestPresetsSerializerRender(TestCase):
         data = serializer.data
         self.assertIn('arguments', data)
         self.assertEqual(len(data['arguments']), 2)
+
+
+class CreateSerializerMigrationTestCase(TestCase):
+    data = {
+        'label': 'test_create',
+        'description': 'description create',
+        'fields': [
+            {
+                'type_id': 'dropdown',
+                'slug': 'dropdown-input', 'label': 'dropdown label',
+                'help_text': 'Field Help',
+                'multiple': False,
+                'items': [
+                    {'value': 'tutu', 'label': 'toto',
+                     'help_text': 'Item Help'},
+                    {'value': 'tata', 'label': 'plop'},
+                ],
+                'accesses': []
+            }
+        ]
+    }
+
+    def test_create(self):
+        serializer = FormidableSerializer(data=self.data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        self.assertEqual(form.fields.all()[0].help_text, 'Field Help')
+        self.assertEqual(form.fields.all()[0].items.all()[0].help_text,
+                         'Item Help')
