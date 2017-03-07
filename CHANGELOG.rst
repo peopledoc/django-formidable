@@ -2,12 +2,12 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.8.1 (2017-03-07)
+==========================
 
 - Fix: Serializers don't allow empty (blank) description on Field and Item (#194).
 
-Release 0.8.0 (2016-03-06)
+Release 0.8.0 (2017-03-06)
 ==========================
 
 * [ci] Split tox jobs into CircleCI configuration (#189).
