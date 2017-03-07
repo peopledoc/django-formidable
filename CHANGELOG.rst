@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+
+- Nothing here yet
+
 Release 0.8.1 (2017-03-07)
 ==========================
 
