@@ -23,7 +23,7 @@ class ItemListSerializer(NestedListSerializer):
 class ItemSerializer(serializers.ModelSerializer):
 
     description = serializers.CharField(required=False, allow_null=True,
-                                        source='help_text')
+                                        allow_blank=True, source='help_text')
 
     def to_internal_value(self, data):
         # XXX FIX ME: temporary fix
