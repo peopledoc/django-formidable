@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Nothing here yet
+- Fix: Serializers don't allow empty (blank) description on Field and Item (#194).
 
 Release 0.8.0 (2016-03-06)
 ==========================

@@ -453,6 +453,21 @@ class CreateSerializerTestCase(TestCase):
         }
     ]
 
+    fields_with_items_empty_description = [
+        {
+            'type_id': 'dropdown',
+            'slug': 'dropdown-input', 'label': 'dropdown label',
+            'multiple': False, 'items': [
+                {'value': 'tutu', 'label': 'toto', 'description': ''},
+                {'value': 'tata', 'label': 'plop'},
+            ],
+            'description': '',
+            'accesses': [{
+                'access_id': 'padawan', 'level': 'REQUIRED'
+            }]
+        }
+    ]
+
     fields_with_validation = [
         {
             'slug': 'text_input',
@@ -750,6 +765,22 @@ class CreateSerializerTestCase(TestCase):
             field.items.filter(value='tata', label='plop').exists()
         )
         self.assertEquals(field.accesses.count(), 5)
+
+    def test_create_empty_description(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = self.fields_with_items_empty_description
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
+        self.assertEquals(instance.label, 'test_create')
+        self.assertEquals(instance.description, 'description create')
+        self.assertEquals(instance.fields.count(), 1)
+        field = instance.fields.first()
+        self.assertEquals(field.slug, 'dropdown-input')
+        self.assertEquals(field.help_text, '')
+        self.assertEquals(field.items.count(), 2)
+        item = field.items.first()
+        self.assertEquals(item.help_text, '')
 
     def test_create_field_without_items(self):
         data = copy.deepcopy(self.data)

@@ -68,7 +68,7 @@ class FieldSerializer(WithNestedSerializer):
     order = serializers.IntegerField(write_only=True, required=False)
     defaults = DefaultSerializer(many=True, required=False)
     description = serializers.CharField(required=False, allow_null=True,
-                                        source='help_text')
+                                        allow_blank=True, source='help_text')
 
     nested_objects = ['accesses', 'validations', 'defaults']
 
@@ -136,7 +136,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
     items = ItemSerializer(many=True, required=False)
     defaults = DefaultSerializer(many=True, required=False)
     description = serializers.CharField(required=False, allow_null=True,
-                                        source='help_text')
+                                        allow_blank=True, source='help_text')
 
     class Meta:
         list_serializer_class = ListContextFieldSerializer
