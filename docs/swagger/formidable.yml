@@ -144,20 +144,6 @@ paths:
           schema:
             $ref: '#/definitions/BuilderForm'
 
-  /client/fake_path/forms/{id}/:
-    get:
-      summary: Get a contextualized form
-      parameters:
-        - name: id
-          in: path
-          type: integer
-          required: true
-      responses:
-        200:
-          description: A form
-          schema:
-            $ref: '#/definitions/InputForm'
-
   /forms/{id}/validate/:
     get:
       summary: Validate a form

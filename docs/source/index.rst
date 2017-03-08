@@ -9,6 +9,7 @@ Contents:
    intro
    install
    forms
+   api
    callbacks
    dev
    translations
