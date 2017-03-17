@@ -244,6 +244,41 @@ definitions:
         items:
           type: string
 
+  ConditionTest:
+    type: object
+    description: Condition
+    properties:
+      field_id:
+        type: string
+        description: Reference field for the comparison
+      operator:
+        type: string
+        enum:
+          - eq
+      values:
+        type: array
+        items:
+          type: string
+
+  Condition:
+    type: object
+    description: TODO
+    properties:
+      name:
+          type: string
+      field_ids:
+          type: array
+          items:
+              type: string
+      action:
+          type: string
+          enum:
+              - display_iff
+      tests:
+          type: array
+          items:
+            $ref: '#/definitions/ConditionTest'
+
   Form:
     type: object
     description: The central piece of this project
@@ -267,6 +302,10 @@ definitions:
         description: List of presets used in the form
         items:
           $ref: '#/definitions/FormPreset'
+      conditions:
+        type: array
+        items:
+          $ref: '#/definitions/Condition'
 
   BuilderForm:
     allOf:
