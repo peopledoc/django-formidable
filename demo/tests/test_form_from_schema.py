@@ -29,7 +29,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('charfield', form.fields)
         charfield = form.fields['charfield']
         self.assertEqual(type(charfield), forms.CharField)
@@ -44,7 +45,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('charfield', form.fields)
         charfield = form.fields['charfield']
         self.assertEqual(type(charfield), forms.CharField)
@@ -59,7 +61,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('paragraph', form.fields)
         charfield = form.fields['paragraph']
         self.assertEqual(type(charfield), forms.CharField)
@@ -76,7 +79,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('checkbox', form.fields)
         checkbox = form.fields['checkbox']
         self.assertEqual(type(checkbox), forms.BooleanField)
@@ -91,7 +95,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('email', form.fields)
         email = form.fields['email']
         self.assertEqual(type(email), forms.EmailField)
@@ -106,7 +111,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('integer', form.fields)
         integer = form.fields['integer']
         self.assertEqual(type(integer), forms.IntegerField)
@@ -121,7 +127,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('file_', form.fields)
         file_ = form.fields['file_']
         self.assertEqual(type(file_), forms.FileField)
@@ -136,7 +143,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('date', form.fields)
         date = form.fields['date']
         self.assertEqual(type(date), forms.DateField)
@@ -152,7 +160,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('weapon', form.fields)
         self.assertEqual(type(form.fields['weapon']), forms.ChoiceField)
         self.assertEqual(type(form.fields['weapon'].widget), forms.Select)
@@ -170,7 +179,8 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
-        form = get_dynamic_form_class_from_schema(schema)()
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
         self.assertIn('weapon', form.fields)
         self.assertEqual(
             type(form.fields['weapon']), forms.MultipleChoiceField
