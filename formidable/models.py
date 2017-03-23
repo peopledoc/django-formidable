@@ -4,11 +4,13 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 from formidable import constants
 from formidable.register import FieldSerializerRegister
 
 
+@python_2_unicode_compatible
 class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
@@ -58,6 +60,7 @@ class Formidable(models.Model):
         return '{formidable.label}'.format(formidable=self)
 
 
+@python_2_unicode_compatible
 class Field(models.Model):
 
     class Meta:
@@ -87,6 +90,7 @@ class Field(models.Model):
         return '{field.label}'.format(field=self)
 
 
+@python_2_unicode_compatible
 class Default(models.Model):
 
     value = models.CharField(max_length=256)
@@ -96,6 +100,7 @@ class Default(models.Model):
         return '{default.value}'.format(default=self)
 
 
+@python_2_unicode_compatible
 class Item(models.Model):
     field = models.ForeignKey(Field, related_name='items')
     value = models.CharField(max_length=256)
@@ -107,6 +112,7 @@ class Item(models.Model):
         return '{item.label}: {item.value}'.format(item=self)
 
 
+@python_2_unicode_compatible
 class Access(models.Model):
 
     class Meta:
@@ -124,6 +130,7 @@ class Access(models.Model):
             access=self)
 
 
+@python_2_unicode_compatible
 class Validation(models.Model):
     field = models.ForeignKey(Field, related_name='validations')
     value = models.CharField(max_length=256)
@@ -135,6 +142,7 @@ class Validation(models.Model):
             validation=self)
 
 
+@python_2_unicode_compatible
 class Preset(models.Model):
     form = models.ForeignKey(Formidable, related_name='presets')
     slug = models.CharField(max_length=128)
@@ -144,6 +152,7 @@ class Preset(models.Model):
         return '{preset.slug}'.format(preset=self)
 
 
+@python_2_unicode_compatible
 class PresetArg(models.Model):
     preset = models.ForeignKey(Preset, related_name='arguments')
     slug = models.CharField(max_length=128)
