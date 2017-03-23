@@ -241,6 +241,20 @@ class TestAccess(APITestCase):
                 self.assertEqual(access['preview_as'], 'FORM')
 
 
+class TestPresetsList(APITestCase):
+
+    def test_get(self):
+        response = self.client.get(reverse('formidable:presets_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(len(response.data) > 2)
+        for preset in response.data:
+            self.assertIn('slug', preset)
+            self.assertIn('label', preset)
+            self.assertIn('description', preset)
+            self.assertIn('message', preset)
+            self.assertIn('arguments', preset)
+
+
 class TestChain(APITestCase):
 
     def setUp(self):

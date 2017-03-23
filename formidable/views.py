@@ -15,7 +15,7 @@ from formidable.forms.validations.presets import presets_register
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer
-from formidable.serializers.presets import PresetsSerializer
+from formidable.serializers.presets import PresetsClassSerializer
 from rest_framework import exceptions
 from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
@@ -213,12 +213,9 @@ class PresetsList(six.with_metaclass(MetaClassView, APIView)):
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
     def get(self, request, format=None):
-        presets_declarations = [
-            klass([]) for klass in presets_register.values()
-        ]
-        serializer = PresetsSerializer(
+        serializer = PresetsClassSerializer(
             many=True,
-            instance=presets_declarations
+            instance=presets_register.values()
         )
         return Response(serializer.data)
 
