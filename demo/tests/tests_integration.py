@@ -27,6 +27,21 @@ else:
     from mock import patch
 
 
+class FormidableAPITestCase(APITestCase):
+
+    def check_errors_format(self, data):
+        # keys must be in {'code', 'message', 'errors'}
+        # 'errors' is optional
+        self.assertFalse(set(data.keys()) - {'code', 'message', 'errors'})
+        self.assertIn('code', data)
+        self.assertIn('message', data)
+        for error in data.get('errors', []):
+            self.assertFalse(set(error.keys()) - {'code', 'message', 'field'})
+            # 'field' is optional
+            self.assertIn('code', error)
+            self.assertIn('message', error)
+
+
 class MyTestForm(FormidableForm):
 
     name = fields.CharField(label='Name', accesses={'jedi': 'REQUIRED'})
@@ -70,7 +85,7 @@ class MyTestFormPresets(MyTestForm):
         ]
 
 
-class CreateFormTestCase(APITestCase):
+class CreateFormTestCase(FormidableAPITestCase):
 
     def test_simple(self):
         initial_count = Formidable.objects.count()
@@ -99,7 +114,8 @@ class CreateFormTestCase(APITestCase):
         res = self.client.post(
             reverse('formidable:form_create'), data, format='json'
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)
+        self.check_errors_format(res.data)
 
     def test_with_items_in_fields(self):
         initial_count = Formidable.objects.count()
@@ -120,7 +136,8 @@ class CreateFormTestCase(APITestCase):
             reverse('formidable:form_create'), form_data_without_items,
             format='json'
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)
+        self.check_errors_format(res.data)
 
     def test_with_unknown_accesses(self):
         form_data_copy = deepcopy(form_data)
@@ -130,10 +147,11 @@ class CreateFormTestCase(APITestCase):
             reverse('formidable:form_create'), form_data_copy,
             format='json'
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)
+        self.check_errors_format(res.data)
 
 
-class UpdateFormTestCase(APITestCase):
+class UpdateFormTestCase(FormidableAPITestCase):
 
     def setUp(self):
         super(UpdateFormTestCase, self).setUp()
@@ -203,7 +221,8 @@ class UpdateFormTestCase(APITestCase):
         data['fields'] *= 2
         res = self.client.put(self.edit_url, data, format='json')
         # expect validation error
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)
+        self.check_errors_format(res.data)
 
     def test_delete_field_on_update(self):
         self.form.fields.create(
@@ -270,7 +289,7 @@ class UpdateFormTestCase(APITestCase):
         self.assertEquals(res.status_code, 200, res)
 
 
-class TestAccess(APITestCase):
+class TestAccess(FormidableAPITestCase):
 
     def test_get(self):
         response = self.client.get(reverse('formidable:accesses_list'))
@@ -292,7 +311,7 @@ class TestAccess(APITestCase):
                 self.assertEqual(access['preview_as'], 'FORM')
 
 
-class TestPresetsList(APITestCase):
+class TestPresetsList(FormidableAPITestCase):
 
     def test_get(self):
         response = self.client.get(reverse('formidable:presets_list'))
@@ -306,10 +325,10 @@ class TestPresetsList(APITestCase):
             self.assertIn('arguments', preset)
 
 
-class TestChain(APITestCase):
+class TestChain(FormidableAPITestCase):
 
     def setUp(self):
-        super(APITestCase, self).setUp()
+        super(FormidableAPITestCase, self).setUp()
         self.form = MyTestForm.to_formidable(label='Jedi Form')
         self.assertTrue(self.form.pk)
 
@@ -337,7 +356,7 @@ class TestChain(APITestCase):
         )
 
 
-class TestContextFormEndPoint(APITestCase):
+class TestContextFormEndPoint(FormidableAPITestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -378,7 +397,7 @@ class MyFormPresets(MyForm):
         ]
 
 
-class TestValidationEndPoint(APITestCase):
+class TestValidationEndPoint(FormidableAPITestCase):
 
     def setUp(self):
         super(TestValidationEndPoint, self).setUp()
