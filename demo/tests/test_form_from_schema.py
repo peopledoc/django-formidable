@@ -69,6 +69,28 @@ class TestFormFromSchema(TestCase):
         self.assertEqual(type(charfield.widget), forms.Textarea)
         self.assertFalse(charfield.required)
 
+    def test_help_text(self):
+        class TestHelpTextField(FormidableForm):
+            """
+            Test help text
+
+            """
+            helptext = fields.HelpTextField(text='My Help Text')
+
+        formidable = TestHelpTextField.to_formidable(label='label')
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
+
+        self.assertIn('helptext', form.fields)
+        helptext = form.fields['helptext']
+        self.assertEqual(type(helptext), fields.HelpTextField)
+        self.assertEqual(type(helptext.widget), widgets.HelpTextWidget)
+        self.assertFalse(helptext.required)
+
     def test_checkbox_field(self):
         class TestCheckBoxField(FormidableForm):
             """ Test checkbox """

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
+from formidable.forms import fields
 from formidable.forms.field_builder import (
     FieldBuilder as FB, FormFieldFactory as FF
 )
@@ -45,6 +46,16 @@ class FieldBuilder(FB):
     def get_accesses(self, role):
         # No need to compute accesses, the schema is already contextualized.
         return None
+
+
+class HelpTextBuilder(FieldBuilder):
+
+    field_class = fields.HelpTextField
+
+    def get_field_kwargs(self):
+        kwargs = super(HelpTextBuilder, self).get_field_kwargs()
+        kwargs['text'] = kwargs.pop('help_text')
+        return kwargs
 
 
 class TextFieldBuilder(FieldBuilder):
@@ -131,6 +142,7 @@ class FormFieldFactory(FF):
         'date': DateFieldBuilder,
         'dropdown': DropdownFieldBuilder,
         'radios': RadioFieldBuilder,
+        'help_text': HelpTextBuilder,
     }
 
     def get_type_id(self, field):
