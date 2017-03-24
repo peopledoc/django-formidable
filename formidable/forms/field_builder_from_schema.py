@@ -88,10 +88,8 @@ class ChoiceFieldBuilder(FieldBuilder):
         return kwargs
 
     def get_choices(self):
-        choices = []
         for item in self.field.get('items', []):
-            choices.append((item['value'], item['label']))
-        return choices
+            yield (item['value'], item['label'])
 
 
 class DropdownFieldBuilder(ChoiceFieldBuilder):
