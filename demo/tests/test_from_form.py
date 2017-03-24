@@ -417,6 +417,7 @@ class TestFromDjangoForm(TestCase):
 
         initial_count = Formidable.objects.count()
         form = MyForm.to_formidable(label='form-with-radios')
+
         self.assertEquals(initial_count + 1, Formidable.objects.count())
         self.assertTrue(form.pk)
         self.assertEquals(form.fields.count(), 1)

@@ -179,6 +179,7 @@ class TestFormFromSchema(TestCase):
         schema = ContextFormSerializer(instance=formidable, context={
             'role': 'jedi'
         }).data
+
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('weapon', form.fields)
@@ -190,6 +191,63 @@ class TestFormFromSchema(TestCase):
         )
         self.assertIn(('gun', 'Eagles'), form.fields['weapon'].choices)
         self.assertIn(('sword', 'Excalibur'), form.fields['weapon'].choices)
+
+    def test_radio_field(self):
+        class TestRadioField(FormidableForm):
+            radioinput = fields.ChoiceField(
+                widget=widgets.RadioSelect,
+                choices=(('yes', 'Yes'), ('no', 'No')),
+            )
+
+        formidable = TestRadioField.to_formidable(label='form-with-radio')
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
+
+        self.assertIn('radioinput', form.fields)
+        self.assertEqual(
+            type(form.fields['radioinput']), forms.ChoiceField
+        )
+        self.assertEqual(
+            type(form.fields['radioinput'].widget), forms.RadioSelect
+        )
+        self.assertIn(('yes', 'Yes'), form.fields['radioinput'].choices)
+        self.assertIn(('no', 'No'), form.fields['radioinput'].choices)
+
+    def test_checkbox_multiple_field(self):
+
+        choices = (
+            ('BELGIUM', 'Chouffe'), ('GERMANY', 'Paulaner'),
+            ('FRANCE', 'Antidote')
+        )
+
+        class TestCheckboxesField(FormidableForm):
+
+            checkboxesinput = fields.MultipleChoiceField(
+                widget=widgets.CheckboxSelectMultiple,
+                choices=choices,
+            )
+
+        formidable = TestCheckboxesField.to_formidable(label='checkboxes')
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
+
+        self.assertIn('checkboxesinput', form.fields)
+
+        checkboxes = form.fields['checkboxesinput']
+
+        self.assertEqual(type(checkboxes), forms.MultipleChoiceField)
+        self.assertEqual(type(checkboxes.widget), forms.CheckboxSelectMultiple)
+        self.assertIn(('BELGIUM', 'Chouffe'), checkboxes.choices)
+        self.assertIn(('FRANCE', 'Antidote'), checkboxes.choices)
+        self.assertIn(('GERMANY', 'Paulaner'), checkboxes.choices)
 
     @freeze_time('2021-01-01')
     def test_date_field_with_validation(self):

@@ -107,18 +107,30 @@ class DropdownFieldBuilder(ChoiceFieldBuilder):
         return super(DropdownFieldBuilder, self).get_widget_class()
 
 
+class RadioFieldBuilder(ChoiceFieldBuilder):
+
+    widget_class = forms.RadioSelect
+
+
+class CheckboxesFieldBuilder(ChoiceFieldBuilder):
+
+    field_class = forms.MultipleChoiceField
+    widget_class = forms.CheckboxSelectMultiple
+
+
 class FormFieldFactory(FF):
 
     field_map = {
         'text': TextFieldBuilder,
         'paragraph': ParagraphFieldBuilder,
         'checkbox': CheckboxFieldBuilder,
+        'checkboxes': CheckboxesFieldBuilder,
         'email': EmailFieldBuilder,
         'number': IntegerFieldBuilder,
         'file': FileFieldBuilder,
         'date': DateFieldBuilder,
         'dropdown': DropdownFieldBuilder,
-
+        'radios': RadioFieldBuilder,
     }
 
     def get_type_id(self, field):
