@@ -86,6 +86,15 @@ class CreateFormTestCase(APITestCase):
                 field.accesses.filter(access_id=access, level=level).exists()
             )
 
+    def test_fields_slug(self):
+        data = deepcopy(form_data)
+        # duplicate field
+        data['fields'] *= 2
+        res = self.client.post(
+            reverse('formidable:form_create'), data, format='json'
+        )
+        self.assertEquals(res.status_code, 400)
+
     def test_with_items_in_fields(self):
         initial_count = Formidable.objects.count()
         res = self.client.post(
@@ -178,6 +187,17 @@ class UpdateFormTestCase(APITestCase):
         form = Formidable.objects.order_by('pk').last()
         self.assertEquals(form.pk, self.form.pk)
         self.assertEquals(form.fields.count(), 2)
+
+    def test_duplicate_items_update(self):
+        # create a form with items
+        data = deepcopy(form_data_items)
+        res = self.client.put(self.edit_url, data, format='json')
+        self.assertEquals(res.status_code, 200)
+        # update items with duplicate entries
+        data['fields'] *= 2
+        res = self.client.put(self.edit_url, data, format='json')
+        # expect validation error
+        self.assertEquals(res.status_code, 400)
 
     def test_delete_field_on_update(self):
         self.form.fields.create(
