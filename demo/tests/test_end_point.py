@@ -14,7 +14,8 @@ from formidable.serializers.forms import FormidableSerializer
 from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
 from formidable.serializers.presets import (
-    PresetsSerializer, PresetsArgsSerializer, PresetsArgSerializerWithItems,
+    PresetsClassSerializer, PresetsArgsSerializer,
+    PresetsArgSerializerWithItems,
 )
 from formidable.forms.validations.presets import (
     ConfirmationPresets, ComparisonPresets
@@ -1165,7 +1166,7 @@ class UpdateFormTestCase(TestCase):
         self.assertEquals(field.items.count(), 0)
 
 
-class TestPresetsSerializerRender(TestCase):
+class TestPresetsClassSerializerRender(TestCase):
 
     class PresetsTest(presets.Presets):
 
@@ -1193,8 +1194,7 @@ class TestPresetsSerializerRender(TestCase):
             )
 
     def test_render_preset_attr(self):
-        preset_instance = self.PresetsTest([])
-        serializer = PresetsSerializer(preset_instance)
+        serializer = PresetsClassSerializer(self.PresetsTest)
         self.assertTrue(serializer.data)
         data = serializer.data
         self.assertIn('label', data)
@@ -1205,16 +1205,6 @@ class TestPresetsSerializerRender(TestCase):
         self.assertEqual(data['description'], 'this is a test')
         self.assertIn('message', data)
         self.assertEqual(data['message'], 'thrown message when error test')
-
-    def test_render_class_attr(self):
-        preset_instance = self.PresetsTest([])
-        preset_instance.description = 'oh no !'
-        serializer = PresetsSerializer(preset_instance)
-        self.assertTrue(serializer.data)
-        data = serializer.data
-        self.assertIn('description', data)
-        self.assertNotEqual(data['description'], 'oh no !')
-        self.assertEqual(data['description'], 'this is a test')
 
     def test_render_preset_field_arg(self):
         field_arg = presets.PresetFieldArgument(
@@ -1286,11 +1276,7 @@ class TestPresetsSerializerRender(TestCase):
         self.assertIn('field', data['types'])
 
     def test_render_preset_with_argument(self):
-        preset_instance = self.PresetsTestWithArgs(arguments=[
-            PresetArg(slug='lhs', field_id='foo'),
-            PresetArg(slug='rhs', value='toto'),
-        ])
-        serializer = PresetsSerializer(preset_instance)
+        serializer = PresetsClassSerializer(self.PresetsTestWithArgs)
         self.assertTrue(serializer.data)
         data = serializer.data
         self.assertIn('arguments', data)

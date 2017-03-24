@@ -13,22 +13,6 @@ from rest_framework.serializers import (
 )
 
 
-class ClassAttrSerializer(object):
-
-    def get_attribute(self, instance):
-        return super(ClassAttrSerializer, self).get_attribute(
-            instance.__class__
-        )
-
-
-class CharFieldClassAttr(ClassAttrSerializer, fields.CharField):
-    pass
-
-
-class SlugFieldClassAttr(ClassAttrSerializer, fields.SlugField):
-    pass
-
-
 class PresetsArgsSerializerRegister(dict):
 
     lookup_field = 'has_items'
@@ -48,7 +32,7 @@ class PresetArgsListSerializer(ListSerializer):
         super(PresetArgsListSerializer, self).__init__(*args, **kwargs)
 
     def get_attribute(self, instance):
-        return instance.__class__._declared_arguments.values()
+        return instance._declared_arguments.values()
 
 
 class PresetsArgsSerializer(Serializer):
@@ -68,12 +52,12 @@ class PresetsArgSerializerWithItems(PresetsArgsSerializer):
     items = fields.DictField()
 
 
-class PresetsSerializer(Serializer):
+class PresetsClassSerializer(Serializer):
 
-    slug = SlugFieldClassAttr()
-    label = CharFieldClassAttr()
-    description = CharFieldClassAttr()
-    message = CharFieldClassAttr(source='default_message')
+    slug = fields.SlugField()
+    label = fields.CharField()
+    description = fields.CharField()
+    message = fields.CharField(source='default_message')
     arguments = PresetsArgsSerializer(many=True)
 
 
