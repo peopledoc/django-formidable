@@ -36,6 +36,7 @@ class AccessListSerializer(NestedListSerializer):
     parent_name = 'field_id'
 
     def validate(self, data):
+        data = super(AccessListSerializer, self).validate(data)
         accesses_id = [accesses['access_id'] for accesses in data]
 
         for access in get_accesses():
