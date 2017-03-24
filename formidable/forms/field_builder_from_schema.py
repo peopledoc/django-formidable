@@ -58,6 +58,16 @@ class HelpTextBuilder(FieldBuilder):
         return kwargs
 
 
+class SeparatorBuilder(FieldBuilder):
+
+    field_class = fields.SeparatorField
+
+
+class TitleFielBuilder(FieldBuilder):
+
+    field_class = fields.TitleField
+
+
 class TextFieldBuilder(FieldBuilder):
 
     widget_class = forms.TextInput
@@ -143,6 +153,8 @@ class FormFieldFactory(FF):
         'dropdown': DropdownFieldBuilder,
         'radios': RadioFieldBuilder,
         'help_text': HelpTextBuilder,
+        'separator': SeparatorBuilder,
+        'title': TitleFielBuilder,
     }
 
     def get_type_id(self, field):

@@ -91,6 +91,50 @@ class TestFormFromSchema(TestCase):
         self.assertEqual(type(helptext.widget), widgets.HelpTextWidget)
         self.assertFalse(helptext.required)
 
+    def test_separator(self):
+        class TestSeparatorField(FormidableForm):
+            """
+            Test for separator
+
+            """
+            separator = fields.SeparatorField()
+
+        formidable = TestSeparatorField.to_formidable(label='label')
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
+
+        self.assertIn('separator', form.fields)
+        separator = form.fields['separator']
+        self.assertEqual(type(separator), fields.SeparatorField)
+        self.assertEqual(type(separator.widget), widgets.SeparatorWidget)
+        self.assertFalse(separator.required)
+
+    def test_title(self):
+        class TestTitleField(FormidableForm):
+            """
+            Test for separator
+
+            """
+            title = fields.TitleField()
+
+        formidable = TestTitleField.to_formidable(label='label')
+        schema = ContextFormSerializer(instance=formidable, context={
+            'role': 'jedi'
+        }).data
+
+        form_class = get_dynamic_form_class_from_schema(schema)
+        form = form_class()
+
+        self.assertIn('title', form.fields)
+        title = form.fields['title']
+        self.assertEqual(type(title), fields.TitleField)
+        self.assertEqual(type(title.widget), widgets.TitleWidget)
+        self.assertFalse(title.required)
+
     def test_checkbox_field(self):
         class TestCheckBoxField(FormidableForm):
             """ Test checkbox """
