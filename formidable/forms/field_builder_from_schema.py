@@ -3,26 +3,28 @@ from django import forms
 
 from formidable.forms import fields
 from formidable.forms.field_builder import (
-    FieldBuilder as FB, FormFieldFactory as FF
+    FieldBuilder as BaseFieldBuilder,
+    FormFieldFactory as BaseFormFieldFactory
 )
 from formidable.validators import (
-    DateValidatorFactory as DVF, ValidatorFactory as VF
+    DateValidatorFactory as BaseDateValidatorFactory,
+    ValidatorFactory as BaseValidatorFactory
 )
 
 
-class ValidatorFactory(VF):
+class ValidatorFactory(BaseValidatorFactory):
 
     def extract_validation_attribute(self, validation):
         return validation['type'], validation['message'], validation['value']
 
 
-class DateValidatorFactory(DVF):
+class DateValidatorFactory(BaseDateValidatorFactory):
 
     def extract_validation_attribute(self, validation):
         return validation['type'], validation['message'], validation['value']
 
 
-class FieldBuilder(FB):
+class FieldBuilder(BaseFieldBuilder):
 
     field_class = forms.CharField
     widget_class = None
@@ -79,22 +81,27 @@ class ParagraphFieldBuilder(FieldBuilder):
 
 
 class CheckboxFieldBuilder(FieldBuilder):
+
     field_class = forms.BooleanField
 
 
 class EmailFieldBuilder(FieldBuilder):
+
     field_class = forms.EmailField
 
 
 class IntegerFieldBuilder(FieldBuilder):
+
     field_class = forms.IntegerField
 
 
 class FileFieldBuilder(FieldBuilder):
+
     field_class = forms.FileField
 
 
 class DateFieldBuilder(FieldBuilder):
+
     field_class = forms.DateField
     validator_factory_class = DateValidatorFactory
 
@@ -139,7 +146,7 @@ class CheckboxesFieldBuilder(ChoiceFieldBuilder):
     widget_class = forms.CheckboxSelectMultiple
 
 
-class FormFieldFactory(FF):
+class FormFieldFactory(BaseFormFieldFactory):
 
     field_map = {
         'text': TextFieldBuilder,
