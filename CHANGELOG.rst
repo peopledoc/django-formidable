@@ -5,7 +5,9 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Nothing here yet
+* Enforce unicity of keys in NestedListSerializers (#202)
+* Define __unicode__ and __str__ on models (#200)
+* Fix regression on presets_lists endpoint (#199)
 
 Release 0.8.1 (2017-03-07)
 ==========================

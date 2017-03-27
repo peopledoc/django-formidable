@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import logging
 
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ListSerializer
 
 logger = logging.getLogger(__name__)
@@ -49,6 +50,21 @@ class NestedListSerializer(ListSerializer):
         created_ids = validated_ids - db_ids
         deleted_ids = db_ids - validated_ids
         return created_ids, updated_ids, deleted_ids
+
+    def validate(self, data):
+        """
+        ensure that field_id is unique among children
+        """
+        data = super(NestedListSerializer, self).validate(data)
+
+        if self.field_id:
+            if len(data) != len(set(f[self.field_id] for f in data)):
+                msg = 'The fields {field_id} must make a unique set.'.format(
+                        field_id=self.field_id
+                )
+                raise ValidationError(msg, code='unique')
+
+        return data
 
 
 class NestedListSerializerDummyUpdate(NestedListSerializer):
