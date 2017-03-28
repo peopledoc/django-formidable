@@ -24,7 +24,7 @@ setup(
     author_email='guillaume.camera@people-doc.com, '
                  'guillaume.gerard@people-doc.com',
     install_requires=[
-        'Django<1.10',
+        'Django',
         'djangorestframework',
         'markdown',
         'python-dateutil',

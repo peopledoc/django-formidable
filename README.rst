@@ -10,13 +10,11 @@ django-formidable
 django-formidable is a full django application which allows you to create,
 edit, delete and use forms.
 
-Warning
-=======
+Warnings
+========
 
-Python Compatibility : python2.7 (tox says it's compliant up to
-python3.2, but I don't)
-Django compatibility : django1.8
-
+* Python Compatibility : Python 2.7, 3.4, 3.5 (3.3, but only with Django 1.8)
+* Django compatibility : Django 1.8, 1.9, 1.10
 
 Licence
 =======
