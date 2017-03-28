@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.8.2 (2017-03-28)
+==========================
 
 * Enforce unicity of keys in NestedListSerializers (#202)
 * Define __unicode__ and __str__ on models (#200)
