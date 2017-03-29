@@ -2,8 +2,10 @@
 ChangeLog
 =========
 
-Master (unreleased)
+master (unreleased)
 ===================
+
+* Added Django 1.10 support (#203).
 
 Release 0.8.2 (2017-03-28)
 ==========================
