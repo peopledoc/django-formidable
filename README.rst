@@ -13,7 +13,7 @@ edit, delete and use forms.
 Warnings
 ========
 
-* Python Compatibility : Python 2.7, 3.4, 3.5 (3.3, but only with Django 1.8)
+* Python Compatibility : Python 2.7, 3.4, 3.5
 * Django compatibility : Django 1.8, 1.9, 1.10
 
 Licence
