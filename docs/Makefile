@@ -58,7 +58,7 @@ clean:
 		source/_static/swagger-ui
 
 .PHONY: html
-html:
+html: collectstatic
 	PYTHONPATH='..' DJANGO_SETTINGS_MODULE='demo.settings' $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

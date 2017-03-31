@@ -7,6 +7,7 @@ master (unreleased)
 
 * Added Django 1.10 support (#203).
 * Dropped Python 3.3 support (#207).
+* Fixed the swagger doc generation and rendering (#210).
 
 Release 0.8.2 (2017-03-28)
 ==========================
