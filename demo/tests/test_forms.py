@@ -150,6 +150,18 @@ class TestDynamicForm(TestCase):
         email = form.fields['email']
         self.assertEqual(type(email), forms.EmailField)
 
+    def test_checkbox(self):
+        self.form.fields.create(
+            slug='checkbox', type_id='checkbox', label='checkbox',
+            order=self.form.get_next_field_order(),
+        )
+
+        form_class = self.form.get_django_form_class()
+        form = form_class()
+        self.assertIn('checkbox', form.fields)
+        checkbox = form.fields['checkbox']
+        self.assertEqual(type(checkbox), forms.BooleanField)
+
     def test_checkboxes(self):
         self.form.fields.create(
             slug='checkboxes', type_id='checkboxes', label='checkboxes',
@@ -159,8 +171,8 @@ class TestDynamicForm(TestCase):
         form_class = self.form.get_django_form_class()
         form = form_class()
         self.assertIn('checkboxes', form.fields)
-        email = form.fields['checkboxes']
-        self.assertEqual(type(email), forms.MultipleChoiceField)
+        checkboxes = form.fields['checkboxes']
+        self.assertEqual(type(checkboxes), forms.MultipleChoiceField)
 
     def test_dropdown_input_multiple(self):
         drop = self.form.fields.create(
@@ -202,16 +214,25 @@ class TestDynamicForm(TestCase):
         self.assertTrue(radio.choices)
         self.assertEquals(len(radio.choices), 2)
 
-    def test_email_field(self):
-        self.form.fields.create(
-            slug='input-email', type_id='email', label='your email',
+    def test_radio_buttons(self):
+        field = self.form.fields.create(
+            slug='input-radio-buttons', type_id='radios_buttons',
+            label='chose you weapon',
             order=self.form.get_next_field_order()
         )
+        for key in ['sword', 'gun']:
+            field.items.create(
+                value=key, label=key, order=field.get_next_order()
+            )
+
         form_class = self.form.get_django_form_class()
         form = form_class()
-        self.assertIn('input-email', form.fields)
-        email = form.fields['input-email']
-        self.assertEquals(type(email), forms.EmailField)
+        self.assertIn('input-radio-buttons', form.fields)
+        radio = form.fields['input-radio-buttons']
+        self.assertEquals(type(radio), forms.ChoiceField)
+        self.assertEquals(type(radio.widget), forms.RadioSelect)
+        self.assertTrue(radio.choices)
+        self.assertEquals(len(radio.choices), 2)
 
     def test_date_field(self):
         self.form.fields.create(

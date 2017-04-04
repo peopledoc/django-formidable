@@ -133,7 +133,7 @@ class ParagraphFieldBuilder(FieldBuilder):
 
 class CheckboxFieldBuilder(FieldBuilder):
 
-    widget_class = forms.CheckboxInput
+    field_class = forms.BooleanField
 
 
 class EmailFieldBuilder(FieldBuilder):
