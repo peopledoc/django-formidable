@@ -20,6 +20,12 @@ from formidable import validators, constants
 
 from . import form_data, form_data_items
 
+import six
+if six.PY3:
+    from unittest.mock import patch
+else:
+    from mock import patch
+
 
 class MyTestForm(FormidableForm):
 
@@ -237,6 +243,31 @@ class UpdateFormTestCase(APITestCase):
             self.client.get(reverse(
                 'formidable:form_detail', args=[formidable_form.pk])
             )
+
+    def test_non_regression_database_ordering(self):
+        """
+        Form update relies on database ordering (#215)
+        """
+        data = deepcopy(form_data)
+        data['fields'][0]['slug'] = 'aaa'
+        data['fields'].append(deepcopy(data['fields'][0]))
+        data['fields'][1]['slug'] = 'BBB'
+        data['fields'].append(deepcopy(data['fields'][0]))
+        data['fields'][2]['slug'] = 'bbb'
+        from django.db.models import QuerySet
+        original_order_by = QuerySet.order_by
+
+        def order_by(self, *fields):
+            if fields == ('slug',):
+                fields = ('-slug',)
+            return original_order_by(self, *fields)
+        # create/update the form
+        res = self.client.put(self.edit_url, data, format='json')
+        self.assertEquals(res.status_code, 200, res)
+        # update the same form
+        with patch.object(QuerySet, 'order_by', order_by):
+            res = self.client.put(self.edit_url, data, format='json')
+        self.assertEquals(res.status_code, 200, res)
 
 
 class TestAccess(APITestCase):

@@ -9,6 +9,7 @@ master (unreleased)
 * Dropped Python 3.3 support (#207).
 * Fixed the swagger doc generation and rendering (#210).
 * Fix wrong field type for Checkbox (#208).
+* Don't rely on database ordering in `NestedListSerializer` (#215)
 
 Release 0.8.2 (2017-03-28)
 ==========================
