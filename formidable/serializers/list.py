@@ -22,14 +22,15 @@ class NestedListSerializer(ListSerializer):
 
         qs.filter(**{self.field_id + '__in': list(deleted_ids)}).delete()
 
-        objects_list = list(qs.order_by(self.field_id).all())
+        objects_list = list(qs.all())
+        objects_list = sorted(objects_list,
+                              key=lambda x: getattr(x, self.field_id))
 
         ajust = 0
 
         validated_data = sorted(validated_data, key=lambda x: x[self.field_id])
 
         for index, data in enumerate(validated_data):
-
             data[self.parent_name] = parent.id
             if data[self.field_id] in created_ids:
                 self.child.create(data)
