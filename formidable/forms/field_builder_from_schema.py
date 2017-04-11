@@ -159,6 +159,7 @@ class FormFieldFactory(BaseFormFieldFactory):
         'date': DateFieldBuilder,
         'dropdown': DropdownFieldBuilder,
         'radios': RadioFieldBuilder,
+        'radios_buttons': RadioFieldBuilder,
         'help_text': HelpTextBuilder,
         'separator': SeparatorBuilder,
         'title': TitleFielBuilder,
