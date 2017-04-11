@@ -5,6 +5,11 @@ ChangeLog
 master (unreleased)
 ===================
 
+- Nothing changed yet.
+
+Release 0.9.0 (2017-04-11)
+==========================
+
 * Added Django 1.10 support (#203).
 * Dropped Python 3.3 support (#207).
 * Fixed the swagger doc generation and rendering (#210).
