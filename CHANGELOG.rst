@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.9.0 (2017-04-11)
+==========================
 
 * Added Django 1.10 support (#203).
 * Dropped Python 3.3 support (#207).
