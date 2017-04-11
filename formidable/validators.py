@@ -235,9 +235,15 @@ class ValidatorFactory(object):
         return NEQValidator(value, message)
 
     def produce(self, validation):
-        meth = self.maps[validation.type]
-        msg = validation.message or None
-        return meth(self, validation.value, msg)
+        type_, msg, value = self.extract_validation_attribute(validation)
+        meth = self.maps[type_]
+        return meth(self, value, msg)
+
+    def extract_validation_attribute(self, validation):
+        """
+        Return the tuple of validation type, validation msg, validation value
+        """
+        return validation.type, validation.message or None, validation.value
 
 
 class DateValidatorFactory(ValidatorFactory):

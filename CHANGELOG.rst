@@ -10,6 +10,8 @@ master (unreleased)
 * Fixed the swagger doc generation and rendering (#210).
 * Fix wrong field type for Checkbox (#208).
 * Don't rely on database ordering in `NestedListSerializer` (#215)
+* Provide a tools in order to generate django-form class from json
+  contextualized definition (#171)
 
 Release 0.8.2 (2017-03-28)
 ==========================

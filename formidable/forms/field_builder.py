@@ -23,9 +23,16 @@ class FieldBuilder(object):
         self.validator_factory = self.validator_factory_class()
 
     def build(self, role=None):
-        self.access = self.field.accesses.all()[0] if role else None
+        self.access = self.get_accesses(role)
         field_class = self.get_field_class()
         return field_class(**self.get_field_kwargs())
+
+    def get_accesses(self, role):
+        if role:
+            # The role is previously "prefetch" in order to avoid database
+            # hit, we don't use a get() method in queryset.
+            return self.field.accesses.all()[0]
+        return None
 
     def get_field_class(self):
         return self.field_class
@@ -92,8 +99,14 @@ class FieldBuilder(object):
         return list(self.gen_validators())
 
     def gen_validators(self):
-        for validation in self.field.validations.all():
+        for validation in self.get_validations():
             yield self.validator_factory.produce(validation)
+
+    def get_validations(self):
+        """
+        return iterator over field validation
+        """
+        return self.field.validations.all()
 
 
 class FileFieldBuilder(FieldBuilder):
@@ -220,8 +233,12 @@ class FormFieldFactory(object):
         :class:`django.forms.Field` instance according to the type_id,
         validations and rules.
         """
-        builder = self.map[field.type_id](field)
+        type_id = self.get_type_id(field)
+        builder = self.map[type_id](field)
         return builder.build(role)
+
+    def get_type_id(self, field):
+        return field.type_id
 
 
 form_field_factory = FormFieldFactory()
