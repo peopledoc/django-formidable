@@ -2,13 +2,155 @@
 
 from __future__ import unicode_literals
 
+import copy
+
 from django.core.exceptions import ValidationError
 
+from formidable import constants
 from formidable.models import Formidable
+from formidable.register import FieldSerializerRegister
 from formidable.serializers import fields
 from formidable.serializers.common import WithNestedSerializer
 from formidable.serializers.presets import PresetModelSerializer
 from rest_framework import serializers
+
+FIELD_TYPES = FieldSerializerRegister.get_instance().to_choices()
+LEVELS = [(constants.REQUIRED, 'Required'), (constants.EDITABLE, 'Editable'),
+          (constants.HIDDEN, 'Hidden'), (constants.READONLY, 'Readonly')]
+
+def check_unicity(data, key):
+    if len(data) != len(set(f[key] for f in data)):
+        msg = 'The fields {key} must make a unique set.'.format(
+            key=key
+        )
+        raise ValidationError(msg)
+
+
+class MyDefaultSerializer(serializers.Serializer):
+    value = serializers.CharField(max_length=256)
+
+class MyItemSerializer(serializers.Serializer):
+    value = serializers.CharField(max_length=256)
+    label = serializers.CharField(max_length=256)
+    description = serializers.CharField(allow_blank=True, allow_null=True)
+
+class MyAccessSerializer(serializers.Serializer):
+    access_id = serializers.CharField(max_length=128)
+    level = serializers.ChoiceField(LEVELS)
+
+    # TODO check access_id
+
+class MyValidationSerializer(serializers.Serializer):
+    value = serializers.CharField(max_length=256)
+    type = serializers.CharField(max_length=256)
+    message = serializers.CharField(allow_blank=True, allow_null=True)
+
+class MyFieldSerializer(serializers.Serializer):
+    slug = serializers.CharField(max_length=256)
+    label = serializers.CharField(max_length=256, allow_null=True)
+    type_id = serializers.ChoiceField(FIELD_TYPES)
+    placeholder = serializers.CharField(
+        max_length=256, allow_blank=True, allow_null=True)
+    description = serializers.CharField(allow_blank=True, allow_null=True)
+    multiple = serializers.BooleanField(default=False)
+
+    defaults = MyDefaultSerializer(many=True)
+    items = MyItemSerializer(many=True, required=False)
+    accesses = MyAccessSerializer(many=True)  # unique_together access_id
+    validations = MyValidationSerializer(many=True)
+
+    def validate(self, validated_data):
+        validated_data = super(MyFieldSerializer, self).validate(validated_data)
+        if 'items' in validated_data:
+            check_unicity(validated_data['items'], 'value')
+        return validated_data
+
+
+class MyPresetArgSerializer(serializers.Serializer):
+    slug = serializers.CharField(max_length=128)
+    value = serializers.CharField(
+        max_length=128, allow_blank=True, allow_null=True)
+    field_id = serializers.CharField(
+        max_length=128, allow_blank=True, allow_null=True)
+
+
+class MyPresetSerializer(serializers.Serializer):
+    slug = serializers.CharField(max_length=256)
+    message = serializers.CharField(allow_blank=True, allow_null=True)
+    arguments = MyPresetArgSerializer(many=True)
+
+
+class MyFormidableSerializer(serializers.Serializer):
+    label = serializers.CharField(max_length=256)
+    description = serializers.CharField()
+
+    fields = MyFieldSerializer(many=True)
+    presets = MyPresetSerializer(many=True, required=False)
+
+    def validate(self, data):
+        """
+        The validation step called by the preset validation.
+
+        The preset validation ensures that presets are correctly defined
+        and that defined arguments are correct.
+
+        Since we cannot check if fields set up in preset arguments exist
+        inside the form itself, we must check this here.
+        """
+        # calling subserializer validate method (fields, and presets)
+        data = super(FormidableSerializer, self).validate(data)
+
+        if 'fields' in data:
+            check_unicity(validated_data['fields'], 'slug')
+
+        # we check every field define in presets are define inside the form.
+        if 'fields' in data and 'presets' in data:
+            data = self.check_presets_cohesion(data)
+        return data
+
+    def check_presets_cohesion(self, data):
+        presets = data['presets']
+        # validation already called on fields we are sur the slug is set
+        # Samet thing for argument is presets
+        fields_slug = [field['slug'] for field in data['fields']]
+
+        for preset in presets:
+            arguments = preset['arguments']
+            for argument in arguments:
+                field_id = argument.get('field_id')
+                if field_id and field_id not in fields_slug:
+                    raise ValidationError(
+                        'Preset ({slug}) argument is using an undefined field ({id})'.format(  # noqa
+                            slug=preset['slug'], id=field_id
+                        )
+                    )
+        return data
+
+# How to create a context form from a form :
+# replace accesses by :
+#  - disabled = access.level == READONLY
+#  - required = access.level == REQUIRED
+#  - filter Field if access.level == HIDDEN
+def get_acccess(accesses, role):
+    for a in accesses:
+        if a['access_id']==role:
+            return a['level']
+    return constants.EDITABLE  # default
+
+def context_fields(fields, role):
+    for field in fields:
+        accesses = field.pop('accesses')
+        access = get_acccess(accesses, role)
+        if access == constants.HIDDEN:
+            continue 
+        field['disabled'] = access == constants.READONLY
+        field['required'] = access == constants.REQUIRED
+        yield field
+
+def contextualize(form, role):
+    form = copy.deepcopy(form)
+    form['fields'] = list(context_fields(form['fields'], role))
+    return form
 
 
 class FormidableSerializer(WithNestedSerializer):
