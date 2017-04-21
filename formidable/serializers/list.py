@@ -63,7 +63,7 @@ class NestedListSerializer(ListSerializer):
                 msg = 'The fields {field_id} must make a unique set.'.format(
                         field_id=self.field_id
                 )
-                raise ValidationError(msg, code='unique')
+                raise ValidationError(msg)
 
         return data
 
