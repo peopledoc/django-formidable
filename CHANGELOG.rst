@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Nothing changed yet.
+- Use an atomic transaction in FormidableSerialize.save() (#220)
 
 Release 0.9.0 (2017-04-11)
 ==========================

@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 import copy
 from functools import reduce
 
-from django.test import TestCase
+from django.db import connection
+from django.test import TestCase, TransactionTestCase
+from django.test.utils import CaptureQueriesContext
 import django_perf_rec
 
 from formidable import constants
@@ -857,6 +859,20 @@ class CreateSerializerTestCase(TestCase):
             type_id='separator', slug='sepa'
         )
         self.assertTrue(qs.exists())
+
+
+class CreateSerializerTransactionTestCase(TransactionTestCase):
+
+    def test_unique_transaction(self):
+        data = copy.deepcopy(CreateSerializerTestCase.data)
+        data['fields'] = CreateSerializerTestCase.fields_with_items
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        with CaptureQueriesContext(connection) as capture:
+            serializer.save()
+        begin_count = sum(1 for query in capture.captured_queries
+                          if query['sql'] == 'BEGIN')
+        self.assertEqual(begin_count, 1)
 
 
 class UpdateFormTestCase(TestCase):

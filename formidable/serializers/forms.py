@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from formidable.models import Formidable
 from formidable.serializers import fields
@@ -58,6 +59,10 @@ class FormidableSerializer(WithNestedSerializer):
                         )
                     )
         return data
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            return super(FormidableSerializer, self).save(*args, **kwargs)
 
 
 class ContextFormSerializer(serializers.ModelSerializer):
