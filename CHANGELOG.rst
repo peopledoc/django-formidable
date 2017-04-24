@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Use an atomic transaction in FormidableSerialize.save() (#220)
+- Ensure compatibility with Django REST Framework 3.3
 
 Release 0.9.0 (2017-04-11)
 ==========================
