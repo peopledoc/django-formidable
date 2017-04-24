@@ -2,11 +2,11 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.9.1 (2017-04-24)
+==========================
 
 - Use an atomic transaction in FormidableSerialize.save() (#220)
-- Ensure compatibility with Django REST Framework 3.3
+- Ensure compatibility with Django REST Framework 3.3 (#222)
 
 Release 0.9.0 (2017-04-11)
 ==========================
