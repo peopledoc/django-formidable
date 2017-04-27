@@ -5,7 +5,8 @@ ChangeLog
 master (unreleased)
 ===================
 
-nothing yet.
+- Change errors format returned in the builder in order to have something
+  more constistant (#214)
 
 Release 0.9.1 (2017-04-24)
 ==========================

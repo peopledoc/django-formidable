@@ -32,7 +32,7 @@ class CreateFormTestCase(APITestCase):
             reverse('formidable:form_create'), form_data_without_items,
             format='json'
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)
 
     @override_settings()
     def test_create_no_settings_no_error(self):
@@ -52,7 +52,7 @@ class CreateFormTestCase(APITestCase):
             reverse('formidable:form_create'), form_data_without_items,
             format='json'
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)
 
 
 class UpdateFormTestCase(APITestCase):
@@ -80,7 +80,7 @@ class UpdateFormTestCase(APITestCase):
             reverse('formidable:form_detail', args=[self.form.id]),
             form_data_without_items, format='json'
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)
 
     @override_settings()
     def test_update_no_settings_no_error(self):
@@ -101,4 +101,4 @@ class UpdateFormTestCase(APITestCase):
             reverse('formidable:form_detail', args=[self.form.id]),
             form_data_without_items, format='json'
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, 422)

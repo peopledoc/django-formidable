@@ -7,7 +7,9 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 import six
+
 from formidable.accesses import get_accesses, get_context
+from formidable.exception_handler import ExceptionHandlerMixin
 from formidable.forms.field_builder import (
     FileFieldBuilder, FormFieldFactory, SkipField
 )
@@ -167,7 +169,8 @@ class MetaClassView(type):
 
 
 class FormidableDetail(six.with_metaclass(MetaClassView,
-                       CallbackMixin, RetrieveUpdateAPIView)):
+                       CallbackMixin,
+                       ExceptionHandlerMixin, RetrieveUpdateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
@@ -176,7 +179,8 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
 
 
 class FormidableCreate(six.with_metaclass(MetaClassView,
-                       CallbackMixin, CreateAPIView)):
+                       CallbackMixin,
+                       ExceptionHandlerMixin, CreateAPIView)):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
@@ -184,7 +188,8 @@ class FormidableCreate(six.with_metaclass(MetaClassView,
     failure_callback_settings = 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL'
 
 
-class ContextFormDetail(six.with_metaclass(MetaClassView, RetrieveAPIView)):
+class ContextFormDetail(six.with_metaclass(MetaClassView,
+                        ExceptionHandlerMixin, RetrieveAPIView)):
 
     queryset = Formidable.objects.all()
     serializer_class = ContextFormSerializer
@@ -196,7 +201,8 @@ class ContextFormDetail(six.with_metaclass(MetaClassView, RetrieveAPIView)):
         return context
 
 
-class AccessList(six.with_metaclass(MetaClassView, APIView)):
+class AccessList(six.with_metaclass(MetaClassView, ExceptionHandlerMixin,
+                                    APIView)):
 
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
@@ -208,7 +214,8 @@ class AccessList(six.with_metaclass(MetaClassView, APIView)):
             return Response(data=serializer.errors, status_code=400)
 
 
-class PresetsList(six.with_metaclass(MetaClassView, APIView)):
+class PresetsList(six.with_metaclass(MetaClassView,
+                  ExceptionHandlerMixin, APIView)):
 
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
@@ -220,7 +227,8 @@ class PresetsList(six.with_metaclass(MetaClassView, APIView)):
         return Response(serializer.data)
 
 
-class ValidateView(six.with_metaclass(MetaClassView, APIView)):
+class ValidateView(six.with_metaclass(MetaClassView,
+                   ExceptionHandlerMixin, APIView)):
     """
     This view is usually called by the UI front-end in order to validate
     data inside a form to avoid uploading file.
@@ -273,6 +281,9 @@ class ValidateView(six.with_metaclass(MetaClassView, APIView)):
         return Response(status=204)
 
     def form_invalid(self, form):
+        # TODO change response when UI ready
+        # data = format_forms_error(form.errors)
+        # return Response(data, status=400)
         return Response(form.errors, status=400)
 
     def get_form(self, form_class):
