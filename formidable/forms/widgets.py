@@ -151,6 +151,7 @@ class ClearableFileInput(FormidableWidget, widgets.ClearableFileInput):
 class HelpTextWidget(FormidableWidget):
 
     type_id = 'help_text'
+    input_type = 'help_text'
 
     def render(self, name, value, attrs=None):
         return markdown(value)
@@ -159,6 +160,7 @@ class HelpTextWidget(FormidableWidget):
 class TitleWidget(FormidableWidget):
 
     type_id = 'title'
+    input_type = 'title'
 
     def __init__(self, tag='h4', *args, **kwargs):
         self.tag = tag
@@ -174,6 +176,7 @@ class TitleWidget(FormidableWidget):
 class SeparatorWidget(FormidableWidget):
 
     type_id = 'separator'
+    input_type = 'separator'
 
     def render(self, name, value, attrs=None):
         return '<hr>'
