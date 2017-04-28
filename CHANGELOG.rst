@@ -5,8 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-nothing yet.
-
+- Added a tox job to update/refresh the swagger-ui related static files (#210 / #213) - including documentation for developers.
 
 Release 0.10.0 (2017-04-28)
 ===========================
