@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Moving file named `LICENCE` into `LICENSE` (#232).
+- Add JSON schema migration (#234)
 
 Release 0.11.1 (2017-05-19)
 ===========================
