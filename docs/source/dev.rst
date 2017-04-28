@@ -2,6 +2,9 @@
 Developer's documentation
 =========================
 
+Testing
+-------
+
 Tests are launched using `tox <http://tox.readthedocs.io/>`_. You may want to become proficient with this tool but the core command you need to know is:
 
 .. code:: shell
@@ -36,3 +39,17 @@ If somehow you've messed-up with your environment(s), you can still recreate it/
 
     $ tox -r  # RECREATE ALL THE THINGS
     $ tox -re django18-py27  # recreate and run tests using `django18-py27`
+
+
+Swagger documentation update
+----------------------------
+
+If at any point you've changed something in the :file:`docs/swagger/formidable.yml` file, you'll **have** to run the following to refresh at least the :file:`docs/source/_static/specs/formidable.js` file that will be used in the :doc:`api` document.
+
+Run the following to regenerate all the necessary statics:
+
+.. code:: shell
+
+    $ tox -e swagger-statics
+
+and commit the diffs in your PR.

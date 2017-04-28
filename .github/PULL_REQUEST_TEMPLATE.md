@@ -4,6 +4,7 @@ This PR closes #<!-- issue number -->
 
 * [ ] Tests<!-- mandatory -->
 * [ ] Docs/comments
+  * [ ] *IN CASE YOU'VE CHANGED THE `formidable.yml` file*: run ``tox -e swagger-statics`` to rebuild the swagger static files **and** commit the diff.
 * [ ] Translations
 * [ ] Migration(s)
 * [ ] `CHANGELOG.rst` Updated
