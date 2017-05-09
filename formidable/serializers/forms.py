@@ -18,6 +18,7 @@ FIELD_TYPES = FieldSerializerRegister.get_instance().to_choices()
 LEVELS = [(constants.REQUIRED, 'Required'), (constants.EDITABLE, 'Editable'),
           (constants.HIDDEN, 'Hidden'), (constants.READONLY, 'Readonly')]
 
+
 def check_unicity(data, key):
     if len(data) != len(set(f[key] for f in data)):
         msg = 'The fields {key} must make a unique set.'.format(
@@ -29,10 +30,12 @@ def check_unicity(data, key):
 class MyDefaultSerializer(serializers.Serializer):
     value = serializers.CharField(max_length=256)
 
+
 class MyItemSerializer(serializers.Serializer):
     value = serializers.CharField(max_length=256)
     label = serializers.CharField(max_length=256)
     description = serializers.CharField(allow_blank=True, allow_null=True)
+
 
 class MyAccessSerializer(serializers.Serializer):
     access_id = serializers.CharField(max_length=128)
@@ -40,14 +43,16 @@ class MyAccessSerializer(serializers.Serializer):
 
     # TODO check access_id
 
+
 class MyValidationSerializer(serializers.Serializer):
     value = serializers.CharField(max_length=256)
     type = serializers.CharField(max_length=256)
     message = serializers.CharField(allow_blank=True, allow_null=True)
 
+
 class MyFieldSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=256)
-    label = serializers.CharField(max_length=256, allow_null=True)
+    label = serializers.CharField(max_length=256)
     type_id = serializers.ChoiceField(FIELD_TYPES)
     placeholder = serializers.CharField(
         max_length=256, allow_blank=True, allow_null=True)
@@ -56,11 +61,12 @@ class MyFieldSerializer(serializers.Serializer):
 
     defaults = MyDefaultSerializer(many=True)
     items = MyItemSerializer(many=True, required=False)
-    accesses = MyAccessSerializer(many=True)  # unique_together access_id
+    accesses = MyAccessSerializer(many=True)  # unique_together access_id
     validations = MyValidationSerializer(many=True)
 
     def validate(self, validated_data):
-        validated_data = super(MyFieldSerializer, self).validate(validated_data)
+        validated_data = super(MyFieldSerializer, self)\
+                            .validate(validated_data)
         if 'items' in validated_data:
             check_unicity(validated_data['items'], 'value')
         return validated_data
@@ -101,7 +107,7 @@ class MyFormidableSerializer(serializers.Serializer):
         data = super(FormidableSerializer, self).validate(data)
 
         if 'fields' in data:
-            check_unicity(validated_data['fields'], 'slug')
+            check_unicity(data['fields'], 'slug')
 
         # we check every field define in presets are define inside the form.
         if 'fields' in data and 'presets' in data:
@@ -126,6 +132,7 @@ class MyFormidableSerializer(serializers.Serializer):
                     )
         return data
 
+
 # How to create a context form from a form :
 # replace accesses by :
 #  - disabled = access.level == READONLY
@@ -133,24 +140,69 @@ class MyFormidableSerializer(serializers.Serializer):
 #  - filter Field if access.level == HIDDEN
 def get_acccess(accesses, role):
     for a in accesses:
-        if a['access_id']==role:
+        if a['access_id'] == role:
             return a['level']
     return constants.EDITABLE  # default
+
 
 def context_fields(fields, role):
     for field in fields:
         accesses = field.pop('accesses')
         access = get_acccess(accesses, role)
         if access == constants.HIDDEN:
-            continue 
+            continue
         field['disabled'] = access == constants.READONLY
         field['required'] = access == constants.REQUIRED
         yield field
+
 
 def contextualize(form, role):
     form = copy.deepcopy(form)
     form['fields'] = list(context_fields(form['fields'], role))
     return form
+
+
+def get_access_from_context_field(field):
+    if field is None:
+        return constants.HIDDEN
+    if field['disabled']:
+        return constants.READONLY
+    if field['required']:
+        return constants.REQUIRED
+    return constants.EDITABLE
+
+
+def uncontextualize_field(field):
+    new_field = field.copy()  # deepcopy useless ?
+    del new_field['disabled']
+    del new_field['required']
+    new_field['accesses'] = {}
+    return new_field['slug']
+
+
+def add_fields(ref_fields, new_fields):
+    current_field = 0
+
+    for field in new_fields:
+        if field in ref_fields:
+            # no need to insert a new field, just move the cursor
+            current_field = ref_fields.index(field) + 1
+        else:
+            # we need to insert field at the right position
+            ref_fields.insert(field)
+            current_field += 1
+
+
+def merge_context_forms(forms):
+    # forms : role => ContextForm
+    roles = forms.keys()
+    fields = [uncontextualize_field(field) for field in forms[roles[0]]]
+
+    for role in roles[1:]:
+        add_fields(fields,
+                   [uncontextualize_field(field) for field in forms[roles]])
+    # print forms
+    # print fields
 
 
 class FormidableSerializer(WithNestedSerializer):
