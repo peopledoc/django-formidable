@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.11.0 (2017-05-10)
+===========================
 
 - Added a tox job to update/refresh the swagger-ui related static files (#210 / #213) - including documentation for developers.
 - Remove the field size limit for the model field `formidable.models.Item.label` (#225).
