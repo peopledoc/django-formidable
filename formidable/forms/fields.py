@@ -11,7 +11,7 @@ You can find most of the standard django fields :
 .. autoclass:: BooleanField
     :members:
 
-.. autoclass:: IntegerField
+.. autoclass:: NumberField
     :members:
 
 .. autoclass:: FileField
@@ -198,7 +198,7 @@ class DateField(Field, fields.DateField):
     widget = widgets.DateInput
 
 
-class IntegerField(Field, fields.IntegerField):
+class NumberField(Field, fields.DecimalField):
 
     widget = widgets.NumberInput
 

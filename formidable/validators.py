@@ -11,6 +11,7 @@ Validators
 from __future__ import unicode_literals
 
 from datetime import date
+from decimal import Decimal
 
 from django.core import validators
 from django.utils.translation import ugettext_lazy as _
@@ -206,27 +207,27 @@ class ValidatorFactory(object):
     }
 
     def min_length(self, limit_value, message):
-        limit_value = int(limit_value)
+        limit_value = Decimal(limit_value)
         return validators.MinLengthValidator(limit_value, message)
 
     def max_length(self, limit_value, message):
-        limit_value = int(limit_value)
+        limit_value = Decimal(limit_value)
         return validators.MaxLengthValidator(limit_value, message)
 
     def regexp(self, value, message):
         return validators.RegexValidator(regex=value, message=message)
 
     def gt(self, value, message):
-        return GTValidator(int(value), message)
+        return GTValidator(Decimal(value), message)
 
     def gte(self, value, message):
-        return validators.MinValueValidator(int(value), message)
+        return validators.MinValueValidator(Decimal(value), message)
 
     def lt(self, value, message):
-        return LTValidator(int(value), message)
+        return LTValidator(Decimal(value), message)
 
     def lte(self, value, message):
-        return validators.MaxValueValidator(int(value), message)
+        return validators.MaxValueValidator(Decimal(value), message)
 
     def eq(self, value, message):
         return EQValidator(value, message)

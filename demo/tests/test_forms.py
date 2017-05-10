@@ -254,7 +254,7 @@ class TestDynamicForm(TestCase):
         form = form_class()
         self.assertIn('input-number', form.fields)
         number = form.fields['input-number']
-        self.assertEquals(type(number), forms.IntegerField)
+        self.assertEquals(type(number), forms.DecimalField, type(number))
 
     def test_required_field(self):
         self.text_field.accesses.create(access_id='human', level=REQUIRED)
@@ -472,44 +472,44 @@ class TestFormValidation(TestCase):
         form = form_class(data={'input-number': '22'})
         self.assertFalse(form.is_valid())
 
-    def test_eq_integer_ok(self):
+    def test_eq_number_ok(self):
         number = self.form.fields.create(
             slug='input-number', type_id='number', label='your number',
             order=self.form.get_next_field_order()
         )
         number.validations.create(type='EQ', value='21')
         form_class = self.form.get_django_form_class()
-        form = form_class(data={'input-number': '21'})
+        form = form_class(data={'input-number': '21.0'})
         self.assertTrue(form.is_valid())
 
-    def test_eq_integer_ko(self):
+    def test_eq_number_ko(self):
         number = self.form.fields.create(
             slug='input-number', type_id='number', label='your number',
             order=self.form.get_next_field_order()
         )
         number.validations.create(type='EQ', value='21')
         form_class = self.form.get_django_form_class()
-        form = form_class(data={'input-number': '22'})
+        form = form_class(data={'input-number': '22.0'})
         self.assertFalse(form.is_valid())
 
-    def test_neq_integer_ok(self):
+    def test_neq_number_ok(self):
         number = self.form.fields.create(
             slug='input-number', type_id='number', label='your number',
             order=self.form.get_next_field_order()
         )
         number.validations.create(type='NEQ', value='21')
         form_class = self.form.get_django_form_class()
-        form = form_class(data={'input-number': '22'})
+        form = form_class(data={'input-number': '22.0'})
         self.assertTrue(form.is_valid())
 
-    def test_neq_integer_ko(self):
+    def test_neq_number_ko(self):
         number = self.form.fields.create(
             slug='input-number', type_id='number', label='your number',
             order=self.form.get_next_field_order()
         )
         number.validations.create(type='NEQ', value='21')
         form_class = self.form.get_django_form_class()
-        form = form_class(data={'input-number': '21'})
+        form = form_class(data={'input-number': '21.0'})
         self.assertFalse(form.is_valid())
 
     def test_eq_str_ok(self):
@@ -804,8 +804,8 @@ class TestInnerPresets(TestCase):
 
     def test_confirmation_fields(self):
         class TestPresets(FormidableForm):
-            left = fields.IntegerField()
-            right = fields.IntegerField()
+            left = fields.NumberField()
+            right = fields.NumberField()
 
             class Meta:
                 presets = [
@@ -817,43 +817,44 @@ class TestInnerPresets(TestCase):
 
         formidable = TestPresets.to_formidable(label='presets')
         form_class = formidable.get_django_form_class()
-        form = form_class(data={'left': 42, 'right': 42})
+        form = form_class(data={'left': 42.1, 'right': 42.1})
         self.assertTrue(form.is_valid())
-        form = form_class(data={'left': 42, 'right': "42"})
+        form = form_class(data={'left': 42.1, 'right': "42.1"})
         self.assertTrue(form.is_valid())
-        form = form_class(data={'left': 42, 'right': 21})
+        form = form_class(data={'left': 42.1, 'right': 21})
         self.assertFalse(form.is_valid())
-        form = form_class(data={'left': 42, 'right': "21"})
+        form = form_class(data={'left': 42.1, 'right': "21"})
         self.assertFalse(form.is_valid())
 
     def test_confirmation_value(self):
         class TestPresets(FormidableForm):
-            number = fields.IntegerField()
+            number = fields.NumberField()
 
             class Meta:
                 presets = [
                     ConfirmationPresets(
                         [PresetArg(slug='left', field_id='number'),
                          PresetArg(slug='right', value='42')],
+                        message='{left} is not equal to {right}'
                     ),
                 ]
 
         formidable = TestPresets.to_formidable(label='presets')
         form_class = formidable.get_django_form_class()
-        form = form_class(data={'number': 33})
+        form = form_class(data={'number': '33'})
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors,
             {'__all__': ['33 is not equal to 42']}
         )
 
-        form = form_class(data={'number': 42})
+        form = form_class(data={'number': 42.0})
         # 42 should equal 42...
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_confirmation_access(self):
         class TestPresets(FormidableForm):
-            number = fields.IntegerField(accesses={
+            number = fields.NumberField(accesses={
                 'jedi': HIDDEN,
             })
 
@@ -873,7 +874,7 @@ class TestInnerPresets(TestCase):
 
     def test_confirmation_not_required_field(self):
         class TestPresets(FormidableForm):
-            number = fields.IntegerField(accesses={
+            number = fields.NumberField(accesses={
                 'jedi': EDITABLE,
             })
             text = fields.CharField(accesses={
@@ -900,10 +901,10 @@ class TestInnerPresets(TestCase):
 
     def test_confirmation_not_required_fields(self):
         class TestPresets(FormidableForm):
-            left = fields.IntegerField(accesses={
+            left = fields.NumberField(accesses={
                 'jedi': REQUIRED,
             })
-            right = fields.IntegerField(accesses={
+            right = fields.NumberField(accesses={
                 'jedi': REQUIRED,
             })
 
@@ -922,10 +923,10 @@ class TestInnerPresets(TestCase):
 
     def test_confirmation_required_fields(self):
         class TestPresets(FormidableForm):
-            left = fields.IntegerField(accesses={
+            left = fields.NumberField(accesses={
                 'jedi': REQUIRED,
             })
-            right = fields.IntegerField(accesses={
+            right = fields.NumberField(accesses={
                 'jedi': REQUIRED,
             })
 
