@@ -23,6 +23,20 @@ class FormTest(FormidableForm):
     )
 
 
+class FieldItemTestCase(TestCase):
+    def setUp(self):
+        super(FieldItemTestCase, self).setUp()
+        self.formidable = FormTest.to_formidable(label='label')
+
+    def test_field_size(self):
+        field = self.formidable.fields.get(slug='dropdown')
+        field.items.create(
+            value='hello',
+            label="hello" * 800,
+            order=42,
+        )
+
+
 class UnicodeTestCase(TestCase):
 
     def setUp(self):
