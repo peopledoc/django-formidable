@@ -90,9 +90,9 @@ class EmailFieldBuilder(FieldBuilder):
     field_class = forms.EmailField
 
 
-class IntegerFieldBuilder(FieldBuilder):
+class NumberFieldBuilder(FieldBuilder):
 
-    field_class = forms.IntegerField
+    field_class = forms.DecimalField
 
 
 class FileFieldBuilder(FieldBuilder):
@@ -154,7 +154,7 @@ class FormFieldFactory(BaseFormFieldFactory):
         'checkbox': CheckboxFieldBuilder,
         'checkboxes': CheckboxesFieldBuilder,
         'email': EmailFieldBuilder,
-        'number': IntegerFieldBuilder,
+        'number': NumberFieldBuilder,
         'file': FileFieldBuilder,
         'date': DateFieldBuilder,
         'dropdown': DropdownFieldBuilder,

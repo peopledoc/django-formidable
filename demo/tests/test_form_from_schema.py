@@ -173,7 +173,7 @@ class TestFormFromSchema(TestCase):
     def test_integer_field(self):
         class TestintegerField(FormidableForm):
             """ Test integer """
-            integer = fields.IntegerField()
+            integer = fields.NumberField()
 
         formidable = TestintegerField.to_formidable(label='label')
 
@@ -184,7 +184,7 @@ class TestFormFromSchema(TestCase):
         form = form_class()
         self.assertIn('integer', form.fields)
         integer = form.fields['integer']
-        self.assertEqual(type(integer), forms.IntegerField)
+        self.assertEqual(type(integer), forms.DecimalField)
 
     def test_file_field(self):
         class TestfileField(FormidableForm):
@@ -342,7 +342,7 @@ class TestFormFromSchema(TestCase):
     def test_with_validations(self):
         class FormWithValidations(FormidableForm):
             text = fields.CharField(validators=[MinLengthValidator(4)])
-            integer = fields.IntegerField(validators=[GTEValidator(42)])
+            integer = fields.NumberField(validators=[GTEValidator(42.4)])
 
         formidable = FormWithValidations.to_formidable(label='validation')
 
@@ -350,10 +350,10 @@ class TestFormFromSchema(TestCase):
             'role': 'jedi'
         }).data
         form_class = get_dynamic_form_class_from_schema(schema)
-        form = form_class(data={'text': 'tut', 'integer': 21})
+        form = form_class(data={'text': 'tut', 'integer': 21.0})
         self.assertFalse(form.is_valid())
         self.assertEqual(len(form.errors), 2)
-        form = form_class(data={'text': 'tutu', 'integer': 43})
+        form = form_class(data={'text': 'tutu', 'integer': 43.2})
         self.assertTrue(form.is_valid())
 
     def test_with_presets(self):

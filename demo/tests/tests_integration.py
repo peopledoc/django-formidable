@@ -61,7 +61,7 @@ class MyTestForm(FormidableForm):
     weapons = fields.ChoiceField(choices=[
         ('gun', 'blaster'), ('sword', 'light saber')
     ])
-    salary = fields.IntegerField(
+    salary = fields.NumberField(
         validators=[
             validators.GTValidator(0), validators.LTEValidator(25)
         ],

@@ -95,7 +95,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            mynumber = fields.IntegerField(
+            mynumber = fields.NumberField(
                 label='number', validators=[validators.GTValidator(5)]
             )
 
@@ -112,7 +112,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            mynumber = fields.IntegerField(
+            mynumber = fields.NumberField(
                 label='number', validators=[validators.LTValidator(5)]
             )
 
@@ -129,7 +129,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            mynumber = fields.IntegerField(
+            mynumber = fields.NumberField(
                 label='number', validators=[validators.GTEValidator(5)]
             )
 
@@ -146,7 +146,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            mynumber = fields.IntegerField(
+            mynumber = fields.NumberField(
                 label='number', validators=[validators.LTEValidator(5)]
             )
 
@@ -163,7 +163,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            mynumber = fields.IntegerField(
+            mynumber = fields.NumberField(
                 label='number', validators=[validators.EQValidator(5)]
             )
 
@@ -180,7 +180,7 @@ class TestFromDjangoForm(TestCase):
 
         class MyForm(FormidableForm):
 
-            mynumber = fields.IntegerField(
+            mynumber = fields.NumberField(
                 label='number', validators=[validators.NEQValidator(5)]
             )
 
@@ -269,10 +269,10 @@ class TestFromDjangoForm(TestCase):
             slug='mytext', type_id='text', label='My Text'
         ).exists())
 
-    def test_integer_field(self):
+    def test_number_field(self):
 
         class MyForm(FormidableForm):
-            number_children = fields.IntegerField(label='Your Children Number')
+            number_children = fields.NumberField(label='Your Children Number')
 
         initial_count = Formidable.objects.count()
         form = MyForm.to_formidable(label='tutu')

@@ -160,9 +160,9 @@ class DateFieldBuilder(FieldBuilder):
     validator_factory_class = DateValidatorFactory
 
 
-class IntegerFieldBuilder(FieldBuilder):
+class NumberFieldBuilder(FieldBuilder):
 
-    field_class = forms.IntegerField
+    field_class = forms.DecimalField
 
 
 class ChoiceFieldBuilder(FieldBuilder):
@@ -216,7 +216,7 @@ class FormFieldFactory(object):
         'checkboxes': CheckboxesFieldBuilder,
         'email': EmailFieldBuilder,
         'date': DateFieldBuilder,
-        'number': IntegerFieldBuilder,
+        'number': NumberFieldBuilder,
         'help_text': HelpTextBuilder,
         'title': TitleFielBuilder,
         'separator': SeparatorBuilder,

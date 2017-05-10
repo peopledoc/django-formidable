@@ -334,7 +334,7 @@ class RenderContextSerializer(TestCase):
         class TestForm(FormidableForm):
             name = fields.CharField(label='Your name', default='Roméo')
             label = fields.CharField(label='label', default='Roméo')
-            salary = fields.IntegerField()
+            salary = fields.NumberField()
             birthdate = fields.DateField()
 
             class Meta:
@@ -358,8 +358,8 @@ class RenderContextSerializer(TestCase):
     def test_presets(self):
 
         class MyTestForm(FormidableForm):
-            value = fields.IntegerField()
-            threshold = fields.IntegerField(
+            value = fields.NumberField()
+            threshold = fields.NumberField(
                 accesses={'padawan': constants.READONLY,
                           'jedi': constants.REQUIRED})
 
@@ -414,8 +414,8 @@ class RenderContextSerializer(TestCase):
     def test_no_preset(self):
 
         class MyTestForm(FormidableForm):
-            value = fields.IntegerField()
-            threshold = fields.IntegerField(
+            value = fields.NumberField()
+            threshold = fields.NumberField(
                     accesses={'padawan': constants.READONLY,
                               'jedi': constants.REQUIRED})
 
