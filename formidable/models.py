@@ -104,7 +104,7 @@ class Default(models.Model):
 class Item(models.Model):
     field = models.ForeignKey(Field, related_name='items')
     value = models.CharField(max_length=256)
-    label = models.CharField(max_length=256)
+    label = models.TextField()
     order = models.IntegerField()
     help_text = models.TextField(blank=True, null=True)
 
