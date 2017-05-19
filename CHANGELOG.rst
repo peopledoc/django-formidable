@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Nothing here yet.
+- Moving file named `LICENCE` into `LICENSE` (#232).
 
 Release 0.11.1 (2017-05-19)
 ===========================
