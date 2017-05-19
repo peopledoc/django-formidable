@@ -1,3 +1,3 @@
 default_app_config = 'formidable.app.FormidableConfig'
 
-version = '0.12.0.dev0'
+version = '0.11.1'
