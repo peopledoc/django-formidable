@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Make trailing slash not mandatory for the API (#75)
 
 Release 0.11.0 (2017-05-10)
 ===========================
