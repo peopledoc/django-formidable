@@ -107,6 +107,18 @@ class CreateFormTestCase(FormidableAPITestCase):
                 field.accesses.filter(access_id=access, level=level).exists()
             )
 
+    def test_trailing_slash(self):
+        url = reverse('formidable:form_create')
+        self.assertFalse(url.endswith('/'))
+        res = self.client.post(
+            url, form_data, format='json'
+        )
+        self.assertEquals(res.status_code, 201)
+        res = self.client.post(
+            url + '/', form_data, format='json'
+        )
+        self.assertEquals(res.status_code, 201)
+
     def test_fields_slug(self):
         data = deepcopy(form_data)
         # duplicate field
@@ -179,6 +191,40 @@ class UpdateFormTestCase(FormidableAPITestCase):
         self.assertEquals(formidable.label, 'edited label')
         self.assertEquals(formidable.description, 'edited description')
         self.assertEquals(Formidable.objects.count(), initial_count)
+
+    def test_trailing_slash_on_put(self):
+        data = {
+            'label': 'edited label',
+            'description': 'edited description',
+            'fields': []
+        }
+        url = self.edit_url
+        self.assertFalse(url.endswith('/'))
+        res = self.client.put(
+            url, data
+        )
+        self.assertEquals(res.status_code, 200)
+        res = self.client.put(
+            url + '/', form_data, format='json'
+        )
+        self.assertEquals(res.status_code, 200)
+
+    def test_trailing_slash_on_get(self):
+        data = {
+            'label': 'edited label',
+            'description': 'edited description',
+            'fields': []
+        }
+        url = self.edit_url
+        self.assertFalse(url.endswith('/'))
+        res = self.client.get(
+            url, data
+        )
+        self.assertEquals(res.status_code, 200)
+        res = self.client.get(
+            url + '/', form_data, format='json'
+        )
+        self.assertEquals(res.status_code, 200)
 
     def test_update_simple_fields(self):
         field = self.form.fields.create(
