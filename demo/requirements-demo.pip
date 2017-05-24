@@ -3,3 +3,4 @@ ipdb
 django-extensions
 freezegun
 django-perf-rec
+mock

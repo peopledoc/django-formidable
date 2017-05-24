@@ -13,13 +13,15 @@ edit, delete and use forms.
 Warnings
 ========
 
-* Python Compatibility : Python 2.7, 3.4, 3.5
+* Python Compatibility : Python 2.7, 3.5
 * Django compatibility : Django 1.8, 1.9, 1.10
 
-Licence
+_Note: python3.4 support has been dropped since django-formidable 0.12.0._
+
+License
 =======
 
-MIT Licence
+MIT License
 
 Documentation
 =============
@@ -113,12 +115,3 @@ restrictive. To allow any access to the view fill your settings with
 
 
 To handle special permissions, please refer to the online documentation.
-
-
-
-formidable-ui
--------------
-
-Plug in formidable-ui
-
-https://github.com/peopledoc/formidable-ui#integration

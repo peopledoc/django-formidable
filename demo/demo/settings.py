@@ -90,6 +90,9 @@ DATABASES = {
     'default': {
         'ENGINE': engine,
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'TEST': {
+            'NAME': os.path.join(BASE_DIR, 'db_test.sqlite3'),
+        }
     }
 }
 
@@ -115,9 +118,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = "var"
+STATIC_ROOT = 'var'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -132,9 +135,9 @@ FORMIDABLE_POST_UPDATE_CALLBACK_FAIL = 'demo.callback_fail_message'
 
 # django-perf-rec settings
 PERF_REC = {
-    'MODE': 'all'
+    'MODE': 'all',
 }
 
 LOCALE_PATHS = [
-    os.path.join(BASE_DIR, '..', 'formidable', 'locale')
+    os.path.join(BASE_DIR, '..', 'formidable', 'locale'),
 ]
