@@ -115,12 +115,3 @@ restrictive. To allow any access to the view fill your settings with
 
 
 To handle special permissions, please refer to the online documentation.
-
-
-
-formidable-ui
--------------
-
-Plug in formidable-ui
-
-https://github.com/peopledoc/formidable-ui#integration
