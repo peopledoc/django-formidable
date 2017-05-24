@@ -18,10 +18,10 @@ Warnings
 
 _Note: python3.4 support has been dropped since django-formidable 0.12.0._
 
-Licence
+License
 =======
 
-MIT Licence
+MIT License
 
 Documentation
 =============
