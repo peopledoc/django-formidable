@@ -574,6 +574,89 @@ class CreateSerializerTestCase(TestCase):
     }
     ]
 
+    valid_conditions = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {'field_id': 'text_input',
+                 'operator': 'eq',
+                 'values': ['text']},
+            ]
+        },
+    ]
+
+    valid_conditions_invalid_ref = [
+        {
+            'fields_ids': ['missing'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {'field_id': 'unknown', 'operator': 'eq', 'values': ['text']},
+            ]
+        },
+    ]
+
+    valid_conditions_invalid_action = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'bad-action',
+            'name': 'my condition',
+            'tests': [
+                {'field_id': 'text_input',
+                 'operator': 'eq',
+                 'values': ['text']},
+            ]
+        },
+    ]
+
+    valid_conditions_invalid_op = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {'field_id': 'text_input',
+                 'operator': 'BAD',
+                 'values': ['text']},
+            ]
+        },
+    ]
+
+    valid_conditions_invalid_test = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+            ]
+        },
+    ]
+
+    valid_conditions_invalid_dup = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {'field_id': 'text_input',
+                 'operator': 'eq',
+                 'values': ['text']},
+            ]
+        },
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {'field_id': 'text_input',
+                 'operator': 'eq',
+                 'values': ['text']},
+            ]
+        },
+    ]
+
     format_field_helptext = [
         {
             'slug': 'myhelptext',
@@ -650,6 +733,91 @@ class CreateSerializerTestCase(TestCase):
         self.assertIn(
             serializer.errors['non_field_errors'][0],
             'Preset (confirmation) argument is using an undefined field (testField2)'  # noqa
+        )
+
+    def test_create_form_conditions(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertIn('name', condition)
+        self.assertEqual(condition['name'], 'my condition')
+        self.assertIn('action', condition)
+        self.assertEqual(condition['action'], 'display_iff')
+        self.assertIn('fields_ids', condition)
+        self.assertEqual(condition['fields_ids'], ['input-date'])
+        self.assertIn('tests', condition)
+        self.assertEqual(len(condition['tests']), 1)
+        test = condition['tests'][0]
+        self.assertIn('operator', test)
+        self.assertEqual(test['operator'], 'eq')
+        self.assertIn('field_id', test)
+        self.assertEqual(test['field_id'], 'text_input')
+        self.assertIn('values', test)
+        self.assertEqual(test['values'], ['text'])
+
+    def test_create_form_conditions_invalid_reference(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_ref)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('non_field_errors', serializer.errors)
+        self.assertEqual(len(serializer.errors['non_field_errors']), 1)
+        self.assertIn(
+            serializer.errors['non_field_errors'][0],
+            ['Condition (my condition) is using undefined fields (unknown, missing)',  # noqa
+             'Condition (my condition) is using undefined fields (missing, unknown)']  # noqa
+        )
+
+    def test_create_form_conditions_invalid_action(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(
+            self.valid_conditions_invalid_action
+        )
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['conditions'][0]['action'][0],
+            '"bad-action" is not a valid choice.'
+        )
+
+    def test_create_form_conditions_invalid_op(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_op)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['conditions'][0]['tests'][0]['operator'][0],
+            '"BAD" is not a valid choice.'
+        )
+
+    def test_create_form_conditions_invalid_test(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_test)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['conditions'][0]['tests']['non_field_errors'][0],
+            'This list may not be empty.'
+        )
+
+    def test_create_form_conditions_invalid_dup(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_dup)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['non_field_errors'][0],
+            'Action display_iff in condition (my condition) is used many times for the same fields (input-date)' # noqa
         )
 
     def test_create_field(self):

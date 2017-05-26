@@ -13,9 +13,10 @@ from collections import OrderedDict
 
 from django import forms
 from django.db.models import Prefetch
-import six
 
+import six
 from formidable.forms import field_builder, field_builder_from_schema
+from formidable.forms.conditions import conditions_register
 from formidable.forms.validations.presets import presets_register
 from formidable.models import Access, Formidable, Item
 
@@ -51,6 +52,10 @@ class BaseDynamicForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(BaseDynamicForm, self).clean()
+        # we must check Conditions *before* checking Presets rules
+        # Conditions may remove data used in Presets rules.
+        for condition in self._conditions:
+            cleaned_data = condition(self, cleaned_data)
         for rule in self.rules:
             rule(cleaned_data)
         return cleaned_data
@@ -67,6 +72,10 @@ def get_dynamic_form_class_from_schema(schema, field_factory=None):
     for field in schema['fields']:
         attrs[field['slug']] = field_factory.produce(field)
 
+    attrs['_conditions'] = conditions_register.build(
+        attrs,
+        schema.get('conditions', [])
+    )
     attrs['rules'] = presets_register.build_rules_from_schema(schema)
     klass = type(str('DynamicForm'), (BaseDynamicForm,), attrs)
     klass.__doc__ = doc
@@ -116,6 +125,8 @@ def get_dynamic_form_class(formidable, role=None, field_factory=None):
         else:
             attrs[field.slug] = form_field
 
+    conditions_json = formidable.conditions or []
+    attrs['_conditions'] = conditions_register.build(attrs, conditions_json)
     attrs['rules'] = presets_register.build_rules(formidable, attrs)
     return type(str('DynamicForm'), (BaseDynamicForm,), attrs)
 

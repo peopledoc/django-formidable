@@ -7,7 +7,6 @@ from django.forms.utils import ErrorDict, ErrorList
 from django.http import Http404
 
 import six
-
 from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.settings import api_settings

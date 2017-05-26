@@ -10,7 +10,6 @@ from django.core.exceptions import (
 from django.utils.translation import ugettext_lazy as _
 
 import six
-
 from formidable.models import Preset, PresetArg
 
 

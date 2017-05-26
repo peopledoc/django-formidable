@@ -7,7 +7,6 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 import six
-
 from formidable.accesses import get_accesses, get_context
 from formidable.exception_handler import ExceptionHandlerMixin
 from formidable.forms.field_builder import (
