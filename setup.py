@@ -28,7 +28,8 @@ setup(
         'djangorestframework',
         'markdown',
         'python-dateutil',
-        'jsonfield'
+        'jsonfield',
+        'six',
     ],
     classifiers=[
         'Environment :: Web Environment',
