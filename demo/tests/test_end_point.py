@@ -411,7 +411,7 @@ class RenderContextSerializer(TestCase):
         self.assertIn('arguments', data_preset2)
         self.assertEquals(len(data_preset2['arguments']), 3)
 
-    def test_no_preset(self):
+    def test_no_preset_no_condition(self):
 
         class MyTestForm(FormidableForm):
             value = fields.NumberField()
@@ -425,6 +425,35 @@ class RenderContextSerializer(TestCase):
         data = serializer.data
         self.assertIn('presets', data)
         self.assertEquals(len(data['presets']), 0)
+        self.assertIn('conditions', data)
+        self.assertEquals(data['conditions'], None)
+
+    def test_conditions(self):
+        conditions = [
+            {
+                'fields_ids': ['value'],
+                'action': 'display_iff',
+                'name': 'my condition',
+                'tests': [
+                    {'field_id': 'threshold',
+                     'operator': 'eq',
+                     'values': ['12']},
+                ]
+            },
+        ]
+
+        class MyTestForm(FormidableForm):
+            value = fields.NumberField()
+            threshold = fields.NumberField()
+
+        form = MyTestForm.to_formidable(label='test')
+        form.conditions = conditions
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('conditions', data)
+        self.assertEquals(len(data['conditions']), 1)
+        self.assertEquals(conditions[0], data['conditions'][0])
 
 
 class CreateSerializerTestCase(TestCase):

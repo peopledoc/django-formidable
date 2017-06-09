@@ -157,10 +157,12 @@ class ContextFormSerializer(serializers.ModelSerializer):
 
     fields = fields.ContextFieldSerializer(read_only=True, many=True)
     presets = PresetModelSerializer(read_only=True, many=True)
+    conditions = ConditionSerializer(read_only=True, many=True)
 
     class Meta:
         model = Formidable
-        fields = ('id', 'label', 'description', 'fields', 'presets')
+        fields = ('id', 'label', 'description', 'fields', 'presets',
+                  'conditions')
         depth = 2
 
     def __init__(self, *args, **kwargs):
