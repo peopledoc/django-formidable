@@ -6,14 +6,22 @@ from django.test import TestCase
 
 from formidable import constants
 from formidable.models import PresetArg
-from formidable.forms import FormidableForm, fields, get_dynamic_form_class
+from formidable.forms import (
+    FormidableForm, fields, get_dynamic_form_class,
+    get_dynamic_form_class_from_schema
+)
 from formidable.forms.validations.presets import (
     ConfirmationPresets
 )
-from formidable.serializers.forms import FormidableSerializer
+from formidable.serializers.forms import (
+    ContextFormSerializer, FormidableSerializer
+)
 
 
 class ConditionTestCase(TestCase):
+
+    def get_form_class(self, formidable, role):
+        return get_dynamic_form_class(formidable, role)
 
     def setUp(self):
         conditions_schema = [
@@ -72,7 +80,7 @@ class ConditionTestCase(TestCase):
         self.formidable_presets.conditions = conditions_schema
 
     def test_jedi_displayed(self):
-        form_class = get_dynamic_form_class(self.formidable, 'jedi')
+        form_class = self.get_form_class(self.formidable, 'jedi')
         data = {
             'foo': 'fooval',
             'checkbox': False
@@ -83,7 +91,7 @@ class ConditionTestCase(TestCase):
         self.assertIn('bar', form.errors)
 
     def test_jedi_not_displayed(self):
-        form_class = get_dynamic_form_class(self.formidable, 'jedi')
+        form_class = self.get_form_class(self.formidable, 'jedi')
         data = {
             'foo': 'fooval',
             'checkbox': True
@@ -94,7 +102,7 @@ class ConditionTestCase(TestCase):
         self.assertEqual(form.cleaned_data, {'checkbox': True})
 
     def test_padawan_displayed(self):
-        form_class = get_dynamic_form_class(self.formidable, 'padawan')
+        form_class = self.get_form_class(self.formidable, 'padawan')
         data = {
             'foo': 'fooval',
             'checkbox': False
@@ -106,7 +114,7 @@ class ConditionTestCase(TestCase):
                          {'checkbox': False, 'foo': 'fooval', 'bar': ''})
 
     def test_padawan_not_displayed(self):
-        form_class = get_dynamic_form_class(self.formidable, 'padawan')
+        form_class = self.get_form_class(self.formidable, 'padawan')
         data = {
             'foo': 'fooval',
             'checkbox': True
@@ -127,7 +135,7 @@ class ConditionTestCase(TestCase):
         self.assertEqual(self.formidable.conditions[0]['name'], 'New Name')
 
     def test_no_checkbox_when_editable(self):
-        form_class = get_dynamic_form_class(self.formidable, 'jedi')
+        form_class = self.get_form_class(self.formidable, 'jedi')
         data = {
             'foo': 'fooval',
         }
@@ -139,7 +147,7 @@ class ConditionTestCase(TestCase):
         self.assertIn('bar', form.errors)
 
     def test_no_checkbox_when_required(self):
-        form_class = get_dynamic_form_class(self.formidable, 'robot')
+        form_class = self.get_form_class(self.formidable, 'robot')
         data = {
             'foo': 'fooval',
         }
@@ -154,7 +162,7 @@ class ConditionTestCase(TestCase):
         self.assertNotIn('bar', form.errors)
 
     def test_readonly_field_displayed(self):
-        form_class = get_dynamic_form_class(self.formidable, 'human')
+        form_class = self.get_form_class(self.formidable, 'human')
         data = {
             'foo': 'fooval',
             'bar': 'readonly',
@@ -166,7 +174,7 @@ class ConditionTestCase(TestCase):
         self.assertEqual(form.cleaned_data, data)
 
     def test_readonly_field_displayed_and_missing(self):
-        form_class = get_dynamic_form_class(self.formidable, 'human')
+        form_class = self.get_form_class(self.formidable, 'human')
         data = {
             'foo': 'fooval',
             'checkbox': False
@@ -181,7 +189,7 @@ class ConditionTestCase(TestCase):
                 })
 
     def test_readonly_field_not_displayed(self):
-        form_class = get_dynamic_form_class(self.formidable, 'human')
+        form_class = self.get_form_class(self.formidable, 'human')
         data = {
             'foo': 'fooval',
             'bar': 'readonly',
@@ -193,7 +201,7 @@ class ConditionTestCase(TestCase):
         self.assertEqual(form.cleaned_data, {'checkbox': True})
 
     def test_presets_displayed_ko(self):
-        form_class = get_dynamic_form_class(self.formidable_presets, 'jedi')
+        form_class = self.get_form_class(self.formidable_presets, 'jedi')
         data = {
             'foo': 'fooval',
             'bar': 'barval',
@@ -207,7 +215,7 @@ class ConditionTestCase(TestCase):
                          ['fooval is not equal to Obi-Wan'])
 
     def test_presets_displayed_ok(self):
-        form_class = get_dynamic_form_class(self.formidable_presets, 'jedi')
+        form_class = self.get_form_class(self.formidable_presets, 'jedi')
         data = {
             'foo': 'Obi-Wan',
             'bar': 'barval',
@@ -218,7 +226,7 @@ class ConditionTestCase(TestCase):
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_presets_not_displayed_ko(self):
-        form_class = get_dynamic_form_class(self.formidable_presets, 'jedi')
+        form_class = self.get_form_class(self.formidable_presets, 'jedi')
         data = {
             'foo': 'fooval',
             'bar': 'barval',
@@ -230,7 +238,7 @@ class ConditionTestCase(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_presets_not_displayed_ok(self):
-        form_class = get_dynamic_form_class(self.formidable_presets, 'jedi')
+        form_class = self.get_form_class(self.formidable_presets, 'jedi')
         data = {
             'foo': 'Obi-Wan',
             'bar': 'barval',
@@ -239,6 +247,15 @@ class ConditionTestCase(TestCase):
 
         form = form_class(data)
         self.assertTrue(form.is_valid(), form.errors)
+
+
+class ConditionFromSchemaTestCase(ConditionTestCase):
+
+    def get_form_class(self, formidable, role):
+        serializer = ContextFormSerializer(instance=formidable,
+                                           context={'role': role})
+        schema = serializer.data
+        return get_dynamic_form_class_from_schema(schema)
 
 
 class ConditionSerializerTestCase(TestCase):
