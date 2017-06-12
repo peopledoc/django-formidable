@@ -72,9 +72,10 @@ def get_dynamic_form_class_from_schema(schema, field_factory=None):
     for field in schema['fields']:
         attrs[field['slug']] = field_factory.produce(field)
 
+    conditions = schema.get('conditions', None) or []
     attrs['_conditions'] = conditions_register.build(
         attrs,
-        schema.get('conditions', [])
+        conditions
     )
     attrs['rules'] = presets_register.build_rules_from_schema(schema)
     klass = type(str('DynamicForm'), (BaseDynamicForm,), attrs)
