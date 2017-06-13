@@ -33,7 +33,7 @@ class ConditionTestCase(TestCase):
                     {
                         'field_id': 'checkbox',
                         'operator': 'eq',
-                        'values': [False]
+                        'values': [False],
                     }
                 ]
             }
@@ -83,7 +83,7 @@ class ConditionTestCase(TestCase):
         form_class = self.get_form_class(self.formidable, 'jedi')
         data = {
             'foo': 'fooval',
-            'checkbox': False
+            'checkbox': False,
         }
 
         form = form_class(data)
@@ -94,7 +94,7 @@ class ConditionTestCase(TestCase):
         form_class = self.get_form_class(self.formidable, 'jedi')
         data = {
             'foo': 'fooval',
-            'checkbox': True
+            'checkbox': True,
         }
 
         form = form_class(data)
@@ -105,7 +105,7 @@ class ConditionTestCase(TestCase):
         form_class = self.get_form_class(self.formidable, 'padawan')
         data = {
             'foo': 'fooval',
-            'checkbox': False
+            'checkbox': False,
         }
 
         form = form_class(data)
@@ -117,7 +117,7 @@ class ConditionTestCase(TestCase):
         form_class = self.get_form_class(self.formidable, 'padawan')
         data = {
             'foo': 'fooval',
-            'checkbox': True
+            'checkbox': True,
         }
 
         form = form_class(data)
@@ -166,7 +166,7 @@ class ConditionTestCase(TestCase):
         data = {
             'foo': 'fooval',
             'bar': 'readonly',
-            'checkbox': False
+            'checkbox': False,
         }
 
         form = form_class(data)
@@ -177,7 +177,7 @@ class ConditionTestCase(TestCase):
         form_class = self.get_form_class(self.formidable, 'human')
         data = {
             'foo': 'fooval',
-            'checkbox': False
+            'checkbox': False,
         }
 
         form = form_class(data)
@@ -185,7 +185,7 @@ class ConditionTestCase(TestCase):
         self.assertEqual(form.cleaned_data, {
                     'foo': 'fooval',
                     'checkbox': False,
-                    'bar': ''  # default value
+                    'bar': '',  # default value
                 })
 
     def test_readonly_field_not_displayed(self):
@@ -205,7 +205,7 @@ class ConditionTestCase(TestCase):
         data = {
             'foo': 'fooval',
             'bar': 'barval',
-            'checkbox': False
+            'checkbox': False,
         }
 
         form = form_class(data)
@@ -219,7 +219,7 @@ class ConditionTestCase(TestCase):
         data = {
             'foo': 'Obi-Wan',
             'bar': 'barval',
-            'checkbox': False
+            'checkbox': False,
         }
 
         form = form_class(data)
@@ -230,7 +230,7 @@ class ConditionTestCase(TestCase):
         data = {
             'foo': 'fooval',
             'bar': 'barval',
-            'checkbox': True
+            'checkbox': True,
         }
 
         form = form_class(data)
@@ -242,7 +242,7 @@ class ConditionTestCase(TestCase):
         data = {
             'foo': 'Obi-Wan',
             'bar': 'barval',
-            'checkbox': True
+            'checkbox': True,
         }
 
         form = form_class(data)
@@ -268,19 +268,19 @@ class ConditionSerializerTestCase(TestCase):
                 'slug': 'checkbox',
                 'label': 'My checkbox',
                 'type_id': 'checkbox',
-                'accesses': []
+                'accesses': [],
             },
             {
                 'slug': 'foo',
                 'label': 'Foo',
                 'type_id': 'text',
-                'accesses': []
+                'accesses': [],
             },
             {
                 'slug': 'bar',
                 'label': 'Bar',
                 'type_id': 'text',
-                'accesses': []
+                'accesses': [],
             },
         ],
         'conditions': [
@@ -292,7 +292,7 @@ class ConditionSerializerTestCase(TestCase):
                     {
                         'field_id': 'checkbox',
                         'operator': 'eq',
-                        'values': ['True']
+                        'values': ['True'],
                     }
                 ]
             }
@@ -300,7 +300,7 @@ class ConditionSerializerTestCase(TestCase):
     }
 
     def test_serializer(self):
-        s = FormidableSerializer(data=self.payload)
-        self.assertTrue(s.is_valid(), s.errors)
-        instance = s.save()
+        serializer = FormidableSerializer(data=self.payload)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
         self.assertEqual(instance.conditions, self.payload['conditions'])

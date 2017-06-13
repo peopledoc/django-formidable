@@ -346,7 +346,7 @@ class RenderContextSerializer(TestCase):
                     ConfirmationPresets(
                         [PresetArg(slug='left', field_id='label'),
                          PresetArg(slug='right', value='Roméo')],
-                        message='label')
+                        message='label'),
                 ]
 
         form = TestForm.to_formidable(label='title')
@@ -373,7 +373,7 @@ class RenderContextSerializer(TestCase):
                         [PresetArg(slug='left', field_id='value'),
                          PresetArg(slug='right', field_id='threshold'),
                          PresetArg(slug='operator', value='lte')],
-                        message='message2')
+                        message='message2'),
                 ]
 
         form = MyTestForm.to_formidable(label='test')
@@ -435,10 +435,12 @@ class RenderContextSerializer(TestCase):
                 'action': 'display_iff',
                 'name': 'my condition',
                 'tests': [
-                    {'field_id': 'threshold',
-                     'operator': 'eq',
-                     'values': ['12']},
-                ]
+                    {
+                        'field_id': 'threshold',
+                        'operator': 'eq',
+                        'values': ['12'],
+                    },
+                ],
             },
         ]
 
@@ -461,14 +463,15 @@ class CreateSerializerTestCase(TestCase):
     data = {
         'label': 'test_create',
         'description': 'description create',
-        'fields': []
+        'fields': [],
     }
+
     fields_without_items = [
         {
             'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': 'é'}]
-        }
+            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': 'é'}],
+        },
     ]
 
     fields_with_items = [
@@ -479,10 +482,10 @@ class CreateSerializerTestCase(TestCase):
                 {'value': 'tutu', 'label': 'toto'},
                 {'value': 'tata', 'label': 'plop'},
             ],
-            'accesses': [{
-                'access_id': 'padawan', 'level': 'REQUIRED'
-            }]
-        }
+            'accesses': [
+                {'access_id': 'padawan', 'level': 'REQUIRED'},
+            ],
+        },
     ]
 
     fields_with_items_empty_description = [
@@ -494,10 +497,10 @@ class CreateSerializerTestCase(TestCase):
                 {'value': 'tata', 'label': 'plop'},
             ],
             'description': '',
-            'accesses': [{
-                'access_id': 'padawan', 'level': 'REQUIRED'
-            }]
-        }
+            'accesses': [
+                {'access_id': 'padawan', 'level': 'REQUIRED'},
+            ],
+        },
     ]
 
     fields_with_validation = [
@@ -506,14 +509,14 @@ class CreateSerializerTestCase(TestCase):
             'label': 'text label',
             'type_id': 'text',
             'accesses': [
-                {'access_id': 'padawan', 'level': constants.REQUIRED}
+                {'access_id': 'padawan', 'level': constants.REQUIRED},
             ],
             'validations': [
                 {
                     'type': 'MINLENGTH',
                     'value': '5',
                 },
-            ]
+            ],
         },
         {
             'slug': 'input-date',
@@ -527,26 +530,31 @@ class CreateSerializerTestCase(TestCase):
                     'type': 'IS_DATE_IN_THE_FUTURE',
                     'value': 'false',
                 },
-            ]
-        }
+            ],
+        },
     ]
 
-    fields_with_defaults = [{
-        'slug': 'text',
-        'label': 'state',
-        'type_id': 'dropdown',
-        'accesses': [
-            {'access_id': 'padawan', 'level': constants.REQUIRED}
-        ],
-        'defaults': ['france'],
-        'items': [{
-            'value': 'france',
-            'label': 'France',
-        }, {
-            'value': 'england',
-            'label': 'England'
-        }]
-    }]
+    fields_with_defaults = [
+        {
+            'slug': 'text',
+            'label': 'state',
+            'type_id': 'dropdown',
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
+            'defaults': ['france'],
+            'items': [
+                {
+                    'value': 'france',
+                    'label': 'France',
+                },
+                {
+                    'value': 'england',
+                    'label': 'England',
+                },
+            ],
+        },
+    ]
 
     radios_buttons_fields = [
         {
@@ -559,48 +567,63 @@ class CreateSerializerTestCase(TestCase):
             'items': [
                 {'value': 'tutu', 'label': 'toto'},
                 {'value': 'foo', 'label': 'bar'},
-            ]
-        }
+            ],
+        },
     ]
 
-    valid_presets = [{
-        'preset_id': 'confirmation',
-        'message': 'not the same',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'input-date',
-        }, {
-            'slug': 'right',
-            'field_id': 'text_input',
-        }],
-    }]
+    valid_presets = [
+        {
+            'preset_id': 'confirmation',
+            'message': 'not the same',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'input-date',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'text_input',
+                },
+            ],
+        },
+    ]
 
-    invalid_presets = [{
-        'preset_id': 'unknown',
-        'message': 'not the same',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'input-date',
-        }, {
-            'slug': 'right',
-            'field_id': 'text_input',
-        }],
-    }]
+    invalid_presets = [
+        {
+            'preset_id': 'unknown',
+            'message': 'not the same',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'input-date',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'text_input',
+                },
+            ],
+        },
+    ]
 
-    presets_with_wrong_parameters = [{
-        'preset_id': 'confirmation',
-        'message': 'noteq!',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'testField2',
-        }, {
-            'slug': 'comparator',
-            'value': 'eq',
-        }, {
-            'slug': 'right',
-            'field_id': 'testField3',
-        }]
-    }
+    presets_with_wrong_parameters = [
+        {
+            'preset_id': 'confirmation',
+            'message': 'noteq!',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'testField2',
+                },
+                {
+                    'slug': 'comparator',
+                    'value': 'eq',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'testField3',
+                },
+            ],
+        },
     ]
 
     valid_conditions = [
@@ -609,10 +632,12 @@ class CreateSerializerTestCase(TestCase):
             'action': 'display_iff',
             'name': 'my condition',
             'tests': [
-                {'field_id': 'text_input',
-                 'operator': 'eq',
-                 'values': ['text']},
-            ]
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
         },
     ]
 
@@ -622,8 +647,12 @@ class CreateSerializerTestCase(TestCase):
             'action': 'display_iff',
             'name': 'my condition',
             'tests': [
-                {'field_id': 'unknown', 'operator': 'eq', 'values': ['text']},
-            ]
+                {
+                    'field_id': 'unknown',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
         },
     ]
 
@@ -633,10 +662,12 @@ class CreateSerializerTestCase(TestCase):
             'action': 'bad-action',
             'name': 'my condition',
             'tests': [
-                {'field_id': 'text_input',
-                 'operator': 'eq',
-                 'values': ['text']},
-            ]
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
         },
     ]
 
@@ -646,10 +677,12 @@ class CreateSerializerTestCase(TestCase):
             'action': 'display_iff',
             'name': 'my condition',
             'tests': [
-                {'field_id': 'text_input',
-                 'operator': 'BAD',
-                 'values': ['text']},
-            ]
+                {
+                    'field_id': 'text_input',
+                    'operator': 'BAD',
+                    'values': ['text'],
+                },
+            ],
         },
     ]
 
@@ -658,8 +691,7 @@ class CreateSerializerTestCase(TestCase):
             'fields_ids': ['input-date'],
             'action': 'display_iff',
             'name': 'my condition',
-            'tests': [
-            ]
+            'tests': [],
         },
     ]
 
@@ -669,20 +701,24 @@ class CreateSerializerTestCase(TestCase):
             'action': 'display_iff',
             'name': 'my condition',
             'tests': [
-                {'field_id': 'text_input',
-                 'operator': 'eq',
-                 'values': ['text']},
-            ]
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
         },
         {
             'fields_ids': ['input-date'],
             'action': 'display_iff',
             'name': 'my condition',
             'tests': [
-                {'field_id': 'text_input',
-                 'operator': 'eq',
-                 'values': ['text']},
-            ]
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
         },
     ]
 
@@ -692,14 +728,14 @@ class CreateSerializerTestCase(TestCase):
             'type_id': 'help_text',
             'description': 'Hello',
             'accesses': [],
-        }
+        },
     ]
     format_without_field_helptext = [
         {
             'slug': 'myhelptext',
             'type_id': 'help_text',
             'accesses': [],
-        }
+        },
     ]
     format_field_title = [
         {
@@ -707,14 +743,14 @@ class CreateSerializerTestCase(TestCase):
             'type_id': 'title',
             'label': 'This is an Onboarding Form.',
             'accesses': [],
-        }
+        },
     ]
     format_field_separator = [
         {
             'slug': 'sepa',
             'type_id': 'separator',
             'accesses': [],
-        }
+        },
     ]
 
     def test_create_form(self):
@@ -1087,7 +1123,7 @@ class UpdateFormTestCase(TestCase):
                 {'access_id': 'padawan', 'level': constants.REQUIRED}
             ],
             'validations': [{'type': 'MAXLENGTH', 'value': '128'}]
-        }
+        },
     ]
 
     fields_with_validation = [
@@ -1103,7 +1139,7 @@ class UpdateFormTestCase(TestCase):
                     'type': 'MINLENGTH',
                     'value': '5',
                 },
-            ]
+            ],
         },
         {
             'slug': 'input-date',
@@ -1117,41 +1153,50 @@ class UpdateFormTestCase(TestCase):
                     'type': 'IS_DATE_IN_THE_FUTURE',
                     'value': 'false',
                 },
-            ]
-        }
+            ],
+        },
     ]
 
-    valid_presets = [{
-        'preset_id': 'confirmation',
-        'message': 'not the same',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'input-date',
-        }, {
-            'slug': 'right',
-            'field_id': 'text_input',
-        }],
-    }]
+    valid_presets = [
+        {
+            'preset_id': 'confirmation',
+            'message': 'not the same',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'input-date',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'text_input',
+                },
+            ],
+        },
+    ]
 
-    fields_items = [{
-        'type_id': 'dropdown', 'label': 'edited field',
-        'slug': 'dropdown-input', 'items': [
-            {'value': 'gun', 'label': 'desert-eagle'},
-            {'value': 'sword', 'label': 'Andúril'}
-        ],
-        'accesses': [
-            {'access_id': 'padawan', 'level': constants.REQUIRED}
-        ],
-    }]
+    fields_items = [
+        {
+            'type_id': 'dropdown', 'label': 'edited field',
+            'slug': 'dropdown-input', 'items': [
+                {'value': 'gun', 'label': 'desert-eagle'},
+                {'value': 'sword', 'label': 'Andúril'}
+            ],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED},
+            ],
+        },
+    ]
 
     fields_with_defaults = [{
         'slug': 'state',
         'label': 'state',
         'type_id': 'dropdown',
         'accesses': [
-            {'access_id': 'padawan', 'level': constants.REQUIRED}
+            {'access_id': 'padawan', 'level': constants.REQUIRED},
         ],
-        'items': [{'value': 'france', 'label': 'France'}],
+        'items': [
+            {'value': 'france', 'label': 'France'},
+        ],
         'defaults': ['france'],
     }]
 
@@ -1507,13 +1552,12 @@ class CreateSerializerMigrationTestCase(TestCase):
                 'help_text': 'Field Help',
                 'multiple': False,
                 'items': [
-                    {'value': 'tutu', 'label': 'toto',
-                     'help_text': 'Item Help'},
+                    {'value': 'tutu', 'label': 'toto', 'help_text': 'Item Help'},  # noqa
                     {'value': 'tata', 'label': 'plop'},
                 ],
-                'accesses': []
-            }
-        ]
+                'accesses': [],
+            },
+        ],
     }
 
     def test_create(self):
