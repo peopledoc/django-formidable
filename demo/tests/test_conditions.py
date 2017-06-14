@@ -292,7 +292,7 @@ class ConditionSerializerTestCase(TestCase):
                     {
                         'field_id': 'checkbox',
                         'operator': 'eq',
-                        'values': ['True'],
+                        'values': [True],
                     }
                 ]
             }

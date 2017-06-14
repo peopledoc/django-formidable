@@ -20,7 +20,7 @@ class ConditionTestSerializer(serializers.Serializer):
     field_id = serializers.CharField(max_length=256, required=True)
     operator = serializers.ChoiceField(('eq',), required=True)
     values = serializers.ListField(
-        child=serializers.CharField(max_length=256),
+        child=serializers.JSONField(),
         allow_empty=False,
         required=True
     )
