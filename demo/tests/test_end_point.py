@@ -801,6 +801,10 @@ class CreateSerializerTestCase(TestCase):
         )
 
     def test_create_form_conditions(self):
+        """
+        deserialize a form with valid `conditions` then compare the object
+        created with the data in the payload
+        """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
         data['conditions'] = copy.deepcopy(self.valid_conditions)
@@ -826,6 +830,10 @@ class CreateSerializerTestCase(TestCase):
         self.assertEqual(test['values'], ['text'])
 
     def test_create_form_conditions_invalid_reference(self):
+        """
+        deserialize a form that has conditions that references non existing
+        fields
+        """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
         data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_ref)
@@ -840,6 +848,9 @@ class CreateSerializerTestCase(TestCase):
         )
 
     def test_create_form_conditions_invalid_action(self):
+        """
+        deserialize a form that has conditions using unknown action
+        """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
         data['conditions'] = copy.deepcopy(
@@ -853,6 +864,10 @@ class CreateSerializerTestCase(TestCase):
         )
 
     def test_create_form_conditions_invalid_op(self):
+        """
+        deserialize a form that has a condition using an unknown operator in
+        its tests
+        """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
         data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_op)
@@ -864,6 +879,9 @@ class CreateSerializerTestCase(TestCase):
         )
 
     def test_create_form_conditions_invalid_test(self):
+        """
+        deserialize a form that has a condition with an empty tests list
+        """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
         data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_test)
@@ -875,6 +893,10 @@ class CreateSerializerTestCase(TestCase):
         )
 
     def test_create_form_conditions_invalid_dup(self):
+        """
+        deserialize a form that has two conditions display_iff for the same
+        field
+        """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
         data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_dup)

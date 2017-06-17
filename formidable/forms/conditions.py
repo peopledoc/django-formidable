@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+"""
+This modules allows to modify the form between Fields validations and Form
+validation (aka :class:`formidable.forms.validations.presets.Preset`).
+
+When the tests (:class:`ConditionTest`) associated with a :class:`Condition`
+are fulfilled, then an action is executed on a list of fields.
+
+This can be used in the following situations:
+
+- Conditional fields: remove fields (e.g. if a checkbox is not checked).
+  See :class:`formidable.forms.conditions.DisplayIffCondition`
+- Conditional access: change access level (required/editable/...)
+
+.. autoclass:: Condition
+
+.. autoclass:: ConditionTest
+   :members: mapper
+
+"""
 
 from __future__ import unicode_literals
 
@@ -6,6 +25,12 @@ import six
 
 
 class ConditionsRegister(dict):
+    """
+    Store actions used for `conditions`.
+    It allows to convert a `conditions` schema into a list of `Condition`
+    objects that will be used to apply _actions_ when the tests of the
+    conditions are True.
+    """
 
     def gen_from_schema(self, fields, conditions_schema):
         for condition in conditions_schema:
@@ -29,7 +54,6 @@ class ConditionsRegister(dict):
             )
 
     def build(self, fields, conditions_schema):
-        # TODO XXX deepcopy ?
         return list(self.gen_from_schema(fields, conditions_schema))
 
 
@@ -37,6 +61,9 @@ conditions_register = ConditionsRegister()
 
 
 class ConditionsMetaClass(type):
+    """
+    Metaclass that registers each Condition subclass into `conditions_register`
+    """
 
     def __new__(mcls, name, base, attrs):
         klass = super(ConditionsMetaClass, mcls).__new__(
@@ -48,7 +75,14 @@ class ConditionsMetaClass(type):
 
 
 class ConditionTest(object):
+    """
+    Test that is evaluated to know if the action of a :class:`Condition` can be
+    applied.
+    A test compare a field's value to a reference value using an operator
+    defined in `mapper`
+    """
 
+    #: dict of supported operators and their comparison function
     mapper = {
         'eq': lambda field, values: field == values[0],
     }
@@ -73,23 +107,33 @@ class ConditionTest(object):
 
 
 class Condition(six.with_metaclass(ConditionsMetaClass)):
+    """
+    Object that represents a Conditional action to be applied on some fields
+    depending on the result of the `tests`.
+
+    .. note:: This class needs to be specialized to implement the actions.
+    """
 
     def __init__(self, fields_ids, name, tests):
         self.name = name
         self.tests = tests
         self.fields_ids = fields_ids
 
+    def __repr__(self):
+        return "<Condition {action}: {name}>".format(
+            action=self.action,
+            name=self.name)
+
 
 class DisplayIffCondition(Condition):
+    """
+    Display field(s) if and only if the conditions in `tests` are all True
+    """
     action = 'display_iff'
 
     def __call__(self, form, cleaned_data):
-        # Check if the condition is True
-        is_displayed = True
-        for test in self.tests:
-            is_displayed = test(cleaned_data)
-            if not is_displayed:
-                break
+        # Check if the conditions are True
+        is_displayed = all(test(cleaned_data) for test in self.tests)
 
         # if not, we need to remove the fields from `cleaned_data` and
         # `form.errors`
@@ -98,8 +142,3 @@ class DisplayIffCondition(Condition):
                 cleaned_data.pop(field_id, None)
                 form.errors.pop(field_id, None)
         return cleaned_data
-
-    def __repr__(self):
-        return "<{classname} {name}>".format(
-            classname=self.__class__.__name__,
-            name=self.name)
