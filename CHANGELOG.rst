@@ -8,6 +8,7 @@ master (unreleased)
 - Moving file named `LICENCE` into `LICENSE` (#232).
 - Add JSON schema migration (#234)
 - Drop python3.4 support (#234)
+- Add conditional display-iff (#198).
 
 Release 0.11.1 (2017-05-19)
 ===========================
@@ -19,7 +20,7 @@ Release 0.11.0 (2017-05-10)
 
 - Added a tox job to update/refresh the swagger-ui related static files (#210 / #213) - including documentation for developers.
 - Remove the field size limit for the model field `formidable.models.Item.label` (#225).
-- handle decimal values in Number fields (#227)
+- Handle decimal values in Number fields (#227).
 
 Release 0.10.0 (2017-04-28)
 ===========================

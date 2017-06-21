@@ -8,6 +8,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from formidable import constants
 from formidable.register import FieldSerializerRegister
+from jsonfield.fields import JSONField
 
 
 @python_2_unicode_compatible
@@ -15,6 +16,7 @@ class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
     description = models.TextField()
+    conditions = JSONField(null=True, blank=False)
 
     def get_django_form_class(self, role=None, field_factory=None):
         """

@@ -184,6 +184,11 @@ There are four different available access-rights:
 
 All the value are defined in :mod:`formidable.constants`
 
+Conditions
+==========
+
+.. automodule:: formidable.forms.conditions
+
 Python builder
 ==============
 

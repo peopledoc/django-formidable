@@ -346,7 +346,7 @@ class RenderContextSerializer(TestCase):
                     ConfirmationPresets(
                         [PresetArg(slug='left', field_id='label'),
                          PresetArg(slug='right', value='Roméo')],
-                        message='label')
+                        message='label'),
                 ]
 
         form = TestForm.to_formidable(label='title')
@@ -373,7 +373,7 @@ class RenderContextSerializer(TestCase):
                         [PresetArg(slug='left', field_id='value'),
                          PresetArg(slug='right', field_id='threshold'),
                          PresetArg(slug='operator', value='lte')],
-                        message='message2')
+                        message='message2'),
                 ]
 
         form = MyTestForm.to_formidable(label='test')
@@ -411,7 +411,7 @@ class RenderContextSerializer(TestCase):
         self.assertIn('arguments', data_preset2)
         self.assertEquals(len(data_preset2['arguments']), 3)
 
-    def test_no_preset(self):
+    def test_no_preset_no_condition(self):
 
         class MyTestForm(FormidableForm):
             value = fields.NumberField()
@@ -425,6 +425,37 @@ class RenderContextSerializer(TestCase):
         data = serializer.data
         self.assertIn('presets', data)
         self.assertEquals(len(data['presets']), 0)
+        self.assertIn('conditions', data)
+        self.assertEquals(data['conditions'], None)
+
+    def test_conditions(self):
+        conditions = [
+            {
+                'fields_ids': ['value'],
+                'action': 'display_iff',
+                'name': 'my condition',
+                'tests': [
+                    {
+                        'field_id': 'threshold',
+                        'operator': 'eq',
+                        'values': ['12'],
+                    },
+                ],
+            },
+        ]
+
+        class MyTestForm(FormidableForm):
+            value = fields.NumberField()
+            threshold = fields.NumberField()
+
+        form = MyTestForm.to_formidable(label='test')
+        form.conditions = conditions
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        data = serializer.data
+        self.assertIn('conditions', data)
+        self.assertEquals(len(data['conditions']), 1)
+        self.assertEquals(conditions[0], data['conditions'][0])
 
 
 class CreateSerializerTestCase(TestCase):
@@ -432,14 +463,15 @@ class CreateSerializerTestCase(TestCase):
     data = {
         'label': 'test_create',
         'description': 'description create',
-        'fields': []
+        'fields': [],
     }
+
     fields_without_items = [
         {
             'slug': 'text_input', 'label': 'text label', 'type_id': 'text',
             'accesses': [{'access_id': 'padawan', 'level': 'REQUIRED'}],
-            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': 'é'}]
-        }
+            'validations': [{'type': 'MINLENGTH', 'value': 5, 'message': 'é'}],
+        },
     ]
 
     fields_with_items = [
@@ -450,10 +482,10 @@ class CreateSerializerTestCase(TestCase):
                 {'value': 'tutu', 'label': 'toto'},
                 {'value': 'tata', 'label': 'plop'},
             ],
-            'accesses': [{
-                'access_id': 'padawan', 'level': 'REQUIRED'
-            }]
-        }
+            'accesses': [
+                {'access_id': 'padawan', 'level': 'REQUIRED'},
+            ],
+        },
     ]
 
     fields_with_items_empty_description = [
@@ -465,10 +497,10 @@ class CreateSerializerTestCase(TestCase):
                 {'value': 'tata', 'label': 'plop'},
             ],
             'description': '',
-            'accesses': [{
-                'access_id': 'padawan', 'level': 'REQUIRED'
-            }]
-        }
+            'accesses': [
+                {'access_id': 'padawan', 'level': 'REQUIRED'},
+            ],
+        },
     ]
 
     fields_with_validation = [
@@ -477,14 +509,14 @@ class CreateSerializerTestCase(TestCase):
             'label': 'text label',
             'type_id': 'text',
             'accesses': [
-                {'access_id': 'padawan', 'level': constants.REQUIRED}
+                {'access_id': 'padawan', 'level': constants.REQUIRED},
             ],
             'validations': [
                 {
                     'type': 'MINLENGTH',
                     'value': '5',
                 },
-            ]
+            ],
         },
         {
             'slug': 'input-date',
@@ -498,26 +530,31 @@ class CreateSerializerTestCase(TestCase):
                     'type': 'IS_DATE_IN_THE_FUTURE',
                     'value': 'false',
                 },
-            ]
-        }
+            ],
+        },
     ]
 
-    fields_with_defaults = [{
-        'slug': 'text',
-        'label': 'state',
-        'type_id': 'dropdown',
-        'accesses': [
-            {'access_id': 'padawan', 'level': constants.REQUIRED}
-        ],
-        'defaults': ['france'],
-        'items': [{
-            'value': 'france',
-            'label': 'France',
-        }, {
-            'value': 'england',
-            'label': 'England'
-        }]
-    }]
+    fields_with_defaults = [
+        {
+            'slug': 'text',
+            'label': 'state',
+            'type_id': 'dropdown',
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED}
+            ],
+            'defaults': ['france'],
+            'items': [
+                {
+                    'value': 'france',
+                    'label': 'France',
+                },
+                {
+                    'value': 'england',
+                    'label': 'England',
+                },
+            ],
+        },
+    ]
 
     radios_buttons_fields = [
         {
@@ -530,48 +567,159 @@ class CreateSerializerTestCase(TestCase):
             'items': [
                 {'value': 'tutu', 'label': 'toto'},
                 {'value': 'foo', 'label': 'bar'},
-            ]
-        }
+            ],
+        },
     ]
 
-    valid_presets = [{
-        'preset_id': 'confirmation',
-        'message': 'not the same',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'input-date',
-        }, {
-            'slug': 'right',
-            'field_id': 'text_input',
-        }],
-    }]
+    valid_presets = [
+        {
+            'preset_id': 'confirmation',
+            'message': 'not the same',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'input-date',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'text_input',
+                },
+            ],
+        },
+    ]
 
-    invalid_presets = [{
-        'preset_id': 'unknown',
-        'message': 'not the same',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'input-date',
-        }, {
-            'slug': 'right',
-            'field_id': 'text_input',
-        }],
-    }]
+    invalid_presets = [
+        {
+            'preset_id': 'unknown',
+            'message': 'not the same',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'input-date',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'text_input',
+                },
+            ],
+        },
+    ]
 
-    presets_with_wrong_parameters = [{
-        'preset_id': 'confirmation',
-        'message': 'noteq!',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'testField2',
-        }, {
-            'slug': 'comparator',
-            'value': 'eq',
-        }, {
-            'slug': 'right',
-            'field_id': 'testField3',
-        }]
-    }
+    presets_with_wrong_parameters = [
+        {
+            'preset_id': 'confirmation',
+            'message': 'noteq!',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'testField2',
+                },
+                {
+                    'slug': 'comparator',
+                    'value': 'eq',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'testField3',
+                },
+            ],
+        },
+    ]
+
+    valid_conditions = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
+        },
+    ]
+
+    valid_conditions_invalid_ref = [
+        {
+            'fields_ids': ['missing'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {
+                    'field_id': 'unknown',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
+        },
+    ]
+
+    valid_conditions_invalid_action = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'bad-action',
+            'name': 'my condition',
+            'tests': [
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
+        },
+    ]
+
+    valid_conditions_invalid_op = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {
+                    'field_id': 'text_input',
+                    'operator': 'BAD',
+                    'values': ['text'],
+                },
+            ],
+        },
+    ]
+
+    valid_conditions_invalid_test = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [],
+        },
+    ]
+
+    valid_conditions_invalid_dup = [
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
+        },
+        {
+            'fields_ids': ['input-date'],
+            'action': 'display_iff',
+            'name': 'my condition',
+            'tests': [
+                {
+                    'field_id': 'text_input',
+                    'operator': 'eq',
+                    'values': ['text'],
+                },
+            ],
+        },
     ]
 
     format_field_helptext = [
@@ -580,14 +728,14 @@ class CreateSerializerTestCase(TestCase):
             'type_id': 'help_text',
             'description': 'Hello',
             'accesses': [],
-        }
+        },
     ]
     format_without_field_helptext = [
         {
             'slug': 'myhelptext',
             'type_id': 'help_text',
             'accesses': [],
-        }
+        },
     ]
     format_field_title = [
         {
@@ -595,14 +743,14 @@ class CreateSerializerTestCase(TestCase):
             'type_id': 'title',
             'label': 'This is an Onboarding Form.',
             'accesses': [],
-        }
+        },
     ]
     format_field_separator = [
         {
             'slug': 'sepa',
             'type_id': 'separator',
             'accesses': [],
-        }
+        },
     ]
 
     def test_create_form(self):
@@ -650,6 +798,113 @@ class CreateSerializerTestCase(TestCase):
         self.assertIn(
             serializer.errors['non_field_errors'][0],
             'Preset (confirmation) argument is using an undefined field (testField2)'  # noqa
+        )
+
+    def test_create_form_conditions(self):
+        """
+        deserialize a form with valid `conditions` then compare the object
+        created with the data in the payload
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertIn('name', condition)
+        self.assertEqual(condition['name'], 'my condition')
+        self.assertIn('action', condition)
+        self.assertEqual(condition['action'], 'display_iff')
+        self.assertIn('fields_ids', condition)
+        self.assertEqual(condition['fields_ids'], ['input-date'])
+        self.assertIn('tests', condition)
+        self.assertEqual(len(condition['tests']), 1)
+        test = condition['tests'][0]
+        self.assertIn('operator', test)
+        self.assertEqual(test['operator'], 'eq')
+        self.assertIn('field_id', test)
+        self.assertEqual(test['field_id'], 'text_input')
+        self.assertIn('values', test)
+        self.assertEqual(test['values'], ['text'])
+
+    def test_create_form_conditions_invalid_reference(self):
+        """
+        deserialize a form that has conditions that references non existing
+        fields
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_ref)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('non_field_errors', serializer.errors)
+        self.assertEqual(len(serializer.errors['non_field_errors']), 1)
+        self.assertIn(
+            serializer.errors['non_field_errors'][0],
+            ['Condition (my condition) is using undefined fields (unknown, missing)',  # noqa
+             'Condition (my condition) is using undefined fields (missing, unknown)']  # noqa
+        )
+
+    def test_create_form_conditions_invalid_action(self):
+        """
+        deserialize a form that has conditions using unknown action
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(
+            self.valid_conditions_invalid_action
+        )
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['conditions'][0]['action'][0],
+            '"bad-action" is not a valid choice.'
+        )
+
+    def test_create_form_conditions_invalid_op(self):
+        """
+        deserialize a form that has a condition using an unknown operator in
+        its tests
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_op)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['conditions'][0]['tests'][0]['operator'][0],
+            '"BAD" is not a valid choice.'
+        )
+
+    def test_create_form_conditions_invalid_test(self):
+        """
+        deserialize a form that has a condition with an empty tests list
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_test)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['conditions'][0]['tests']['non_field_errors'][0],
+            'This list may not be empty.'
+        )
+
+    def test_create_form_conditions_invalid_dup(self):
+        """
+        deserialize a form that has two conditions display_iff for the same
+        field
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_dup)
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['non_field_errors'][0],
+            'Action display_iff in condition (my condition) is used many times for the same fields (input-date)' # noqa
         )
 
     def test_create_field(self):
@@ -890,7 +1145,7 @@ class UpdateFormTestCase(TestCase):
                 {'access_id': 'padawan', 'level': constants.REQUIRED}
             ],
             'validations': [{'type': 'MAXLENGTH', 'value': '128'}]
-        }
+        },
     ]
 
     fields_with_validation = [
@@ -906,7 +1161,7 @@ class UpdateFormTestCase(TestCase):
                     'type': 'MINLENGTH',
                     'value': '5',
                 },
-            ]
+            ],
         },
         {
             'slug': 'input-date',
@@ -920,41 +1175,50 @@ class UpdateFormTestCase(TestCase):
                     'type': 'IS_DATE_IN_THE_FUTURE',
                     'value': 'false',
                 },
-            ]
-        }
+            ],
+        },
     ]
 
-    valid_presets = [{
-        'preset_id': 'confirmation',
-        'message': 'not the same',
-        'arguments': [{
-            'slug': 'left',
-            'field_id': 'input-date',
-        }, {
-            'slug': 'right',
-            'field_id': 'text_input',
-        }],
-    }]
+    valid_presets = [
+        {
+            'preset_id': 'confirmation',
+            'message': 'not the same',
+            'arguments': [
+                {
+                    'slug': 'left',
+                    'field_id': 'input-date',
+                },
+                {
+                    'slug': 'right',
+                    'field_id': 'text_input',
+                },
+            ],
+        },
+    ]
 
-    fields_items = [{
-        'type_id': 'dropdown', 'label': 'edited field',
-        'slug': 'dropdown-input', 'items': [
-            {'value': 'gun', 'label': 'desert-eagle'},
-            {'value': 'sword', 'label': 'Andúril'}
-        ],
-        'accesses': [
-            {'access_id': 'padawan', 'level': constants.REQUIRED}
-        ],
-    }]
+    fields_items = [
+        {
+            'type_id': 'dropdown', 'label': 'edited field',
+            'slug': 'dropdown-input', 'items': [
+                {'value': 'gun', 'label': 'desert-eagle'},
+                {'value': 'sword', 'label': 'Andúril'}
+            ],
+            'accesses': [
+                {'access_id': 'padawan', 'level': constants.REQUIRED},
+            ],
+        },
+    ]
 
     fields_with_defaults = [{
         'slug': 'state',
         'label': 'state',
         'type_id': 'dropdown',
         'accesses': [
-            {'access_id': 'padawan', 'level': constants.REQUIRED}
+            {'access_id': 'padawan', 'level': constants.REQUIRED},
         ],
-        'items': [{'value': 'france', 'label': 'France'}],
+        'items': [
+            {'value': 'france', 'label': 'France'},
+        ],
         'defaults': ['france'],
     }]
 
@@ -1310,13 +1574,12 @@ class CreateSerializerMigrationTestCase(TestCase):
                 'help_text': 'Field Help',
                 'multiple': False,
                 'items': [
-                    {'value': 'tutu', 'label': 'toto',
-                     'help_text': 'Item Help'},
+                    {'value': 'tutu', 'label': 'toto', 'help_text': 'Item Help'},  # noqa
                     {'value': 'tata', 'label': 'plop'},
                 ],
-                'accesses': []
-            }
-        ]
+                'accesses': [],
+            },
+        ],
     }
 
     def test_create(self):

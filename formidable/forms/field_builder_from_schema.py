@@ -3,8 +3,7 @@ from django import forms
 
 from formidable.forms import fields
 from formidable.forms.field_builder import (
-    FieldBuilder as BaseFieldBuilder,
-    FormFieldFactory as BaseFormFieldFactory
+    FieldBuilder as BaseFieldBuilder, FormFieldFactory as BaseFormFieldFactory
 )
 from formidable.validators import (
     DateValidatorFactory as BaseDateValidatorFactory,
