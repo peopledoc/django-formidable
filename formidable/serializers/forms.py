@@ -6,6 +6,7 @@ from collections import Counter, defaultdict
 
 from django.db import transaction
 
+from formidable.forms import conditions
 from formidable.models import Formidable
 from formidable.serializers import fields
 from formidable.serializers.common import WithNestedSerializer
@@ -13,12 +14,11 @@ from formidable.serializers.presets import PresetModelSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-# TODO XXX pick choicefield values from formidable.conditions.*
-
 
 class ConditionTestSerializer(serializers.Serializer):
     field_id = serializers.CharField(max_length=256, required=True)
-    operator = serializers.ChoiceField(('eq',), required=True)
+    operator = serializers.ChoiceField(tuple(conditions.ConditionTest.mapper),
+                                       required=True)
     values = serializers.ListField(
         child=serializers.JSONField(),
         allow_empty=False,
@@ -33,7 +33,8 @@ class ConditionSerializer(serializers.Serializer):
         allow_empty=False,
         required=True
     )
-    action = serializers.ChoiceField(('display_iff',), required=True)
+    action = serializers.ChoiceField(tuple(conditions.conditions_register),
+                                     required=True)
     tests = ConditionTestSerializer(
         many=True, allow_empty=False, required=True
     )
