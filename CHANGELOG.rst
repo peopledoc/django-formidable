@@ -7,6 +7,7 @@ master (unreleased)
 
 - Moving file named `LICENCE` into `LICENSE` (#232).
 - Add JSON schema migration (#234)
+- Add a tool to convert ContextForms to FormidableJSON (#236)
 - Drop python3.4 support (#234)
 - Add conditional display-iff (#198).
 
