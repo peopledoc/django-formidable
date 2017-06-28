@@ -16,7 +16,7 @@ class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
     description = models.TextField()
-    conditions = JSONField(null=True, blank=False)
+    conditions = JSONField(null=False, blank=False, default=list)
 
     def get_django_form_class(self, role=None, field_factory=None):
         """

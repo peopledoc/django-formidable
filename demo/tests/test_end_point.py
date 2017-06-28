@@ -426,7 +426,7 @@ class RenderContextSerializer(TestCase):
         self.assertIn('presets', data)
         self.assertEquals(len(data['presets']), 0)
         self.assertIn('conditions', data)
-        self.assertEquals(data['conditions'], None)
+        self.assertEquals(data['conditions'], [])
 
     def test_conditions(self):
         conditions = [
