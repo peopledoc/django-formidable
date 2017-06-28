@@ -10,10 +10,12 @@ from django.test.utils import CaptureQueriesContext
 import django_perf_rec
 
 from formidable import constants
+from formidable.json_migrations.utils import merge_context_forms
 from formidable.models import Formidable, PresetArg
 from formidable.forms import FormidableForm, fields
-from formidable.serializers.forms import FormidableSerializer
-from formidable.serializers.forms import ContextFormSerializer
+from formidable.serializers.forms import (
+    FormidableSerializer, ContextFormSerializer
+)
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
 from formidable.serializers.presets import (
     PresetsClassSerializer, PresetsArgsSerializer,
@@ -225,6 +227,82 @@ class RenderSerializerTestCase(TestCase):
         serializer = FormidableSerializer(instance=formidable)
         with django_perf_rec.record(path='perfs/'):
             serializer.data
+
+
+class MergeContextForms(TestCase):
+    def check_jedi_and_padawan(self, form):
+        """
+        What we want to do is :
+        FormidableJSON "F"
+        ->
+        'contextualized' into ContextFormJSONs (dict with role as key) "C"
+        ->
+        merged into a Formidable JSON "F'"
+        ->
+        'contextualized' into ContextFormJSONs "C'"
+
+        We can't garanty that F == F' (ContextFormSerializer loses information)
+        But what we really want to check is that C == C' (except for `id`s)
+        """
+        jedi_form = ContextFormSerializer(form,
+                                          context={'role': 'jedi'}).data
+        pdw_form = ContextFormSerializer(form,
+                                         context={'role': 'padawan'}).data
+        contextform_dict = {
+            'jedi': jedi_form,
+            'padawan': pdw_form,
+        }
+        base_form_json = merge_context_forms(contextform_dict)
+        self.assertEqual(form.description, base_form_json['description'])
+        self.assertEqual(form.label, base_form_json['label'])
+
+        serializer = FormidableSerializer(data=base_form_json)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        instance = serializer.save()
+
+        jedi_form2 = ContextFormSerializer(instance,
+                                           context={'role': 'jedi'}).data
+        pdw_form2 = ContextFormSerializer(instance,
+                                          context={'role': 'padawan'}).data
+        self.assertEqual(jedi_form['fields'], jedi_form2['fields'])
+        self.assertEqual(pdw_form['fields'], pdw_form2['fields'])
+
+    def test_all_accesses(self):
+        class TestForm(FormidableForm):
+            field1 = fields.CharField(label='Field1', accesses={
+                'jedi': constants.REQUIRED,
+            })
+            field2 = fields.CharField(label='Field2', accesses={
+                'jedi': constants.HIDDEN,
+            })
+            field3 = fields.CharField(label='Field3', accesses={
+                'jedi': constants.EDITABLE,
+            })
+            field4 = fields.CharField(label='Field4', accesses={
+                'jedi': constants.READONLY,
+            })
+            field5 = fields.CharField(label='Field5', accesses={
+                'jedi': constants.REQUIRED,
+            })
+        form = TestForm.to_formidable(label='test', description="test form")
+        self.check_jedi_and_padawan(form)
+
+    def test_hidden_fields(self):
+        class TestForm(FormidableForm):
+            field1 = fields.CharField(label='Field1', accesses={
+                'padawan': constants.REQUIRED,
+                'jedi': constants.HIDDEN,
+            })
+            field2 = fields.CharField(label='Field2', accesses={
+                'padawan': constants.HIDDEN,
+                'jedi': constants.REQUIRED,
+            })
+            field3 = fields.CharField(label='Field3', accesses={
+                'padawan': constants.REQUIRED,
+                'jedi': constants.HIDDEN,
+            })
+        form = TestForm.to_formidable(label='test', description="test form")
+        self.check_jedi_and_padawan(form)
 
 
 class RenderContextSerializer(TestCase):
