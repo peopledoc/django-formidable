@@ -889,6 +889,38 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         form = serializer.save()
+        form = Formidable.objects.get(pk=form.pk)
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertIn('name', condition)
+        self.assertEqual(condition['name'], 'my condition')
+        self.assertIn('action', condition)
+        self.assertEqual(condition['action'], 'display_iff')
+        self.assertIn('fields_ids', condition)
+        self.assertEqual(condition['fields_ids'], ['input-date'])
+        self.assertIn('tests', condition)
+        self.assertEqual(len(condition['tests']), 1)
+        test = condition['tests'][0]
+        self.assertIn('operator', test)
+        self.assertEqual(test['operator'], 'eq')
+        self.assertIn('field_id', test)
+        self.assertEqual(test['field_id'], 'text_input')
+        self.assertIn('values', test)
+        self.assertEqual(test['values'], ['text'])
+
+    def test_conditions_on_update(self):
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        # update with conditions
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        serializer = FormidableSerializer(instance=form, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        # reload form from the database
+        form = Formidable.objects.get(pk=form.pk)
         self.assertEqual(len(form.conditions), 1)
         condition = form.conditions[0]
         self.assertIn('name', condition)

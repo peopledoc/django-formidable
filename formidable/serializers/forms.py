@@ -77,15 +77,16 @@ class FormidableSerializer(WithNestedSerializer):
     def create(self, validated_data):
         conditions = validated_data.pop('conditions', None)
         instance = super(FormidableSerializer, self).create(validated_data)
-        instance.conditions = conditions
+        if conditions:
+            instance.conditions = conditions
+            instance.save()
         return instance
 
     def update(self, instance, validated_data):
-        conditions = validated_data.pop('conditions', None)
+        instance.conditions = validated_data.pop('conditions', None)
         instance = super(FormidableSerializer, self).update(
             instance, validated_data
         )
-        instance.conditions = conditions
         return instance
 
     def _get_fields_slugs(self, data):
