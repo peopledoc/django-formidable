@@ -141,4 +141,5 @@ class DisplayIffCondition(Condition):
             for field_id in self.fields_ids:
                 cleaned_data.pop(field_id, None)
                 form.errors.pop(field_id, None)
+                del form.fields[field_id]
         return cleaned_data

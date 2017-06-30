@@ -100,6 +100,7 @@ class ConditionTestCase(TestCase):
         form = form_class(data)
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data, {'checkbox': True})
+        self.assertTrue('bar' not in form.fields)
 
     def test_padawan_displayed(self):
         form_class = self.get_form_class(self.formidable, 'padawan')
@@ -123,6 +124,7 @@ class ConditionTestCase(TestCase):
         form = form_class(data)
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data, {'checkbox': True})
+        self.assertTrue('bar' not in form.fields)
 
     def test_save_update(self):
         self.formidable.save()
