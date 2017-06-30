@@ -889,7 +889,7 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         form = serializer.save()
-        form = Formidable.objects.get(pk=form.pk)
+        form.refresh_from_db()
         self.assertEqual(len(form.conditions), 1)
         condition = form.conditions[0]
         self.assertIn('name', condition)
@@ -919,8 +919,8 @@ class CreateSerializerTestCase(TestCase):
         serializer = FormidableSerializer(instance=form, data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         form = serializer.save()
-        # reload form from the database
-        form = Formidable.objects.get(pk=form.pk)
+        # reload form from the database, ensure conditions were saved
+        form.refresh_from_db()
         self.assertEqual(len(form.conditions), 1)
         condition = form.conditions[0]
         self.assertIn('name', condition)
