@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.12.0 (2017-07-04)
+===========================
 
 - Moving file named `LICENCE` into `LICENSE` (#232).
 - Add JSON schema migration (#234)
