@@ -10,6 +10,7 @@ master (unreleased)
 - Add a tool to convert ContextForms to FormidableJSON (#236)
 - Drop python3.4 support (#234)
 - Add conditional display-iff (#198).
+- Added latest translations from Crowdin.
 
 Release 0.11.1 (2017-05-19)
 ===========================
