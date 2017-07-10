@@ -42,7 +42,8 @@ class FieldListSerializer(NestedListSerializer):
         by id.
         """
         validated_data = super(FieldListSerializer, self).validate(
-                validated_data)
+            validated_data
+        )
         for index, data in enumerate(validated_data):
             data['order'] = index
 

@@ -184,11 +184,14 @@ class ConditionTestCase(TestCase):
 
         form = form_class(data)
         self.assertTrue(form.is_valid(), form.errors)
-        self.assertEqual(form.cleaned_data, {
-                    'foo': 'fooval',
-                    'checkbox': False,
-                    'bar': '',  # default value
-                })
+        self.assertEqual(
+            form.cleaned_data,
+            {
+                'foo': 'fooval',
+                'checkbox': False,
+                'bar': '',  # default value
+            }
+        )
 
     def test_readonly_field_not_displayed(self):
         form_class = self.get_form_class(self.formidable, 'human')
