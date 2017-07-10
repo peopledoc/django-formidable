@@ -61,7 +61,7 @@ class NestedListSerializer(ListSerializer):
         if self.field_id:
             if len(data) != len(set(f[self.field_id] for f in data)):
                 msg = 'The fields {field_id} must make a unique set.'.format(
-                        field_id=self.field_id
+                    field_id=self.field_id
                 )
                 raise ValidationError(msg)
 

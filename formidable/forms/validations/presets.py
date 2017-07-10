@@ -167,13 +167,13 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
             raise ImproperlyConfigured(
                 _('Missing presets arguments : {}').format(
                     ', '.join(missing_args))
-                )
+            )
         extra_args = args_set - decl_args_set
         if extra_args:
             raise ImproperlyConfigured(
                 _('Extra presets arguments : {}').format(
                     ', '.join(extra_args))
-                )
+            )
         self.arguments = {arg.slug: arg for arg in arguments}
 
         if fields is not None:
@@ -188,7 +188,7 @@ class Presets(six.with_metaclass(PresetsMetaClass)):
                 raise FieldError(
                     _('Bad field references in presets : {}').format(
                         ', '.join(missing_fields))
-                    )
+                )
             # Value conversions
             for arg_name, arg in self._declared_arguments.items():
                 instance = self.arguments[arg_name]

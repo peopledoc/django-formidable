@@ -494,8 +494,11 @@ class RenderContextSerializer(TestCase):
         class MyTestForm(FormidableForm):
             value = fields.NumberField()
             threshold = fields.NumberField(
-                    accesses={'padawan': constants.READONLY,
-                              'jedi': constants.REQUIRED})
+                accesses={
+                    'padawan': constants.READONLY,
+                    'jedi': constants.REQUIRED
+                }
+            )
 
         form = MyTestForm.to_formidable(label='test')
         serializer = ContextFormSerializer(form, context={'role': 'jedi'})
