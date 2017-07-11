@@ -15,7 +15,11 @@ from .generic import EQValidator, GTValidator, LTValidator, NEQValidator
 
 
 class DateValidator(FormidableValidator):
+    """
+    Generic date-based validator.
 
+    Will make sure the value to compare is a correct date.
+    """
     def __init__(self, limit_value, message=None):
         return super(DateValidator, self).__init__(
             parse(limit_value).date(), message
@@ -23,27 +27,37 @@ class DateValidator(FormidableValidator):
 
 
 class DateGTValidator(DateValidator, GTValidator):
-
+    """
+    Validate a date field value that should be greater than a date.
+    """
     type = 'GT'
 
 
 class DateLTValidator(DateValidator, LTValidator):
-
+    """
+    Validate a date field value that should be lesser than a date.
+    """
     type = 'LT'
 
 
 class DateMaxValueValidator(DateValidator, validators.MaxValueValidator):
-
+    """
+    Validate a date field value that should be lesser or equal to a date.
+    """
     type = 'LTE'
 
 
 class DateMinValueValidator(DateValidator, validators.MinValueValidator):
-
+    """
+    Validate a date field value that should be greater or equal to a date.
+    """
     type = 'GTE'
 
 
 class DateEQValidator(DateValidator, EQValidator):
-
+    """
+    Validate a date field value that should be equal to a date.
+    """
     type = 'EQ'
 
     def compare(self, x, y):
@@ -51,7 +65,9 @@ class DateEQValidator(DateValidator, EQValidator):
 
 
 class DateNEQValidator(DateValidator, NEQValidator):
-
+    """
+    Validate a date field value that should be different than a date.
+    """
     type = 'NEQ'
 
     def compare(self, x, y):
@@ -59,7 +75,9 @@ class DateNEQValidator(DateValidator, NEQValidator):
 
 
 class DateIsInFuture(FormidableValidator, validators.BaseValidator):
-
+    """
+    Validate a date field value that should be in the future.
+    """
     type = 'IS_DATE_IN_THE_FUTURE'
 
     # FIXME: what's the point of this overwritten method?
@@ -75,7 +93,9 @@ class DateIsInFuture(FormidableValidator, validators.BaseValidator):
 
 
 class AgeAboveValidator(FormidableValidator, validators.BaseValidator):
-
+    """
+    Validate a date field value that should be older than a given age (in years).
+    """  # noqa
     type = 'IS_AGE_ABOVE'
 
     def clean(self, birth_date):
@@ -86,7 +106,9 @@ class AgeAboveValidator(FormidableValidator, validators.BaseValidator):
 
 
 class AgeUnderValidator(AgeAboveValidator):
-
+    """
+    Validate a date field value that should be under a given age (in years).
+    """
     type = 'IS_AGE_UNDER'
 
     def compare(self, value, age):

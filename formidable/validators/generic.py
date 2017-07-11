@@ -11,27 +11,37 @@ from ._core import FormidableValidator
 
 
 class GTEValidator(FormidableValidator, validators.MinValueValidator):
-
+    """
+    Validate a field value that should be greater or equal to a value.
+    """
     type = 'GTE'
 
 
 class LTEValidator(FormidableValidator, validators.MaxValueValidator):
-
+    """
+    Validate a field value that should be lesser or equal to a value.
+    """
     type = 'LTE'
 
 
 class MaxLengthValidator(FormidableValidator, validators.MaxLengthValidator):
-
+    """
+    Validate a field value that should not be longer than a value.
+    """
     type = 'MAXLENGTH'
 
 
 class MinLengthValidator(FormidableValidator, validators.MinLengthValidator):
-
+    """
+    Validate a field value that should not be shorter than a value.
+    """
     type = 'MINLENGTH'
 
 
 class RegexValidator(FormidableValidator, validators.RegexValidator):
-
+    """
+    Validate a field value that should match a given regular expression.
+    """
     type = 'REGEXP'
 
     def get_formidable_kwargs(self):
@@ -42,7 +52,9 @@ class RegexValidator(FormidableValidator, validators.RegexValidator):
 
 
 class GTValidator(FormidableValidator, validators.BaseValidator):
-
+    """
+    Validate a field value that should be greater than a value.
+    """
     type = 'GT'
 
     message = _("Ensure this field is greater than %(limit_value)s")
@@ -55,7 +67,9 @@ class GTValidator(FormidableValidator, validators.BaseValidator):
 
 
 class LTValidator(FormidableValidator, validators.BaseValidator):
-
+    """
+    Validate a field value that should be lesser than a value.
+    """
     type = 'LT'
     message = _("Ensure this field is less than %(limit_value)s")
 
@@ -67,7 +81,9 @@ class LTValidator(FormidableValidator, validators.BaseValidator):
 
 
 class EQValidator(FormidableValidator, validators.BaseValidator):
-
+    """
+    Validate a field value that should be equals to a value.
+    """
     type = 'EQ'
     message = _("Ensure this field is equal to %(limit_value)s")
 
@@ -80,7 +96,9 @@ class EQValidator(FormidableValidator, validators.BaseValidator):
 
 
 class NEQValidator(FormidableValidator, validators.BaseValidator):
-
+    """
+    Validate a field value that should be different than a value.
+    """
     type = 'NEQ'
     message = _("Ensure this field is not equal to %(limit_value)s")
 

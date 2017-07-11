@@ -9,6 +9,7 @@ Contents:
    intro
    install
    forms
+   validators
    api
    callbacks
    dev
