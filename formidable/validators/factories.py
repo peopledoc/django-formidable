@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Validator factories.
+Validator factories will be used in a field-builder context.
 """
 from __future__ import absolute_import, unicode_literals
 
@@ -17,7 +17,14 @@ from .generic import EQValidator, GTValidator, LTValidator, NEQValidator
 
 
 class ValidatorFactory(object):
+    """
+    Generic validator factory.
 
+    It's used in a generic field builder context.
+    It'll describe the available validators for this field and will map their
+    types with the appropriate method, which will call instantiate the
+    appropriate Validator object.
+    """
     maps = {
         'MINLENGTH': lambda self, x, y=None: self.min_length(x, y),
         'MAXLENGTH': lambda self, x, y=None: self.max_length(x, y),
@@ -72,6 +79,16 @@ class ValidatorFactory(object):
 
 
 class DateValidatorFactory(ValidatorFactory):
+    """
+    Date validator factory.
+
+    It's used in a date-based field builder context.
+
+    It'll work exactly like :class:`ValidatorFactory`, except that it'll:
+
+    * add date-specific validators,
+    * overwrite some validation methods using date-specific validators.
+    """
 
     maps = ValidatorFactory.maps.copy()
     maps['IS_DATE_IN_THE_FUTURE'] = lambda self, x, y=None: self.future_date(
