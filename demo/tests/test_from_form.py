@@ -48,6 +48,22 @@ class TestFromDjangoForm(TestCase):
             form.fields.filter(slug='dropdown', order=3).exists()
         )
 
+    def test_accesses(self):
+        form = FormTest.to_formidable(label='with-accesses')
+        self.assertTrue(form.pk)
+        self.assertTrue(form.fields.filter(slug='mytext').exists())
+        field = form.fields.get(slug='mytext')
+        self.assertEquals(5, field.accesses.count())
+        self.assertTrue(form.fields.filter(slug='dropdown').exists())
+        field = form.fields.get(slug='dropdown')
+        self.assertEquals(5, field.accesses.count())
+        self.assertTrue(field.accesses.filter(
+            access_id='jedi', level='EDITABLE').exists()
+        )
+
+
+class FieldValidatorTests(TestCase):
+
     def test_regex_validators(self):
         class MyForm(FormidableForm):
 
@@ -250,19 +266,6 @@ class TestFromDjangoForm(TestCase):
         valid = field.validations.first()
         self.assertEquals(valid.type, 'IS_AGE_UNDER')
         self.assertEquals(valid.value, '21')
-
-    def test_accesses(self):
-        form = FormTest.to_formidable(label='with-accesses')
-        self.assertTrue(form.pk)
-        self.assertTrue(form.fields.filter(slug='mytext').exists())
-        field = form.fields.get(slug='mytext')
-        self.assertEquals(5, field.accesses.count())
-        self.assertTrue(form.fields.filter(slug='dropdown').exists())
-        field = form.fields.get(slug='dropdown')
-        self.assertEquals(5, field.accesses.count())
-        self.assertTrue(field.accesses.filter(
-            access_id='jedi', level='EDITABLE').exists()
-        )
 
     def test_text_field(self):
 
