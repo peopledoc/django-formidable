@@ -5,7 +5,9 @@ from __future__ import unicode_literals
 from django import forms
 
 from formidable.forms import fields
-from formidable.validators import DateValidatorFactory, ValidatorFactory
+from formidable.validators.factories import (
+    DateValidatorFactory, ValidatorFactory
+)
 
 
 class SkipField(Exception):

@@ -7,7 +7,14 @@ from django.test import TestCase
 from formidable.models import Formidable
 from formidable.forms import FormidableForm
 from formidable.forms import fields, widgets
-from formidable import validators
+
+from formidable.validators.generic import (
+    RegexValidator, MaxLengthValidator, MinLengthValidator, GTValidator,
+    LTValidator, GTEValidator, LTEValidator, EQValidator, NEQValidator
+)
+from formidable.validators.date import (
+    DateIsInFuture, AgeAboveValidator, AgeUnderValidator
+)
 
 
 class FormTest(FormidableForm):
@@ -45,7 +52,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mytext = fields.CharField(
-                label='text', validators=[validators.RegexValidator(
+                label='text', validators=[RegexValidator(
                     regex=r'^[0-9]\w+'
                 )]
             )
@@ -63,7 +70,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mytext = fields.CharField(
-                label='text', validators=[validators.MaxLengthValidator(5)]
+                label='text', validators=[MaxLengthValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -79,7 +86,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mytext = fields.CharField(
-                label='text', validators=[validators.MinLengthValidator(5)]
+                label='text', validators=[MinLengthValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -96,7 +103,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mynumber = fields.NumberField(
-                label='number', validators=[validators.GTValidator(5)]
+                label='number', validators=[GTValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -113,7 +120,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mynumber = fields.NumberField(
-                label='number', validators=[validators.LTValidator(5)]
+                label='number', validators=[LTValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -130,7 +137,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mynumber = fields.NumberField(
-                label='number', validators=[validators.GTEValidator(5)]
+                label='number', validators=[GTEValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -147,7 +154,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mynumber = fields.NumberField(
-                label='number', validators=[validators.LTEValidator(5)]
+                label='number', validators=[LTEValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -164,7 +171,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mynumber = fields.NumberField(
-                label='number', validators=[validators.EQValidator(5)]
+                label='number', validators=[EQValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -181,7 +188,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mynumber = fields.NumberField(
-                label='number', validators=[validators.NEQValidator(5)]
+                label='number', validators=[NEQValidator(5)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -198,7 +205,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mydate = fields.DateField(
-                validators=[validators.DateIsInFuture(False)]
+                validators=[DateIsInFuture(False)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -215,7 +222,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mydate = fields.DateField(
-                validators=[validators.AgeAboveValidator(21)]
+                validators=[AgeAboveValidator(21)]
             )
 
         form = MyForm.to_formidable(label='with-validators')
@@ -232,7 +239,7 @@ class TestFromDjangoForm(TestCase):
         class MyForm(FormidableForm):
 
             mydate = fields.DateField(
-                validators=[validators.AgeUnderValidator(21)]
+                validators=[AgeUnderValidator(21)]
             )
 
         form = MyForm.to_formidable(label='with-validators')

@@ -5,7 +5,7 @@ from formidable.forms import fields
 from formidable.forms.field_builder import (
     FieldBuilder as BaseFieldBuilder, FormFieldFactory as BaseFormFieldFactory
 )
-from formidable.validators import (
+from formidable.validators.factories import (
     DateValidatorFactory as BaseDateValidatorFactory,
     ValidatorFactory as BaseValidatorFactory
 )

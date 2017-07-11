@@ -16,7 +16,12 @@ from formidable.forms import FormidableForm, fields
 from formidable.forms.validations.presets import (
     ComparisonPresets, ConfirmationPresets
 )
-from formidable import validators, constants
+from formidable import constants
+
+from formidable.validators.date import AgeAboveValidator, DateIsInFuture
+from formidable.validators.generic import (
+    GTValidator, LTEValidator, MinLengthValidator
+)
 
 from . import form_data, form_data_items
 
@@ -48,22 +53,22 @@ class MyTestForm(FormidableForm):
     birth_date = fields.DateField(
         label='Your Birth Date',
         validators=[
-            validators.AgeAboveValidator(
+            AgeAboveValidator(
                 21, message='You cannot be a jedi until your 21'
             ),
-            validators.DateIsInFuture(False)
+            DateIsInFuture(False)
         ],
         accesses={'jedi': 'REQUIRED'},
     )
     out_date = fields.DateField(
-        validators=[validators.DateIsInFuture(True)]
+        validators=[DateIsInFuture(True)]
     )
     weapons = fields.ChoiceField(choices=[
         ('gun', 'blaster'), ('sword', 'light saber')
     ])
     salary = fields.NumberField(
         validators=[
-            validators.GTValidator(0), validators.LTEValidator(25)
+            GTValidator(0), LTEValidator(25)
         ],
         accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
     )
@@ -428,7 +433,7 @@ class MyForm(FormidableForm):
     )
     last_name = fields.CharField(
         accesses={'padawan': constants.REQUIRED},
-        validators=[validators.MinLengthValidator(5)]
+        validators=[MinLengthValidator(5)]
     )
 
 

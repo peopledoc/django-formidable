@@ -14,9 +14,8 @@ from formidable.forms.validations.presets import (
     ConfirmationPresets
 )
 from formidable.models import PresetArg
-from formidable.validators import (
-    GTEValidator, MinLengthValidator, AgeAboveValidator
-)
+from formidable.validators.generic import GTEValidator, MinLengthValidator
+from formidable.validators.date import AgeAboveValidator
 
 from formidable.serializers.forms import ContextFormSerializer
 
