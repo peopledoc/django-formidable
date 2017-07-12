@@ -53,10 +53,14 @@ class Formidable(models.Model):
         from formidable.serializers import FormidableSerializer
 
         serializer = FormidableSerializer(data=definition_schema)
-        if serializer.is_valid():
-            return serializer.save(**kwargs)
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
 
-        raise ValidationError(serializer.errors)
+        return serializer.save(**kwargs)
+
+    def to_json(self):
+        from formidable.serializers import FormidableSerializer
+        return FormidableSerializer(self).data
 
     def __str__(self):
         return '{formidable.label}'.format(formidable=self)

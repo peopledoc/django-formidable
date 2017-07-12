@@ -5,6 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
+- Add contextualize function for form definition (#241).
 - Small flake8-related fixes (#240).
 
 Release 0.12.0 (2017-07-04)
