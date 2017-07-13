@@ -58,6 +58,13 @@ class HelpTextBuilder(FieldBuilder):
         kwargs['text'] = kwargs.pop('help_text')
         return kwargs
 
+    def get_label(self):
+        """
+        HelpText does not have label.
+
+        """
+        return None
+
 
 class SeparatorBuilder(FieldBuilder):
 

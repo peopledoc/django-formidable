@@ -2,10 +2,12 @@
 
 from __future__ import unicode_literals
 
+import copy
 from collections import Counter, defaultdict
 
 from django.db import transaction
 
+from formidable import constants
 from formidable.forms import conditions
 from formidable.models import Formidable
 from formidable.serializers import fields
@@ -170,3 +172,40 @@ class ContextFormSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(ContextFormSerializer, self).__init__(*args, **kwargs)
         self.fields['fields'].set_context('role', self._context['role'])
+
+
+def get_access(accesses, role):
+    """
+    Return the access' level for a given ``role``.
+
+    """
+    for access in accesses:
+        if access['access_id'] == role:
+            return access['level']
+    return constants.EDITABLE  # default
+
+
+def contextualize_fields(fields, role):
+    """
+    This method sets disabled/required attributes regarding the access
+    level.
+
+    """
+    for field in fields:
+        accesses = field.pop('accesses')
+        access = get_access(accesses, role)
+        if access == constants.HIDDEN:
+            continue
+        field['disabled'] = access == constants.READONLY
+        field['required'] = access == constants.REQUIRED
+        yield field
+
+
+def contextualize(form, role):
+    """
+    Transform a FormidableJSON into a ContextFormJSON for a given role.
+
+    """
+    form = copy.deepcopy(form)
+    form['fields'] = list(contextualize_fields(form['fields'], role))
+    return form

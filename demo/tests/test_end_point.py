@@ -1,31 +1,32 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 import copy
 from functools import reduce
 
 from django.db import connection
 from django.test import TestCase, TransactionTestCase
 from django.test.utils import CaptureQueriesContext
+
 import django_perf_rec
 
 from formidable import constants
+from formidable.forms import FormidableForm, fields
+from formidable.forms.validations import presets
+from formidable.forms.validations.presets import (
+    ComparisonPresets, ConfirmationPresets
+)
 from formidable.json_migrations.utils import merge_context_forms
 from formidable.models import Formidable, PresetArg
-from formidable.forms import FormidableForm, fields
-from formidable.serializers.forms import (
-    FormidableSerializer, ContextFormSerializer
-)
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializerRegister
+from formidable.serializers.forms import (
+    ContextFormSerializer, FormidableSerializer, contextualize
+)
 from formidable.serializers.presets import (
-    PresetsClassSerializer, PresetsArgsSerializer,
-    PresetsArgSerializerWithItems,
+    PresetsArgSerializerWithItems, PresetsArgsSerializer,
+    PresetsClassSerializer
 )
-from formidable.forms.validations.presets import (
-    ConfirmationPresets, ComparisonPresets
-)
-from formidable.forms.validations import presets
-
 
 RENDER_BASE_FIELDS = list(set(BASE_FIELDS) - set(['order']))
 
@@ -406,6 +407,86 @@ class RenderContextSerializer(TestCase):
         self.assertIn('defaults', field)
         defaults = field['defaults']
         self.assertEqual(defaults, ['Roméo'])
+
+    def test_contextualize(self):
+
+        class TestForm(FormidableForm):
+            name = fields.CharField(label='Your name', default='Roméo')
+
+        form = TestForm.to_formidable(label='title')
+        contextualized_data = contextualize(form.to_json(), role='jedi')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        serializer_data = serializer.data
+
+        self.assertIn('fields', serializer_data)
+        self.assertEquals(len(serializer_data['fields']), 1)
+
+        for field in set(BASE_FIELDS) - {'accesses', 'order', 'set'}:
+            # We skip `items` and `multiple` because they are not
+            # serialized by FormidableSerializer for CharField
+            self.assertEquals(
+                contextualized_data['fields'][0][field],
+                serializer_data['fields'][0][field]
+            )
+
+    def test_contextualize_with_accesses(self):
+
+        class TestForm(FormidableForm):
+            editable = fields.CharField(
+                label='Your name',
+                default='Roméo'
+            )
+            required = fields.CharField(
+                label='Your name',
+                default='Roméo',
+                accesses={'jedi': constants.REQUIRED}
+            )
+            readonly = fields.CharField(
+                label='Your name',
+                default='Roméo',
+                accesses={'jedi': constants.READONLY}
+            )
+            hidden = fields.CharField(
+                label='Your name',
+                default='Roméo',
+                accesses={'jedi': constants.HIDDEN}
+            )
+
+        form = TestForm.to_formidable(label='title')
+        contextualized_data = contextualize(form.to_json(), role='jedi')
+
+        serializer = ContextFormSerializer(form, context={'role': 'jedi'})
+        self.assertTrue(serializer.data)
+        serializer_data = serializer.data
+
+        self.assertIn('fields', serializer_data)
+        # We should have 4 fields, but the hidden one is skipped
+        self.assertEquals(len(serializer_data['fields']), 3)
+
+        for field in set(BASE_FIELDS) - {'accesses', 'order', 'set'}:
+            # We skip `items` and `multiple` because they are not
+            # serialized by FormidableSerializer for CharField
+            self.assertEquals(
+                contextualized_data['fields'][0][field],
+                serializer_data['fields'][0][field]
+            )
+
+        editable_field = contextualized_data['fields'][0]
+        self.assertEquals(editable_field['slug'], 'editable')
+        self.assertFalse(editable_field['disabled'])
+        self.assertFalse(editable_field['required'])
+
+        required_field = contextualized_data['fields'][1]
+        self.assertEquals(required_field['slug'], 'required')
+        self.assertFalse(required_field['disabled'])
+        self.assertTrue(required_field['required'])
+
+        readonly_field = contextualized_data['fields'][2]
+        self.assertEquals(readonly_field['slug'], 'readonly')
+        self.assertTrue(readonly_field['disabled'])
+        self.assertFalse(readonly_field['required'])
 
     def test_queryset(self):
 
