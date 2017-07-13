@@ -70,10 +70,31 @@ class SeparatorBuilder(FieldBuilder):
 
     field_class = fields.SeparatorField
 
+    def get_label(self):
+        """
+        Separator does not have label.
 
-class TitleFielBuilder(FieldBuilder):
+        """
+        return None
+
+    def get_help_text(self):
+        """
+        Separator does not have description/help text.
+
+        """
+        return None
+
+
+class TitleFieldBuilder(FieldBuilder):
 
     field_class = fields.TitleField
+
+    def get_help_text(self):
+        """
+        Title does not have description/help text.
+
+        """
+        return None
 
 
 class TextFieldBuilder(FieldBuilder):
@@ -168,7 +189,7 @@ class FormFieldFactory(BaseFormFieldFactory):
         'radios_buttons': RadioFieldBuilder,
         'help_text': HelpTextBuilder,
         'separator': SeparatorBuilder,
-        'title': TitleFielBuilder,
+        'title': TitleFieldBuilder,
     }
 
     def get_type_id(self, field):
