@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Nothing yet.
+- Fix field builder from schema for Title and Separator (#243).
 
 Release 0.13.0 (2017-07-13)
 ===========================
