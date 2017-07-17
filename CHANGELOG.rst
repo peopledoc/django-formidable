@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+
+- Nothing yet.
+
 Release 0.13.1 (2017-07-17)
 ===========================
 
