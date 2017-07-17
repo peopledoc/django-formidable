@@ -24,15 +24,18 @@ from formidable.serializers.forms import ContextFormSerializer
 
 class TestFormFromSchema(TestCase):
 
+    def get_schema(self, formidable, role):
+        return ContextFormSerializer(instance=formidable, context={
+            'role': role
+        }).data
+
     def test_charfield(self):
         class TestCharField(FormidableForm):
             """ Test charfield """
             charfield = fields.CharField()
 
         formidable = TestCharField.to_formidable(label='label')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('charfield', form.fields)
@@ -46,9 +49,7 @@ class TestFormFromSchema(TestCase):
             charfield = fields.CharField(accesses={'jedi': REQUIRED})
 
         formidable = TestCharField.to_formidable(label='label')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('charfield', form.fields)
@@ -62,9 +63,7 @@ class TestFormFromSchema(TestCase):
             paragraph = fields.CharField(widget=widgets.Textarea)
 
         formidable = TestParagraphField.to_formidable(label='label')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('paragraph', form.fields)
@@ -82,9 +81,7 @@ class TestFormFromSchema(TestCase):
             helptext = fields.HelpTextField(text='My Help Text')
 
         formidable = TestHelpTextField.to_formidable(label='label')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
 
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
@@ -94,27 +91,6 @@ class TestFormFromSchema(TestCase):
         self.assertEqual(type(helptext), fields.HelpTextField)
         self.assertEqual(type(helptext.widget), widgets.HelpTextWidget)
         self.assertFalse(helptext.required)
-
-    def test_help_text_label(self):
-        class TestHelpTextField(FormidableForm):
-            """
-            Test help text
-
-            """
-            helptext = fields.HelpTextField(text='My Help Text')
-
-        formidable = TestHelpTextField.to_formidable(label='label')
-        schema = contextualize(formidable.to_json(), 'jedi')
-
-        form_class = get_dynamic_form_class_from_schema(schema)
-        form = form_class()
-
-        self.assertIn('helptext', form.fields)
-        helptext = form.fields['helptext']
-        self.assertEqual(type(helptext), fields.HelpTextField)
-        self.assertEqual(type(helptext.widget), widgets.HelpTextWidget)
-        self.assertFalse(helptext.required)
-        self.assertIsNone(helptext.label)
 
     def test_separator(self):
         class TestSeparatorField(FormidableForm):
@@ -125,9 +101,7 @@ class TestFormFromSchema(TestCase):
             separator = fields.SeparatorField()
 
         formidable = TestSeparatorField.to_formidable(label='label')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
 
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
@@ -147,9 +121,7 @@ class TestFormFromSchema(TestCase):
             title = fields.TitleField()
 
         formidable = TestTitleField.to_formidable(label='label')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
 
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
@@ -167,9 +139,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = TestCheckBoxField.to_formidable(label='label')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('checkbox', form.fields)
@@ -183,9 +153,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = TestemailField.to_formidable(label='label')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('email', form.fields)
@@ -199,9 +167,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = TestintegerField.to_formidable(label='label')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('integer', form.fields)
@@ -215,9 +181,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = TestfileField.to_formidable(label='label')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('file_', form.fields)
@@ -231,9 +195,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = TestdateField.to_formidable(label='label')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('date', form.fields)
@@ -248,9 +210,7 @@ class TestFormFromSchema(TestCase):
             )
 
         formidable = WithDropdown.to_formidable(label='dropdown')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
         self.assertIn('weapon', form.fields)
@@ -267,9 +227,7 @@ class TestFormFromSchema(TestCase):
             )
 
         formidable = WithDropdown.to_formidable(label='dropdown')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
 
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
@@ -291,9 +249,7 @@ class TestFormFromSchema(TestCase):
             )
 
         formidable = TestRadioField.to_formidable(label='form-with-radio')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
 
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
@@ -323,9 +279,7 @@ class TestFormFromSchema(TestCase):
             )
 
         formidable = TestCheckboxesField.to_formidable(label='checkboxes')
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
 
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class()
@@ -348,9 +302,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = TestdateField.to_formidable(label='label')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class(data={'date': '1990-01-01'})
         self.assertIn('date', form.fields)
@@ -368,9 +320,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = FormWithValidations.to_formidable(label='validation')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class(data={'text': 'tut', 'integer': 21.0})
         self.assertFalse(form.is_valid())
@@ -395,9 +345,7 @@ class TestFormFromSchema(TestCase):
 
         formidable = FormWithPresets.to_formidable(label='validation')
 
-        schema = ContextFormSerializer(instance=formidable, context={
-            'role': 'jedi'
-        }).data
+        schema = self.get_schema(formidable, 'jedi')
         form_class = get_dynamic_form_class_from_schema(schema)
         form = form_class(data={
             'email': 'test@test.tld', 'email_confirm': 'toto@test.tld'
@@ -417,3 +365,10 @@ class TestFormFromSchema(TestCase):
             set(field_builder.FormFieldFactory.field_map),
             set(field_builder_from_schema.FormFieldFactory.field_map)
         )
+
+
+class TestFormFromSchemaWithContextualize(TestFormFromSchema):
+
+    def get_schema(self, formidable, role):
+        schema = formidable.to_json()
+        return contextualize(schema, role)
