@@ -70,7 +70,12 @@ def get_dynamic_form_class_from_schema(schema, field_factory=None):
     field_factory = field_factory or field_builder_from_schema.FormFieldFactory()  # noqa
     doc = schema['description']
     for field in schema['fields']:
-        attrs[field['slug']] = field_factory.produce(field)
+        try:
+            form_field = field_factory.produce(field)
+        except field_builder.SkipField:
+            pass
+        else:
+            attrs[field['slug']] = form_field
 
     conditions = schema.get('conditions', None) or []
     attrs['_conditions'] = conditions_register.build(

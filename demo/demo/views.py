@@ -3,6 +3,7 @@
 from django.views.generic.edit import FormView
 
 from formidable.models import Formidable
+import formidable.views
 from formidable.views import ContextFormDetail
 
 
@@ -24,3 +25,12 @@ class DemoContextFormDetail(ContextFormDetail):
 
     def get_context(self, request, **kwargs):
         return kwargs['role']
+
+
+class DemoValidateViewFromSchema(formidable.views.ValidateViewFromSchema):
+
+    settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
+
+    def get_formidable_object(self, kwargs):
+        formidable = Formidable.objects.get(pk=kwargs['pk'])
+        return formidable.to_json()
