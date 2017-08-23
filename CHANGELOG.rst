@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Nothing yet.
+- Add a ValidateView that works with ContextForm JSON (#246).
 
 Release 0.13.1 (2017-07-17)
 ===========================

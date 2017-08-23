@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 
 import logging
@@ -9,13 +10,16 @@ from django.core.exceptions import ImproperlyConfigured
 import six
 from formidable.accesses import get_accesses, get_context
 from formidable.exception_handler import ExceptionHandlerMixin
+from formidable.forms import (
+    field_builder_from_schema, get_dynamic_form_class_from_schema
+)
 from formidable.forms.field_builder import (
     FileFieldBuilder, FormFieldFactory, SkipField
 )
 from formidable.forms.validations.presets import presets_register
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
-from formidable.serializers.forms import ContextFormSerializer
+from formidable.serializers.forms import ContextFormSerializer, contextualize
 from formidable.serializers.presets import PresetsClassSerializer
 from rest_framework import exceptions
 from rest_framework.generics import (
@@ -290,3 +294,40 @@ class ValidateView(six.with_metaclass(MetaClassView,
 
     def get_form_kwargs(self):
         return {'data': self.request.GET}
+
+
+class ValidateViewFromSchema(ValidateView):
+    """
+    Acts like `ValidateView` but it uses a Formidable JSON schema
+    instead of a `Formidable` object.
+
+    """
+
+    settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
+
+    def get_formidable_object(self):
+        """
+        This method should implement a way to retrieve the formidable
+        object with its JSON representation.
+
+        """
+        raise NotImplemented
+
+    class ValidationFileFieldBuilder(field_builder_from_schema.FileFieldBuilder):  # noqa
+
+        def build(self, *args, **kwargs):
+            raise SkipField
+
+    def get_form_class(self, formidable):
+        """
+        Retrieve form class from JSON definition, for a given role.
+
+        """
+        role = get_context(self.request, self.kwargs)
+
+        factory = field_builder_from_schema.FormFieldFactory(
+            field_map={'file': self.ValidationFileFieldBuilder}
+        )
+        schema = contextualize(formidable, role)
+        return get_dynamic_form_class_from_schema(schema,
+                                                  field_factory=factory)

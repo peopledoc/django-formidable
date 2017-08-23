@@ -445,6 +445,8 @@ class MyFormPresets(MyForm):
 
 class TestValidationEndPoint(FormidableAPITestCase):
 
+    url = 'formidable:form_validation'
+
     def setUp(self):
         super(TestValidationEndPoint, self).setUp()
         self.formidable = MyForm.to_formidable(label='title')
@@ -459,7 +461,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session['role'] = 'padawan'
         session.save()
         res = self.client.get(
-            reverse('formidable:form_validation', args=[self.formidable.pk]),
+            reverse(self.url, args=[self.formidable.pk]),
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 204)
@@ -473,7 +475,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session['role'] = 'padawan'
         session.save()
         res = self.client.get(
-            reverse('formidable:form_validation', args=[self.formidable_p.pk]),
+            reverse(self.url, args=[self.formidable_p.pk]),
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 204)
@@ -487,7 +489,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session['role'] = 'padawan'
         session.save()
         res = self.client.get(
-            reverse('formidable:form_validation', args=[self.formidable_p.pk]),
+            reverse(self.url, args=[self.formidable_p.pk]),
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 400)
@@ -504,7 +506,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session['role'] = 'padawan'
         session.save()
         res = self.client.get(
-            reverse('formidable:form_validation', args=[self.formidable.pk]),
+            reverse(self.url, args=[self.formidable.pk]),
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 400)
@@ -523,7 +525,12 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session['role'] = 'padawan'
         session.save()
         res = self.client.get(
-            reverse('formidable:form_validation', args=[formidable.pk]),
+            reverse(self.url, args=[formidable.pk]),
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 204)
+
+
+class TestValidationFromSchemaEndPoint(TestValidationEndPoint):
+
+    url = 'form_validation_schema'

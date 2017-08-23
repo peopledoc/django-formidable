@@ -4,7 +4,7 @@ machine:
 
 dependencies:
     override:
-        - pip install --upgrade tox
+        - pip install --upgrade tox virtualenv
 
 test:
     override:

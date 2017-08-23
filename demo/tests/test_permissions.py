@@ -42,6 +42,7 @@ class TestMetaClassPermissions(TestCase):
         self.assertEqual(len(permission_classes), 1)
         self.assertEqual(permission_classes[0], AllowAny)
 
+    @override_settings()
     def test_no_settings_key_define(self):
         del settings.FORMIDABLE_DEFAULT_PERMISSION
 
