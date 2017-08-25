@@ -13,7 +13,7 @@ Contents:
    callbacks
    dev
    translations
-
+   deprecations
 
 Indices and tables
 ==================
