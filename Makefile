@@ -31,6 +31,16 @@ test:
 docs:
 	tox -e docs
 
+PYTHON3 := $(shell command -v python3 2> /dev/null)
+# target: serve-docs - use a tiny HTTP static server for browsing the doc
+.PHONY: serve-docs
+serve-docs:
+ifdef PYTHON3
+	cd docs/build/html; python3 -m http.server
+else
+	cd docs/build/html; python -m SimpleHTTPServer
+endif
+
 ##################### Crowdin-related commands
 
 # target: crowdin-venv - create the crowdin-ready virtualenv
