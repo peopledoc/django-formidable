@@ -571,7 +571,7 @@ var spec = {
         },
         "/builder/presets/": {
             "get": {
-                "description": "Presets description.\n",
+                "description": "Presets description.\n  **DEPRECATION WARNING:** will be deprecated as of 1.0.0.\n",
                 "responses": {
                     "200": {
                         "description": "A list of presets",
