@@ -39,6 +39,12 @@ If you want to build the documentation locally, you can try to run one of the fo
 
     A recent version of `tox` must be available on your system.
 
+You can also browse the documentation locally, using the following, for example:
+
+.. code:: sh
+
+    $ make docs serve-docs
+
 Quick-Start
 ===========
 
