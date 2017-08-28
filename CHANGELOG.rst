@@ -6,6 +6,14 @@ master (unreleased)
 ===================
 
 - Drop Django REST Framework 3.3 support (#239).
+- Removed the Presets from the code (#249).
+  - Removed from model serializers, and test code.
+  - Translation strings have been removed.
+  - Swagger documentation updated to reflect this API change.
+
+.. warning::
+
+    Validation rules are handled by field validations, and the historical Preset mechanism is now deprecated. Front-end integration should take into account that the form ``presets`` key is not sent to it anymore, and won't be taken into account if sent to the backend.
 
 Release 0.15.0 (2017-08-28)
 ===========================

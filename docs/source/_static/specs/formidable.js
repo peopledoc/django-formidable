@@ -253,65 +253,12 @@ var spec = {
                 "label": {
                     "description": "Title of the form",
                     "type": "string"
-                },
-                "presets": {
-                    "description": "List of presets used in the form",
-                    "items": {
-                        "$ref": "#/definitions/FormPreset"
-                    },
-                    "type": "array"
                 }
             },
             "required": [
                 "id",
                 "label",
                 "description"
-            ],
-            "type": "object"
-        },
-        "FormPreset": {
-            "description": "Form's preset are data which can perform a preset",
-            "properties": {
-                "arguments": {
-                    "description": "Arguments of the preset",
-                    "items": {
-                        "$ref": "#/definitions/FormPresetArgument"
-                    },
-                    "type": "array"
-                },
-                "message": {
-                    "description": "Error message if the preset is not verified",
-                    "type": "string"
-                },
-                "preset_id": {
-                    "description": "ID of the preset",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "preset_id",
-                "arguments"
-            ],
-            "type": "object"
-        },
-        "FormPresetArgument": {
-            "description": "Argument in form's preset can be a reference to a field OR a value",
-            "properties": {
-                "field_id": {
-                    "description": "Reference to a field in the form",
-                    "type": "string"
-                },
-                "slug": {
-                    "description": "Slug of the argument in the parent definied preset",
-                    "type": "string"
-                },
-                "value": {
-                    "description": "Value of the argument",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "slug"
             ],
             "type": "object"
         },
@@ -381,82 +328,6 @@ var spec = {
             "required": [
                 "label",
                 "value"
-            ],
-            "type": "object"
-        },
-        "Preset": {
-            "description": "Preset are validation rules on the form, which can interact with multiple fields",
-            "properties": {
-                "arguments": {
-                    "description": "List of arguments ordered of the preset",
-                    "items": {
-                        "$ref": "#/definitions/PresetArgument"
-                    },
-                    "type": "array"
-                },
-                "description": {
-                    "description": "Description of the preset",
-                    "type": "string"
-                },
-                "label": {
-                    "description": "Label of the preset",
-                    "type": "string"
-                },
-                "message": {
-                    "description": "Error message if the preset is not verified",
-                    "type": "string"
-                },
-                "slug": {
-                    "description": "Slug of the preset",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "slug",
-                "label",
-                "description",
-                "arguments"
-            ],
-            "type": "object"
-        },
-        "PresetArgument": {
-            "description": "Preset's arguments are the fields needed to perfrom a preset",
-            "properties": {
-                "description": {
-                    "description": "Description of the argument",
-                    "type": "string"
-                },
-                "items": {
-                    "description": "List of items ordered for the type `value` (shown as dropdown)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "label": {
-                    "description": "Label of the argument",
-                    "type": "string"
-                },
-                "placeholder": {
-                    "description": "Placeholder of the argument",
-                    "type": "string"
-                },
-                "slug": {
-                    "description": "Slug of the argument in the preset",
-                    "type": "string"
-                },
-                "types": {
-                    "description": "Types of the field, can be one or more in (`field`, `value`)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                }
-            },
-            "required": [
-                "slug",
-                "label",
-                "types"
             ],
             "type": "object"
         }
@@ -567,23 +438,6 @@ var spec = {
                     }
                 },
                 "summary": "Update a Form"
-            }
-        },
-        "/builder/presets/": {
-            "get": {
-                "description": "Presets description.\n  **DEPRECATION WARNING:** will be deprecated as of 1.0.0.\n",
-                "responses": {
-                    "200": {
-                        "description": "A list of presets",
-                        "schema": {
-                            "items": {
-                                "$ref": "#/definitions/Preset"
-                            },
-                            "type": "array"
-                        }
-                    }
-                },
-                "summary": "Get available presets"
             }
         },
         "/forms/{id}/": {

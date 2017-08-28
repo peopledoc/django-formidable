@@ -13,6 +13,4 @@ urlpatterns = [
         name='form_create'),
     url(r'^builder/accesses/?$', views.AccessList.as_view(),
         name='accesses_list'),
-    url(r'^builder/presets/?$', views.PresetsList.as_view(),
-        name='presets_list'),
 ]

@@ -12,7 +12,6 @@ from formidable.forms import conditions
 from formidable.models import Formidable
 from formidable.serializers import fields
 from formidable.serializers.common import WithNestedSerializer
-from formidable.serializers.presets import PresetModelSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -45,33 +44,26 @@ class ConditionSerializer(serializers.Serializer):
 class FormidableSerializer(WithNestedSerializer):
 
     fields = fields.FieldSerializer(many=True)
-    presets = PresetModelSerializer(many=True, required=False)
     conditions = ConditionSerializer(many=True, required=False)
 
-    nested_objects = ['fields', 'presets']
+    nested_objects = ['fields']
 
     class Meta:
         model = Formidable
-        fields = ('label', 'description', 'fields', 'id', 'presets',
-                  'conditions')
+        fields = ('label', 'description', 'fields', 'id', 'conditions')
         depth = 2
         extra_kwargs = {'id': {'read_only': True}}
 
     def validate(self, data):
         """
-        The validation step called by the preset validation.
+        The validation step called by the condition validation.
 
-        The preset validation ensures that presets are correctly defined
-        and that defined arguments are correct.
-
-        Since we cannot check if fields set up in preset arguments exist
+        Since we cannot check if fields set up in conditions arguments exist
         inside the form itself, we must check this here.
         """
-        # calling subserializer validate method (fields, and presets)
+        # calling subserializer validate method (fields)
         data = super(FormidableSerializer, self).validate(data)
-        # we check every field define in presets are define inside the form.
-        if 'presets' in data:
-            data = self.check_presets_cohesion(data)
+        # check every field define in conditions are defined inside the form
         if 'conditions' in data:
             data = self.check_conditions_cohesion(data)
         return data
@@ -135,23 +127,6 @@ class FormidableSerializer(WithNestedSerializer):
 
         return data
 
-    def check_presets_cohesion(self, data):
-        # Check presets references to fields are valid
-        presets = data['presets']
-        fields_slug = self._get_fields_slugs(data)
-
-        for preset in presets:
-            arguments = preset['arguments']
-            for argument in arguments:
-                field_id = argument.get('field_id')
-                if field_id and field_id not in fields_slug:
-                    raise ValidationError(
-                        'Preset ({slug}) argument is using an undefined field ({id})'.format(  # noqa
-                            slug=preset['slug'], id=field_id
-                        )
-                    )
-        return data
-
     def save(self, *args, **kwargs):
         with transaction.atomic():
             return super(FormidableSerializer, self).save(*args, **kwargs)
@@ -160,13 +135,11 @@ class FormidableSerializer(WithNestedSerializer):
 class ContextFormSerializer(serializers.ModelSerializer):
 
     fields = fields.ContextFieldSerializer(read_only=True, many=True)
-    presets = PresetModelSerializer(read_only=True, many=True)
     conditions = ConditionSerializer(read_only=True, many=True)
 
     class Meta:
         model = Formidable
-        fields = ('id', 'label', 'description', 'fields', 'presets',
-                  'conditions')
+        fields = ('id', 'label', 'description', 'fields', 'conditions')
         depth = 2
 
     def __init__(self, *args, **kwargs):

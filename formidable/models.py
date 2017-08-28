@@ -146,28 +146,3 @@ class Validation(models.Model):
     def __str__(self):
         return '{validation.value}: {validation.type}'.format(
             validation=self)
-
-
-@python_2_unicode_compatible
-class Preset(models.Model):
-    form = models.ForeignKey(Formidable, related_name='presets')
-    slug = models.CharField(max_length=128)
-    message = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return '{preset.slug}'.format(preset=self)
-
-
-@python_2_unicode_compatible
-class PresetArg(models.Model):
-    preset = models.ForeignKey(Preset, related_name='arguments')
-    slug = models.CharField(max_length=128)
-    value = models.CharField(max_length=128, null=True, blank=True)
-    field_id = models.CharField(max_length=128, null=True, blank=True)
-
-    def __str__(self):
-        if self.field_id:
-            return '{preset_arg.slug}: field #{preset_arg.field_id}'.format(
-                preset_arg=self)
-        return '{preset_arg.slug}: value {preset_arg.value}'.format(
-            preset_arg=self)

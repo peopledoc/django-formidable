@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-formidable\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-19 16:03+0200\n"
+"POT-Creation-Date: 2017-08-28 16:15+0200\n"
 "PO-Revision-Date: 2017-08-23 06:42-0400\n"
 "Last-Translator: peopledoc <benjamin.cadars@people-doc.com>\n"
 "Language-Team: German\n"
@@ -15,74 +15,6 @@ msgstr ""
 "X-Crowdin-Project: django-formidable\n"
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: django.po\n"
-
-#: forms/validations/presets.py:72
-#, python-brace-format
-msgid "You need to specify {attr} in {name}"
-msgstr ""
-
-#: forms/validations/presets.py:77
-#, python-brace-format
-msgid "Empty value not accepted for {attr} in {name}"
-msgstr ""
-
-#: forms/validations/presets.py:169
-msgid "Missing presets arguments : {}"
-msgstr ""
-
-#: forms/validations/presets.py:175
-msgid "Extra presets arguments : {}"
-msgstr ""
-
-#: forms/validations/presets.py:190
-msgid "Bad field references in presets : {}"
-msgstr ""
-
-#: forms/validations/presets.py:248
-msgid "Confirmation"
-msgstr "Bestätigung"
-
-#: forms/validations/presets.py:249
-msgid "Ensure both fields are identical"
-msgstr ""
-
-#: forms/validations/presets.py:250
-#, python-brace-format
-msgid "{left} is not equal to {right}"
-msgstr "{left} ist nicht gleich {right}"
-
-#: forms/validations/presets.py:254 forms/validations/presets.py:282
-msgid "Reference"
-msgstr ""
-
-#: forms/validations/presets.py:254
-msgid "field to compare"
-msgstr ""
-
-#: forms/validations/presets.py:257 forms/validations/presets.py:287
-msgid "Compare to"
-msgstr "Vergleichen mit"
-
-#: forms/validations/presets.py:257
-msgid "compare with"
-msgstr "vergleichen mit"
-
-#: forms/validations/presets.py:268
-msgid "Comparison"
-msgstr "Vergleich"
-
-#: forms/validations/presets.py:269
-msgid "Compare two fields with standard operation"
-msgstr "2 Felder anhand eines Operators vergleichen"
-
-#: forms/validations/presets.py:270
-#, python-brace-format
-msgid "{left} is not {operator} to {right}"
-msgstr "{left} ist nicht {operator} {right}"
-
-#: forms/validations/presets.py:283
-msgid "Operator"
-msgstr "Operator"
 
 #: validators.py:70
 #, python-format
@@ -104,3 +36,26 @@ msgstr ""
 msgid "Ensure this field is not equal to %(limit_value)s"
 msgstr ""
 
+#~ msgid "Confirmation"
+#~ msgstr "Bestätigung"
+
+#~ msgid "{left} is not equal to {right}"
+#~ msgstr "{left} ist nicht gleich {right}"
+
+#~ msgid "Compare to"
+#~ msgstr "Vergleichen mit"
+
+#~ msgid "compare with"
+#~ msgstr "vergleichen mit"
+
+#~ msgid "Comparison"
+#~ msgstr "Vergleich"
+
+#~ msgid "Compare two fields with standard operation"
+#~ msgstr "2 Felder anhand eines Operators vergleichen"
+
+#~ msgid "{left} is not {operator} to {right}"
+#~ msgstr "{left} ist nicht {operator} {right}"
+
+#~ msgid "Operator"
+#~ msgstr "Operator"

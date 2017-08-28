@@ -77,16 +77,3 @@ class UnicodeTestCase(TestCase):
         field = self.formidable.fields.get(slug='dropdown')
         validation = field.validations.create(value='Value', type='Type')
         self.assertEqual(str(validation), 'Value: Type')
-
-    def test_preset(self):
-        preset = self.formidable.presets.create(slug='slug')
-        self.assertEqual(str(preset), 'slug')
-
-    def test_preset_argument(self):
-        preset = self.formidable.presets.create(slug='slug')
-
-        argument = preset.arguments.create(slug='slug', value='Value')
-        self.assertEqual(str(argument), 'slug: value Value')
-
-        argument.field_id = '12345'
-        self.assertEqual(str(argument), 'slug: field #12345')
