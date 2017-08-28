@@ -13,9 +13,3 @@ with warnings.catch_warnings():
         'Please refer to the Deprecation Timeline document for more details '
         '{}.'.format(page),
         DeprecationWarning)
-    warnings.warn(
-        'Support for Django Rest Framework v3.3 is about to be deprecated. '
-        'Please refer to the Deprecation Timeline document for more details '
-        '{}.'.format(page),
-        DeprecationWarning
-    )

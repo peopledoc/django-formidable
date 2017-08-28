@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Drop Django REST Framework 3.3 support (#239).
 
 Release 0.15.0 (2017-08-28)
 ===========================
