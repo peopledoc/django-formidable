@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 0.15.0 (2017-08-28)
+===========================
 
 - [Doc] New Makefile target to serve the documentation.
 
