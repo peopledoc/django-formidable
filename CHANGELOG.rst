@@ -7,6 +7,14 @@ master (unreleased)
 
 - [Doc] New Makefile target to serve the documentation.
 
+.. warning::
+
+    This version is the last one to support Form Presets (form validation rules). The whole software logic and data will be wiped off on the next release. If needed, make backups and try to convert your existing presets to field validation rules. refs #249.
+
+.. warning::
+
+    This version is the last one to support Django Rest Framework 3.3. Please upgrade to the latest available to date (3.6.2). refs #239.
+
 Release 0.14.0 (2017-08-23)
 ===========================
 

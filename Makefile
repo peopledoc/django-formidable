@@ -41,6 +41,11 @@ else
 	cd docs/build/html; python -m SimpleHTTPServer
 endif
 
+# target: swagger-statics - rebuild the swagger statics needed to display the swagger specs
+.PHONY: swagger-statics
+swagger-statics:
+	tox -e swagger-statics
+
 ##################### Crowdin-related commands
 
 # target: crowdin-venv - create the crowdin-ready virtualenv
