@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+1.0.0rc1 (2017-08-31)
+=====================
 
 - Drop Django REST Framework 3.3 support (#239).
 - Removed the Presets from the code (#249).

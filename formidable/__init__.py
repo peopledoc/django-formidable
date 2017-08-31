@@ -2,7 +2,7 @@ import warnings
 
 
 default_app_config = 'formidable.app.FormidableConfig'
-version = '1.0.0.dev0'
+version = '1.0.0rc1'
 
 # TO BE REMOVED ON 1.0.0
 with warnings.catch_warnings():
