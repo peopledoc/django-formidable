@@ -62,20 +62,6 @@ paths:
             items:
               $ref: '#/definitions/Access'
 
-  /builder/presets/:
-    get:
-      summary: Get available presets
-      description: |
-        Presets description.
-          **DEPRECATION WARNING:** will be deprecated as of 1.0.0.
-      responses:
-        200:
-          description: A list of presets
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Preset'
-
   /builder/forms/:
     post:
       summary: Create a new form
@@ -187,64 +173,6 @@ definitions:
           - FORM
           - TABLE
 
-  Preset:
-    type: object
-    description: Preset are validation rules on the form, which can interact with multiple fields
-    required:
-      - slug
-      - label
-      - description
-      - arguments
-    properties:
-      slug:
-        type: string
-        description: Slug of the preset
-      label:
-        type: string
-        description: Label of the preset
-      description:
-        type: string
-        description: Description of the preset
-      message:
-        type: string
-        description: Error message if the preset is not verified
-      arguments:
-        type: array
-        description: List of arguments ordered of the preset
-        items:
-          $ref: '#/definitions/PresetArgument'
-
-  PresetArgument:
-    type: object
-    description: Preset's arguments are the fields needed to perfrom a preset
-    required:
-      - slug
-      - label
-      - types
-    properties:
-      slug:
-        type: string
-        description: Slug of the argument in the preset
-      label:
-        type: string
-        description: Label of the argument
-      description:
-        type: string
-        description: Description of the argument
-      placeholder:
-        type: string
-        description: Placeholder of the argument
-      types:
-        type: array
-        description: Types of the field, can be one or more in (`field`, `value`)
-        items:
-          type: string
-      items:
-        type: array
-        description: List of items ordered for the type `value` (shown as dropdown)
-        items:
-          type: string
-
   ConditionTest:
     type: object
     description: Condition
@@ -298,11 +226,6 @@ definitions:
       description:
         type: string
         description: Description of the form
-      presets:
-        type: array
-        description: List of presets used in the form
-        items:
-          $ref: '#/definitions/FormPreset'
       conditions:
         type: array
         items:
@@ -444,41 +367,6 @@ definitions:
       message:
         type: string
         description:  Error message if the validation is not verified
-
-  FormPreset:
-    type: object
-    description: Form's preset are data which can perform a preset
-    required:
-      - preset_id
-      - arguments
-    properties:
-      preset_id:
-        type: string
-        description: ID of the preset
-      message:
-        type: string
-        description: Error message if the preset is not verified
-      arguments:
-        type: array
-        description: Arguments of the preset
-        items:
-          $ref: '#/definitions/FormPresetArgument'
-
-  FormPresetArgument:
-    type: object
-    description: Argument in form's preset can be a reference to a field OR a value
-    required:
-      - slug
-    properties:
-      slug:
-        type: string
-        description: Slug of the argument in the parent definied preset
-      field_id:
-        type: string
-        description: Reference to a field in the form
-      value:
-        type: string
-        description: Value of the argument
 
   BuilderError:
     type: object

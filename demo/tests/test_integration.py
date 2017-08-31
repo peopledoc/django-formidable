@@ -10,12 +10,9 @@ import django_perf_rec
 from freezegun import freeze_time
 from rest_framework.test import APITestCase
 
-from formidable.models import Formidable, PresetArg
+from formidable.models import Formidable
 from formidable.accesses import get_accesses
 from formidable.forms import FormidableForm, fields
-from formidable.forms.validations.presets import (
-    ComparisonPresets, ConfirmationPresets
-)
 from formidable import validators, constants
 
 from . import form_data, form_data_items
@@ -67,22 +64,6 @@ class MyTestForm(FormidableForm):
         ],
         accesses={'jedi': 'HIDDEN', 'jedi-master': 'REQUIRED'}
     )
-
-
-class MyTestFormPresets(MyTestForm):
-
-    class Meta:
-        presets = [
-            ConfirmationPresets(
-                [PresetArg(slug='left', field_id='name'),
-                    PresetArg(slug='right', value='Obi-Wan')],
-                message='msg1'),
-            ComparisonPresets(
-                [PresetArg(slug='left', field_id='name'),
-                    PresetArg(slug='right', field_id='weapons'),
-                    PresetArg(slug='operator', value='neq')],
-                message='msg2')
-        ]
 
 
 class CreateFormTestCase(FormidableAPITestCase):
@@ -303,10 +284,19 @@ class UpdateFormTestCase(FormidableAPITestCase):
         ).exists())
 
     def test_queryset_on_get(self):
-        formidable_form = MyTestFormPresets.to_formidable(label='test')
         with django_perf_rec.record(path='perfs/'):
             self.client.get(reverse(
-                'formidable:form_detail', args=[formidable_form.pk])
+                'formidable:form_detail', args=[self.form.pk])
+            )
+
+    def test_queryset_on_context_form_detail(self):
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+
+        with django_perf_rec.record(path='perfs/'):
+            self.client.get(reverse(
+                'formidable:context_form_detail', args=[self.form.pk])
             )
 
     def test_non_regression_database_ordering(self):
@@ -357,20 +347,6 @@ class TestAccess(FormidableAPITestCase):
                 self.assertEqual(access['preview_as'], 'FORM')
 
 
-class TestPresetsList(FormidableAPITestCase):
-
-    def test_get(self):
-        response = self.client.get(reverse('formidable:presets_list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(len(response.data) > 2)
-        for preset in response.data:
-            self.assertIn('slug', preset)
-            self.assertIn('label', preset)
-            self.assertIn('description', preset)
-            self.assertIn('message', preset)
-            self.assertIn('arguments', preset)
-
-
 class TestChain(FormidableAPITestCase):
 
     def setUp(self):
@@ -402,26 +378,6 @@ class TestChain(FormidableAPITestCase):
         )
 
 
-class TestContextFormEndPoint(FormidableAPITestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        super(TestContextFormEndPoint, cls).setUpClass()
-        cls.form = MyTestFormPresets.to_formidable(label='test')
-
-    def test_queryset(self):
-        import django_perf_rec
-
-        session = self.client.session
-        session['role'] = 'padawan'
-        session.save()
-
-        with django_perf_rec.record(path='perfs/'):
-            self.client.get(reverse(
-                'formidable:context_form_detail', args=[self.form.pk])
-            )
-
-
 class MyForm(FormidableForm):
     first_name = fields.CharField(
         accesses={'padawan': constants.REQUIRED},
@@ -432,17 +388,6 @@ class MyForm(FormidableForm):
     )
 
 
-class MyFormPresets(MyForm):
-    class Meta:
-        presets = [
-            ComparisonPresets(
-                [PresetArg(slug='left', field_id='first_name'),
-                    PresetArg(slug='right', field_id='last_name'),
-                    PresetArg(slug='operator', value='neq')],
-                message='l:{left} o:{operator} r:{right}')
-        ]
-
-
 class TestValidationEndPoint(FormidableAPITestCase):
 
     url = 'formidable:form_validation'
@@ -450,7 +395,6 @@ class TestValidationEndPoint(FormidableAPITestCase):
     def setUp(self):
         super(TestValidationEndPoint, self).setUp()
         self.formidable = MyForm.to_formidable(label='title')
-        self.formidable_p = MyFormPresets.to_formidable(label='title')
 
     def test_validate_data_ok(self):
         parameters = {
@@ -465,38 +409,6 @@ class TestValidationEndPoint(FormidableAPITestCase):
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 204)
-
-    def test_validate_presets_ok(self):
-        parameters = {
-            'first_name': 'Guillaume',
-            'last_name': 'Gérard',
-        }
-        session = self.client.session
-        session['role'] = 'padawan'
-        session.save()
-        res = self.client.get(
-            reverse(self.url, args=[self.formidable_p.pk]),
-            parameters, format='json'
-        )
-        self.assertEqual(res.status_code, 204)
-
-    def test_validate_presets_ko(self):
-        parameters = {
-            'first_name': 'Albert',
-            'last_name': 'Albert',
-        }
-        session = self.client.session
-        session['role'] = 'padawan'
-        session.save()
-        res = self.client.get(
-            reverse(self.url, args=[self.formidable_p.pk]),
-            parameters, format='json'
-        )
-        self.assertEqual(res.status_code, 400)
-        errors = res.data
-        self.assertIn('__all__', errors)
-        self.assertEqual(len(errors['__all__']), 1)
-        self.assertEqual(errors['__all__'][0], "l:Albert o:neq r:Albert")
 
     def test_validate_data_ko(self):
         parameters = {

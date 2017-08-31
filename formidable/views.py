@@ -16,11 +16,9 @@ from formidable.forms import (
 from formidable.forms.field_builder import (
     FileFieldBuilder, FormFieldFactory, SkipField
 )
-from formidable.forms.validations.presets import presets_register
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer, contextualize
-from formidable.serializers.presets import PresetsClassSerializer
 from rest_framework import exceptions
 from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
@@ -217,19 +215,6 @@ class AccessList(six.with_metaclass(MetaClassView, ExceptionHandlerMixin,
             return Response(data=serializer.errors, status_code=400)
 
 
-class PresetsList(six.with_metaclass(MetaClassView,
-                  ExceptionHandlerMixin, APIView)):
-
-    settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
-
-    def get(self, request, format=None):
-        serializer = PresetsClassSerializer(
-            many=True,
-            instance=presets_register.values()
-        )
-        return Response(serializer.data)
-
-
 class ValidateView(six.with_metaclass(MetaClassView,
                    ExceptionHandlerMixin, APIView)):
     """
@@ -237,8 +222,8 @@ class ValidateView(six.with_metaclass(MetaClassView,
     data inside a form to avoid uploading file.
     The main idea is to call this view in order to validate the entire data
     except the File part. The UI front-end is not able to compute complex
-    validation (through validation presets), and to avoid heavy files exchanges
-    this view can validate first the data (without the file).
+    validation, and to avoid heavy files exchanges this view can validate
+    first the data (without the file).
 
     The final errors in the form are sent to UI in order to display it.
     """

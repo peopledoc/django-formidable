@@ -5,13 +5,9 @@ from __future__ import unicode_literals
 from django.test import TestCase
 
 from formidable import constants
-from formidable.models import PresetArg
 from formidable.forms import (
     FormidableForm, fields, get_dynamic_form_class,
     get_dynamic_form_class_from_schema
-)
-from formidable.forms.validations.presets import (
-    ConfirmationPresets
 )
 from formidable.serializers.forms import (
     ContextFormSerializer, FormidableSerializer
@@ -62,22 +58,8 @@ class ConditionTestCase(TestCase):
                           'robot': constants.REQUIRED}
             )
 
-        class TestFormWithPresets(TestForm):
-            class Meta:
-                presets = [
-                    ConfirmationPresets(
-                        [PresetArg(slug='left', field_id='foo'),
-                         PresetArg(slug='right', value='Obi-Wan')],
-                    ),
-                ]
-
         self.formidable = TestForm.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
-
-        self.formidable_presets = TestFormWithPresets.to_formidable(
-            label='title with presets'
-        )
-        self.formidable_presets.conditions = conditions_schema
 
     def test_jedi_displayed(self):
         form_class = self.get_form_class(self.formidable, 'jedi')
@@ -204,54 +186,6 @@ class ConditionTestCase(TestCase):
         form = form_class(data)
         self.assertTrue(form.is_valid(), form.errors)
         self.assertEqual(form.cleaned_data, {'checkbox': True})
-
-    def test_presets_displayed_ko(self):
-        form_class = self.get_form_class(self.formidable_presets, 'jedi')
-        data = {
-            'foo': 'fooval',
-            'bar': 'barval',
-            'checkbox': False,
-        }
-
-        form = form_class(data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('__all__', form.errors)
-        self.assertEqual(form.errors['__all__'],
-                         ['fooval is not equal to Obi-Wan'])
-
-    def test_presets_displayed_ok(self):
-        form_class = self.get_form_class(self.formidable_presets, 'jedi')
-        data = {
-            'foo': 'Obi-Wan',
-            'bar': 'barval',
-            'checkbox': False,
-        }
-
-        form = form_class(data)
-        self.assertTrue(form.is_valid(), form.errors)
-
-    def test_presets_not_displayed_ko(self):
-        form_class = self.get_form_class(self.formidable_presets, 'jedi')
-        data = {
-            'foo': 'fooval',
-            'bar': 'barval',
-            'checkbox': True,
-        }
-
-        form = form_class(data)
-        # foo and bar are filtered out, so the preset can't be checked
-        self.assertTrue(form.is_valid())
-
-    def test_presets_not_displayed_ok(self):
-        form_class = self.get_form_class(self.formidable_presets, 'jedi')
-        data = {
-            'foo': 'Obi-Wan',
-            'bar': 'barval',
-            'checkbox': True,
-        }
-
-        form = form_class(data)
-        self.assertTrue(form.is_valid(), form.errors)
 
 
 class ConditionFromSchemaTestCase(ConditionTestCase):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 This modules allows to modify the form between Fields validations and Form
-validation (aka :class:`formidable.forms.validations.presets.Preset`).
+validation.
 
 When the tests (:class:`ConditionTest`) associated with a :class:`Condition`
 are fulfilled, then an action is executed on a list of fields.
