@@ -10,6 +10,7 @@ master (unreleased)
   - Removed from model serializers, and test code.
   - Translation strings have been removed.
   - Swagger documentation updated to reflect this API change.
+  - Removed fields that reference preset models in forms and preset args tables (#259).
 
 .. warning::
 
