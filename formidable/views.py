@@ -242,7 +242,7 @@ class ValidateView(six.with_metaclass(MetaClassView,
         try:
             formidable = self.get_formidable_object(kwargs)
         except Formidable.DoesNotExist:
-            raise exceptions.Http404()
+            raise exceptions.NotFound()
 
         form_class = self.get_form_class(formidable)
         form = self.get_form(form_class)

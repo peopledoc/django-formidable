@@ -410,6 +410,20 @@ class TestValidationEndPoint(FormidableAPITestCase):
         )
         self.assertEqual(res.status_code, 204)
 
+    def test_validate_does_not_exist(self):
+        parameters = {
+            'first_name': 'Guillaume',
+            'last_name': 'Gérard',
+        }
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.get(
+            reverse(self.url, args=[9999]),
+            parameters, format='json'
+        )
+        self.assertEqual(res.status_code, 404)
+
     def test_validate_data_ko(self):
         parameters = {
             'last_name': 'Gérard',
