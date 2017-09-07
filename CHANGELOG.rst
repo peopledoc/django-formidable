@@ -2,7 +2,7 @@
 ChangeLog
 =========
 
-1.0.0rc1 (2017-08-31)
+1.0.0rc2 (2017-09-07)
 =====================
 
 - Drop Django REST Framework 3.3 support (#239).
