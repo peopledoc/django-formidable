@@ -266,7 +266,7 @@ class ValidateView(six.with_metaclass(MetaClassView,
         }
 
     def form_valid(self, form):
-        return Response(status=204)
+        return Response({}, status=204)
 
     def form_invalid(self, form):
         # TODO change response when UI ready

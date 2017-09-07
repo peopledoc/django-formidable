@@ -409,8 +409,9 @@ class TestValidationEndPoint(FormidableAPITestCase):
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 204)
+        self.assertIn('application/json', str(res.serialize_headers()))
 
-    def test_validate_does_not_exist(self):
+    def test_formidable_does_not_exist(self):
         parameters = {
             'first_name': 'Guillaume',
             'last_name': 'Gérard',
@@ -438,6 +439,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         self.assertEqual(res.status_code, 400)
         errors = res.data
         self.assertIn('first_name', errors)
+        self.assertIn('application/json', str(res.serialize_headers()))
 
     def test_validate_with_mandatory_file(self):
         class WithFile(FormidableForm):

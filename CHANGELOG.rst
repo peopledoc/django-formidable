@@ -5,7 +5,8 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Validation View return the right content-type headers when the validation is okay (#257)
+- Fix The error 500 when the formidable object is not found on validation view (#257)
 
 Release 1.0.0 (2017-09-08)
 ==========================
