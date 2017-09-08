@@ -2,15 +2,15 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 1.0.0 (2017-09-08)
+==========================
 
 - Drop Django REST Framework 3.3 support (#239).
 - Removed the Presets from the code (#249).
   - Removed from model serializers, and test code.
   - Translation strings have been removed.
   - Swagger documentation updated to reflect this API change.
-  - Removed fields that reference preset models in forms and preset args tables (#259).
+  - Removed fields that reference preset models in forms and preset args tables through a Django migration (#259).
 
 .. warning::
 

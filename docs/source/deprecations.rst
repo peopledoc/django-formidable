@@ -5,7 +5,7 @@ Deprecation timeline
 From 0.15 to 1.0.0
 ==================
 
-(Late August / Early September 2017)
+(September 2017)
 
 Form Presets
 ------------
