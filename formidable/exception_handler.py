@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import logging
+
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, PermissionDenied
 from django.forms.utils import ErrorDict, ErrorList
@@ -10,6 +12,8 @@ import six
 from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
+
+logger = logging.getLogger(__name__)
 
 
 def _reformat_drf_errors(errors, detail, path=None):
@@ -134,12 +138,12 @@ def exception_handler(exc, context):
         status_code = 422
     else:
         # unhandled exception, return generic error
-        # TODO add logs ?
+        error_message = six.text_type(exceptions.APIException.default_detail)
         data = {
             'code': 'error',
-            'message': six.text_type(
-                exceptions.APIException.default_detail),
+            'message': error_message,
         }
+        logger.error("Unexpected Formidable Error: %s", error_message)
         status_code = 500
 
     return Response(data, status=status_code, headers=headers)
