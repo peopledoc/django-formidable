@@ -458,6 +458,58 @@ class TestValidationEndPoint(FormidableAPITestCase):
         )
         self.assertEqual(res.status_code, 204)
 
+    def test_validate_with_mandatory_file_and_conditions(self):
+        class WithFile(FormidableForm):
+            checkbox = fields.BooleanField(
+                label='My checkbox',
+                accesses={'padawan': constants.EDITABLE}
+            )
+            mandatory = fields.FileField(
+                accesses={'padawan': constants.REQUIRED}
+            )
+
+        formidable = WithFile.to_formidable(label='test with file')
+        # mandatory to be checked only if the checkbox is on.
+        formidable.conditions = [
+            {
+                'name': 'My Name',
+                'action': 'display_iff',
+                'fields_ids': ['mandatory'],
+                'tests': [
+                    {
+                        'field_id': 'checkbox',
+                        'operator': 'eq',
+                        'values': [True],
+                    }
+                ]
+            }
+        ]
+        formidable.save()
+
+        # Set role for the session
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+
+        # The checkbox is checked.
+        parameters = {'checkbox': True}
+        res = self.client.get(
+            reverse(self.url, args=[formidable.pk]),
+            parameters, format='json'
+        )
+        # We don't validate file fields, even if they're mandatory, because
+        # they belong to the multi-part side of HTTP
+        self.assertEqual(res.status_code, 204)
+
+        # The checkbox is NOT checked.
+        parameters = {'checkbox': False}
+        res = self.client.get(
+            reverse(self.url, args=[formidable.pk]),
+            parameters, format='json'
+        )
+        # We still don't validate file fields.
+        self.assertEqual(res.status_code, 204)
+
 
 class TestValidationFromSchemaEndPoint(TestValidationEndPoint):
 
