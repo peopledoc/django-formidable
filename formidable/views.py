@@ -242,7 +242,7 @@ class ValidateView(six.with_metaclass(MetaClassView,
         try:
             formidable = self.get_formidable_object(kwargs)
         except Formidable.DoesNotExist:
-            raise exceptions.Http404()
+            raise exceptions.NotFound()
 
         form_class = self.get_form_class(formidable)
         form = self.get_form(form_class)
@@ -266,7 +266,7 @@ class ValidateView(six.with_metaclass(MetaClassView,
         }
 
     def form_valid(self, form):
-        return Response(status=204)
+        return Response({}, status=204)
 
     def form_invalid(self, form):
         # TODO change response when UI ready
