@@ -16,7 +16,7 @@ Warnings
 * Python Compatibility : Python 2.7, 3.5
 * Django compatibility : Django 1.8, 1.9, 1.10
 
-See the `Deprecation timeline <docs/source/deprecations.rst>`_ document for more information on deprecated versions.
+See the `Deprecation timeline <http://django-formidable.readthedocs.io/en/latest/deprecations.html>`_ document for more information on deprecated versions.
 
 License
 =======
