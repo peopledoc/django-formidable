@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-formidable\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-28 16:15+0200\n"
+"POT-Creation-Date: 2017-10-04 09:25+0200\n"
 "PO-Revision-Date: 2017-08-23 06:42-0400\n"
 "Last-Translator: peopledoc <benjamin.cadars@people-doc.com>\n"
 "Language-Team: German\n"
@@ -35,27 +35,3 @@ msgstr ""
 #, python-format
 msgid "Ensure this field is not equal to %(limit_value)s"
 msgstr ""
-
-#~ msgid "Confirmation"
-#~ msgstr "Bestätigung"
-
-#~ msgid "{left} is not equal to {right}"
-#~ msgstr "{left} ist nicht gleich {right}"
-
-#~ msgid "Compare to"
-#~ msgstr "Vergleichen mit"
-
-#~ msgid "compare with"
-#~ msgstr "vergleichen mit"
-
-#~ msgid "Comparison"
-#~ msgstr "Vergleich"
-
-#~ msgid "Compare two fields with standard operation"
-#~ msgstr "2 Felder anhand eines Operators vergleichen"
-
-#~ msgid "{left} is not {operator} to {right}"
-#~ msgstr "{left} ist nicht {operator} {right}"
-
-#~ msgid "Operator"
-#~ msgstr "Operator"
