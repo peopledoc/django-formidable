@@ -16,7 +16,7 @@ Warnings
 * Python Compatibility : Python 2.7, 3.5
 * Django compatibility : Django 1.8, 1.9, 1.10
 
-_Note: python3.4 support has been dropped since django-formidable 0.12.0._
+See the `Deprecation timeline <docs/source/deprecations.rst>`_ document for more information on deprecated versions.
 
 License
 =======

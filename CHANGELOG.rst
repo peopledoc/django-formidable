@@ -9,6 +9,7 @@ master (unreleased)
 - Fix The error 500 when the formidable object is not found on validation view (#257)
 - Fix a 500 error with Mandatory File Fields and conditional display (#263).
 - Added tests for the generic exception handler (#263).
+- Added Python 3.4/3.3 support deprecation in the Deprecation Timeline documentation (#262).
 
 Release 1.0.0 (2017-09-08)
 ==========================

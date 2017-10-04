@@ -20,3 +20,18 @@ Django Rest Framework version
 .. deprecated:: 1.0.0
 
     DRF 3.3 support will be deprecated. We recommend to use the latest to date (3.6.4).
+
+From 0.11.1 to 0.12.0
+=====================
+
+.. deprecated:: 0.12.0
+
+    Python 3.4 support has been dropped.
+
+
+From 0.8.2 to 0.9
+=================
+
+.. deprecated:: 0.9
+
+    Python 3.3 support has been dropped.
