@@ -23,7 +23,7 @@ class JSONMigrationTestCase(TestCase):
         })
 
     def test_migration_from_scratch(self):
-        updated_data = migrate(self.data)
+        updated_data, version = migrate(self.data)
 
         self.assertEqual(updated_data, {
             'version': 2,
@@ -32,9 +32,10 @@ class JSONMigrationTestCase(TestCase):
                 {'foo': 'baz', 'description': 'SAS'},
             ]
         })
+        self.assertEqual(version, 2)
 
     def test_migration_from_version_1(self):
-        updated_data = migrate(self.data, 1)
+        updated_data, version = migrate(self.data, 1)
 
         self.assertEqual(updated_data, {
             'version': 2,
@@ -43,10 +44,12 @@ class JSONMigrationTestCase(TestCase):
                 {'foo': 'baz', 'help_text': 'SAS'},
             ],
         })
+        self.assertEqual(version, 2)
 
     def test_migration_from_version_2(self):
-        updated_data = migrate(self.data, 2)
+        updated_data, version = migrate(self.data, 2)
         self.assertEqual(updated_data, self.data)
+        self.assertEqual(version, 2)
 
     @mock.patch('tests.json_migrations.0002_add_version.migrate')
     @mock.patch('tests.json_migrations.0001_rename_helptext.migrate')

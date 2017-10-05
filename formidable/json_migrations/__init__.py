@@ -39,4 +39,5 @@ def migrate(data, version_src=0):
         if version_src < version:
             data = func(data)
             version_src = version
-    return data
+
+    return data, version
