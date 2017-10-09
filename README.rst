@@ -18,6 +18,10 @@ Warnings
 
 See the `Deprecation timeline <http://django-formidable.readthedocs.io/en/latest/deprecations.html>`_ document for more information on deprecated versions.
 
+.. warning::
+
+  ``django-formidable`` is compatible with DRF up to the 3.6 version. The v3.7 has retro-incompatibilities we need to investigate on.
+
 License
 =======
 
