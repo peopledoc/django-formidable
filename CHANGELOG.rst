@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Limit the Django REST Framework compatibility up the v3.6. ``django-formidable`` is only compatible with Django REST Framework up to the v3.6. The version 3.7 introduces retro-incompatibilities.
 
 Release 1.0.1 (2017-10-04)
 ==========================
