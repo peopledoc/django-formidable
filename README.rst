@@ -18,6 +18,10 @@ Warnings
 
 See the `Deprecation timeline <http://django-formidable.readthedocs.io/en/latest/deprecations.html>`_ document for more information on deprecated versions.
 
+.. warning::
+
+   As of its 3.7 version, it appears that Django REST Framework only supports Django 1.10 & 1.11. Carefully freeze your dependencies if your Django version is not compatible.
+
 License
 =======
 
