@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 1.0.2 (2017-10-10)
+==========================
 
 - As of its 3.7 version, it appears that Django REST Framework is no longer compatible with Django 1.8. Added a mention in the README, in the deprecation timeline, and changed tox requirements to reflect this (#272).
 - Drop Preset tables (#255).
