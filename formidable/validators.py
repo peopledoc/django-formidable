@@ -194,17 +194,19 @@ class AgeUnderValidator(AgeAboveValidator):
 
 class ValidatorFactory(object):
 
-    maps = {
-        'MINLENGTH': lambda self, x, y=None: self.min_length(x, y),
-        'MAXLENGTH': lambda self, x, y=None: self.max_length(x, y),
-        'REGEXP': lambda self, x, y=None: self.regexp(x, y),
-        'GT': lambda self, x, y=None: self.gt(x, y),
-        'GTE': lambda self, x, y=None: self.gte(x, y),
-        'LT': lambda self, x, y=None: self.lt(x, y),
-        'LTE': lambda self, x, y=None: self.lte(x, y),
-        'EQ': lambda self, x, y=None: self.eq(x, y),
-        'NEQ': lambda self, x, y=None: self.neq(x, y),
-    }
+    @property
+    def maps(self):
+        return {
+            'MINLENGTH': self.min_length,
+            'MAXLENGTH': self.max_length,
+            'REGEXP': self.regexp,
+            'GT': self.gt,
+            'GTE': self.gte,
+            'LT': self.lt,
+            'LTE': self.lte,
+            'EQ': self.eq,
+            'NEQ': self.neq,
+        }
 
     def min_length(self, limit_value, message):
         limit_value = Decimal(limit_value)
@@ -238,7 +240,7 @@ class ValidatorFactory(object):
     def produce(self, validation):
         type_, msg, value = self.extract_validation_attribute(validation)
         meth = self.maps[type_]
-        return meth(self, value, msg)
+        return meth(value, msg)
 
     def extract_validation_attribute(self, validation):
         """
@@ -249,12 +251,15 @@ class ValidatorFactory(object):
 
 class DateValidatorFactory(ValidatorFactory):
 
-    maps = ValidatorFactory.maps.copy()
-    maps['IS_DATE_IN_THE_FUTURE'] = lambda self, x, y=None: self.future_date(
-        x, y
-    )
-    maps['IS_AGE_ABOVE'] = lambda self, x, y=None: self.age_above(x, y)
-    maps['IS_AGE_UNDER'] = lambda self, x, y=None: self.age_under(x, y)
+    @property
+    def maps(self):
+        _maps = {
+            'IS_DATE_IN_THE_FUTURE': self.future_date,
+            'IS_AGE_ABOVE': self.age_above,
+            'IS_AGE_UNDER': self.age_under
+        }
+        _maps.update(super(DateValidatorFactory, self).maps)
+        return _maps
 
     def lt(self, value, message):
         return DateLTValidator(value, message)
