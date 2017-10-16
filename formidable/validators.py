@@ -117,7 +117,7 @@ class NEQValidator(FormidableValidator, validators.BaseValidator):
 class DateValidator(FormidableValidator):
 
     def __init__(self, limit_value, message=None):
-        return super(DateValidator, self).__init__(
+        super(DateValidator, self).__init__(
             parse(limit_value).date(), message
         )
 

@@ -17,7 +17,7 @@ class ListValidationSerializer(serializers.ListSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs['child'] = LazyChildProxy(validation_register)
-        return super(ListValidationSerializer, self).__init__(*args, **kwargs)
+        super(ListValidationSerializer, self).__init__(*args, **kwargs)
 
     def create(self, field, validated_data):
         for data in validated_data:

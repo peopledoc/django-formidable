@@ -33,7 +33,7 @@ class FieldListSerializer(NestedListSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs['child'] = LazyChildProxy(field_register)
-        return super(FieldListSerializer, self).__init__(*args, **kwargs)
+        super(FieldListSerializer, self).__init__(*args, **kwargs)
 
     def validate(self, validated_data):
         """
