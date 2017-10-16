@@ -76,9 +76,9 @@ def get_dynamic_form_class_from_schema(schema, field_factory=None):
         attrs,
         conditions
     )
-    klass = type(str('DynamicForm'), (BaseDynamicForm,), attrs)
-    klass.__doc__ = doc
-    return klass
+    form_class = type(str('DynamicForm'), (BaseDynamicForm,), attrs)
+    form_class.__doc__ = doc
+    return form_class
 
 
 def get_dynamic_form_class(formidable, role=None, field_factory=None):

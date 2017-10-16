@@ -27,8 +27,8 @@ class ValidationSerializerRegister(Register):
 
 def load_serializer(register):
 
-    def _wrapper(klass):
-        register[klass.type_id] = klass
-        return klass
+    def _wrapper(base_class):
+        register[base_class.type_id] = base_class
+        return base_class
 
     return _wrapper
