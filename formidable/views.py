@@ -19,7 +19,7 @@ from formidable.forms.field_builder import (
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer, contextualize
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 )
@@ -212,7 +212,8 @@ class AccessList(six.with_metaclass(MetaClassView, ExceptionHandlerMixin,
         if serializer.is_valid():
             return Response(serializer.data)
         else:
-            return Response(data=serializer.errors, status_code=400)
+            return Response(data=serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class ValidateView(six.with_metaclass(MetaClassView,
@@ -266,13 +267,13 @@ class ValidateView(six.with_metaclass(MetaClassView,
         }
 
     def form_valid(self, form):
-        return Response({}, status=204)
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
     def form_invalid(self, form):
         # TODO change response when UI ready
         # data = format_forms_error(form.errors)
         # return Response(data, status=400)
-        return Response(form.errors, status=400)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_form(self, form_class):
         return form_class(**self.get_form_kwargs())
