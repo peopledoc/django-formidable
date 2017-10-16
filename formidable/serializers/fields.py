@@ -33,7 +33,7 @@ class FieldListSerializer(NestedListSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs['child'] = LazyChildProxy(field_register)
-        return super(FieldListSerializer, self).__init__(*args, **kwargs)
+        super(FieldListSerializer, self).__init__(*args, **kwargs)
 
     def validate(self, validated_data):
         """
@@ -295,7 +295,7 @@ class HelpTextFieldSerializer(FieldSerializer):
 
     class Meta(FieldSerializer.Meta):
         # Remove "label" attribute
-        fields = list(set(BASE_FIELDS) - set(['label']))
+        fields = list(set(BASE_FIELDS) - {'label'})
 
 
 @load_serializer(field_register)
@@ -305,7 +305,7 @@ class TitleFieldSerializer(FieldSerializer):
 
     class Meta(FieldSerializer.Meta):
         # Remove "description" attribute
-        fields = list(set(BASE_FIELDS) - set(['description']))
+        fields = list(set(BASE_FIELDS) - {'description'})
 
 
 @load_serializer(field_register)
@@ -315,4 +315,4 @@ class SeparatorFieldSerializer(FieldSerializer):
 
     class Meta(FieldSerializer.Meta):
         # Remove "description" and "label" attributes
-        fields = list(set(BASE_FIELDS) - set(['label', 'description']))
+        fields = list(set(BASE_FIELDS) - {'label', 'description'})

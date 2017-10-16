@@ -45,8 +45,8 @@ class NestedListSerializer(ListSerializer):
             self.child.create(data)
 
     def _extract_id(self, qs, validated_data):
-        validated_ids = set([data[self.field_id] for data in validated_data])
-        db_ids = set([values[0] for values in qs.values_list(self.field_id)])
+        validated_ids = {data[self.field_id] for data in validated_data}
+        db_ids = {values[0] for values in qs.values_list(self.field_id)}
         updated_ids = validated_ids & db_ids
         created_ids = validated_ids - db_ids
         deleted_ids = db_ids - validated_ids
@@ -59,7 +59,7 @@ class NestedListSerializer(ListSerializer):
         data = super(NestedListSerializer, self).validate(data)
 
         if self.field_id:
-            if len(data) != len(set(f[self.field_id] for f in data)):
+            if len(data) != len({f[self.field_id] for f in data}):
                 msg = 'The fields {field_id} must make a unique set.'.format(
                     field_id=self.field_id
                 )

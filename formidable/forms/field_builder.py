@@ -54,9 +54,9 @@ class FieldBuilder(object):
         return kwargs
 
     def get_widget(self):
-        klass = self.get_widget_class()
-        if klass:
-            return klass(**self.get_widget_kwargs())
+        widget_class = self.get_widget_class()
+        if widget_class:
+            return widget_class(**self.get_widget_kwargs())
         return None
 
     def get_widget_class(self):

@@ -35,7 +35,7 @@ class ConditionsRegister(dict):
     def gen_from_schema(self, fields, conditions_schema):
         for condition in conditions_schema:
             # name, fields_ids, action, tests
-            klass = self[condition['action']]
+            condition_class = self[condition['action']]
 
             # cast values to field's type
             def convert_values(field_id, values):
@@ -47,7 +47,7 @@ class ConditionsRegister(dict):
                                    convert_values(test['field_id'],
                                                   test['values']))
                      for test in condition['tests']]
-            yield klass(
+            yield condition_class(
                 condition['fields_ids'],
                 condition['name'],
                 tests
@@ -66,12 +66,12 @@ class ConditionsMetaClass(type):
     """
 
     def __new__(mcls, name, base, attrs):
-        klass = super(ConditionsMetaClass, mcls).__new__(
+        condition_class = super(ConditionsMetaClass, mcls).__new__(
             mcls, name, base, attrs
         )
         if 'action' in attrs:
-            conditions_register[klass.action] = klass
-        return klass
+            conditions_register[condition_class.action] = condition_class
+        return condition_class
 
 
 class ConditionTest(object):
