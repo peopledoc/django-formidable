@@ -14,6 +14,7 @@ from datetime import date
 from decimal import Decimal
 
 from django.core import validators
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from dateutil.parser import parse
@@ -194,7 +195,7 @@ class AgeUnderValidator(AgeAboveValidator):
 
 class ValidatorFactory(object):
 
-    @property
+    @cached_property
     def maps(self):
         return {
             'MINLENGTH': self.min_length,
@@ -251,7 +252,7 @@ class ValidatorFactory(object):
 
 class DateValidatorFactory(ValidatorFactory):
 
-    @property
+    @cached_property
     def maps(self):
         _maps = {
             'IS_DATE_IN_THE_FUTURE': self.future_date,
