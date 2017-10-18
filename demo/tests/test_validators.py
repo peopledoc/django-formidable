@@ -15,9 +15,8 @@ class TestValidatorFactoryMapping(TestCase):
         )
         self.validation_object = ValidatorFactory()
 
-    def test_min_length(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.min_length = mock_object
+    @mock.patch('formidable.validators.ValidatorFactory.min_length')
+    def test_min_length(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='MINLENGTH',
@@ -28,10 +27,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_max_length(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.max_length = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.max_length')
+    def test_max_length(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='MAXLENGTH',
@@ -42,10 +39,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_regexp(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.regexp = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.regexp')
+    def test_regexp(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='REGEXP',
@@ -56,10 +51,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_gt(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.gt = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.gt')
+    def test_gt(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='GT',
@@ -70,10 +63,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_gte(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.gte = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.gte')
+    def test_gte(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='GTE',
@@ -84,10 +75,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_lt(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.lt = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.lt')
+    def test_lt(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='LT',
@@ -98,10 +87,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_lte(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.lte = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.lte')
+    def test_lte(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='LTE',
@@ -112,10 +99,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_eq(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.eq = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.eq')
+    def test_eq(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='EQ',
@@ -126,10 +111,8 @@ class TestValidatorFactoryMapping(TestCase):
 
         assert mock_object.called
 
-    def test_neq(self):
-        mock_object = mock.Mock()
-        ValidatorFactory.neq = mock_object
-
+    @mock.patch('formidable.validators.ValidatorFactory.neq')
+    def test_neq(self, mock_object):
         self.validation_object.produce(
             self.validation_named_tuple(
                 type='NEQ',
