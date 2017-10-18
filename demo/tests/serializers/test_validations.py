@@ -12,50 +12,70 @@ from formidable.serializers.validation import (
 
 
 class ValidationSerializerTest(TestCase):
+    increment = 0
 
     def setUp(self):
-        super(ValidationSerializerTest, self).setUp()
         self.form = Formidable.objects.create(
             label='test', description='test'
         )
-        self.text = self.form.fields.create(
-            type_id='text', slug='input-text', label='name',
+        self.increment += 1
+        self.text_field = self.form.fields.create(
+            type_id='text',
+            slug='input-text-{}'.format(self.increment),
+            label='name',
+            order=1,
         )
 
     def test_int_value(self):
-        data = {'field_id': self.text.id, 'value': 5, 'type': 'minlength'}
+        data = {
+            'field_id': self.text_field.id,
+            'type': 'MINLENGTH',
+            'value': 5,
+        }
         serializer = MinLengthSerializer(data=data)
         self.assertTrue(serializer.is_valid())
 
     def test_non_int_value(self):
-        data = {'field_id': self.text.id, 'value': 'test', 'type': 'minlength'}
+        data = {
+            'field_id': self.text_field.id,
+            'type': 'MINLENGTH',
+            'value': 'test',
+        }
         serializer = MinLengthSerializer(data=data)
         self.assertFalse(serializer.is_valid())
 
     def test_regexp_value(self):
         data = {
-            'field_id': self.text.id, 'value': '\w+ly', 'type': 'minlength'
+            'field_id': self.text_field.id,
+            'type': 'REGEXP',
+            'value': '\w+ly',
         }
         serializer = RegexpSerializer(data=data)
         self.assertTrue(serializer.is_valid())
 
     def test_invalid_regexp_value(self):
         data = {
-            'field_id': self.text.id, 'value': '\w+ly(', 'type': 'minlength'
+            'field_id': self.text_field.id,
+            'type': 'REGEXP',
+            'value': '\w+ly(',
         }
         serializer = RegexpSerializer(data=data)
         self.assertFalse(serializer.is_valid())
 
     def test_update_validations(self):
         list_serializer = ValidationSerializer(many=True)
-        self.text.validations.create(
-            value='5', type='minlength'
+        self.text_field.validations.create(
+            type='MINLENGTH',
+            value='5',
         )
         list_serializer.update(
-            self.text.validations,
-            [{'type': 'minlength', 'value': '12'}],
-            self.text
+            self.text_field.validations,
+            self.text_field,
+            [{
+                'type': 'MINLENGTH',
+                'value': '12'
+            }],
         )
-        self.assertEquals(self.text.validations.count(), 1)
-        validation = self.text.validations.first()
+        self.assertEquals(self.text_field.validations.count(), 1)
+        validation = self.text_field.validations.first()
         self.assertEquals(validation.value, '12')

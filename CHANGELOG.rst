@@ -8,6 +8,8 @@ master (unreleased)
 - Added tests for the validators mapping
 - Minor syntax changes
 - Added perf rec tests
+- Add configuration for py.test
+- Reactivate accidentally skipped ``test_validations.py`` tests
 
 Release 1.0.2 (2017-10-10)
 ==========================

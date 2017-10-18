@@ -5,6 +5,9 @@ Developer's documentation
 Testing
 -------
 
+Using tox
+~~~~~~~~~
+
 Tests are launched using `tox <http://tox.readthedocs.io/>`_. You may want to become proficient with this tool but the core command you need to know is:
 
 .. code:: shell
@@ -39,6 +42,26 @@ If somehow you've messed-up with your environment(s), you can still recreate it/
 
     $ tox -r  # RECREATE ALL THE THINGS
     $ tox -re django18-py27  # recreate and run tests using `django18-py27`
+
+
+Using py.test
+~~~~~~~~~~~~~
+
+You can also run tests with ``py.test``.
+
+You can install it with the following command:
+
+.. code:: shell
+
+    $ pip install pytest{,-django}
+    # Optionally
+    $ pip install pytest-sugar
+
+We've added a section in our ``setup.cfg``, so you should be able to run tests simply with:
+
+.. code:: shell
+
+    $ py.test
 
 
 Swagger documentation update
