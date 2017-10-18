@@ -1,0 +1,23 @@
+{
+  "fields": [
+    {
+      "id": "text",
+      "slug": "text",
+      "label": "text",
+      "type_id": "text",
+      "description": "text",
+      "accesses": []
+    },
+    {
+      "id": "email",
+      "slug": "email",
+      "label": "email",
+      "type_id": "email",
+      "description": "email",
+      "accesses": []
+    }
+  ],
+  "description": "Test description",
+  "label": "Test form label",
+  "conditions": []
+}

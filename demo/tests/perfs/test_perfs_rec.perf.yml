@@ -1,0 +1,100 @@
+accesses-list: []
+create-form:
+- db: 'SELECT (#) AS "a" FROM "django_session" WHERE "django_session"."session_key" = # LIMIT #'
+- db: SAVEPOINT `#`
+- db: INSERT INTO "django_session" (...) SELECT ...
+- db: RELEASE SAVEPOINT `#`
+- db: SAVEPOINT `#`
+- db: 'UPDATE "django_session" SET ... WHERE "django_session"."session_key" = #'
+- db: RELEASE SAVEPOINT `#`
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
+- db: SAVEPOINT `#`
+- db: INSERT INTO "formidable_formidable" (...) VALUES (...)
+- db: RELEASE SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+get-context-form:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+retrieve-form:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+update-form-with-changes:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: SAVEPOINT `#`
+- db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: RELEASE SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+- db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
+- db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+update-form-without-changes:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: SAVEPOINT `#`
+- db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: RELEASE SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+- db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
+- db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+validate-form:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
