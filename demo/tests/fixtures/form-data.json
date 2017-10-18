@@ -1,0 +1,61 @@
+{
+  "fields": [
+    {
+      "id": "title",
+      "slug": "title",
+      "label": "title",
+      "type_id": "title",
+      "description": "title",
+      "accesses": []
+    },
+
+    {
+      "id": "name",
+      "slug": "name",
+      "label": "Name",
+      "type_id": "text",
+      "description": "Name",
+      "accesses": []
+    },
+    {
+      "id": "name2",
+      "slug": "name2",
+      "label": "Name2",
+      "type_id": "text",
+      "description": "Name2",
+      "accesses": [
+        {
+          "access_id": "padawan",
+          "level": "READONLY"
+        }
+      ]
+    },
+     {
+      "id": "checkbox",
+      "slug": "checkbox",
+      "label": "checkbox",
+      "type_id": "checkbox",
+      "description": "checkbox",
+      "accesses": []
+    },
+    {
+      "id": "text",
+      "slug": "text",
+      "label": "text",
+      "type_id": "text",
+      "description": "text",
+      "accesses": []
+    },
+    {
+      "id": "text1",
+      "slug": "text1",
+      "label": "text1",
+      "type_id": "text",
+      "description": "text",
+      "accesses": []
+    }
+  ],
+  "description": "Test description",
+  "label": "Test form label",
+  "conditions": []
+}

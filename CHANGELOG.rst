@@ -7,6 +7,7 @@ master (unreleased)
 
 - Added tests for the validators mapping
 - Minor syntax changes
+- Added perf rec tests
 
 Release 1.0.2 (2017-10-10)
 ==========================
