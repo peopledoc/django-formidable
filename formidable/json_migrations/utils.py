@@ -40,8 +40,13 @@ def add_fields(ref_fields, new_fields):
 
 
 def merge_context_forms(forms):
-    # forms : role => ContextForm
+    # forms: role => ContextForm
     roles = list(forms.keys())
+
+    if {'description', 'fields', 'label', 'id'}.issubset(roles):
+        # If these keys are in the forms, the form is already
+        # uncontextualized.
+        return forms
 
     # Formidable and ContextForm JSON formats only differs by the field
     # attribute (and some missing attributes in ContextForm). We can copy
@@ -61,4 +66,5 @@ def merge_context_forms(forms):
                     {'access_id': role, 'level': constants.HIDDEN}
                 )
     form['fields'] = fields
+
     return form
