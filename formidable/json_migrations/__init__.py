@@ -3,14 +3,14 @@ import sys
 from glob import glob
 from importlib import import_module
 
-__all__ = ['migrate', 'get_migrations']
+__all__ = ['latest_version', 'migrate']
 
 HERE = os.path.dirname(__file__)
 
 package = sys.modules[__name__].__name__
 
 
-def get_migrations():
+def _get_migrations():
     """
     Return a generator with all JSON migrations sorted.
 
@@ -35,9 +35,13 @@ def migrate(data, version_src=0):
     ``data``.
 
     """
-    for version, label, func in list(get_migrations()):
+    for version, label, func in list(_get_migrations()):
         if version_src < version:
             data = func(data)
+            data['version'] = version
             version_src = version
 
-    return data, version
+    return data
+
+
+latest_version = max(migration[0] for migration in list(_get_migrations()))
