@@ -99,11 +99,12 @@ class ConditionTest(object):
 
         try:
             ref_value = cleaned_data[self.field_id]
-            return meth(ref_value, self.values)
-        except:
+        except KeyError:
             # KeyError if self.field_id not in cleaned_data
             # TODO XXX add log ?
             return False
+        else:
+            return meth(ref_value, self.values)
 
 
 class Condition(six.with_metaclass(ConditionsMetaClass)):
