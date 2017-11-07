@@ -10,6 +10,7 @@ master (unreleased)
 - Added perf rec tests
 - Add configuration for py.test
 - Reactivate accidentally skipped ``test_validations.py`` tests
+- Add JSON migrations
 
 Release 1.0.2 (2017-10-10)
 ==========================
