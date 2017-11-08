@@ -28,13 +28,24 @@ class FieldItemTestCase(TestCase):
         super(FieldItemTestCase, self).setUp()
         self.formidable = FormTest.to_formidable(label='label')
 
-    def test_field_size(self):
+    def test_label_field_size(self):
         field = self.formidable.fields.get(slug='dropdown')
         field.items.create(
             value='hello',
             label="hello" * 800,
             order=42,
         )
+
+    def test_value_field_size(self):
+        field = self.formidable.fields.get(slug='dropdown')
+        my_field = field.items.create(
+            value='hello' * 800,
+            label="hello" * 800,
+            order=42,
+        )
+        my_field = field.items.get(pk=my_field.pk)
+        self.assertEqual(my_field.value, 'hello' * 800)
+        self.assertEqual(my_field.label, 'hello' * 800)
 
 
 class UnicodeTestCase(TestCase):
