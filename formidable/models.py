@@ -109,7 +109,7 @@ class Default(models.Model):
 @python_2_unicode_compatible
 class Item(models.Model):
     field = models.ForeignKey(Field, related_name='items')
-    value = models.CharField(max_length=256)
+    value = models.TextField()
     label = models.TextField()
     order = models.IntegerField()
     help_text = models.TextField(blank=True, null=True)

@@ -11,6 +11,7 @@ master (unreleased)
 - Add configuration for py.test
 - Reactivate accidentally skipped ``test_validations.py`` tests
 - Add JSON migrations
+- ``FormidableItem.value`` field size now has no limit (``TextField``)
 
 Release 1.0.2 (2017-10-10)
 ==========================
