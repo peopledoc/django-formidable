@@ -1,0 +1,33 @@
+{
+  "description": "Some description for the tests",
+  "fields": [
+    {
+      "accesses": [
+        {
+          "access_id": "first-access-group",
+          "level": "EDITABLE"
+        },
+        {
+          "access_id": "second-access-group",
+          "level": "EDITABLE"
+        },
+        {
+          "access_id": "third-access-group",
+          "level": "EDITABLE"
+        }
+      ],
+      "defaults": [],
+      "help_text": "",
+      "items": [],
+      "label": "There is my label field label",
+      "multiple": false,
+      "placeholder": null,
+      "slug": "multiline-text",
+      "type_id": "paragraph",
+      "validations": []
+    }
+  ],
+  "id": 0,
+  "label": "And my form label",
+  "presets": []
+}

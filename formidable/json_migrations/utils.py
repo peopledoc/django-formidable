@@ -41,6 +41,9 @@ def add_fields(ref_fields, new_fields):
 
 def merge_context_forms(forms):
     # forms: role => ContextForm
+    # remove version from context if exists
+    version = forms.pop('version', None)
+
     roles = list(forms.keys())
 
     if {'description', 'fields', 'label', 'id'}.issubset(roles):
@@ -66,5 +69,9 @@ def merge_context_forms(forms):
                     {'access_id': role, 'level': constants.HIDDEN}
                 )
     form['fields'] = fields
+
+    # set saved version if exists
+    if version is not None:
+        form['version'] = version
 
     return form

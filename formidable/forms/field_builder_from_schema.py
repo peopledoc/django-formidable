@@ -39,7 +39,7 @@ class FieldBuilder(BaseFieldBuilder):
         return self.field['label']
 
     def get_help_text(self):
-        return self.field['description']
+        return self.field.get('description', '')
 
     def get_validations(self):
         return self.field['validations']

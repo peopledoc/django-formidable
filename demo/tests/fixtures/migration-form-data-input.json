@@ -1,0 +1,65 @@
+{
+  "first-access-group": {
+    "description": "Some description for the tests",
+    "fields": [
+      {
+        "defaults": [],
+        "disabled": false,
+        "help_text": "",
+        "items": [],
+        "label": "There is my label field label",
+        "multiple": false,
+        "placeholder": null,
+        "required": false,
+        "slug": "multiline-text",
+        "type_id": "paragraph",
+        "validations": []
+      }
+    ],
+    "id": 0,
+    "label": "And my form label",
+    "presets": []
+  },
+  "second-access-group": {
+    "description": "Some description for the tests",
+    "fields": [
+      {
+        "defaults": [],
+        "disabled": false,
+        "help_text": "",
+        "items": [],
+        "label": "There is my label field label",
+        "multiple": false,
+        "placeholder": null,
+        "required": false,
+        "slug": "multiline-text",
+        "type_id": "paragraph",
+        "validations": []
+      }
+    ],
+    "id": 0,
+    "label": "And my form label",
+    "presets": []
+  },
+  "third-access-group": {
+    "description": "Some description for the tests",
+    "fields": [
+      {
+        "defaults": [],
+        "disabled": false,
+        "help_text": "",
+        "items": [],
+        "label": "There is my label field label",
+        "multiple": false,
+        "placeholder": null,
+        "required": false,
+        "slug": "multiline-text",
+        "type_id": "paragraph",
+        "validations": []
+      }
+    ],
+    "id": 0,
+    "label": "And my form label",
+    "presets": []
+  }
+}
