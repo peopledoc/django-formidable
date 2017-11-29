@@ -19,7 +19,7 @@ setup(
     description='django-formidable is a full django application which '
                 'allows you to create, edit, delete and use forms.',
     long_description=README,
-    url='https://github.com/novafloss/django-formidable',
+    url='https://github.com/peopledoc/django-formidable',
     author='Guillaume Camera, Guillaume Gérard',
     author_email='guillaume.camera@people-doc.com, '
                  'guillaume.gerard@people-doc.com',

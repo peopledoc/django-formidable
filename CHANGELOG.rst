@@ -12,6 +12,7 @@ master (unreleased)
 - Reactivate accidentally skipped ``test_validations.py`` tests
 - Add JSON migrations
 - ``FormidableItem.value`` field size now has no limit (``TextField``)
+- Migrate to PeopleDoc GitHub organization (#283)
 
 Release 1.0.2 (2017-10-10)
 ==========================
