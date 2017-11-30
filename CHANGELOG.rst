@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+1.1.0rc2 (2017-11-30)
+=====================
 
 - Added tests for the validators mapping
 - Minor syntax changes
