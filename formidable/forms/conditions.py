@@ -39,8 +39,12 @@ class ConditionsRegister(dict):
 
             # cast values to field's type
             def convert_values(field_id, values):
-                field = fields[field_id]
-                return [field.to_python(value) for value in values]
+                try:
+                    field = fields[field_id]
+                except KeyError:
+                    return []
+                else:
+                    return [field.to_python(value) for value in values]
 
             tests = [ConditionTest(test['field_id'],
                                    test['operator'],

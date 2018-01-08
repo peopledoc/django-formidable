@@ -1,0 +1,47 @@
+{
+  "conditions": [
+    {
+      "action": "display_iff",
+      "fields_ids": [
+        "third-field",
+        "fourth-field"
+      ],
+      "name": "Rule",
+      "tests": [
+        {
+          "field_id": "test-field",
+          "operator": "eq",
+          "values": [
+            true
+          ]
+        }
+      ]
+    }
+  ],
+  "description": "Description",
+  "fields": [
+    {
+      "defaults": [],
+      "description": "first field",
+      "disabled": false,
+      "placeholder": null,
+      "required": false,
+      "slug": "first-field",
+      "type_id": "help_text",
+      "validations": []
+    },
+    {
+      "defaults": [],
+      "description": null,
+      "disabled": false,
+      "label": "second field",
+      "placeholder": null,
+      "required": false,
+      "slug": "file",
+      "type_id": "file",
+      "validations": []
+    }
+  ],
+  "id": 1,
+  "label": "Some label here"
+}

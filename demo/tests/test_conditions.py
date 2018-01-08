@@ -2,7 +2,11 @@
 
 from __future__ import unicode_literals
 
+import os
+import json
+
 from django.test import TestCase
+
 
 from formidable import constants
 from formidable.forms import (
@@ -12,6 +16,8 @@ from formidable.forms import (
 from formidable.serializers.forms import (
     ContextFormSerializer, FormidableSerializer
 )
+
+TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class ConditionTestCase(TestCase):
@@ -186,6 +192,32 @@ class ConditionTestCase(TestCase):
         form = form_class(data)
         self.assertTrue(form.is_valid(), form.errors)
         self.assertEqual(form.cleaned_data, {'checkbox': True})
+
+    def test_condition_field_doesnt_exist(self):
+        """
+        This test checks situation when the conditional fields don't exists
+        in the list of fields.
+        it shows that we don't raise an Exception anymore.
+
+        You could get this situation when you specified the fields access
+        that current user doesn't have an access to the conditional field.
+
+        In the fixture 'wrong-conditions.json' you see this situation.
+        Conditions are configured for the 'test-field' but current user
+        doesn't have rights to read or write to it. So can't see this field
+        in the 'fields' section.
+        """
+        schema = json.load(open(
+            os.path.join(
+                TESTS_DIR, 'fixtures', 'wrong-conditions.json'
+            )
+        ))
+        try:
+            get_dynamic_form_class_from_schema(schema)
+        except KeyError:
+            self.fail("Doesn't have to raise an exception here ")
+        else:
+            self.assertTrue(True)
 
 
 class ConditionFromSchemaTestCase(ConditionTestCase):
