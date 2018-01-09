@@ -5,6 +5,11 @@ ChangeLog
 master (unreleased)
 ===================
 
+Nothing here yet.
+
+Release 1.2.0 (2018-01-09)
+==========================
+
 - Allow wrong field ids in conditions
 
 Release 1.1.0 (2017-12-04)
