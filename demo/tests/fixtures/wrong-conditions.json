@@ -4,7 +4,9 @@
       "action": "display_iff",
       "fields_ids": [
         "third-field",
-        "fourth-field"
+        "fourth-field",
+        "first-field",
+        "second-field"
       ],
       "name": "Rule",
       "tests": [
@@ -28,7 +30,17 @@
       "required": false,
       "slug": "first-field",
       "type_id": "help_text",
-      "validations": []
+      "validations": [],
+      "accesses": [
+        {
+          "access_id": "TEST_ROLE",
+          "level": "EDITABLE"
+        },
+        {
+          "access_id": "TEST_ROLE2",
+          "level": "EDITABLE"
+        }
+      ]
     },
     {
       "defaults": [],
@@ -37,9 +49,18 @@
       "label": "second field",
       "placeholder": null,
       "required": false,
-      "slug": "file",
+      "slug": "second-field",
       "type_id": "file",
-      "validations": []
+      "validations": [],
+      "accesses": [
+        {
+          "access_id": "TEST_ROLE2",
+          "level": "EDITABLE"
+        }, {
+          "access_id": "TEST_ROLE",
+          "level": "HIDDEN"
+        }
+      ]
     }
   ],
   "id": 1,
