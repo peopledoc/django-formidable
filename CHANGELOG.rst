@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Keep only existing fields ids for current role in the conditional part
 
 Release 1.2.0 (2018-01-09)
 ==========================
