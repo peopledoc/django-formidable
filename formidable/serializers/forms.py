@@ -181,4 +181,12 @@ def contextualize(form, role):
     """
     form = copy.deepcopy(form)
     form['fields'] = list(contextualize_fields(form['fields'], role))
+
+    # filter conditions by fields ids for current role
+    field_ids = {field['slug'] for field in form['fields']}
+    for condition in form.get('conditions', []):
+        condition['fields_ids'] = list(
+            set(condition.get('fields_ids', [])) & field_ids
+        )
+
     return form

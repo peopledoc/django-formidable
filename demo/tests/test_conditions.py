@@ -9,12 +9,13 @@ from django.test import TestCase
 
 
 from formidable import constants
+
 from formidable.forms import (
     FormidableForm, fields, get_dynamic_form_class,
     get_dynamic_form_class_from_schema
 )
 from formidable.serializers.forms import (
-    ContextFormSerializer, FormidableSerializer
+    ContextFormSerializer, FormidableSerializer, contextualize
 )
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +25,14 @@ class ConditionTestCase(TestCase):
 
     def get_form_class(self, formidable, role):
         return get_dynamic_form_class(formidable, role)
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.conditions_schema = json.load(open(
+            os.path.join(
+                TESTS_DIR, 'fixtures', 'wrong-conditions.json'
+            )
+        ))
 
     def setUp(self):
         conditions_schema = [
@@ -207,17 +216,30 @@ class ConditionTestCase(TestCase):
         doesn't have rights to read or write to it. So can't see this field
         in the 'fields' section.
         """
-        schema = json.load(open(
-            os.path.join(
-                TESTS_DIR, 'fixtures', 'wrong-conditions.json'
-            )
-        ))
+
         try:
-            get_dynamic_form_class_from_schema(schema)
+            get_dynamic_form_class_from_schema(self.conditions_schema)
         except KeyError:
             self.fail("Doesn't have to raise an exception here ")
         else:
             self.assertTrue(True)
+
+    def test_filter_conditions_by_fields_ids(self):
+        first_schema = contextualize(self.conditions_schema, 'TEST_ROLE')
+        conditions = first_schema['conditions']
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+
+        self.assertEqual(condition['fields_ids'], ['first-field'])
+
+        second_schema = contextualize(self.conditions_schema, 'TEST_ROLE2')
+        conditions = second_schema['conditions']
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+        self.assertEqual(
+            sorted(condition['fields_ids']),
+            ['first-field', 'second-field']
+        )
 
 
 class ConditionFromSchemaTestCase(ConditionTestCase):
