@@ -200,8 +200,7 @@ definitions:
           - eq
       values:
         type: array
-        items:
-          type: string
+        items: {}
 
   Condition:
     type: object

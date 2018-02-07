@@ -151,3 +151,21 @@ def test_simple_condition_test_no_values():
     form['conditions'] = [no_values_condition]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
     assert len(errors) == 0
+
+
+def test_simple_condition_test_values_types():
+    form, condition, tests = _load_20_simple_condition_test()
+    # Any type is valid
+    tests['values'] = ["string"]
+    tests_condition = deepcopy(condition)
+    tests_condition['tests'] = [tests]
+    form['conditions'] = [tests_condition]
+    errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+    assert len(errors) == 0
+
+    tests['values'] = [42]
+    tests_condition = deepcopy(condition)
+    tests_condition['tests'] = [tests]
+    form['conditions'] = [tests_condition]
+    errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+    assert len(errors) == 0
