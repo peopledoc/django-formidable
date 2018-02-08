@@ -193,31 +193,40 @@ definitions:
     properties:
       field_id:
         type: string
-        description: Reference field for the comparison
+        description: \`slug\` of the reference field for the comparison.
       operator:
         type: string
+        description: Comparison operator for the condition.
         enum:
           - eq
       values:
         type: array
+        description: List of the possible values that would return a "true" condition.
         items: {}
 
   Condition:
     type: object
-    description: TODO
+    description: |
+        Describe conditional display of a field, depending on the value of another field.
+
+        e.g.: "display the field 'what is you favorite Star Wars character?' if the boolean field 'Do you like Star Wars?' is checked".
     properties:
       name:
           type: string
+          description: A user-provided name for the Condition
       field_ids:
           type: array
+          description: List of field slugs to show/hide depending on the conditions.
           items:
               type: string
       action:
           type: string
+          description: Name of the action to do when the condition is true. e.g. "display the field" == ``display_iff``
           enum:
               - display_iff
       tests:
           type: array
+          description: List of conditions to test.
           items:
             $ref: '#/definitions/ConditionTest'
 
