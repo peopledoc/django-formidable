@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- [Documentation] Fixed a missing ``cd`` in docs. You can't run pytest from project root (#293).
 
 Release 1.2.1 (2018-01-12)
 ==========================
