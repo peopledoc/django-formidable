@@ -61,6 +61,7 @@ We've added a section in our ``setup.cfg``, so you should be able to run tests s
 
 .. code:: shell
 
+    $ cd demo/
     $ py.test
 
 
