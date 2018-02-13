@@ -1,0 +1,60 @@
+{
+  "id": 1,
+  "label": "The Game Form",
+  "description": "A form to pick a cool game",
+  "fields": [
+    {
+      "id": 1,
+      "slug": "do-you-want-to-play-games",
+      "label": "Do you want to play games?",
+      "type_id": "checkbox",
+      "description": "",
+      "accesses": []
+    },
+    {
+      "id": 2,
+      "slug": "favorite-game",
+      "label": "Favorite game",
+      "type_id": "dropdown",
+      "description": "",
+      "accesses": [],
+      "items": [
+        {
+          "value": "BORING",
+          "label": "Monopoly"
+        },
+        {
+          "value": "YES",
+          "label": "Magic Maze"
+        }
+      ],
+      "multiple": false
+    },
+    {
+      "id": 3,
+      "slug": "please-explain",
+      "label": "Please, explain...",
+      "type_id": "text",
+      "description": "Please explain why it matters...",
+      "accesses": []
+    }
+  ],
+  "conditions": [
+    {
+      "name": "Jeux",
+      "field_ids": [
+        "favorite-game"
+      ],
+      "action": "display_iff",
+      "tests": [
+        {
+          "field_id": "do-you-want-to-play-games",
+          "operator": "eq",
+          "values": [
+            "true"
+          ]
+        }
+      ]
+    }
+  ]
+}

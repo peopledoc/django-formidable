@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "label": "This is my form title",
+  "description": "Here's the description of my form.",
+  "fields": [
+      {
+        "id": 1,
+        "label": "Name",
+        "slug": "name",
+        "type_id": "text",
+        "description": "please put your name here",
+        "accesses": [],
+        "placeholder": "This is my placeholder",
+        "multiple": true,
+        "items": [
+            {"label": "first value", "value": "FIRST", "description": "This is my first value"},
+            {"label": "second value", "value": "SECOND", "description": "This is the last value"}
+        ]
+      }
+  ]
+}

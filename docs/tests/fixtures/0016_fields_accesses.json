@@ -1,0 +1,20 @@
+{
+  "id": 1,
+  "label": "This is my form title",
+  "description": "Here's the description of my form.",
+  "fields": [
+      {
+        "id": 1,
+        "label": "Name",
+        "slug": "name",
+        "type_id": "text",
+        "description": "please put your name here",
+        "accesses": [],
+        "placeholder": "This is my placeholder",
+        "accesses": [
+            {"access_id": "JEDI", "level": "REQUIRED"},
+            {"access_id": "PADAWAN", "level": "EDITABLE"}
+        ]
+      }
+  ]
+}

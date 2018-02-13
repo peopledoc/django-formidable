@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Added tests against the ``formidable.yml`` schema definition of Forms (#295).
 
 Release 1.3.0 (2018-02-14)
 ==========================

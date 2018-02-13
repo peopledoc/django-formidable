@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "label": "This is my form title",
+  "description": "Here's the description of my form.",
+  "fields": [
+      {}
+  ]
+}
