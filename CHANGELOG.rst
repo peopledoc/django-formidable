@@ -5,6 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
+- Allow POST method for form validation endpoint. This version is the last to support the GET verb for the validation endpoint. We'll drop it in the next version.
 - [Documentation] Fixed a missing ``cd`` in docs. You can't run pytest from project root (#293).
 
 Release 1.2.1 (2018-01-12)
