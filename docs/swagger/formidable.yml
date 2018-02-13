@@ -133,7 +133,7 @@ paths:
 
   /forms/{id}/validate/:
     get:
-      summary: Validate a form (GET method). GET and POST are equivalent.
+      summary: Validate a form (GET method). GET and POST are equivalent, but GET is deprecated.
       parameters:
         - name: id
           in: path

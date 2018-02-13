@@ -481,7 +481,7 @@ var spec = {
                             "$ref": "#/definitions/InputError"
                         }
                     }
-                }, 
+                },
                 "summary": "Validate a form (GET method). GET and POST are equivalent, but GET is deprecated."
             },
             "post": {
