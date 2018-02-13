@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import logging
+import warnings
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -239,18 +240,28 @@ class ValidateView(six.with_metaclass(MetaClassView,
     def get_formidable_object(self, kwargs):
         return Formidable.objects.get(pk=kwargs['pk'])
 
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         try:
             formidable = self.get_formidable_object(kwargs)
         except Formidable.DoesNotExist:
             raise exceptions.NotFound()
 
         form_class = self.get_form_class(formidable)
-        form = self.get_form(form_class)
+        form = self.get_form(form_class, request)
         if form.is_valid():
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def get(self, request, **kwargs):
+        """
+        GET method is deprecated in favor of POST
+
+        """
+        warnings.warn('GET method for form validation has been deprecated in '
+                      'favor of POST. Please use POST instead of GET.',
+                      category=DeprecationWarning)
+        return self.post(request, **kwargs)
 
     def get_form_class(self, formidable):
         return formidable.get_django_form_class(
@@ -275,11 +286,17 @@ class ValidateView(six.with_metaclass(MetaClassView,
         # return Response(data, status=400)
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get_form(self, form_class):
-        return form_class(**self.get_form_kwargs())
+    def get_form(self, form_class, request):
+        return form_class(**self.get_form_kwargs(request))
 
-    def get_form_kwargs(self):
-        return {'data': self.request.GET}
+    def get_form_kwargs(self, request):
+        """
+        Return form_data.
+
+        """
+        if request.method == 'GET':
+            return {'data': request.GET}
+        return {'data': request.data}
 
 
 class ValidateViewFromSchema(ValidateView):
