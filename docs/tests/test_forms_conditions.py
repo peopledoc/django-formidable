@@ -117,26 +117,30 @@ def test_simple_condition_test_wrong_type():
 
 def test_simple_condition_test_no_field_id():
     form, condition, no_field_id = _load_20_simple_condition_test()
-    # FIXME: this should fail validation ; it should have a field_id property.
     # Remove field_id
     del no_field_id['field_id']
     no_field_id_condition = deepcopy(condition)
     no_field_id_condition['tests'] = [no_field_id]
     form['conditions'] = [no_field_id_condition]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'field_id' is a required property"
 
 
 def test_simple_condition_test_no_op():
     form, condition, no_op = _load_20_simple_condition_test()
-    # FIXME: this should fail validation ; it should have an operator.
     # Remove operator
     del no_op['operator']
     no_op_condition = deepcopy(condition)
     no_op_condition['tests'] = [no_op]
     form['conditions'] = [no_op_condition]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'operator' is a required property"
 
 
 def test_simple_condition_test_bad_op():
@@ -155,14 +159,16 @@ def test_simple_condition_test_bad_op():
 
 def test_simple_condition_test_no_values():
     form, condition, no_values = _load_20_simple_condition_test()
-    # FIXME: this should fail validation ; it should have a value.
     # Remove values
     del no_values['values']
     no_values_condition = deepcopy(condition)
     no_values_condition['tests'] = [no_values]
     form['conditions'] = [no_values_condition]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'values' is a required property"
 
 
 def test_simple_condition_test_values_types():

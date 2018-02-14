@@ -190,6 +190,10 @@ definitions:
   ConditionTest:
     type: object
     description: Condition definition.
+    required:
+      - field_id
+      - operator
+      - values
     properties:
       field_id:
         type: string
