@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: django-formidable\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-04 09:25+0200\n"
-"PO-Revision-Date: 2017-07-05 03:04-0400\n"
+"PO-Revision-Date: 2017-10-04 03:30-0400\n"
 "Last-Translator: peopledoc <benjamin.cadars@people-doc.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -35,3 +35,4 @@ msgstr "Vérifiez que ce champ est égal à %(limit_value)s"
 #, python-format
 msgid "Ensure this field is not equal to %(limit_value)s"
 msgstr "Vérifiez que ce champ est différent de %(limit_value)s"
+

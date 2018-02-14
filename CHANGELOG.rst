@@ -2,11 +2,14 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 1.3.0 (2018-02-14)
+==========================
 
-- Allow POST method for form validation endpoint. This version is the last to support the GET verb for the validation endpoint. We'll drop it in the next version.
+**Deprecation Warning**: The validation endpoint (using the URL ``forms/(?P<pk>\d+)/validate/``) was only accessible via the ``GET`` verb. It may have caused issues if we tried to validate very long forms, or forms with very large values, by hitting the querystring size limit. As a consequence, as of 1.3.0, the ``GET`` method is deprecated in favor of the ``POST`` method.
+
+- Allow POST method for form validation endpoint.
 - [Documentation] Fixed a missing ``cd`` in docs. You can't run pytest from project root (#293).
+- includes 7 more languages (not translated yet): Czech, Danish, Finnish, Canadian French, Hungarian, Japanese, Swedish.
 
 Release 1.2.1 (2018-01-12)
 ==========================
