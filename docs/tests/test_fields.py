@@ -55,10 +55,52 @@ def test_field_missing_property():
         error = errors[0]
         assert error.validator == 'required'
         assert error.message == "'{}' is a required property".format(item)
-# TODO: Check the field type_id.
-# Enum: title, helpText, fieldset, fieldsetTable, separation, checkbox,
-#       checkboxes, dropdown, radios, radiosButtons, text, paragraph, file,
-#       date, email, number,
+
+
+available_types = [
+    'title', 'helpText', 'fieldset', 'fieldsetTable', 'separation',
+    'checkbox', 'checkboxes', 'dropdown', 'radios', 'radiosButtons',
+    'text', 'paragraph', 'file', 'date', 'email', 'number'
+]
+
+
+def test_field_type_id_ok():
+    form = _load_fixture('0011_empty_fields.json')
+    for type_id in available_types:
+        _form = deepcopy(form)
+        _form['fields'] = [
+                  {
+                    "id": 1,
+                    "label": "My Field",
+                    "slug": "my-field",
+                    "type_id": type_id,
+                    "description": "This is a boring description",
+                    "accesses": []
+                  }
+        ]
+        errors = sorted(validator.iter_errors(_form), key=lambda e: e.path)
+        assert len(errors) == 0
+
+
+def test_field_wrong_type_id():
+    form = _load_fixture('0011_empty_fields.json')
+    _form = deepcopy(form)
+    _form['fields'] = [
+              {
+                "id": 1,
+                "label": "My Field",
+                "slug": "my-field",
+                "type_id": 'unknown',
+                "description": "This is a boring description",
+                "accesses": []
+              }
+    ]
+    errors = sorted(validator.iter_errors(_form), key=lambda e: e.path)
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'enum'
+    assert error.message == "'unknown' is not one of {}".format(
+        available_types)
 
 
 def test_fields_ok():

@@ -297,6 +297,23 @@ definitions:
       type_id:
         type: string
         description: Type of field (see Field types table)
+        enum:
+          - title
+          - helpText
+          - fieldset
+          - fieldsetTable
+          - separation
+          - checkbox
+          - checkboxes
+          - dropdown
+          - radios
+          - radiosButtons
+          - text
+          - paragraph
+          - file
+          - date
+          - email
+          - number
       placeholder:
         type: string
         description: Placeholder of the field
