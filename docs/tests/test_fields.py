@@ -328,15 +328,50 @@ def test_field_validations_no_value():
     assert error.message == "'value' is a required property"
 
 # TODO: field validation grids
-# 1. don't know if it's possible to validate the grid.
-# 2. at least it should be possible to build an enum with available values.
+# I don't know if it's possible to validate the grid.
 #
-# Here they are:
+# For the record, here's the grid:
 # * text: MINLENGTH, MAXLENGTH, REGEXP
 # * paragraph: MINLENGTH, MAXLENGTH, REGEXP
 # * date: GT, GTE, LT, LTE, EQ, NEQ, IS_AGE_ABOVE (>=), IS_AGE_UNDER (<),
 #   IS_DATE_IN_THE_PAST, IS_DATE_IN_THE_FUTURE
 # * number: GT, GTE, LT, LTE, EQ, NEQ
+
+
+availablele_validation_types = [
+    'EQ',
+    'GT',
+    'GTE',
+    'IS_AGE_ABOVE',
+    'IS_AGE_UNDER',
+    'IS_DATE_IN_THE_FUTURE',
+    'IS_DATE_IN_THE_PAST',
+    'LT',
+    'LTE',
+    'MAXLENGTH',
+    'MINLENGTH',
+    'NEQ',
+    'REGEXP'
+]
+
+
+def test_field_validations_type_ok():
+    form, items, values = _load_17_fields_validations()
+    for validation_type in availablele_validation_types:
+        values.update({"type": validation_type})
+        form['fields'][0]['validations'] = [values]
+        errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+        assert len(errors) == 0
+
+
+def test_field_validations_wrong_type():
+    form, items, values = _load_17_fields_validations()
+    values.update({"type": 'UNKNOWN'})
+    form['fields'][0]['validations'] = [values]
+    errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.message == f"'UNKNOWN' is not one of {availablele_validation_types}"  # noqa
 
 
 def _load_18_fields_defaults():

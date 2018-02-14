@@ -400,6 +400,20 @@ definitions:
       type:
         type: string
         description: Type of validation (see Validation types table)
+        enum:
+          - EQ
+          - GT
+          - GTE
+          - IS_AGE_ABOVE
+          - IS_AGE_UNDER
+          - IS_DATE_IN_THE_FUTURE
+          - IS_DATE_IN_THE_PAST
+          - LT
+          - LTE
+          - MAXLENGTH
+          - MINLENGTH
+          - NEQ
+          - REGEXP
       value:
         type: string
         description: Value of the validation
