@@ -224,6 +224,7 @@ definitions:
           description: List of field slugs to show/hide depending on the conditions.
           items:
               type: string
+          minItems: 1
       action:
           type: string
           description: Name of the action to do when the condition is true. e.g. "display the field" == ``display_iff``
@@ -234,6 +235,7 @@ definitions:
           description: List of conditions to test.
           items:
             $ref: '#/definitions/ConditionTest'
+          minItems: 1
 
   Form:
     type: object

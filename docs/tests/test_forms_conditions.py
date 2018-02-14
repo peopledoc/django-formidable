@@ -52,11 +52,13 @@ def test_simple_condition_validation_no_fields():
 
 def test_simple_condition_validation_fields_empty():
     form, fields_empty = _load_20_simple_condition()
-    # FIXME: this should fail validation ; field IDs should not be empty.
     fields_empty['field_ids'] = []
     form['conditions'] = [fields_empty]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'minItems'
+    assert error.message == "[] is too short"
 
 
 def test_simple_condition_validation_no_tests():
@@ -72,11 +74,13 @@ def test_simple_condition_validation_no_tests():
 
 def test_simple_condition_validation_empty_tests():
     form, empty_tests = _load_20_simple_condition()
-    # FIXME: this should fail validation ; tests should not be empty.
     empty_tests['tests'] = []
     form['conditions'] = [empty_tests]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'minItems'
+    assert error.message == "[] is too short"
 
 
 def test_simple_condition_validation_no_action():
