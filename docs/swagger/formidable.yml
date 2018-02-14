@@ -189,7 +189,7 @@ definitions:
 
   ConditionTest:
     type: object
-    description: Condition
+    description: Condition definition.
     properties:
       field_id:
         type: string
@@ -210,6 +210,11 @@ definitions:
         Describe conditional display of a field, depending on the value of another field.
 
         e.g.: "display the field 'what is you favorite Star Wars character?' if the boolean field 'Do you like Star Wars?' is checked".
+    required:
+      - name
+      - field_ids
+      - action
+      - tests
     properties:
       name:
           type: string
