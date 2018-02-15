@@ -67,52 +67,69 @@ var spec = {
             ]
         },
         "Condition": {
-            "description": "TODO",
+            "description": "Describe conditional display of a field, depending on the value of another field.\n\ne.g.: \"display the field 'what is you favorite Star Wars character?' if the boolean field 'Do you like Star Wars?' is checked\".\n",
             "properties": {
                 "action": {
+                    "description": "Name of the action to do when the condition is true. e.g. \"display the field\" == ``display_iff``",
                     "enum": [
                         "display_iff"
                     ],
                     "type": "string"
                 },
                 "field_ids": {
+                    "description": "List of field slugs to show/hide depending on the conditions.",
                     "items": {
                         "type": "string"
                     },
+                    "minItems": 1,
                     "type": "array"
                 },
                 "name": {
+                    "description": "A user-provided name for the Condition",
                     "type": "string"
                 },
                 "tests": {
+                    "description": "List of conditions to test.",
                     "items": {
                         "$ref": "#/definitions/ConditionTest"
                     },
+                    "minItems": 1,
                     "type": "array"
                 }
             },
+            "required": [
+                "name",
+                "field_ids",
+                "action",
+                "tests"
+            ],
             "type": "object"
         },
         "ConditionTest": {
-            "description": "Condition",
+            "description": "Condition definition.",
             "properties": {
                 "field_id": {
-                    "description": "Reference field for the comparison",
+                    "description": "\\`slug\\` of the reference field for the comparison.",
                     "type": "string"
                 },
                 "operator": {
+                    "description": "Comparison operator for the condition.",
                     "enum": [
                         "eq"
                     ],
                     "type": "string"
                 },
                 "values": {
-                    "items": {
-                        "type": "string"
-                    },
+                    "description": "List of the possible values that would return a \"true\" condition.",
+                    "items": {},
                     "type": "array"
                 }
             },
+            "required": [
+                "field_id",
+                "operator",
+                "values"
+            ],
             "type": "object"
         },
         "Field": {
@@ -166,6 +183,24 @@ var spec = {
                 },
                 "type_id": {
                     "description": "Type of field (see Field types table)",
+                    "enum": [
+                        "title",
+                        "helpText",
+                        "fieldset",
+                        "fieldsetTable",
+                        "separation",
+                        "checkbox",
+                        "checkboxes",
+                        "dropdown",
+                        "radios",
+                        "radiosButtons",
+                        "text",
+                        "paragraph",
+                        "file",
+                        "date",
+                        "email",
+                        "number"
+                    ],
                     "type": "string"
                 },
                 "validations": {
@@ -219,6 +254,21 @@ var spec = {
                 },
                 "type": {
                     "description": "Type of validation (see Validation types table)",
+                    "enum": [
+                        "EQ",
+                        "GT",
+                        "GTE",
+                        "IS_AGE_ABOVE",
+                        "IS_AGE_UNDER",
+                        "IS_DATE_IN_THE_FUTURE",
+                        "IS_DATE_IN_THE_PAST",
+                        "LT",
+                        "LTE",
+                        "MAXLENGTH",
+                        "MINLENGTH",
+                        "NEQ",
+                        "REGEXP"
+                    ],
                     "type": "string"
                 },
                 "value": {
