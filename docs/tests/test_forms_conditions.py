@@ -30,56 +30,68 @@ def _load_20_simple_condition():
 
 def test_simple_condition_validation_no_name():
     form, no_name = _load_20_simple_condition()
-    # FIXME: this should fail validation ; name should be mandatory.
     del no_name['name']
     form['conditions'] = [no_name]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'name' is a required property"
 
 
 def test_simple_condition_validation_no_fields():
     form, no_fields = _load_20_simple_condition()
-    # FIXME: this should fail validation ; field IDs should be mandatory.
     del no_fields['field_ids']
     form['conditions'] = [no_fields]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'field_ids' is a required property"
 
 
 def test_simple_condition_validation_fields_empty():
     form, fields_empty = _load_20_simple_condition()
-    # FIXME: this should fail validation ; field IDs should not be empty.
     fields_empty['field_ids'] = []
     form['conditions'] = [fields_empty]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'minItems'
+    assert error.message == "[] is too short"
 
 
 def test_simple_condition_validation_no_tests():
     form, no_tests = _load_20_simple_condition()
-    # FIXME: this should fail validation ; tests should be mandatory.
     del no_tests['tests']
     form['conditions'] = [no_tests]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'tests' is a required property"
 
 
 def test_simple_condition_validation_empty_tests():
     form, empty_tests = _load_20_simple_condition()
-    # FIXME: this should fail validation ; tests should not be empty.
     empty_tests['tests'] = []
     form['conditions'] = [empty_tests]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'minItems'
+    assert error.message == "[] is too short"
 
 
 def test_simple_condition_validation_no_action():
     form, no_action = _load_20_simple_condition()
-    # FIXME: this should fail validation ; it should have an action property.
     del no_action['action']
     form['conditions'] = [no_action]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'action' is a required property"
 
 
 def _load_20_simple_condition_test():
@@ -105,26 +117,30 @@ def test_simple_condition_test_wrong_type():
 
 def test_simple_condition_test_no_field_id():
     form, condition, no_field_id = _load_20_simple_condition_test()
-    # FIXME: this should fail validation ; it should have a field_id property.
     # Remove field_id
     del no_field_id['field_id']
     no_field_id_condition = deepcopy(condition)
     no_field_id_condition['tests'] = [no_field_id]
     form['conditions'] = [no_field_id_condition]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'field_id' is a required property"
 
 
 def test_simple_condition_test_no_op():
     form, condition, no_op = _load_20_simple_condition_test()
-    # FIXME: this should fail validation ; it should have an operator.
     # Remove operator
     del no_op['operator']
     no_op_condition = deepcopy(condition)
     no_op_condition['tests'] = [no_op]
     form['conditions'] = [no_op_condition]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 0
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'operator' is a required property"
 
 
 def test_simple_condition_test_bad_op():
@@ -143,11 +159,31 @@ def test_simple_condition_test_bad_op():
 
 def test_simple_condition_test_no_values():
     form, condition, no_values = _load_20_simple_condition_test()
-    # FIXME: this should fail validation ; it should have a value.
     # Remove values
     del no_values['values']
     no_values_condition = deepcopy(condition)
     no_values_condition['tests'] = [no_values]
     form['conditions'] = [no_values_condition]
+    errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == 'required'
+    assert error.message == "'values' is a required property"
+
+
+def test_simple_condition_test_values_types():
+    form, condition, tests = _load_20_simple_condition_test()
+    # Any type is valid
+    tests['values'] = ["string"]
+    tests_condition = deepcopy(condition)
+    tests_condition['tests'] = [tests]
+    form['conditions'] = [tests_condition]
+    errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+    assert len(errors) == 0
+
+    tests['values'] = [42]
+    tests_condition = deepcopy(condition)
+    tests_condition['tests'] = [tests]
+    form['conditions'] = [tests_condition]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
     assert len(errors) == 0

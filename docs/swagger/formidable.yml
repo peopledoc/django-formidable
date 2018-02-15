@@ -189,38 +189,57 @@ definitions:
 
   ConditionTest:
     type: object
-    description: Condition
+    description: Condition definition.
+    required:
+      - field_id
+      - operator
+      - values
     properties:
       field_id:
         type: string
-        description: Reference field for the comparison
+        description: \`slug\` of the reference field for the comparison.
       operator:
         type: string
+        description: Comparison operator for the condition.
         enum:
           - eq
       values:
         type: array
-        items:
-          type: string
+        description: List of the possible values that would return a "true" condition.
+        items: {}
 
   Condition:
     type: object
-    description: TODO
+    description: |
+        Describe conditional display of a field, depending on the value of another field.
+
+        e.g.: "display the field 'what is you favorite Star Wars character?' if the boolean field 'Do you like Star Wars?' is checked".
+    required:
+      - name
+      - field_ids
+      - action
+      - tests
     properties:
       name:
           type: string
+          description: A user-provided name for the Condition
       field_ids:
           type: array
+          description: List of field slugs to show/hide depending on the conditions.
           items:
               type: string
+          minItems: 1
       action:
           type: string
+          description: Name of the action to do when the condition is true. e.g. "display the field" == ``display_iff``
           enum:
               - display_iff
       tests:
           type: array
+          description: List of conditions to test.
           items:
             $ref: '#/definitions/ConditionTest'
+          minItems: 1
 
   Form:
     type: object
@@ -289,6 +308,23 @@ definitions:
       type_id:
         type: string
         description: Type of field (see Field types table)
+        enum:
+          - title
+          - helpText
+          - fieldset
+          - fieldsetTable
+          - separation
+          - checkbox
+          - checkboxes
+          - dropdown
+          - radios
+          - radiosButtons
+          - text
+          - paragraph
+          - file
+          - date
+          - email
+          - number
       placeholder:
         type: string
         description: Placeholder of the field
@@ -375,6 +411,20 @@ definitions:
       type:
         type: string
         description: Type of validation (see Validation types table)
+        enum:
+          - EQ
+          - GT
+          - GTE
+          - IS_AGE_ABOVE
+          - IS_AGE_UNDER
+          - IS_DATE_IN_THE_FUTURE
+          - IS_DATE_IN_THE_PAST
+          - LT
+          - LTE
+          - MAXLENGTH
+          - MINLENGTH
+          - NEQ
+          - REGEXP
       value:
         type: string
         description: Value of the validation

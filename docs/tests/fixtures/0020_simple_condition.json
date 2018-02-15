@@ -51,7 +51,7 @@
           "field_id": "do-you-want-to-play-games",
           "operator": "eq",
           "values": [
-            "true"
+            true
           ]
         }
       ]
