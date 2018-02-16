@@ -251,6 +251,123 @@ class ConditionFromSchemaTestCase(ConditionTestCase):
         return get_dynamic_form_class_from_schema(schema)
 
 
+class MultipleConditionsTestCase(TestCase):
+
+    def get_form_class(self, formidable, role):
+        return get_dynamic_form_class(formidable, role)
+
+    def setUp(self):
+        conditions_schema = [
+            {
+                'name': 'display A',
+                'action': 'display_iff',
+                'fields_ids': ['a'],
+                'tests': [
+                    {
+                        'field_id': 'checkbox_a',
+                        'operator': 'eq',
+                        'values': [True],
+                    }
+                ]
+            },
+            {
+                'name': 'display AB',
+                'action': 'display_iff',
+                'fields_ids': ['a', 'b'],
+                'tests': [
+                    {
+                        'field_id': 'checkbox_ab',
+                        'operator': 'eq',
+                        'values': [True],
+                    }
+                ]
+            }
+
+        ]
+
+        class TestForm(FormidableForm):
+            checkbox_a = fields.BooleanField(
+                label='My checkbox',
+                accesses={'padawan': constants.EDITABLE,
+                          'jedi': constants.EDITABLE,
+                          'human': constants.EDITABLE,
+                          'robot': constants.REQUIRED}
+            )
+            checkbox_ab = fields.BooleanField(
+                label='My checkbox 2',
+                accesses={'padawan': constants.EDITABLE,
+                          'jedi': constants.EDITABLE,
+                          'human': constants.EDITABLE,
+                          'robot': constants.REQUIRED}
+            )
+            a = fields.CharField(
+                label='a',
+                accesses={'padawan': constants.EDITABLE,
+                          'jedi': constants.EDITABLE,
+                          'human': constants.REQUIRED,
+                          'robot': constants.REQUIRED}
+            )
+            b = fields.CharField(
+                label='b',
+                accesses={'padawan': constants.EDITABLE,
+                          'jedi': constants.EDITABLE,
+                          'human': constants.READONLY,
+                          'robot': constants.REQUIRED}
+            )
+
+        self.formidable = TestForm.to_formidable(label='title')
+        self.formidable.conditions = conditions_schema
+
+    def test_a_and_ab_checked(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'a': 'A',
+            'b': 'B',
+            'checkbox_a': True,
+            'checkbox_ab': True
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+
+    def test_a_only_checked(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'a': 'A',
+            'checkbox_a': True
+        }
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+
+    def test_ab_only_checked(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'a': 'A',
+            'b': 'B',
+            'checkbox_ab': True
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+
+    def test_none_checked(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'checkbox_ab': False
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+
+
 class ConditionSerializerTestCase(TestCase):
 
     payload = {
