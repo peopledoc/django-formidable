@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import copy
-from collections import Counter, defaultdict
+from collections import defaultdict
 
 from django.db import transaction
 

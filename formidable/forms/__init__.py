@@ -9,7 +9,7 @@ its corresponding django form class.
 
 from __future__ import unicode_literals
 
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 from django import forms
 from django.db.models import Prefetch
@@ -51,7 +51,7 @@ class BaseDynamicForm(forms.Form):
     def clean(self):
         cleaned_data = super(BaseDynamicForm, self).clean()
         # group conditions evaluations by field_ids
-        conditions_result = {}
+        conditions_result = defaultdict(lambda: defaultdict(list))
         for condition in self._conditions:
             condition(cleaned_data, conditions_result)
 
