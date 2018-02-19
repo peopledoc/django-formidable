@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import copy
-from collections import Counter, defaultdict
+from collections import defaultdict
 
 from django.db import transaction
 
@@ -109,21 +109,21 @@ class FormidableSerializer(WithNestedSerializer):
                     )
                 )
 
-        # 2/ check there is no more than one rule on a field per action
-        for action, fields_ids in targets_action.items():
-            counter = Counter(fields_ids)
-            duplicates = [
-                field for field, count in counter.items()
-                if count > 1
-            ]
-            if duplicates:
-                raise ValidationError(
-                    'Action {action} in condition ({name}) is used many times for the same fields ({ids})'.format(  # noqa
-                        name=condition['name'],
-                        action=action,
-                        ids=', '.join(duplicates)
-                    )
-                )
+        # # 2/ check there is no more than one rule on a field per action
+        # for action, fields_ids in targets_action.items():
+        #     counter = Counter(fields_ids)
+        #     duplicates = [
+        #         field for field, count in counter.items()
+        #         if count > 1
+        #     ]
+        #     if duplicates:
+        #         raise ValidationError(
+        #             'Action {action} in condition ({name}) is used many times for the same fields ({ids})'.format(  # noqa
+        #                 name=condition['name'],
+        #                 action=action,
+        #                 ids=', '.join(duplicates)
+        #             )
+        #         )
 
         return data
 
