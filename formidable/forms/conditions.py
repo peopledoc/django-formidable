@@ -144,6 +144,7 @@ class DisplayIffCondition(Condition):
     def __call__(self, cleaned_data, conditions_result):
         is_displayed = all(test(cleaned_data) for test in self.tests)
         for field_id in self.fields_ids:
+            conditions_result.setdefault(field_id, {})
             conditions_result[field_id].setdefault(self.__class__, [])
             conditions_result[field_id][self.__class__].append(is_displayed)
 

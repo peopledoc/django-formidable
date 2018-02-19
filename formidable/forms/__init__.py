@@ -51,7 +51,7 @@ class BaseDynamicForm(forms.Form):
     def clean(self):
         cleaned_data = super(BaseDynamicForm, self).clean()
         # group conditions evaluations by field_ids
-        conditions_result = {field_id: {} for field_id in cleaned_data}
+        conditions_result = {}
         for condition in self._conditions:
             condition(cleaned_data, conditions_result)
 
