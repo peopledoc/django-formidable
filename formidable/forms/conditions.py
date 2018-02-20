@@ -129,24 +129,32 @@ class Condition(six.with_metaclass(ConditionsMetaClass)):
             action=self.action,
             name=self.name)
 
+    @classmethod
+    def apply(cls, form, list_results, cleaned_data, field_id):
+        raise NotImplemented
+
 
 class DisplayIffCondition(Condition):
     """
     Display field(s) if and only if the conditions in `tests` are all True
     """
     action = 'display_iff'
+    check_method = 'OR'
 
-    def __call__(self, form, cleaned_data):
-        # Check if the conditions are True
+    def __call__(self, cleaned_data, conditions_result):
         is_displayed = all(test(cleaned_data) for test in self.tests)
+        for field_id in self.fields_ids:
+            conditions_result[field_id][self.__class__].append(is_displayed)
 
-        # if not, we need to remove the fields from `cleaned_data` and
-        # `form.errors`
+    @classmethod
+    def apply(cls, form, list_results, cleaned_data, field_id):
+        if cls.check_method == 'OR':
+            is_displayed = any(list_results)
+        else:
+            raise NotImplemented
         if not is_displayed:
-            for field_id in self.fields_ids:
-                cleaned_data.pop(field_id, None)
-                form.errors.pop(field_id, None)
-                # The field might have been removed if it was a file field.
-                if field_id in form.fields:
-                    del form.fields[field_id]
-        return cleaned_data
+            cleaned_data.pop(field_id, None)
+            form.errors.pop(field_id, None)
+            # The field might have been removed if it was a file field.
+            if field_id in form.fields:
+                del form.fields[field_id]
