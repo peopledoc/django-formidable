@@ -110,6 +110,13 @@ class ConditionTest(object):
         else:
             return meth(ref_value, self.values)
 
+    def __repr__(self):
+        return '<ConditionTest: {field} {operator} {values}>'.format(
+            field=self.field_id,
+            operator=self.operator,
+            values=self.values
+        )
+
 
 class Condition(six.with_metaclass(ConditionsMetaClass)):
     """
@@ -143,3 +150,9 @@ class DisplayIffCondition(Condition):
         is_displayed = all(test(cleaned_data) for test in self.tests)
         return is_displayed
 
+    def __repr__(self):
+        return "<Condition {name}: Display {fields} if {tests}>".format(
+            fields=self.fields_ids,
+            tests=self.tests,
+            action=self.action,
+            name=self.name)
