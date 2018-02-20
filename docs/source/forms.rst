@@ -189,6 +189,17 @@ Conditions
 
 .. automodule:: formidable.forms.conditions
 
+.. important::
+
+    As of ``1.4.0``, it is allowed to have several conditional display rules that target a common field. In case of "conflict" between these rules, priority goes to the *display*, rather than the *hide* action.
+
+    e.g.:
+
+    * Rule 1 says: "if checkbox-1 is checked, then display field X"
+    * Rule 2 says: "if checkbox-2 is checked, then display field X and Y"
+
+    if only checkbox-1 is checked, field X will be displayed, even if checkbox-2 is unchecked, and vice-versa. If both are checked, fields X and Y will be displayed. If none is checked, fields X and Y will be hidden.
+
 Python builder
 ==============
 
