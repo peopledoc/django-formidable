@@ -136,6 +136,13 @@ class Condition(six.with_metaclass(ConditionsMetaClass)):
             action=self.action,
             name=self.name)
 
+    def keep_fields(self, cleaned_data):
+        """
+        Return ``True`` if the conditions require the fields to be displayed.
+        """
+        raise NotImplementedError(
+            "Your conditions should have a `keep_fields` method")
+
 
 class DisplayIffCondition(Condition):
     """
@@ -143,9 +150,9 @@ class DisplayIffCondition(Condition):
     """
     action = 'display_iff'
 
-    def is_displayed(self, cleaned_data):
+    def keep_fields(self, cleaned_data):
         """
-        Return "true" if the conditions tested are true
+        Return ``True`` if the conditions require the fields to be displayed.
         """
         is_displayed = all(test(cleaned_data) for test in self.tests)
         return is_displayed

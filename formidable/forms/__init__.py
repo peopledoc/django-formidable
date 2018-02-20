@@ -48,30 +48,39 @@ class BaseDynamicForm(forms.Form):
         super(BaseDynamicForm, self).__init__(*args, **kwargs)
         self._bound_fields_cache = FormidableBoundFieldCache()
 
-    def clean(self):
-        cleaned_data = super(BaseDynamicForm, self).clean()
-
+    def get_removed_fields(self, cleaned_data):
+        """
+        Build the list of fields to be removed due to conditional displays
+        """
         # build a catalog of fields **targeted** by the conditions
         condition_targets = {}
 
         # For each condition, extract its status (should I display or not)
         for condition in self._conditions:
-            is_displayed = condition.is_displayed(cleaned_data)
+            # should we keep these fields?
+            keep_fields = condition.keep_fields(cleaned_data)
             for field_id in condition.fields_ids:
                 # Fill the catalog
                 if field_id not in condition_targets:
                     condition_targets[field_id] = []
-                condition_targets[field_id].append(is_displayed)
+                condition_targets[field_id].append(keep_fields)
+        # Here, the catalog contains fields targeted by 1 or many conditions.
 
-        # Here, the catalog contains only fields targeted by 1 or many
-        # display conditions.
         # If only one condition says "please display X", we'll keep X
+        # That's why we gather the conditions using "any"
         condition_targets = {k: any(v) for k, v in condition_targets.items()}
         # We'll only remove fields that are targeted by conditions **and**
         # those conditions are false
-        to_remove = [k for k, v in condition_targets.items() if not v]
-        for field_id in to_remove:
+        return (k for k, v in condition_targets.items() if not v)
+
+    def clean(self):
+        cleaned_data = super(BaseDynamicForm, self).clean()
+
+        removed_fields = self.get_removed_fields(cleaned_data)
+        for field_id in removed_fields:
+            # Remove field from cleaned_data
             cleaned_data.pop(field_id, None)
+            # Remove from eventual existing errors
             self.errors.pop(field_id, None)
             # The field might have been removed if it was a file field.
             if field_id in self.fields:
