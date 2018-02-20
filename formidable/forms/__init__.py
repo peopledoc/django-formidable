@@ -50,8 +50,33 @@ class BaseDynamicForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(BaseDynamicForm, self).clean()
+
+        # build a catalog of fields **targeted** by the conditions
+        condition_targets = {}
+
+        # For each condition, extract its status (should I display or not)
         for condition in self._conditions:
-            cleaned_data = condition(self, cleaned_data)
+            is_displayed = condition.is_displayed(cleaned_data)
+            for field_id in condition.fields_ids:
+                # Fill the catalog
+                if field_id not in condition_targets:
+                    condition_targets[field_id] = []
+                condition_targets[field_id].append(is_displayed)
+
+        # Here, the catalog contains only fields targeted by 1 or many
+        # display conditions.
+        # If only one condition says "please display X", we'll keep X
+        condition_targets = {k: any(v) for k, v in condition_targets.items()}
+        # We'll only remove fields that are targeted by conditions **and**
+        # those conditions are false
+        to_remove = [k for k, v in condition_targets.items() if not v]
+        for field_id in to_remove:
+            cleaned_data.pop(field_id, None)
+            self.errors.pop(field_id, None)
+            # The field might have been removed if it was a file field.
+            if field_id in self.fields:
+                del self.fields[field_id]
+
         return cleaned_data
 
 

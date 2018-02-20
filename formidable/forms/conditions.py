@@ -136,17 +136,10 @@ class DisplayIffCondition(Condition):
     """
     action = 'display_iff'
 
-    def __call__(self, form, cleaned_data):
-        # Check if the conditions are True
+    def is_displayed(self, cleaned_data):
+        """
+        Return "true" if the conditions tested are true
+        """
         is_displayed = all(test(cleaned_data) for test in self.tests)
+        return is_displayed
 
-        # if not, we need to remove the fields from `cleaned_data` and
-        # `form.errors`
-        if not is_displayed:
-            for field_id in self.fields_ids:
-                cleaned_data.pop(field_id, None)
-                form.errors.pop(field_id, None)
-                # The field might have been removed if it was a file field.
-                if field_id in form.fields:
-                    del form.fields[field_id]
-        return cleaned_data
