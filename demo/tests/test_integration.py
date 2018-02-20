@@ -391,14 +391,10 @@ class MyForm(FormidableForm):
 class TestValidationEndPoint(FormidableAPITestCase):
 
     url = 'formidable:form_validation'
-    method = 'get'
 
     def setUp(self):
         super(TestValidationEndPoint, self).setUp()
         self.formidable = MyForm.to_formidable(label='title')
-
-    def get_method(self):
-        return getattr(self.client, self.method)
 
     def test_validate_data_ok(self):
         parameters = {
@@ -408,8 +404,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session = self.client.session
         session['role'] = 'padawan'
         session.save()
-        func = self.get_method()
-        res = func(
+        res = self.client.post(
             reverse(self.url, args=[self.formidable.pk]),
             parameters, format='json'
         )
@@ -424,8 +419,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session = self.client.session
         session['role'] = 'padawan'
         session.save()
-        func = self.get_method()
-        res = func(
+        res = self.client.post(
             reverse(self.url, args=[9999]),
             parameters, format='json'
         )
@@ -438,8 +432,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session = self.client.session
         session['role'] = 'padawan'
         session.save()
-        func = self.get_method()
-        res = func(
+        res = self.client.post(
             reverse(self.url, args=[self.formidable.pk]),
             parameters, format='json'
         )
@@ -459,8 +452,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
         session = self.client.session
         session['role'] = 'padawan'
         session.save()
-        func = self.get_method()
-        res = func(
+        res = self.client.post(
             reverse(self.url, args=[formidable.pk]),
             parameters, format='json'
         )
@@ -501,8 +493,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
 
         # The checkbox is checked.
         parameters = {'checkbox': True}
-        func = self.get_method()
-        res = func(
+        res = self.client.post(
             reverse(self.url, args=[formidable.pk]),
             parameters, format='json'
         )
@@ -512,20 +503,28 @@ class TestValidationEndPoint(FormidableAPITestCase):
 
         # The checkbox is NOT checked.
         parameters = {'checkbox': False}
-        func = self.get_method()
-        res = func(
+        res = self.client.post(
             reverse(self.url, args=[formidable.pk]),
             parameters, format='json'
         )
         # We still don't validate file fields.
         self.assertEqual(res.status_code, 204)
 
+    def test_unallowed_method(self):
+        parameters = {
+            'first_name': 'Guillaume',
+            'last_name': 'Gérard',
+        }
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        # As of 1.4.0, GET is disallowed.
+        res = self.client.get(
+            reverse(self.url, args=[self.formidable.pk]),
+            parameters, format='json'
+        )
+        self.assertEqual(res.status_code, 405)
+
 
 class TestValidationFromSchemaEndPoint(TestValidationEndPoint):
-
     url = 'form_validation_schema'
-
-
-class TestValidationWithPostMethod(TestValidationEndPoint):
-
-    method = 'post'

@@ -512,28 +512,6 @@ var spec = {
             }
         },
         "/forms/{id}/validate/": {
-            "get": {
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Validation OK"
-                    },
-                    "400": {
-                        "description": "Validation KO",
-                        "schema": {
-                            "$ref": "#/definitions/InputError"
-                        }
-                    }
-                },
-                "summary": "Validate a form (GET method). GET and POST are equivalent, but GET is deprecated."
-            },
             "post": {
                 "parameters": [
                     {
@@ -554,7 +532,7 @@ var spec = {
                         }
                     }
                 },
-                "summary": "Validate a form (POST method). GET and POST are equivalent."
+                "summary": "Validate user-data against a form schema."
             }
         }
     },

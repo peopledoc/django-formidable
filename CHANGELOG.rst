@@ -7,6 +7,7 @@ master (unreleased)
 
 - Added tests against the ``formidable.yml`` schema definition of Forms (#295).
 - Fixed various items in the schema definition (#297).
+- Validation endpoint for **user data** doesn't allow GET method anymore (#300).
 
 Release 1.3.0 (2018-02-14)
 ==========================

@@ -2,6 +2,16 @@
 Deprecation timeline
 ====================
 
+From 1.3.0 to 1.4.0
+===================
+
+Validation endpoint
+-------------------
+
+.. deprecated:: 1.4.0
+
+    Validation endpoint for **user data** doesn't allow GET method anymore.
+
 From 0.15 to 1.0.0
 ==================
 
