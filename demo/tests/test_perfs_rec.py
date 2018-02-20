@@ -108,7 +108,7 @@ class TestPerfRec(TestCase):
 
         with self.record_performance(record_name='validate-form'):
             url = reverse('formidable:form_validation', args=(form_id,))
-            self.client.get(url)
+            self.client.post(url)
 
     def _create_form(self):
         session = self.client.session

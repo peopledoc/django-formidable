@@ -132,22 +132,8 @@ paths:
             $ref: '#/definitions/BuilderForm'
 
   /forms/{id}/validate/:
-    get:
-      summary: Validate a form (GET method). GET and POST are equivalent, but GET is deprecated.
-      parameters:
-        - name: id
-          in: path
-          type: integer
-          required: true
-      responses:
-        204:
-          description:  Validation OK
-        400:
-          description: Validation KO
-          schema:
-            $ref: '#/definitions/InputError'
     post:
-      summary: Validate a form (POST method). GET and POST are equivalent.
+      summary: Validate user-data against a form schema.
       parameters:
         - name: id
           in: path

@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import logging
-import warnings
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -252,16 +251,6 @@ class ValidateView(six.with_metaclass(MetaClassView,
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-
-    def get(self, request, **kwargs):
-        """
-        GET method is deprecated in favor of POST
-
-        """
-        warnings.warn('GET method for form validation has been deprecated in '
-                      'favor of POST. Please use POST instead of GET.',
-                      category=DeprecationWarning)
-        return self.post(request, **kwargs)
 
     def get_form_class(self, formidable):
         return formidable.get_django_form_class(
