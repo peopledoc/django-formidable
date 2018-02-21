@@ -110,6 +110,13 @@ class ConditionTest(object):
         else:
             return meth(ref_value, self.values)
 
+    def __repr__(self):
+        return '<ConditionTest: {field} {operator} {values}>'.format(
+            field=self.field_id,
+            operator=self.operator,
+            values=self.values
+        )
+
 
 class Condition(six.with_metaclass(ConditionsMetaClass)):
     """
@@ -129,6 +136,13 @@ class Condition(six.with_metaclass(ConditionsMetaClass)):
             action=self.action,
             name=self.name)
 
+    def keep_fields(self, cleaned_data):
+        """
+        Return ``True`` if the conditions require the fields to be displayed.
+        """
+        raise NotImplementedError(
+            "Your conditions should have a `keep_fields` method")
+
 
 class DisplayIffCondition(Condition):
     """
@@ -136,17 +150,16 @@ class DisplayIffCondition(Condition):
     """
     action = 'display_iff'
 
-    def __call__(self, form, cleaned_data):
-        # Check if the conditions are True
+    def keep_fields(self, cleaned_data):
+        """
+        Return ``True`` if the conditions require the fields to be displayed.
+        """
         is_displayed = all(test(cleaned_data) for test in self.tests)
+        return is_displayed
 
-        # if not, we need to remove the fields from `cleaned_data` and
-        # `form.errors`
-        if not is_displayed:
-            for field_id in self.fields_ids:
-                cleaned_data.pop(field_id, None)
-                form.errors.pop(field_id, None)
-                # The field might have been removed if it was a file field.
-                if field_id in form.fields:
-                    del form.fields[field_id]
-        return cleaned_data
+    def __repr__(self):
+        return "<Condition {name}: Display {fields} if {tests}>".format(
+            fields=self.fields_ids,
+            tests=self.tests,
+            action=self.action,
+            name=self.name)

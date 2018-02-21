@@ -915,11 +915,9 @@ class CreateSerializerTestCase(TestCase):
         data['fields'] = copy.deepcopy(self.fields_with_validation)
         data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_dup)
         serializer = FormidableSerializer(data=data)
-        self.assertFalse(serializer.is_valid())
-        self.assertEqual(
-            serializer.errors['non_field_errors'][0],
-            'Action display_iff in condition (my condition) is used many times for the same fields (input-date)' # noqa
-        )
+        # TODO decide if the validation should fail
+        # now that we allow multiple conditions for one field
+        self.assertTrue(serializer.is_valid())
 
     def test_create_field(self):
         data = copy.deepcopy(self.data)
