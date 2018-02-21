@@ -2,8 +2,10 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 1.4.0 (2018-02-21)
+==========================
+
+**Deprecation Warning**: The validation endpoint (using the URL ``forms/(?P<pk>\d+)/validate/``) is now ``POST`` only.
 
 - Added tests against the ``formidable.yml`` schema definition of Forms (#295).
 - Fixed various items in the schema definition (#297).
