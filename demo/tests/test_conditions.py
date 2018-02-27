@@ -235,6 +235,107 @@ class ConditionFromSchemaTestCase(ConditionTestCase):
         return get_dynamic_form_class_from_schema(schema)
 
 
+
+class DropdownConditionsTestCase(TestCase):
+
+    def get_form_class(self, formidable, role):
+        return get_dynamic_form_class(formidable, role)
+
+    def setUp(self):
+        conditions_schema = [
+            {
+                'name': 'Show a and b if value "ab" selected',
+                'action': 'display_iff',
+                'fields_ids': ['a', 'b', ],
+                'tests': [
+                    {
+                        'field_id': 'main_dropdown',
+                        'operator': 'eq',
+                        'values': ['ab'],
+                    }
+                ]
+            },
+            {
+                'name': 'Show b if value "b" selected',
+                'action': 'display_iff',
+                'fields_ids': ['b'],
+                'tests': [
+                    {
+                        'field_id': 'main_dropdown',
+                        'operator': 'eq',
+                        'values': ['b'],
+                    }
+                ]
+            }
+        ]
+
+        class DropDownForm(FormidableForm):
+            main_dropdown = fields.ChoiceField(
+                choices=(
+                    ('ab', 'AB'),
+                    ('b', 'B'),
+                    ('no_condition', 'No_condition')
+                ),
+                accesses={'padawan': constants.EDITABLE}
+            )
+            a = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            b = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            c = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+
+        self.formidable = DropDownForm.to_formidable(
+            label='Drop Down Test Form')
+        self.formidable.conditions = conditions_schema
+
+    def test_none_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {}
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_ab_only_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'main_dropdown': 'ab',
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_b_only_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'main_dropdown': 'b'
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_no_condition_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'main_dropdown': 'no_condition'
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+
 class MultipleConditionsTestCase(TestCase):
 
     def get_form_class(self, formidable, role):
