@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Trim whitespaces in the generated ``formidable.js`` file. This is more than just cosmetics, it prevents to have a polluted history on this file.
+- Added tests to use conditional rules with drop down lists
 - Hotfix: Extract conditions and filter them using the fields that exist in the form.
 - Added typing to the demo requirements
 

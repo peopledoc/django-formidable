@@ -12,6 +12,10 @@ This can be used in the following situations:
   See :class:`formidable.forms.conditions.DisplayIffCondition`
 - Conditional access: change access level (required/editable/...)
 
+.. Note::
+    At this moment, we can guarantee only the support of the checkboxes and
+    dropdown lists, but normally you could use it for any type you want.
+
 .. autoclass:: Condition
 
 .. autoclass:: ConditionTest
