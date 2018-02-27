@@ -2,6 +2,9 @@
 
 from __future__ import unicode_literals
 
+import os
+import json
+
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
@@ -18,10 +21,14 @@ from formidable import validators, constants
 from . import form_data, form_data_items
 
 import six
+
 if six.PY3:
     from unittest.mock import patch
 else:
     from mock import patch
+
+
+TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class FormidableAPITestCase(APITestCase):
@@ -40,7 +47,6 @@ class FormidableAPITestCase(APITestCase):
 
 
 class MyTestForm(FormidableForm):
-
     name = fields.CharField(label='Name', accesses={'jedi': 'REQUIRED'})
     birth_date = fields.DateField(
         label='Your Birth Date',
@@ -316,6 +322,7 @@ class UpdateFormTestCase(FormidableAPITestCase):
             if fields == ('slug',):
                 fields = ('-slug',)
             return original_order_by(self, *fields)
+
         # create/update the form
         res = self.client.put(self.edit_url, data, format='json')
         self.assertEquals(res.status_code, 200, res)
@@ -389,7 +396,6 @@ class MyForm(FormidableForm):
 
 
 class TestValidationEndPoint(FormidableAPITestCase):
-
     url = 'formidable:form_validation'
 
     def setUp(self):
@@ -528,3 +534,94 @@ class TestValidationEndPoint(FormidableAPITestCase):
 
 class TestValidationFromSchemaEndPoint(TestValidationEndPoint):
     url = 'form_validation_schema'
+
+
+class DropDownForm(FormidableForm):
+    main_dropdown = fields.ChoiceField(
+        choices=(
+            ('first', 'First'),
+            ('second', 'Second'),
+            ('third', 'Third'),
+        )
+    )
+    first_field = fields.CharField()
+    second_field = fields.CharField()
+    third_field = fields.CharField()
+    another_field = fields.CharField()
+
+
+class TestConditionalRulesWithDropDowns(FormidableAPITestCase):
+    def test_can_validate_form_with_dropdown_conditional_fields(self):
+        url = 'formidable:form_validation'
+
+        class DropDownForm(FormidableForm):
+            main_dropdown = fields.ChoiceField(
+                choices=(
+                    ('first', 'First'),
+                    ('second', 'Second'),
+                    ('third', 'Third'),
+                ),
+                accesses={'padawan': constants.EDITABLE}
+            )
+            first_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            second_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            third_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            another_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+
+        form = DropDownForm.to_formidable(label='Drop Down Test Form')
+        form.conditions = [
+            {
+                'name': 'Show first and second if value "first" selected',
+                'action': 'display_iff',
+                'fields_ids': ['first_field', 'second_field', ],
+                'tests': [
+                    {
+                        'field_id': 'main_dropdown',
+                        'operator': 'eq',
+                        'values': ['first'],
+                    }
+                ]
+            },
+            {
+                'name': 'Show third if value "second" selected',
+                'action': 'display_iff',
+                'fields_ids': ['third_field'],
+                'tests': [
+                    {
+                        'field_id': 'main_dropdown',
+                        'operator': 'eq',
+                        'values': ['second'],
+                    }
+                ]
+            }
+        ]
+        form.save()
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.post(
+            reverse(url, args=[form.pk]),
+            {"main_dropdown": "first", "third_field": "test"},
+            format='json'
+        )
+        self.assertEqual(res.status_code, 204)
+
+    def test_can_create_form_with_dropdown_conditional_fields_via_api(self):
+        conditions_schema = json.load(open(
+            os.path.join(
+                TESTS_DIR, 'fixtures', 'drop-down-conditions.json'
+            )
+        ))
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.post(
+            reverse('formidable:form_create'),
+            conditions_schema,
+            format='json'
+        )
+        self.assertEqual(res.status_code, 201)

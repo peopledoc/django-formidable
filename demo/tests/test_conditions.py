@@ -235,7 +235,6 @@ class ConditionFromSchemaTestCase(ConditionTestCase):
         return get_dynamic_form_class_from_schema(schema)
 
 
-
 class DropdownConditionsTestCase(TestCase):
 
     def get_form_class(self, formidable, role):
