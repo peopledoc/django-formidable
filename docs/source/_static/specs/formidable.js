@@ -98,7 +98,6 @@ var spec = {
                 }
             },
             "required": [
-                "name",
                 "field_ids",
                 "action",
                 "tests"

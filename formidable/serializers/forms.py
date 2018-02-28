@@ -29,7 +29,7 @@ class ConditionTestSerializer(serializers.Serializer):
 
 
 class ConditionSerializer(serializers.Serializer):
-    name = serializers.CharField(required=True)
+    name = serializers.CharField(required=False)
     fields_ids = serializers.ListField(
         child=serializers.CharField(max_length=256),
         allow_empty=False,

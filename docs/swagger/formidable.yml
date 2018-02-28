@@ -201,7 +201,6 @@ definitions:
 
         e.g.: "display the field 'what is you favorite Star Wars character?' if the boolean field 'Do you like Star Wars?' is checked".
     required:
-      - name
       - field_ids
       - action
       - tests

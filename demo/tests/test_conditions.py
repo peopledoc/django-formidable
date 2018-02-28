@@ -66,6 +66,30 @@ class ConditionTestCase(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('bar', form.errors)
 
+    def test_jedi_displayed_without_condition_name(self):
+        self.formidable.conditions = [
+            {
+                'action': 'display_iff',
+                'fields_ids': ['foo', 'bar'],
+                'tests': [
+                    {
+                        'field_id': 'checkbox',
+                        'operator': 'eq',
+                        'values': [False],
+                    }
+                ]
+            }
+        ]
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'foo': 'fooval',
+            'checkbox': False,
+        }
+
+        form = form_class(data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('bar', form.errors)
+
     def test_jedi_not_displayed(self):
         form_class = self.get_form_class(self.formidable, 'jedi')
         data = {
@@ -385,6 +409,21 @@ class MultipleConditionsTestCase(TestCase):
         self.assertTrue(form.is_valid())
         self.assertTrue('a' not in form.cleaned_data)
         self.assertTrue('b' not in form.cleaned_data)
+
+    def test_ab_only_checked_without_name(self):
+        del self.formidable.conditions[0]['name']
+        del self.formidable.conditions[1]['name']
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'a': 'A',
+            'b': 'B',
+            'checkbox_ab': True
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
 
 
 class ConditionSerializerTestCase(TestCase):
