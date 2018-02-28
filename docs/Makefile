@@ -248,6 +248,6 @@ collectstatic:
 		source/_static/swagger-ui/
 	echo -n 'var spec = ' > ./source/_static/specs/formidable.js
 	python \
-		-c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4, sort_keys=True)' \
+		-c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4, sort_keys=True, separators=(",", ": "))' \
 		< ./swagger/formidable.yml \
 		>> ./source/_static/specs/formidable.js
