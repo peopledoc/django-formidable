@@ -7,7 +7,7 @@ import json
 import copy
 
 from django.test import TestCase
-
+from django.test.utils import override_settings
 
 from formidable import constants
 
@@ -36,6 +36,7 @@ class ConditionTestCase(TestCase):
         ))
 
     def setUp(self):
+        super(ConditionTestCase, self).setUp()
         conditions_schema = [
             {
                 'name': 'My Name',
@@ -341,6 +342,7 @@ class MultipleConditionsTestCase(TestCase):
         return get_dynamic_form_class(formidable, role)
 
     def setUp(self):
+        super(MultipleConditionsTestCase, self).setUp()
         conditions_schema = [
             {
                 'name': 'display A',
@@ -498,6 +500,25 @@ class ConditionSerializerTestCase(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
         instance = serializer.save()
         self.assertEqual(instance.conditions, self.payload['conditions'])
+
+    @override_settings(FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES=[])
+    def test_allowed_types_empty_settings(self):
+        serializer = FormidableSerializer(data=self.payload)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+
+    @override_settings(FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES=[
+        'checkbox', 'dropdown']
+    )
+    def test_allowed_types_accepted_settings(self):
+        serializer = FormidableSerializer(data=self.payload)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+
+    @override_settings(
+        FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES=['type-does-not-exist']
+    )
+    def test_allowed_types_denied_settings(self):
+        serializer = FormidableSerializer(data=self.payload)
+        self.assertFalse(serializer.is_valid())
 
 
 class ConditionContextualizationTest(TestCase):
