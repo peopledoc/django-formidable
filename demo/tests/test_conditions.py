@@ -219,6 +219,7 @@ class DropdownConditionsTestCase(TestCase):
         return get_dynamic_form_class(formidable, role)
 
     def setUp(self):
+        super(DropdownConditionsTestCase, self).setUp()
         conditions_schema = [
             {
                 'name': 'Show a and b if value "ab" selected',

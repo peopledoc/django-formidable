@@ -12,13 +12,6 @@ This can be used in the following situations:
   See :class:`formidable.forms.conditions.DisplayIffCondition`
 - Conditional access: change access level (required/editable/...)
 
-.. Note::
-    At this moment, we can guarantee only the support of the checkboxes and
-    dropdown lists, but normally you could use it for any type you want.
-    You could specify types allowed for the conditions using settings variable
-    ``FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES``
-    By default formidable accept all the types.
-
 .. autoclass:: Condition
 
 .. autoclass:: ConditionTest
