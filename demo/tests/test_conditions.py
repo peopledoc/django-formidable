@@ -9,10 +9,10 @@ import copy
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from formidable import constants
+from tests.fixtures import test_conditions as test_conditions_fixtures
 
 from formidable.forms import (
-    FormidableForm, fields, get_dynamic_form_class,
+    get_dynamic_form_class,
     get_dynamic_form_class_from_schema
 )
 from formidable.serializers.forms import (
@@ -51,31 +51,8 @@ class ConditionTestCase(TestCase):
                 ]
             }
         ]
-
-        class TestForm(FormidableForm):
-            checkbox = fields.BooleanField(
-                label='My checkbox',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.EDITABLE,
-                          'robot': constants.REQUIRED}
-            )
-            foo = fields.CharField(
-                label='Foo',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.REQUIRED,
-                          'human': constants.REQUIRED,
-                          'robot': constants.REQUIRED}
-            )
-            bar = fields.CharField(
-                label='Bar',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.REQUIRED,
-                          'human': constants.READONLY,
-                          'robot': constants.REQUIRED}
-            )
-
-        self.formidable = TestForm.to_formidable(label='title')
+        form_class = test_conditions_fixtures.ConditionTestCaseTestForm
+        self.formidable = form_class.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
     def test_jedi_displayed(self):
@@ -269,23 +246,8 @@ class DropdownConditionsTestCase(TestCase):
             }
         ]
 
-        class DropDownForm(FormidableForm):
-            main_dropdown = fields.ChoiceField(
-                choices=(
-                    ('ab', 'AB'),
-                    ('b', 'B'),
-                    ('no_condition', 'No_condition')
-                ),
-                accesses={'padawan': constants.EDITABLE}
-            )
-            a = fields.CharField(
-                accesses={'padawan': constants.EDITABLE})
-            b = fields.CharField(
-                accesses={'padawan': constants.EDITABLE})
-            c = fields.CharField(
-                accesses={'padawan': constants.EDITABLE})
-
-        self.formidable = DropDownForm.to_formidable(
+        form_class = test_conditions_fixtures.DropdownConditionsTestCaseDropDownForm  # noqa
+        self.formidable = form_class.to_formidable(
             label='Drop Down Test Form')
         self.formidable.conditions = conditions_schema
 
@@ -370,38 +332,8 @@ class MultipleConditionsTestCase(TestCase):
             }
 
         ]
-
-        class TestForm(FormidableForm):
-            checkbox_a = fields.BooleanField(
-                label='My checkbox',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.EDITABLE,
-                          'robot': constants.REQUIRED}
-            )
-            checkbox_ab = fields.BooleanField(
-                label='My checkbox 2',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.EDITABLE,
-                          'robot': constants.REQUIRED}
-            )
-            a = fields.CharField(
-                label='a',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.REQUIRED,
-                          'robot': constants.REQUIRED}
-            )
-            b = fields.CharField(
-                label='b',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.READONLY,
-                          'robot': constants.REQUIRED}
-            )
-
-        self.formidable = TestForm.to_formidable(label='title')
+        test_form = test_conditions_fixtures.DropdownConditionsTestCaseTestForm
+        self.formidable = test_form.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
     def test_a_and_ab_checked(self):

@@ -124,7 +124,7 @@ class FormidableSerializer(WithNestedSerializer):
                     )
                 )
             # check field types are valid
-            if len(condition_fields_allowed_types):
+            if condition_fields_allowed_types:
                 for field_id in condition_fields_ids:
                     field_type = self.get_field_type(data, field_id)
                     if field_type not in condition_fields_allowed_types:
