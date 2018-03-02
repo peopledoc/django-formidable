@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Trim whitespaces in the generated ``formidable.js`` file. This is more than just cosmetics, it prevents to have a polluted history on this file.
 
 Release 1.4.0 (2018-02-21)
 ==========================
