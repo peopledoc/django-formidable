@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import os
 import json
+import copy
 
 from django.test import TestCase
 
@@ -224,23 +225,6 @@ class ConditionTestCase(TestCase):
         else:
             self.assertTrue(True)
 
-    def test_filter_conditions_by_fields_ids(self):
-        first_schema = contextualize(self.conditions_schema, 'TEST_ROLE')
-        conditions = first_schema['conditions']
-        self.assertEqual(len(conditions), 1)
-        condition = conditions[0]
-
-        self.assertEqual(condition['fields_ids'], ['first-field'])
-
-        second_schema = contextualize(self.conditions_schema, 'TEST_ROLE2')
-        conditions = second_schema['conditions']
-        self.assertEqual(len(conditions), 1)
-        condition = conditions[0]
-        self.assertEqual(
-            sorted(condition['fields_ids']),
-            ['first-field', 'second-field']
-        )
-
 
 class ConditionFromSchemaTestCase(ConditionTestCase):
 
@@ -414,3 +398,143 @@ class ConditionSerializerTestCase(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
         instance = serializer.save()
         self.assertEqual(instance.conditions, self.payload['conditions'])
+
+
+class ConditionContextualizationTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.conditions_schema = json.load(open(
+            os.path.join(
+                TESTS_DIR, 'fixtures', 'conditions-contextualization.json'
+            )
+        ))
+
+    def test_condition_normal_context(self):
+        schema = copy.deepcopy(self.conditions_schema)
+
+        first_schema = contextualize(schema, 'TEST_ROLE')
+        conditions = first_schema['conditions']
+        self.assertEqual(len(conditions), 1)
+
+        second_schema = contextualize(schema, 'TEST_ROLE2')
+        conditions = second_schema['conditions']
+        self.assertEqual(len(conditions), 1)
+
+    def test_condition_to_display_only_for_role2(self):
+        schema = copy.deepcopy(self.conditions_schema)
+
+        # The field "to-display" will only be visible for TEST_ROLE2
+        # As a consequence, the conditions for this role will filter it out.
+        to_display = schema['fields'][1]
+        to_display['accesses'] = [
+            {"access_id": "TEST_ROLE", "level": "HIDDEN"},
+            {"access_id": "TEST_ROLE2", "level": "EDITABLE"}
+        ]
+        # Contextualized form for the first role
+        first_schema = contextualize(schema, 'TEST_ROLE')
+        conditions = first_schema['conditions']
+        self.assertEqual(len(conditions), 0)
+
+        # Contextualized form for the second role
+        second_schema = contextualize(schema, 'TEST_ROLE2')
+        conditions = second_schema['conditions']
+        # Conditions are still here
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+        self.assertEqual(condition['fields_ids'], ['to-display'])
+
+        # Correct tests
+        self.assertEqual(len(condition['tests']), 1)
+        tests = condition['tests'][0]
+        self.assertEqual(tests, {
+            "field_id": "to-check",
+            "operator": "eq",
+            "values": [True]
+        })
+
+    def test_condition_to_check_only_for_role2(self):
+        schema = copy.deepcopy(self.conditions_schema)
+
+        # The field "to-check" will only be visible for TEST_ROLE2
+        # As a consequence, the conditions for this role will filter it out.
+        to_check = schema['fields'][0]
+        to_check['accesses'] = [
+            {"access_id": "TEST_ROLE", "level": "HIDDEN"},
+            {"access_id": "TEST_ROLE2", "level": "EDITABLE"}
+        ]
+        first_schema = contextualize(schema, 'TEST_ROLE')
+        conditions = first_schema['conditions']
+        # Currently, it means that the conditions are still there, and they
+        # are configured as if the field was still there.
+        self.assertEqual(len(conditions), 0)
+
+        # Contextualized form for the second role
+        second_schema = contextualize(schema, 'TEST_ROLE2')
+        conditions = second_schema['conditions']
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+        self.assertEqual(condition['fields_ids'], ['to-display'])
+
+        # Correct tests (Which is normal)
+        self.assertEqual(len(condition['tests']), 1)
+        tests = condition['tests'][0]
+        self.assertEqual(tests, {
+            "field_id": "to-check",
+            "operator": "eq",
+            "values": [True]
+        })
+
+    def test_condition_to_display_only_for_role2_plus_one_more_field(self):
+        schema = copy.deepcopy(self.conditions_schema)
+
+        # Add a field to the conditions
+        # The condition should be visible in the ROLE and ROLE2 Contextualized
+        # forms, because you still have one field to display.
+        schema['conditions'][0]['fields_ids'].append('always-displayed')
+
+        # The field "to-display" will only be visible for TEST_ROLE2
+        # As a consequence, the conditions for this role will filter it out.
+        to_display = schema['fields'][1]
+        to_display['accesses'] = [
+            {"access_id": "TEST_ROLE", "level": "HIDDEN"},
+            {"access_id": "TEST_ROLE2", "level": "EDITABLE"}
+        ]
+        # Contextualized form for the first role
+        first_schema = contextualize(schema, 'TEST_ROLE')
+        conditions = first_schema['conditions']
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+        # Currently, it means that conditions **targeting** this field will
+        # see it removed from their "fields_ids" property
+        # Here, the fields_ids is empty, it looks a bit wrong.
+        self.assertEqual(condition['fields_ids'], ['always-displayed'])
+
+        # Correct tests
+        self.assertEqual(len(condition['tests']), 1)
+        tests = condition['tests'][0]
+        self.assertEqual(tests, {
+            "field_id": "to-check",
+            "operator": "eq",
+            "values": [True]
+        })
+
+        # Contextualized form for the second role
+        second_schema = contextualize(schema, 'TEST_ROLE2')
+        conditions = second_schema['conditions']
+        # Conditions are still here
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+        self.assertEqual(
+            sorted(condition['fields_ids']),
+            sorted(['to-display', 'always-displayed'])
+        )
+
+        # Correct tests
+        self.assertEqual(len(condition['tests']), 1)
+        tests = condition['tests'][0]
+        self.assertEqual(tests, {
+            "field_id": "to-check",
+            "operator": "eq",
+            "values": [True]
+        })
