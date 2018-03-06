@@ -1,0 +1,67 @@
+{
+  "fields": [
+    {
+      "defaults": [],
+      "description": "Yes/No",
+      "disabled": false,
+      "placeholder": null,
+      "required": false,
+      "slug": "to-check",
+      "type_id": "checkbox",
+      "validations": [],
+      "accesses": [
+        { "access_id": "TEST_ROLE", "level": "EDITABLE" },
+        { "access_id": "TEST_ROLE2", "level": "EDITABLE" }
+      ]
+    },
+    {
+      "defaults": [],
+      "description": null,
+      "disabled": false,
+      "label": "second field",
+      "placeholder": null,
+      "required": false,
+      "slug": "to-display",
+      "type_id": "paragraph",
+      "validations": [],
+      "accesses": [
+        { "access_id": "TEST_ROLE2", "level": "EDITABLE" },
+        { "access_id": "TEST_ROLE", "level": "EDITABLE" }
+      ]
+    },
+    {
+      "defaults": [],
+      "description": null,
+      "disabled": false,
+      "label": "Always displayed field",
+      "placeholder": null,
+      "required": false,
+      "slug": "always-displayed",
+      "type_id": "paragraph",
+      "validations": [],
+      "accesses": [
+        { "access_id": "TEST_ROLE2", "level": "EDITABLE" },
+        { "access_id": "TEST_ROLE", "level": "EDITABLE" }
+      ]
+    }
+  ],
+  "id": 1,
+  "label": "Some label here",
+  "description": "Description",
+  "conditions": [
+    {
+      "action": "display_iff",
+      "fields_ids": [
+        "to-display"
+      ],
+      "name": "Rule",
+      "tests": [
+        {
+          "field_id": "to-check",
+          "operator": "eq",
+          "values": [ true ]
+        }
+      ]
+    }
+  ]
+}

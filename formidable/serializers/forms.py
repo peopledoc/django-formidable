@@ -174,6 +174,30 @@ def contextualize_fields(fields, role):
         yield field
 
 
+def contextualize_conditions(form):
+    """
+    Extract conditions and filter them using the fields that exist in the form.
+    """
+    # filter conditions by fields ids for current role
+    field_ids = {field['slug'] for field in form['fields']}
+    conditions = form.get('conditions', [])
+
+    for condition in conditions:
+        # Build the tests based on the existing fields in the form
+        condition['tests'] = [
+            t for t in condition['tests']
+            if t['field_id'] in field_ids
+        ]
+        # Build the fields_ids based on the existing fields in the form.
+        condition['fields_ids'] = list(
+            set(condition.get('fields_ids', [])) & field_ids
+        )
+        # 1. If the condition "tests" is empty, remove it
+        # 2. if the condition "fields_ids" is empty, remove it
+        if condition['tests'] and condition['fields_ids']:
+            yield condition
+
+
 def contextualize(form, role):
     """
     Transform a FormidableJSON into a ContextFormJSON for a given role.
@@ -181,12 +205,5 @@ def contextualize(form, role):
     """
     form = copy.deepcopy(form)
     form['fields'] = list(contextualize_fields(form['fields'], role))
-
-    # filter conditions by fields ids for current role
-    field_ids = {field['slug'] for field in form['fields']}
-    for condition in form.get('conditions', []):
-        condition['fields_ids'] = list(
-            set(condition.get('fields_ids', [])) & field_ids
-        )
-
+    form['conditions'] = list(contextualize_conditions(form))
     return form
