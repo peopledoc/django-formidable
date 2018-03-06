@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+Release 1.4.1 (2018-03-06)
+==========================
+
+- Added Hotfix from #308: Extract conditions and filter them using the fields that exist in the form.
+
 Release 1.4.0 (2018-02-21)
 ==========================
 
