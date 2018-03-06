@@ -11,6 +11,11 @@ Release 1.3.0 (2018-02-14)
 - [Documentation] Fixed a missing ``cd`` in docs. You can't run pytest from project root (#293).
 - includes 7 more languages (not translated yet): Czech, Danish, Finnish, Canadian French, Hungarian, Japanese, Swedish.
 
+Release 1.2.2 (2018-03-06)
+==========================
+
+- Added Hotfix from #308: Extract conditions and filter them using the fields that exist in the form.
+
 Release 1.2.1 (2018-01-12)
 ==========================
 
