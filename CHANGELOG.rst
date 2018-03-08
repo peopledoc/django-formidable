@@ -7,6 +7,7 @@ master (unreleased)
 
 - Trim whitespaces in the generated ``formidable.js`` file. This is more than just cosmetics, it prevents to have a polluted history on this file.
 - Hotfix: Extract conditions and filter them using the fields that exist in the form.
+- Added typing to the demo requirements
 
 Release 1.4.1 (2018-03-06)
 ==========================
