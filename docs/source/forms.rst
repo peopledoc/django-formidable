@@ -200,6 +200,34 @@ Conditions
 
     if only checkbox-1 is checked, field X will be displayed, even if checkbox-2 is unchecked, and vice-versa. If both are checked, fields X and Y will be displayed. If none is checked, fields X and Y will be hidden.
 
+Types for conditional rules
+---------------------------
+At this moment, we can guarantee only the support of the checkboxes and
+dropdown lists, but normally you could use it for any type you want.
+
+Also, you could specify types allowed for the conditions using the settings variable
+``FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES`` By default formidable will accept any type.
+
+.. code-block:: python
+
+    FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES = []  # formidable will allow any type for the conditional rules
+    FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES = ['checkbox']  # formidable will allow checkboxes only
+
+In case you try to configure a conditional display based on a field
+that has been excluded from the allowed types, you'll receive a ``ValidationError``
+when trying to save the form.
+
+Here is a list of all the available types:
+
+.. code-block:: python
+
+    available_types = [
+        'title', 'helpText', 'fieldset', 'fieldsetTable', 'separation',
+        'checkbox', 'checkboxes', 'dropdown', 'radios', 'radiosButtons',
+        'text', 'paragraph', 'file', 'date', 'email', 'number'
+    ]
+
+
 Python builder
 ==============
 

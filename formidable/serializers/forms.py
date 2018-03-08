@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import copy
 from collections import defaultdict
 
+from django.conf import settings
 from django.db import transaction
 
 from formidable import constants
@@ -84,20 +85,34 @@ class FormidableSerializer(WithNestedSerializer):
         return instance
 
     def _get_fields_slugs(self, data):
-        return [field['slug'] for field in data.get('fields', None)]
+        return [field['slug'] for field in data.get('fields', [])]
+
+    def get_field_type(self, data, field_id):
+        return next(
+            (
+                f['type_id'] for f in data.get('fields', [])
+                if f['slug'] == field_id
+            )
+        )
 
     def check_conditions_cohesion(self, data):
         # 1/ Check references to fields are valid
         fields_slug = self._get_fields_slugs(data)
         targets_action = defaultdict(list)
+
+        condition_fields_allowed_types = getattr(
+            settings, 'FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES', []
+        )
         for condition in data['conditions']:
             missing_fields = []
+            condition_fields_ids = []
             for field_id in condition['fields_ids']:
                 targets_action[condition['action']].append(field_id)
                 if field_id not in fields_slug:
                     missing_fields.append(field_id)
             for test in condition['tests']:
                 field_id = test['field_id']
+                condition_fields_ids.append(field_id)
                 if field_id not in fields_slug:
                     missing_fields.append(field_id)
 
@@ -108,23 +123,17 @@ class FormidableSerializer(WithNestedSerializer):
                         ids=', '.join(set(missing_fields))
                     )
                 )
-
-        # # 2/ check there is no more than one rule on a field per action
-        # for action, fields_ids in targets_action.items():
-        #     counter = Counter(fields_ids)
-        #     duplicates = [
-        #         field for field, count in counter.items()
-        #         if count > 1
-        #     ]
-        #     if duplicates:
-        #         raise ValidationError(
-        #             'Action {action} in condition ({name}) is used many times for the same fields ({ids})'.format(  # noqa
-        #                 name=condition['name'],
-        #                 action=action,
-        #                 ids=', '.join(duplicates)
-        #             )
-        #         )
-
+            # check field types are valid
+            if condition_fields_allowed_types:
+                for field_id in condition_fields_ids:
+                    field_type = self.get_field_type(data, field_id)
+                    if field_type not in condition_fields_allowed_types:
+                        raise ValidationError(
+                            'Condition ({name}) is using not allowed field type ({type})'.format(  # noqa
+                                name=condition['name'],
+                                type=field_type
+                            )
+                        )
         return data
 
     def save(self, *args, **kwargs):

@@ -7,12 +7,12 @@ import json
 import copy
 
 from django.test import TestCase
+from django.test.utils import override_settings
 
-
-from formidable import constants
+from tests.fixtures import test_conditions as test_conditions_fixtures
 
 from formidable.forms import (
-    FormidableForm, fields, get_dynamic_form_class,
+    get_dynamic_form_class,
     get_dynamic_form_class_from_schema
 )
 from formidable.serializers.forms import (
@@ -36,6 +36,7 @@ class ConditionTestCase(TestCase):
         ))
 
     def setUp(self):
+        super(ConditionTestCase, self).setUp()
         conditions_schema = [
             {
                 'name': 'My Name',
@@ -50,31 +51,8 @@ class ConditionTestCase(TestCase):
                 ]
             }
         ]
-
-        class TestForm(FormidableForm):
-            checkbox = fields.BooleanField(
-                label='My checkbox',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.EDITABLE,
-                          'robot': constants.REQUIRED}
-            )
-            foo = fields.CharField(
-                label='Foo',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.REQUIRED,
-                          'human': constants.REQUIRED,
-                          'robot': constants.REQUIRED}
-            )
-            bar = fields.CharField(
-                label='Bar',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.REQUIRED,
-                          'human': constants.READONLY,
-                          'robot': constants.REQUIRED}
-            )
-
-        self.formidable = TestForm.to_formidable(label='title')
+        form_class = test_conditions_fixtures.ConditionTestCaseTestForm
+        self.formidable = form_class.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
     def test_jedi_displayed(self):
@@ -235,12 +213,99 @@ class ConditionFromSchemaTestCase(ConditionTestCase):
         return get_dynamic_form_class_from_schema(schema)
 
 
+class DropdownConditionsTestCase(TestCase):
+
+    def get_form_class(self, formidable, role):
+        return get_dynamic_form_class(formidable, role)
+
+    def setUp(self):
+        super(DropdownConditionsTestCase, self).setUp()
+        conditions_schema = [
+            {
+                'name': 'Show a and b if value "ab" selected',
+                'action': 'display_iff',
+                'fields_ids': ['a', 'b', ],
+                'tests': [
+                    {
+                        'field_id': 'main_dropdown',
+                        'operator': 'eq',
+                        'values': ['ab'],
+                    }
+                ]
+            },
+            {
+                'name': 'Show b if value "b" selected',
+                'action': 'display_iff',
+                'fields_ids': ['b'],
+                'tests': [
+                    {
+                        'field_id': 'main_dropdown',
+                        'operator': 'eq',
+                        'values': ['b'],
+                    }
+                ]
+            }
+        ]
+
+        form_class = test_conditions_fixtures.DropdownConditionsTestCaseDropDownForm  # noqa
+        self.formidable = form_class.to_formidable(
+            label='Drop Down Test Form')
+        self.formidable.conditions = conditions_schema
+
+    def test_none_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {}
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_ab_only_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'main_dropdown': 'ab',
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_b_only_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'main_dropdown': 'b'
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_no_condition_selected(self):
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        data = {
+            'main_dropdown': 'no_condition'
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+
 class MultipleConditionsTestCase(TestCase):
 
     def get_form_class(self, formidable, role):
         return get_dynamic_form_class(formidable, role)
 
     def setUp(self):
+        super(MultipleConditionsTestCase, self).setUp()
         conditions_schema = [
             {
                 'name': 'display A',
@@ -268,38 +333,8 @@ class MultipleConditionsTestCase(TestCase):
             }
 
         ]
-
-        class TestForm(FormidableForm):
-            checkbox_a = fields.BooleanField(
-                label='My checkbox',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.EDITABLE,
-                          'robot': constants.REQUIRED}
-            )
-            checkbox_ab = fields.BooleanField(
-                label='My checkbox 2',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.EDITABLE,
-                          'robot': constants.REQUIRED}
-            )
-            a = fields.CharField(
-                label='a',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.REQUIRED,
-                          'robot': constants.REQUIRED}
-            )
-            b = fields.CharField(
-                label='b',
-                accesses={'padawan': constants.EDITABLE,
-                          'jedi': constants.EDITABLE,
-                          'human': constants.READONLY,
-                          'robot': constants.REQUIRED}
-            )
-
-        self.formidable = TestForm.to_formidable(label='title')
+        test_form = test_conditions_fixtures.DropdownConditionsTestCaseTestForm
+        self.formidable = test_form.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
     def test_a_and_ab_checked(self):
@@ -398,6 +433,25 @@ class ConditionSerializerTestCase(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
         instance = serializer.save()
         self.assertEqual(instance.conditions, self.payload['conditions'])
+
+    @override_settings(FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES=[])
+    def test_allowed_types_empty_settings(self):
+        serializer = FormidableSerializer(data=self.payload)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+
+    @override_settings(FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES=[
+        'checkbox', 'dropdown']
+    )
+    def test_allowed_types_accepted_settings(self):
+        serializer = FormidableSerializer(data=self.payload)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+
+    @override_settings(
+        FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES=['type-does-not-exist']
+    )
+    def test_allowed_types_denied_settings(self):
+        serializer = FormidableSerializer(data=self.payload)
+        self.assertFalse(serializer.is_valid())
 
 
 class ConditionContextualizationTest(TestCase):
