@@ -5,6 +5,7 @@ demo/var
 *.egg-info
 # Documentation builds
 docs/build/
+docs/.pytest_cache/
 
 # Ignore setup.py-generated directories
 build/
