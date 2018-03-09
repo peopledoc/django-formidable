@@ -10,6 +10,7 @@ master (unreleased)
 - Added possibility to restrict types of the conditional rules
 - Hotfix: Extract conditions and filter them using the fields that exist in the form.
 - Added typing to the demo requirements
+- Make the conditional rule name optional
 
 Release 1.4.1 (2018-03-06)
 ==========================

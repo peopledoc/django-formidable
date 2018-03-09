@@ -33,10 +33,7 @@ def test_simple_condition_validation_no_name():
     del no_name['name']
     form['conditions'] = [no_name]
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
-    assert len(errors) == 1
-    error = errors[0]
-    assert error.validator == 'required'
-    assert error.message == "'name' is a required property"
+    assert len(errors) == 0
 
 
 def test_simple_condition_validation_no_fields():

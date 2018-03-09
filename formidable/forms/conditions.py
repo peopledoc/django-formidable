@@ -51,6 +51,8 @@ class ConditionsRegister(dict):
                                    convert_values(test['field_id'],
                                                   test['values']))
                      for test in condition['tests']]
+            if 'name' not in condition:
+                condition['name'] = ''
             yield condition_class(
                 condition['fields_ids'],
                 condition['name'],
