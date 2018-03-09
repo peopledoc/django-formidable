@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+==================
+
+Nothing here yet.
+
 Release 1.5.0 (2018-03-09)
 ==========================
 
