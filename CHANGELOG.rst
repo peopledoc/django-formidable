@@ -2,10 +2,10 @@
 ChangeLog
 =========
 
-master (unreleased)
-==================
+Release 1.5.1 (2018-03-28)
+==========================
 
-- Make sure that the `ValidateView.form_valid` method return an actual empty body content along with a 204 HTTP status response. Before this hotfix, the dictionary passed along as the response content was serialized into a 2-character string to calculate the content-length, but this content was not returned to the client. Some browsers would experience it badly, namely IE11.
+- Make sure that the `ValidateView.form_valid` method return an actual empty body content along with a 204 HTTP status response. Before this hotfix, the dictionary passed along as the response content was serialized into a 2-character string to calculate the content-length, but this content was not returned to the client. Some browsers would experience it badly, namely IE11 (#313).
 
 Release 1.5.0 (2018-03-09)
 ==========================
