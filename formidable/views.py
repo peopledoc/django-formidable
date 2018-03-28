@@ -267,7 +267,9 @@ class ValidateView(six.with_metaclass(MetaClassView,
         }
 
     def form_valid(self, form):
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+        # Explicitly return a true empty content, to make sure that the
+        # response Content-Length is correctly calculated.
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
     def form_invalid(self, form):
         # TODO change response when UI ready

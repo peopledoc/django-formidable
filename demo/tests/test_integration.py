@@ -415,7 +415,9 @@ class TestValidationEndPoint(FormidableAPITestCase):
             parameters, format='json'
         )
         self.assertEqual(res.status_code, 204)
-        self.assertIn('application/json', str(res.serialize_headers()))
+        self.assertIn(res.content, ("", b""))  # Should be empty
+        # As a consequence, if there's no body content, there shouldn't be any
+        # content-type sent back to the client.
 
     def test_formidable_does_not_exist(self):
         parameters = {
