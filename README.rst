@@ -13,7 +13,7 @@ edit, delete and use forms.
 Warnings
 ========
 
-* Python Compatibility : Python 2.7, 3.5
+* Python Compatibility : Python 2.7, 3.5, 3.6
 * Django compatibility : Django 1.8, 1.9, 1.10, 1.11
 
 See the `Deprecation timeline <http://django-formidable.readthedocs.io/en/latest/deprecations.html>`_ document for more information on deprecated versions.
