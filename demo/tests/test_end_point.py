@@ -919,6 +919,24 @@ class CreateSerializerTestCase(TestCase):
         # now that we allow multiple conditions for one field
         self.assertTrue(serializer.is_valid())
 
+    def test_create_form_conditions_null_name(self):
+        """
+        invalidate the condition using a condition name=None.
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        data['conditions'][0]['name'] = None
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        form.refresh_from_db()
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertIn('name', condition)
+        self.assertIsNone(condition['name'])
+        self.assertIn('action', condition)
+
     def test_create_field(self):
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_without_items)
