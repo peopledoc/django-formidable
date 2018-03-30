@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Allow null and empty condition names.
+- Added compatibility tests using Django 1.11.
 
 Release 1.5.1 (2018-03-28)
 ==========================
