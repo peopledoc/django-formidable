@@ -66,6 +66,47 @@ class ConditionTestCase(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('bar', form.errors)
 
+    def test_condition_name(self):
+        self.formidable.conditions = [
+            {
+                'name': "My condition",
+                'action': 'display_iff',
+                'fields_ids': ['foo', 'bar'],
+                'tests': [
+                    {
+                        'field_id': 'checkbox',
+                        'operator': 'eq',
+                        'values': [False],
+                    }
+                ]
+            }
+        ]
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        self.assertIn('_conditions', dir(form_class))
+        conditions = form_class._conditions
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+        self.assertEqual(condition.name, "My condition")
+
+        # Empty the condition name
+        for value in ("", None):
+            self.formidable.conditions[0]['name'] = ""
+            form_class = self.get_form_class(self.formidable, 'jedi')
+            self.assertIn('_conditions', dir(form_class))
+            conditions = form_class._conditions
+            self.assertEqual(len(conditions), 1)
+            condition = conditions[0]
+            self.assertEqual(condition.name, "#1")
+
+        # Delete the condition name
+        del self.formidable.conditions[0]['name']
+        form_class = self.get_form_class(self.formidable, 'jedi')
+        self.assertIn('_conditions', dir(form_class))
+        conditions = form_class._conditions
+        self.assertEqual(len(conditions), 1)
+        condition = conditions[0]
+        self.assertEqual(condition.name, "#1")
+
     def test_jedi_displayed_without_condition_name(self):
         self.formidable.conditions = [
             {
