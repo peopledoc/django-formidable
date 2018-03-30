@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 1.5.2 (2018-03-30)
+==========================
 
 - Allow null and empty condition names.
 - Added compatibility tests using Django 1.11.
