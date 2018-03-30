@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-- Allow null condition names.
+- Allow null and empty condition names.
 
 Release 1.5.1 (2018-03-28)
 ==========================

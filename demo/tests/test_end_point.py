@@ -937,6 +937,24 @@ class CreateSerializerTestCase(TestCase):
         self.assertIsNone(condition['name'])
         self.assertIn('action', condition)
 
+    def test_create_form_conditions_empty_name(self):
+        """
+        invalidate the condition using a condition name="".
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        data['conditions'][0]['name'] = ""
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        form.refresh_from_db()
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertIn('name', condition)
+        self.assertEqual(condition['name'], "")
+        self.assertIn('action', condition)
+
     def test_create_field(self):
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_without_items)
