@@ -107,7 +107,10 @@ class FormidableSerializer(WithNestedSerializer):
         condition_fields_allowed_types = getattr(
             settings, 'FORMIDABLE_CONDITION_FIELDS_ALLOWED_TYPES', []
         )
+        index = 0
         for condition in data['conditions']:
+            index += 1
+            condition_name = condition.get('name') or '#{}'.format(index)
             missing_fields = []
             condition_fields_ids = []
             for field_id in condition['fields_ids']:
@@ -123,7 +126,7 @@ class FormidableSerializer(WithNestedSerializer):
             if missing_fields:
                 raise ValidationError(
                     'Condition ({name}) is using undefined fields ({ids})'.format(  # noqa
-                        name=condition['name'],
+                        name=condition_name,
                         ids=', '.join(set(missing_fields))
                     )
                 )
@@ -134,7 +137,7 @@ class FormidableSerializer(WithNestedSerializer):
                     if field_type not in condition_fields_allowed_types:
                         raise ValidationError(
                             'Condition ({name}) is using not allowed field type ({type})'.format(  # noqa
-                                name=condition['name'],
+                                name=condition_name,
                                 type=field_type
                             )
                         )

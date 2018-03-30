@@ -861,6 +861,45 @@ class CreateSerializerTestCase(TestCase):
              'Condition (my condition) is using undefined fields (missing, unknown)']  # noqa
         )
 
+    def test_create_form_conditions_invalid_reference_no_name(self):
+        """
+        deserialize a form that has conditions that references non existing
+        fields + No condition name
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_ref)
+        del data['conditions'][0]['name']
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('non_field_errors', serializer.errors)
+        self.assertEqual(len(serializer.errors['non_field_errors']), 1)
+        self.assertIn(
+            serializer.errors['non_field_errors'][0],
+            ['Condition (#1) is using undefined fields (unknown, missing)',
+             'Condition (#1) is using undefined fields (missing, unknown)']
+        )
+
+    def test_create_form_conditions_invalid_reference_empty_name(self):
+        """
+        deserialize a form that has conditions that references non existing
+        fields + Empty or "None" condition name
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_ref)
+        for value in ('', None):
+            data['conditions'][0]['name'] = value
+            serializer = FormidableSerializer(data=data)
+            self.assertFalse(serializer.is_valid())
+            self.assertIn('non_field_errors', serializer.errors)
+            self.assertEqual(len(serializer.errors['non_field_errors']), 1)
+            self.assertIn(
+                serializer.errors['non_field_errors'][0],
+                ['Condition (#1) is using undefined fields (unknown, missing)',
+                 'Condition (#1) is using undefined fields (missing, unknown)']
+            )
+
     def test_create_form_conditions_invalid_action(self):
         """
         deserialize a form that has conditions using unknown action
@@ -921,7 +960,7 @@ class CreateSerializerTestCase(TestCase):
 
     def test_create_form_conditions_null_name(self):
         """
-        invalidate the condition using a condition name=None.
+        validate a form when condition has a name=None.
         """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
@@ -938,7 +977,7 @@ class CreateSerializerTestCase(TestCase):
 
     def test_create_form_conditions_empty_name(self):
         """
-        invalidate the condition using a condition name="".
+        validate a form when condition has a name="".
         """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
@@ -955,7 +994,7 @@ class CreateSerializerTestCase(TestCase):
 
     def test_create_form_conditions_no_name(self):
         """
-        invalidate the condition using a condition without a name.
+        validate a form when condition has a no name.
         """
         data = copy.deepcopy(self.data)
         data['fields'] = copy.deepcopy(self.fields_with_validation)
