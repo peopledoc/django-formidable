@@ -861,6 +861,45 @@ class CreateSerializerTestCase(TestCase):
              'Condition (my condition) is using undefined fields (missing, unknown)']  # noqa
         )
 
+    def test_create_form_conditions_invalid_reference_no_name(self):
+        """
+        deserialize a form that has conditions that references non existing
+        fields + No condition name
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_ref)
+        del data['conditions'][0]['name']
+        serializer = FormidableSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('non_field_errors', serializer.errors)
+        self.assertEqual(len(serializer.errors['non_field_errors']), 1)
+        self.assertIn(
+            serializer.errors['non_field_errors'][0],
+            ['Condition (#1) is using undefined fields (unknown, missing)',
+             'Condition (#1) is using undefined fields (missing, unknown)']
+        )
+
+    def test_create_form_conditions_invalid_reference_empty_name(self):
+        """
+        deserialize a form that has conditions that references non existing
+        fields + Empty or "None" condition name
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions_invalid_ref)
+        for value in ('', None):
+            data['conditions'][0]['name'] = value
+            serializer = FormidableSerializer(data=data)
+            self.assertFalse(serializer.is_valid())
+            self.assertIn('non_field_errors', serializer.errors)
+            self.assertEqual(len(serializer.errors['non_field_errors']), 1)
+            self.assertIn(
+                serializer.errors['non_field_errors'][0],
+                ['Condition (#1) is using undefined fields (unknown, missing)',
+                 'Condition (#1) is using undefined fields (missing, unknown)']
+            )
+
     def test_create_form_conditions_invalid_action(self):
         """
         deserialize a form that has conditions using unknown action
@@ -918,6 +957,56 @@ class CreateSerializerTestCase(TestCase):
         # TODO decide if the validation should fail
         # now that we allow multiple conditions for one field
         self.assertTrue(serializer.is_valid())
+
+    def test_create_form_conditions_null_name(self):
+        """
+        validate a form when condition has a name=None.
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        data['conditions'][0]['name'] = None
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        form.refresh_from_db()
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertIn('name', condition)
+        self.assertIsNone(condition['name'])
+
+    def test_create_form_conditions_empty_name(self):
+        """
+        validate a form when condition has a name="".
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        data['conditions'][0]['name'] = ""
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        form.refresh_from_db()
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertIn('name', condition)
+        self.assertEqual(condition['name'], "")
+
+    def test_create_form_conditions_no_name(self):
+        """
+        validate a form when condition has a no name.
+        """
+        data = copy.deepcopy(self.data)
+        data['fields'] = copy.deepcopy(self.fields_with_validation)
+        data['conditions'] = copy.deepcopy(self.valid_conditions)
+        del data['conditions'][0]['name']
+        serializer = FormidableSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        form = serializer.save()
+        form.refresh_from_db()
+        self.assertEqual(len(form.conditions), 1)
+        condition = form.conditions[0]
+        self.assertNotIn('name', condition)
 
     def test_create_field(self):
         data = copy.deepcopy(self.data)

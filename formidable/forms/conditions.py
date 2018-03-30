@@ -33,7 +33,9 @@ class ConditionsRegister(dict):
     """
 
     def gen_from_schema(self, fields, conditions_schema):
+        index = 0
         for condition in conditions_schema:
+            index += 1
             # name, fields_ids, action, tests
             condition_class = self[condition['action']]
 
@@ -51,11 +53,10 @@ class ConditionsRegister(dict):
                                    convert_values(test['field_id'],
                                                   test['values']))
                      for test in condition['tests']]
-            if 'name' not in condition:
-                condition['name'] = ''
+            condition_name = condition.get('name') or '#{}'.format(index)
             yield condition_class(
                 condition['fields_ids'],
-                condition['name'],
+                condition_name,
                 tests
             )
 
@@ -143,7 +144,8 @@ class Condition(six.with_metaclass(ConditionsMetaClass)):
         Return ``True`` if the conditions require the fields to be displayed.
         """
         raise NotImplementedError(
-            "Your conditions should have a `keep_fields` method")
+            "The condition `{}` should have a `keep_fields` method".format(
+                self.name))
 
 
 class DisplayIffCondition(Condition):
