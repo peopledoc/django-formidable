@@ -1,17 +1,17 @@
 machine:
   post:
-    - pyenv global 2.7.10 3.5.0
+    - pyenv global 2.7.10 3.5.3 3.6.2
 
 dependencies:
-    override:
-        - pip install --upgrade tox virtualenv
+  override:
+    - pip install --upgrade tox virtualenv tox-pyenv
 
 test:
-    override:
-        - tox -e $(tox -l | grep django18 | tr '\n' ',')
-        - tox -e $(tox -l | grep django19 | tr '\n' ',')
-        - tox -e $(tox -l | grep django110 | tr '\n' ',')
-        - tox -e $(tox -l | grep django111 | tr '\n' ',')
-        - tox -e flake8
-        - tox -e isort-check
-        - tox -e docs
+  override:
+    - tox -e $(tox -l | grep django18 | tr '\n' ',')
+    - tox -e $(tox -l | grep django19 | tr '\n' ',')
+    - tox -e $(tox -l | grep django110 | tr '\n' ',')
+    - tox -e $(tox -l | grep django111 | tr '\n' ',')
+    - tox -e flake8
+    - tox -e isort-check
+    - tox -e docs

@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Added compatibility with Python 3.6 (#318).
 
 Release 1.5.2 (2018-03-30)
 ==========================
