@@ -13,6 +13,7 @@ Release 1.5.2 (2018-03-30)
 - Allow null and empty condition names.
 - Allow change type for the fields without changing name/slug
 - Added compatibility tests using Django 1.11.
+- Used io.open in tests to avoid locales trouble on OSX
 
 Release 1.5.1 (2018-03-28)
 ==========================

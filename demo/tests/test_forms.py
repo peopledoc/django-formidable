@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import json
 import os
+import io
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -778,7 +779,7 @@ class FormidableModelTestCase(TestCase):
         """
         filepath = os.path.join(os.path.dirname(__file__),
                                 '../fixtures/augmentation_heures.json')
-        with open(filepath) as f:
+        with io.open(filepath, 'r', encoding='utf-8') as f:
             schema_definition = json.load(f)
 
         form = Formidable.from_json(schema_definition)
