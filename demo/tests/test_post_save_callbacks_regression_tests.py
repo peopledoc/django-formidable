@@ -102,3 +102,20 @@ class UpdateFormTestCase(APITestCase):
             form_data_without_items, format='json'
         )
         self.assertEquals(res.status_code, 422)
+
+
+class UpdateFormWithTheSameFieldSlug(APITestCase):
+    @override_settings(FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS=None)
+    def test_update_no_error(self):
+        res_create = self.client.post(
+            reverse('formidable:form_create'), form_data, format='json'
+        )
+        data = res_create.json()
+        form_id = data.get('id')
+        data_to_update = deepcopy(form_data_items)
+        data_to_update['fields'][0]['slug'] = form_data['fields'][0]['slug']
+        res_update = self.client.put(
+            reverse('formidable:form_detail', args=[form_id]),
+            data_to_update, format='json'
+        )
+        self.assertEquals(res_update.status_code, 200)
