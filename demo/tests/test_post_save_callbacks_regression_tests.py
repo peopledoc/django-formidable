@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
@@ -110,7 +112,8 @@ class UpdateFormWithTheSameFieldSlug(APITestCase):
         res_create = self.client.post(
             reverse('formidable:form_create'), form_data, format='json'
         )
-        data = res_create.json()
+        # Do not use .json() for django 1.8
+        data = json.loads(res_create.content.decode('utf-8'))
         form_id = data.get('id')
         data_to_update = deepcopy(form_data_items)
         data_to_update['fields'][0]['slug'] = form_data['fields'][0]['slug']
