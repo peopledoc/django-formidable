@@ -9,7 +9,15 @@ def call_right_serializer_by_instance(meth):
 
     def _wrapper(self, instance, *args, **kwargs):
 
-        type_id = getattr(instance, self.lookup_field)
+        # Check if there is a fields data in the arguments
+        # if exists take type of the new data instead of the
+        # instance type.
+        if args:
+            field = args[0]
+            type_id = field[self.lookup_field]
+        else:
+            type_id = getattr(instance, self.lookup_field)
+
         serializer = self.get_right_serializer(type_id)
         meth_name = getattr(serializer, meth.__name__)
         return meth_name(instance, *args, **kwargs)

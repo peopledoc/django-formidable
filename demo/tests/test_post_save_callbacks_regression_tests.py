@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
@@ -102,3 +104,32 @@ class UpdateFormTestCase(APITestCase):
             form_data_without_items, format='json'
         )
         self.assertEquals(res.status_code, 422)
+
+
+class UpdateFormWithTheSameFieldSlug(APITestCase):
+    @override_settings(FORMIDABLE_POST_CREATE_CALLBACK_SUCCESS=None)
+    def test_update_no_error(self):
+        # Create a form with the usual data.
+        res_create = self.client.post(
+            reverse('formidable:form_create'), form_data, format='json'
+        )
+        # Do not use .json() for django 1.8
+        data = json.loads(res_create.content.decode('utf-8'))
+        form_id = data.get('id')
+        data_to_update = deepcopy(form_data_items)
+        # The field [0] was a text field
+        # Now it becomes a dropdown
+        data_to_update['fields'][0]['slug'] = form_data['fields'][0]['slug']
+        res_update = self.client.put(
+            reverse('formidable:form_detail', args=[form_id]),
+            data_to_update, format='json'
+        )
+        self.assertEquals(res_update.status_code, 200)
+        form = Formidable.objects.get(pk=form_id)
+        json_data = form.to_json()
+        # Still one field
+        self.assertEqual(len(json_data['fields']), 1)
+        self.assertEqual(
+            json_data['fields'][0]['slug'], form_data['fields'][0]['slug']
+        )
+        self.assertEqual(json_data['fields'][0]['type_id'], 'dropdown')
