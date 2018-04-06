@@ -2,16 +2,16 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 1.6.0 (2018-04-06)
+==========================
 
 - Added compatibility with Python 3.6 (#318).
+- Allow change type for the fields without changing name/slug
 
 Release 1.5.2 (2018-03-30)
 ==========================
 
 - Allow null and empty condition names.
-- Allow change type for the fields without changing name/slug
 - Added compatibility tests using Django 1.11.
 
 Release 1.5.1 (2018-03-28)
