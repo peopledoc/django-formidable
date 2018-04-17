@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Added a tool to build the JSON Schema from the ``formidable.yml`` file, and include it into the documentation.
 
 Release 1.6.0 (2018-04-06)
 ==========================

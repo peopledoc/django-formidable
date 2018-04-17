@@ -9,6 +9,7 @@ Contents:
    intro
    install
    forms
+   form-specs
    api
    callbacks
    dev

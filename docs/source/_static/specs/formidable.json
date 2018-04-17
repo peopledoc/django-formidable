@@ -1,0 +1,318 @@
+{
+    "allOf": [
+        {
+            "$ref": "#/definitions/Form"
+        }, 
+        {
+            "properties": {
+                "fields": {
+                    "type": "array", 
+                    "description": "List of fields ordered in the form", 
+                    "items": {
+                        "$ref": "#/definitions/Field"
+                    }
+                }
+            }
+        }
+    ], 
+    "definitions": {
+        "FieldValidation": {
+            "type": "object", 
+            "description": "This validation can only be performed on a single field", 
+            "required": [
+                "type", 
+                "value"
+            ], 
+            "properties": {
+                "type": {
+                    "type": "string", 
+                    "description": "Type of validation (see Validation types table)", 
+                    "enum": [
+                        "EQ", 
+                        "GT", 
+                        "GTE", 
+                        "IS_AGE_ABOVE", 
+                        "IS_AGE_UNDER", 
+                        "IS_DATE_IN_THE_FUTURE", 
+                        "IS_DATE_IN_THE_PAST", 
+                        "LT", 
+                        "LTE", 
+                        "MAXLENGTH", 
+                        "MINLENGTH", 
+                        "NEQ", 
+                        "REGEXP"
+                    ]
+                }, 
+                "value": {
+                    "type": "string", 
+                    "description": "Value of the validation"
+                }, 
+                "message": {
+                    "type": "string", 
+                    "description": "Error message if the validation is not verified"
+                }
+            }
+        }, 
+        "FieldAccess": {
+            "type": "object", 
+            "description": "The access is the way to use the field in the context", 
+            "required": [
+                "access_id", 
+                "level"
+            ], 
+            "properties": {
+                "access_id": {
+                    "type": "string", 
+                    "description": "Access reference"
+                }, 
+                "level": {
+                    "type": "string", 
+                    "description": "Level of this access for the field", 
+                    "enum": [
+                        "REQUIRED", 
+                        "EDITABLE", 
+                        "HIDDEN", 
+                        "READONLY"
+                    ]
+                }
+            }
+        }, 
+        "Item": {
+            "type": "object", 
+            "description": "Describe an item in a list", 
+            "required": [
+                "label", 
+                "value"
+            ], 
+            "properties": {
+                "label": {
+                    "type": "string", 
+                    "description": "Label of the item"
+                }, 
+                "description": {
+                    "type": "string", 
+                    "description": "Description of the item"
+                }, 
+                "value": {
+                    "type": "string", 
+                    "description": "Value which defined the item"
+                }
+            }
+        }, 
+        "Form": {
+            "type": "object", 
+            "description": "The central piece of this project", 
+            "required": [
+                "id", 
+                "label", 
+                "description"
+            ], 
+            "properties": {
+                "id": {
+                    "type": "integer", 
+                    "description": "ID of the form", 
+                    "readOnly": true
+                }, 
+                "label": {
+                    "type": "string", 
+                    "description": "Title of the form"
+                }, 
+                "description": {
+                    "type": "string", 
+                    "description": "Description of the form"
+                }, 
+                "conditions": {
+                    "type": "array", 
+                    "items": {
+                        "$ref": "#/definitions/Condition"
+                    }
+                }
+            }
+        }, 
+        "Access": {
+            "type": "object", 
+            "description": "Different contexts that helps to render a form", 
+            "required": [
+                "id", 
+                "label", 
+                "description"
+            ], 
+            "properties": {
+                "id": {
+                    "type": "string", 
+                    "description": "ID of the access"
+                }, 
+                "label": {
+                    "type": "string", 
+                    "description": "Label of the access"
+                }, 
+                "description": {
+                    "type": "string", 
+                    "description": "Help text of the access"
+                }, 
+                "preview_as": {
+                    "type": "string", 
+                    "description": "How to display the preview, default is `FORM`. Values are `FORM`, `TABLE`", 
+                    "enum": [
+                        "FORM", 
+                        "TABLE"
+                    ]
+                }
+            }
+        }, 
+        "ConditionTest": {
+            "type": "object", 
+            "description": "Condition definition.", 
+            "required": [
+                "field_id", 
+                "operator", 
+                "values"
+            ], 
+            "properties": {
+                "field_id": {
+                    "type": "string", 
+                    "description": "\\`slug\\` of the reference field for the comparison."
+                }, 
+                "operator": {
+                    "type": "string", 
+                    "description": "Comparison operator for the condition.", 
+                    "enum": [
+                        "eq"
+                    ]
+                }, 
+                "values": {
+                    "type": "array", 
+                    "description": "List of the possible values that would return a \"true\" condition.", 
+                    "items": {}
+                }
+            }
+        }, 
+        "Condition": {
+            "type": "object", 
+            "description": "Describe conditional display of a field, depending on the value of another field.\n\ne.g.: \"display the field 'what is you favorite Star Wars character?' if the boolean field 'Do you like Star Wars?' is checked\".\n", 
+            "required": [
+                "field_ids", 
+                "action", 
+                "tests"
+            ], 
+            "properties": {
+                "name": {
+                    "type": "string", 
+                    "description": "A user-provided name for the Condition"
+                }, 
+                "field_ids": {
+                    "type": "array", 
+                    "description": "List of field slugs to show/hide depending on the conditions.", 
+                    "items": {
+                        "type": "string"
+                    }, 
+                    "minItems": 1
+                }, 
+                "action": {
+                    "type": "string", 
+                    "description": "Name of the action to do when the condition is true. e.g. \"display the field\" == ``display_iff``", 
+                    "enum": [
+                        "display_iff"
+                    ]
+                }, 
+                "tests": {
+                    "type": "array", 
+                    "description": "List of conditions to test.", 
+                    "items": {
+                        "$ref": "#/definitions/ConditionTest"
+                    }, 
+                    "minItems": 1
+                }
+            }
+        }, 
+        "Field": {
+            "type": "object", 
+            "description": "Field in a form", 
+            "required": [
+                "id", 
+                "slug", 
+                "label", 
+                "type_id", 
+                "description", 
+                "accesses"
+            ], 
+            "properties": {
+                "id": {
+                    "type": "integer", 
+                    "description": "ID of the field", 
+                    "readOnly": true
+                }, 
+                "slug": {
+                    "type": "string", 
+                    "description": "Slug of the field (us as uniq identifier of the field on the form)"
+                }, 
+                "label": {
+                    "type": "string", 
+                    "description": "Label of the field"
+                }, 
+                "type_id": {
+                    "type": "string", 
+                    "description": "Type of field (see Field types table)", 
+                    "enum": [
+                        "title", 
+                        "helpText", 
+                        "fieldset", 
+                        "fieldsetTable", 
+                        "separation", 
+                        "checkbox", 
+                        "checkboxes", 
+                        "dropdown", 
+                        "radios", 
+                        "radiosButtons", 
+                        "text", 
+                        "paragraph", 
+                        "file", 
+                        "date", 
+                        "email", 
+                        "number"
+                    ]
+                }, 
+                "placeholder": {
+                    "type": "string", 
+                    "description": "Placeholder of the field"
+                }, 
+                "description": {
+                    "type": "string", 
+                    "description": "Description of the field"
+                }, 
+                "multiple": {
+                    "type": "boolean", 
+                    "description": "Is the field can have multiple values?"
+                }, 
+                "items": {
+                    "type": "array", 
+                    "description": "Values available", 
+                    "items": {
+                        "$ref": "#/definitions/Item"
+                    }
+                }, 
+                "accesses": {
+                    "type": "array", 
+                    "description": "List of accesses of the field with a level", 
+                    "items": {
+                        "$ref": "#/definitions/FieldAccess"
+                    }
+                }, 
+                "validations": {
+                    "type": "array", 
+                    "description": "List of validations of the field", 
+                    "items": {
+                        "$ref": "#/definitions/FieldValidation"
+                    }
+                }, 
+                "defaults": {
+                    "type": "array", 
+                    "description": "Default values selected/inputed when the form is newly displayed", 
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
