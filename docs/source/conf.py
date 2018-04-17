@@ -38,6 +38,7 @@ django.setup()
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx-jsonschema',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
