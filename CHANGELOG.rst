@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+
+Nothing here yet.
+
 Release 1.7.0 (2018-04-20)
 ==========================
 
