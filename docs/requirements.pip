@@ -1,0 +1,5 @@
+# Extra requirements for RTD & Make docs & tox -e docs
+Sphinx
+pyyaml
+jsonschema
+sphinx-jsonschema
