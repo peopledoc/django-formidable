@@ -252,5 +252,5 @@ collectstatic:
 		< ./swagger/formidable.yml \
 		>> ./source/_static/specs/formidable.js
 	# Build the Formidable JSON Schema
-	python -c 'import sys, json; from tests import schema; json.dump(schema, sys.stdout, indent=4)' \
+	python -c 'import sys, json; from tests import schema; json.dump(schema, sys.stdout, indent=4, separators=(",", ": "), sort_keys=True)' \
   > ./source/_static/specs/formidable.json

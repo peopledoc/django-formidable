@@ -18,6 +18,9 @@ class Formidable(models.Model):
     description = models.TextField()
     conditions = JSONField(null=False, blank=False, default=list)
 
+    class Meta:
+        app_label = 'formidable'
+
     def get_django_form_class(self, role=None, field_factory=None):
         """
         Return the django form class associated with the formidable definition.
@@ -71,6 +74,7 @@ class Field(models.Model):
 
     class Meta:
         unique_together = (('slug', 'form'))
+        app_label = 'formidable'
 
     slug = models.CharField(max_length=256)
     label = models.CharField(max_length=256)
@@ -102,6 +106,9 @@ class Default(models.Model):
     value = models.CharField(max_length=256)
     field = models.ForeignKey(Field, related_name='defaults')
 
+    class Meta:
+        app_label = 'formidable'
+
     def __str__(self):
         return '{default.value}'.format(default=self)
 
@@ -114,6 +121,9 @@ class Item(models.Model):
     order = models.IntegerField()
     help_text = models.TextField(blank=True, null=True)
 
+    class Meta:
+        app_label = 'formidable'
+
     def __str__(self):
         return '{item.label}: {item.value}'.format(item=self)
 
@@ -123,6 +133,7 @@ class Access(models.Model):
 
     class Meta:
         unique_together = (('field', 'access_id'),)
+        app_label = 'formidable'
 
     field = models.ForeignKey(Field, related_name='accesses')
     access_id = models.CharField(max_length=128)
@@ -142,6 +153,9 @@ class Validation(models.Model):
     value = models.CharField(max_length=256)
     type = models.CharField(max_length=256)
     message = models.TextField(blank=True, null=True)
+
+    class Meta:
+        app_label = 'formidable'
 
     def __str__(self):
         return '{validation.value}: {validation.type}'.format(
