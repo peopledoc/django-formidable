@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 1.7.0 (2018-04-20)
+==========================
 
 **Deprecation Warning**: Support for django<=1.9 will be dropped by the version 2.0.0.
 
