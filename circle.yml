@@ -8,8 +8,6 @@ dependencies:
 
 test:
   override:
-    - tox -e $(tox -l | grep django18 | tr '\n' ',')
-    - tox -e $(tox -l | grep django19 | tr '\n' ',')
     - tox -e $(tox -l | grep django110 | tr '\n' ',')
     - tox -e $(tox -l | grep django111 | tr '\n' ',')
     - tox -e flake8

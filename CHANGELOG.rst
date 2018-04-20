@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Deprecate support for Django 1.8 and Django 1.9 (#325).
 
 Release 1.7.0 (2018-04-20)
 ==========================
@@ -13,7 +13,7 @@ Release 1.7.0 (2018-04-20)
 **Deprecation Warning**: Support for django<=1.9 will be dropped by the version 2.0.0.
 
 - Added a tool to build the JSON Schema from the ``formidable.yml`` file, and include it into the documentation.
-- Add a deprecation warning for django 1.8 and 1.9
+- Add a deprecation warning for django 1.8 and 1.9 (#325).
 
 Release 1.6.0 (2018-04-06)
 ==========================

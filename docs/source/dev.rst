@@ -20,15 +20,15 @@ Targeting a specific environment is done using:
 
 .. code:: shell
 
-    $ tox -e django18-py27
+    $ tox -e django111-py27
 
 If you want to target a specific test, simply add its namespace after a double-dash ``--``.
 
-For example, the following will run ``test_fields`` test module using Django 1.8 and Python 2.7:
+For example, the following will run ``test_fields`` test module using Django 1.11 and Python 2.7:
 
 .. code:: shell
 
-    $ tox -e django18-py27 -- tests.test_fields
+    $ tox -e django111-py27 -- tests.test_fields
 
 And the following will run the same test class for all the supported environments:
 
@@ -41,7 +41,7 @@ If somehow you've messed-up with your environment(s), you can still recreate it/
 .. code:: shell
 
     $ tox -r  # RECREATE ALL THE THINGS
-    $ tox -re django18-py27  # recreate and run tests using `django18-py27`
+    $ tox -re django111-py27  # recreate and run tests using `django111-py27`
 
 
 Using py.test

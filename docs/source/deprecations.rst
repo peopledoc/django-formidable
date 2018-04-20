@@ -2,10 +2,15 @@
 Deprecation timeline
 ====================
 
-Next deprecations
-=================
+From 1.7.0 to 2.0.0
+===================
 
-The 1.7.0 version will be the last one to support Django 1.8 & 1.9.
+Django versions
+---------------
+
+.. deprecated:: 2.0.0
+
+    Support for Django 1.8 & 1.9 is deprecated.
 
 From 1.3.0 to 1.4.0
 ===================
