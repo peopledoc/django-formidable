@@ -8,9 +8,10 @@ From 1.7.0 to 2.0.0
 Django versions
 ---------------
 
-.. deprecated:: 2.0.0
+..
+    deprecated:: 2.0.0
 
-    Support for Django 1.8 & 1.9 is deprecated.
+Support for Django 1.8 & 1.9 will be deprecated in django-formidable 2.0.0.
 
 From 1.3.0 to 1.4.0
 ===================
