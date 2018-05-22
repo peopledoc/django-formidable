@@ -11,7 +11,3 @@ docs/.pytest_cache/
 build/
 dist/
 
-# Crowdin API key relies here - if you don't have access to it, it's probably because you're not allowed to.
-.crowdin-cli-key
-crowdin.yaml
-.crowdin/

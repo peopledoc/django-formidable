@@ -15,7 +15,6 @@ from decimal import Decimal
 
 from django.core import validators
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
 
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
@@ -68,7 +67,7 @@ class GTValidator(FormidableValidator, validators.BaseValidator):
 
     type = 'GT'
 
-    message = _("Ensure this field is greater than %(limit_value)s")
+    message = "Ensure this field is greater than %(limit_value)s"
 
     def clean(self, x):
         return x
@@ -80,7 +79,7 @@ class GTValidator(FormidableValidator, validators.BaseValidator):
 class LTValidator(FormidableValidator, validators.BaseValidator):
 
     type = 'LT'
-    message = _("Ensure this field is less than %(limit_value)s")
+    message = "Ensure this field is less than %(limit_value)s"
 
     def clean(self, x):
         return x
@@ -92,7 +91,7 @@ class LTValidator(FormidableValidator, validators.BaseValidator):
 class EQValidator(FormidableValidator, validators.BaseValidator):
 
     type = 'EQ'
-    message = _("Ensure this field is equal to %(limit_value)s")
+    message = "Ensure this field is equal to %(limit_value)s"
 
     def clean(self, x):
         return x
@@ -105,7 +104,7 @@ class EQValidator(FormidableValidator, validators.BaseValidator):
 class NEQValidator(FormidableValidator, validators.BaseValidator):
 
     type = 'NEQ'
-    message = _("Ensure this field is not equal to %(limit_value)s")
+    message = "Ensure this field is not equal to %(limit_value)s"
 
     def clean(self, x):
         return x
