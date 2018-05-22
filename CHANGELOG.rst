@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Deprecate support for Django 1.8 and Django 1.9 (#325).
+- Drop crowdin for translation handling.
 
 Release 1.7.0 (2018-04-20)
 ==========================
