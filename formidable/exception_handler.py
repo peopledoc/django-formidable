@@ -143,7 +143,8 @@ def exception_handler(exc, context):
             'code': 'error',
             'message': error_message,
         }
-        logger.error("Unexpected Formidable Error: %s", error_message)
+        logger.exception(
+            "Unexpected Formidable Error: %s", error_message, exc_info=exc)
         status_code = 500
 
     return Response(data, status=status_code, headers=headers)

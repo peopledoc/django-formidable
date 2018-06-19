@@ -40,13 +40,17 @@ class ExceptionHandlingTest(APITestCase):
 
     @patch('formidable.exception_handler.logger')
     def test_unknown_exception(self, mock_logger):
+        exception = Exception("Unknown exception here!")
+
         def error_raiser(*args, **kwargs):
-            raise Exception("Unknown exception here!")
+            raise exception
+
         with patch(INIT_TO_MOCK, error_raiser):
             response = self.client.get(self.url)
         self.assertEqual(response.status_code, 500)
-        mock_logger.error.assert_called_with(
-            "Unexpected Formidable Error: %s", 'A server error occurred.')
+        mock_logger.exception.assert_called_with(
+            "Unexpected Formidable Error: %s", 'A server error occurred.',
+            exc_info=exception)
 
     def test_exceptions_validation_error(self):
         def error_raiser(*args, **kwargs):
