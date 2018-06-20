@@ -12,6 +12,7 @@ Release 2.0.0 (2018-05-30)
 
 - Deprecate support for Django 1.8 and Django 1.9 (#325).
 - Drop crowdin for translation handling (#333).
+- Added the JSON ``version`` when going through the ``Formidable.to_json()`` class method. This would ensure that stored schemas would carry their version and wouldn't need extra JSON schema migrations (#337).
 
 Release 1.7.0 (2018-04-20)
 ==========================

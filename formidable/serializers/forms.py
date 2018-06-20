@@ -8,7 +8,7 @@ from collections import defaultdict
 from django.conf import settings
 from django.db import transaction
 
-from formidable import constants
+from formidable import constants, json_version
 from formidable.forms import conditions
 from formidable.models import Formidable
 from formidable.serializers import fields
@@ -161,6 +161,11 @@ class ContextFormSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(ContextFormSerializer, self).__init__(*args, **kwargs)
         self.fields['fields'].set_context('role', self._context['role'])
+
+    def to_representation(self, obj):
+        data = super(ContextFormSerializer, self).to_representation(obj)
+        data['version'] = json_version
+        return data
 
 
 def get_access(accesses, role):
