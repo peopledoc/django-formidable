@@ -3,6 +3,7 @@ from django.test import TestCase
 from django import forms
 from freezegun import freeze_time
 
+from formidable import json_version
 from formidable.constants import REQUIRED
 from formidable.forms import (
     FormidableForm, fields, get_dynamic_form_class_from_schema
@@ -24,6 +25,15 @@ class TestFormFromSchema(TestCase):
         return ContextFormSerializer(instance=formidable, context={
             'role': role
         }).data
+
+    def test_version(self):
+        class TestCharField(FormidableForm):
+            """ Test charfield """
+            charfield = fields.CharField()
+        formidable = TestCharField.to_formidable(label='label')
+        schema = self.get_schema(formidable, 'jedi')
+        self.assertIn('version', schema)
+        self.assertEqual(schema['version'], json_version)
 
     def test_charfield(self):
         class TestCharField(FormidableForm):

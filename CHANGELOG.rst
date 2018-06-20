@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Added the JSON ``version`` when going through the ``Formidable.to_json()`` class method. This would ensure that stored schemas would carry their version and wouldn't need extra JSON schema migrations (#337).
 
 Release 2.0.0 (2018-05-30)
 ==========================
