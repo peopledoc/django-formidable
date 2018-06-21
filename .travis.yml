@@ -1,0 +1,31 @@
+language: python
+sudo: false
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+# command to install dependencies
+install:
+  - pip install --upgrade tox virtualenv tox-pyenv
+# command to run tests
+# script:
+#   - tox -e $(tox -l | grep django110 | tr '\n' ',')
+#   - tox -e $(tox -l | grep django111 | tr '\n' ',')
+#   - tox -e flake8
+#   - tox -e isort-check
+#   - tox -e docs
+
+matrix:
+  include:
+    # Linters & others
+    - python: 3.6
+      env: TOXENV=flake8
+    - python: 3.6
+      env: TOXENV=docs
+    - python: 3.6
+      env: TOXENV=isort-check
+    - python: 3.6
+      env: TOXENV=$(tox -l | grep django110 | grep 36 | tr '\n' ',')
+
+script:
+  - tox -e $TOXENV
