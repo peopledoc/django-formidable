@@ -2,10 +2,10 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 2.1.1 (2018-06-22)
+==========================
 
-- Moved the injection of the JSON ``version`` into the serializer, rather than the ``Formidable.to_json()`` class method. The serializer is called by the method, so it's idempotent.
+- Moved the injection of the JSON ``version`` into the serializer, rather than the ``Formidable.to_json()`` class method. The serializer is called by the method, so it's idempotent (#340).
 
 Release 2.1.0 (2018-06-21)
 ==========================
