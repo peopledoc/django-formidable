@@ -147,6 +147,11 @@ class FormidableSerializer(WithNestedSerializer):
         with transaction.atomic():
             return super(FormidableSerializer, self).save(*args, **kwargs)
 
+    def to_representation(self, obj):
+        data = super(FormidableSerializer, self).to_representation(obj)
+        data['version'] = json_version
+        return data
+
 
 class ContextFormSerializer(serializers.ModelSerializer):
 

@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-from formidable import constants, json_version
+from formidable import constants
 from formidable.register import FieldSerializerRegister
 from jsonfield.fields import JSONField
 
@@ -64,7 +64,6 @@ class Formidable(models.Model):
     def to_json(self):
         from formidable.serializers import FormidableSerializer
         json_data = FormidableSerializer(self).data
-        json_data['version'] = json_version
         return json_data
 
     def __str__(self):
