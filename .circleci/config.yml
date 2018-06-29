@@ -1,0 +1,123 @@
+version: 2
+jobs:
+  # Setup Python 2.7
+  setup27:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/python:2.7
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install --user -e ./
+  # Setup Python 3.6
+  setup36:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install --user -e ./
+  # Setup Python 3.5
+  setup35:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/python:3.5
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install --user -e ./
+
+  # Linters
+  lint:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          name: Run linters (flake8 + isort)
+          command: |
+            pip install --user tox
+            ~/.local/bin/tox -e flake8,isort-check
+  # Docs job
+  docs:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/node:4.8.2
+    steps:
+      - checkout
+      - run:
+          name: Check Python version & install Python dependencies
+          command: |
+            python --version
+            sudo apt update && sudo apt install python-pip python-dev
+      - run:
+          name: Run Django doc tests using tox
+          command: |
+            pip install --user tox
+            ~/.local/bin/tox -e docs
+
+  djangopy27:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/python:2.7
+    steps:
+      - checkout
+      - run:
+          name: Run Django tests using Python 2.7
+          command: |
+            pip install --user tox
+            ~/.local/bin/tox -e $(~/.local/bin/tox -l | grep py27 | tr '\n' ',')
+
+  djangopy36:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          name: Run Django tests using Python 3.6
+          command: |
+            pip install --user tox
+            ~/.local/bin/tox -e $(~/.local/bin/tox -l | grep py36 | tr '\n' ',')
+
+  djangopy35:
+    working_directory: ~/django-formidable
+    docker:
+      - image: circleci/python:3.5
+    steps:
+      - checkout
+      - run:
+          name: Run Django tests using Python 3.5
+          command: |
+            pip install --user tox
+            ~/.local/bin/tox -e $(~/.local/bin/tox -l | grep py35 | tr '\n' ',')
+
+workflows:
+  version: 2
+  tests:
+    jobs:
+      # Run setup jobs
+      - setup27
+      - setup35
+      - setup36
+      # Run linters
+      - lint
+      # Run docs job (using 2.7, but whatever)
+      - docs
+      # Running tests related to Python 2.7
+      - djangopy27:
+          requires:
+            - setup27
+      # Running tests related to Python 3.6
+      - djangopy36:
+          requires:
+            - setup36
+      # Running tests related to Python 3.5 (soon to be deprecated)
+      - djangopy35:
+          requires:
+            - setup35

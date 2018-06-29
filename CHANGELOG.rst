@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Upgrade to Circle-CI 2 (before the end of life of Circle-CI v1 on August, 31st 2018).
 
 Release 2.1.1 (2018-06-22)
 ==========================
