@@ -7,9 +7,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
-          command: pip install --user tox
-      - run:
           name: Run the test suite
           command: tox -r
 
