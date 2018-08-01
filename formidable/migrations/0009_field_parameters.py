@@ -16,6 +16,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='field',
             name='parameters',
-            field=jsonfield.fields.JSONField(blank=True, null=True),
+            field=jsonfield.fields.JSONField(
+                blank=True, default={}, null=True
+            ),
         ),
     ]

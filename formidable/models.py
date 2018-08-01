@@ -88,7 +88,7 @@ class Field(models.Model):
     help_text = models.TextField(null=True, blank=True)
     multiple = models.BooleanField(default=False)
     order = models.IntegerField()
-    parameters = JSONField(null=True, blank=True)
+    parameters = JSONField(null=True, blank=True, default={})
 
     def get_next_order(self):
         """

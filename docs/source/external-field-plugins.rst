@@ -141,7 +141,7 @@ Let's say that colors can be expressed in two ways: RGB tuple (``rgb``) or Hexad
             "label": "What is your favorite color?",
             "type_id": "color_picker",
             "accesses": [],
-            "parameters": {"format": "hex"}
+            "color_format": "hex"
         }]
     }
 
@@ -149,10 +149,9 @@ You want then to make sure that your user would not send a wrong parameter, as i
 
 .. code-block:: json
 
-    "parameters": {}
-    "parameters": {"format": ""}
-    "parameters": {"format": "foo"}
-    "parameters": {"something": "wrong"}
+    "color_format": ""
+    "color_format": "foo"
+    "color_format": "wrong"
 
 For this specific field, you only want one parameter and its key is ``format`` and its values are only ``hex`` or ``rgb``
 
@@ -171,7 +170,6 @@ Let's add some validation in your Serializer, then.
     class ColorPickerFieldSerializer(FieldSerializer):
 
         type_id = 'color_picker'
-        parameters = serializers.JSONField()
 
         allowed_formats = ('rgb', 'hex')
         default_error_messages = {
@@ -180,16 +178,16 @@ Let's add some validation in your Serializer, then.
         }
 
         class Meta(FieldSerializer.Meta):
+            config_fields = ('color_format', )
             fields = BASE_FIELDS + ('parameters',)
 
         def to_internal_value(self, data):
-
+            data = super(ColorPickerFieldSerializer, self).to_internal_value(data)
             # Check if the parameters are compliant
-            parameters = data.get('parameters', {})
-            if set(parameters.keys()) != {'format'}:
+            format = data.get('color_format')
+            if format is None:
                 self.fail('missing_parameter')
 
-            format = parameters.get('format')
             if format not in self.allowed_formats:
                 self.fail("invalid_format",
                           format=format, formats=self.allowed_formats)
