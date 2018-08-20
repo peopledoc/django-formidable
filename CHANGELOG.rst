@@ -2,13 +2,22 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release Candidate 3.0.0 RC1 (2018-08-20)
+========================================
+
+- Added a plugin mechanism, allowing users to define and integrate their own "business logic" fields.
+- Change the global exception handling error level, from "error" to "exception". It'll provide better insights if you're using Logmatic or any other logging aggregator (#336).
+
+.. warning::
+
+    The plugin mechanism is on BETA mode, and at the moment, it only allows to define business-logic fields at "form building time". It means there's not business-logic validation mechanism when you're filling a form previously defined with your custom field.
+    This is a work in progress, please bear with us.
+
+Minor changes
+-------------
 
 - Upgrade to Circle-CI 2 (before the end of life of Circle-CI v1 on August, 31st 2018). (#342)
 - Optimize Circle-CI usage by using the tox matrix in tests (#343)
-- Added a plugin mechanism, allowing users to define and integrate their own "business logic" fields.
-- Change the global exception handling error level, from "error" to "exception". It'll provide better insights if you're using Logmatic or any other logging aggregator (#336).
 - Skip `tox` installation in the circle-ci environment: it's already there (#344).
 
 Release 2.1.1 (2018-06-22)
