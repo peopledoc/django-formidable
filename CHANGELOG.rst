@@ -7,6 +7,7 @@ master (unreleased)
 
 - Upgrade to Circle-CI 2 (before the end of life of Circle-CI v1 on August, 31st 2018). (#342)
 - Optimize Circle-CI usage by using the tox matrix in tests (#343)
+- Added a plugin mechanism, allowing users to define and integrate their own "business logic" fields.
 - Change the global exception handling error level, from "error" to "exception". It'll provide better insights if you're using Logmatic or any other logging aggregator (#336).
 - Skip `tox` installation in the circle-ci environment: it's already there (#344).
 

@@ -65,24 +65,41 @@ class FieldSerializer(WithNestedSerializer):
     items = ItemSerializer(many=True)
     accesses = AccessSerializer(many=True)
     validations = ValidationSerializer(many=True, required=False)
-    # redifine here the order field just to take it at the save/update time
+    # redefine here the order field just to take it at the save/update time
     # The order is automatically calculated, if the order is define in
-    # incomming payload, it will be automatically overrided.
+    # incoming payload, it will be automatically overridden.
+    parameters = serializers.JSONField(write_only=True)
     order = serializers.IntegerField(write_only=True, required=False)
     defaults = DefaultSerializer(many=True, required=False)
     description = serializers.CharField(required=False, allow_null=True,
                                         allow_blank=True, source='help_text')
-
     nested_objects = ['accesses', 'validations', 'defaults']
 
     def to_internal_value(self, data):
         # XXX FIX ME: temporary fix
         if 'help_text' in data:
             data['description'] = data.pop('help_text')
+
+        data['parameters'] = {}
+        for config_field in self.get_config_fields():
+            data['parameters'][config_field] = data.pop(config_field, None)
         return super(FieldSerializer, self).to_internal_value(data)
+
+    def to_representation(self, instance):
+        field = super(FieldSerializer, self).to_representation(instance)
+        for config_field in self.get_config_fields():
+            if instance.parameters is not None:
+                field[config_field] = instance.parameters.get(config_field)
+        field.pop('parameters', None)
+        return field
+
+    def get_config_fields(self):
+        meta = getattr(self, 'Meta', object)
+        return getattr(meta, 'config_fields', [])
 
     class Meta:
         model = Field
+        config_fields = []
         list_serializer_class = FieldListSerializer
         fields = '__all__'
 
