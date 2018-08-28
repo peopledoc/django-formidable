@@ -1,0 +1,24 @@
+{
+  "description": "Form schema with a color picker field",
+  "label": "Form schema with label",
+  "fields": [
+    {
+      "accesses": [],
+      "defaults": [],
+      "help_text": "Pick your favorite color here",
+      "items": [],
+      "label": "Favorite color",
+      "multiple": false,
+      "placeholder": null,
+      "slug": "favorite-color",
+      "type_id": "color_picker",
+      "validations": [],
+      "required": true,
+      "parameters": {
+        "color_format": "rgb"
+      }
+    }
+  ],
+  "id": 0,
+  "presets": []
+}
