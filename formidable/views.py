@@ -10,9 +10,7 @@ from django.core.exceptions import ImproperlyConfigured
 import six
 from formidable.accesses import get_accesses, get_context
 from formidable.exception_handler import ExceptionHandlerMixin
-from formidable.forms import (
-    field_builder_from_schema, get_dynamic_form_class_from_schema
-)
+from formidable.forms import field_builder, get_dynamic_form_class_from_schema
 from formidable.forms.field_builder import (
     FileFieldBuilder, FormFieldFactory, SkipField
 )
@@ -307,7 +305,7 @@ class ValidateViewFromSchema(ValidateView):
         """
         raise NotImplemented
 
-    class ValidationFileFieldBuilder(field_builder_from_schema.FileFieldBuilder):  # noqa
+    class ValidationFileFieldBuilder(field_builder.FileFieldBuilder):  # noqa
 
         def build(self, *args, **kwargs):
             raise SkipField
@@ -319,7 +317,7 @@ class ValidateViewFromSchema(ValidateView):
         """
         role = get_context(self.request, self.kwargs)
 
-        factory = field_builder_from_schema.FormFieldFactory(
+        factory = field_builder.FormFieldFactory(
             field_map={'file': self.ValidationFileFieldBuilder}
         )
         schema = contextualize(formidable, role)

@@ -20,6 +20,9 @@ class FieldBuilder(object):
 
     def __init__(self, field):
         self.field = field
+        # used to detect a field type (dict or a Django model)
+        # and chose how to get properties (e.g. field.label or field['label'])
+        self.field_is_dict = isinstance(field, dict)
         self.validator_factory = self.validator_factory_class()
 
     def build(self, role=None):
@@ -28,7 +31,7 @@ class FieldBuilder(object):
         return field_class(**self.get_field_kwargs())
 
     def get_accesses(self, role):
-        if role:
+        if role and not self.field_is_dict:
             # The role is previously "prefetch" in order to avoid database
             # hit, we don't use a get() method in queryset.
             return self.field.accesses.all()[0]
@@ -74,25 +77,33 @@ class FieldBuilder(object):
         return attrs
 
     def get_disabled(self):
+        if self.field_is_dict:
+            return self.field['disabled']
+
         if self.access:
             return self.access.level == 'READONLY'
 
         return False
 
     def get_required(self):
-        if self.access:
+        if self.field_is_dict:
+            return self.field['required']
 
+        if self.access:
             if self.access.level == 'HIDDEN':
                 raise SkipField()
-
             return self.access.level == 'REQUIRED'
 
         return False
 
     def get_label(self):
+        if self.field_is_dict:
+            return self.field.get('label')
         return self.field.label
 
     def get_help_text(self):
+        if self.field_is_dict:
+            return self.field.get('description', '')
         return self.field.help_text
 
     def get_validators(self):
@@ -106,6 +117,8 @@ class FieldBuilder(object):
         """
         return iterator over field validation
         """
+        if self.field_is_dict:
+            return self.field['validations']
         return self.field.validations.all()
 
 
@@ -124,7 +137,7 @@ class HelpTextBuilder(FieldBuilder):
         return kwargs
 
 
-class TitleFielBuilder(FieldBuilder):
+class TitleFieldBuilder(FieldBuilder):
 
     field_class = fields.TitleField
 
@@ -175,20 +188,35 @@ class ChoiceFieldBuilder(FieldBuilder):
         return kwargs
 
     def get_choices(self):
-        return [(item.value, item.label) for item in self.field.items.all()]
+        if self.field_is_dict:
+            for item in self.field.get('items', []):
+                yield item['value'], item['label']
+        else:
+            for item in self.field.items.all():
+                yield item.value, item.label
 
 
 class DropdownFieldBuilder(ChoiceFieldBuilder):
 
     widget_class = forms.Select
 
+    @property
+    def is_multiple(self):
+        """
+        Return True if dropdown field is multiple
+        (works for the ORM object and the dict)
+        :return: bool
+        """
+        return (self.field['multiple']
+                if self.field_is_dict else self.field.multiple)
+
     def get_field_class(self):
-        if self.field.multiple:
+        if self.is_multiple:
             return forms.MultipleChoiceField
         return super(DropdownFieldBuilder, self).get_field_class()
 
     def get_widget_class(self):
-        if self.field.multiple:
+        if self.is_multiple:
             return forms.SelectMultiple
         return super(DropdownFieldBuilder, self).get_widget_class()
 
@@ -218,7 +246,7 @@ class FormFieldFactory(object):
         'date': DateFieldBuilder,
         'number': NumberFieldBuilder,
         'help_text': HelpTextBuilder,
-        'title': TitleFielBuilder,
+        'title': TitleFieldBuilder,
         'separator': SeparatorBuilder,
         'file': FileFieldBuilder,
     }
@@ -229,7 +257,7 @@ class FormFieldFactory(object):
 
     def produce(self, field, role=None):
         """
-        Given a :class:`formidable.models.Fieldidable`, return a
+        Given a :class:`formidable.models.Field`, return a
         :class:`django.forms.Field` instance according to the type_id,
         validations and rules.
         """
@@ -238,6 +266,8 @@ class FormFieldFactory(object):
         return builder.build(role)
 
     def get_type_id(self, field):
+        if isinstance(field, dict):
+            return field['type_id']
         return field.type_id
 
 
