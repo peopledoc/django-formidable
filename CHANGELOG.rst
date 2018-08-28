@@ -10,6 +10,7 @@ master (unreleased)
 - Added a plugin mechanism, allowing users to define and integrate their own "business logic" fields.
 - Change the global exception handling error level, from "error" to "exception". It'll provide better insights if you're using Logmatic or any other logging aggregator (#336).
 - Skip `tox` installation in the circle-ci environment: it's already there (#344).
+- Refactoring of the field builder (Use only one module for the form builder factory) (#347).
 
 Release 2.1.1 (2018-06-22)
 ==========================
