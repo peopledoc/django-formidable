@@ -173,7 +173,7 @@ class TestDynamicForm(TestCase):
         checkbox = form.fields['checkbox']
         self.assertEqual(type(checkbox), forms.BooleanField)
         self.assertIn('disabled', checkbox.widget.attrs)
-        self.assertTrue(checkbox.widget.attrs['disabled'], True)
+        self.assertTrue(checkbox.widget.attrs['disabled'])
         self.assertTrue(checkbox.disabled)
 
     def test_checkboxes(self):
