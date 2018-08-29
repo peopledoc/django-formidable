@@ -25,39 +25,39 @@ class FieldBuilder(object):
     def build(self, role=None):
         self.access = self.get_accesses(role)
         field_class = self.get_field_class()
-        return field_class(**self.get_field_kwargs())
+        return field_class(**self.get_field_kwargs(
+            default_widget_class=field_class.widget)
+        )
 
     def get_accesses(self, role):
         if role:
             # The role is previously "prefetch" in order to avoid database
             # hit, we don't use a get() method in queryset.
-            return self.field.accesses.all()[0]
+            qs = self.field.accesses.all()
+            if len(qs):
+                return qs[0]
         return None
 
     def get_field_class(self):
         return self.field_class
 
-    def get_field_kwargs(self):
+    def get_field_kwargs(self, default_widget_class):
 
         kwargs = {
             'required': self.get_required(),
             'label': self.get_label(),
             'help_text': self.get_help_text(),
             'validators': self.get_validators(),
+            'disabled': self.get_disabled(),
         }
 
-        widget = self.get_widget()
-
-        if widget:
-            kwargs['widget'] = self.get_widget()
+        kwargs['widget'] = self.get_widget(default_widget_class)
 
         return kwargs
 
-    def get_widget(self):
-        widget_class = self.get_widget_class()
-        if widget_class:
-            return widget_class(**self.get_widget_kwargs())
-        return None
+    def get_widget(self, default_widget_class):
+        widget_class = self.get_widget_class() or default_widget_class
+        return widget_class(**self.get_widget_kwargs())
 
     def get_widget_class(self):
         return self.widget_class
@@ -118,8 +118,10 @@ class HelpTextBuilder(FieldBuilder):
 
     field_class = fields.HelpTextField
 
-    def get_field_kwargs(self):
-        kwargs = super(HelpTextBuilder, self).get_field_kwargs()
+    def get_field_kwargs(self, default_widget_class):
+        kwargs = super(HelpTextBuilder, self).get_field_kwargs(
+            default_widget_class
+        )
         kwargs['text'] = kwargs.pop('help_text')
         return kwargs
 
@@ -169,8 +171,10 @@ class ChoiceFieldBuilder(FieldBuilder):
 
     field_class = forms.ChoiceField
 
-    def get_field_kwargs(self):
-        kwargs = super(ChoiceFieldBuilder, self).get_field_kwargs()
+    def get_field_kwargs(self, default_widget_class):
+        kwargs = super(ChoiceFieldBuilder, self).get_field_kwargs(
+            default_widget_class
+        )
         kwargs['choices'] = self.get_choices()
         return kwargs
 
