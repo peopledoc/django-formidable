@@ -161,6 +161,21 @@ class TestDynamicForm(TestCase):
         checkbox = form.fields['checkbox']
         self.assertEqual(type(checkbox), forms.BooleanField)
 
+    def test_disabled_checkbox(self):
+        checkbox = self.form.fields.create(
+            slug='checkbox', type_id='checkbox', label='checkbox',
+            order=self.form.get_next_field_order(),
+        )
+        checkbox.accesses.create(access_id='human', level=READONLY)
+        form_class = self.form.get_django_form_class(role='human')
+        form = form_class()
+        self.assertIn('checkbox', form.fields)
+        checkbox = form.fields['checkbox']
+        self.assertEqual(type(checkbox), forms.BooleanField)
+        self.assertIn('disabled', checkbox.widget.attrs)
+        self.assertTrue(checkbox.widget.attrs['disabled'], True)
+        self.assertTrue(checkbox.disabled)
+
     def test_checkboxes(self):
         self.form.fields.create(
             slug='checkboxes', type_id='checkboxes', label='checkboxes',
@@ -195,16 +210,16 @@ class TestDynamicForm(TestCase):
 
     def test_radio_input(self):
         field = self.form.fields.create(
-            slug='input-radio', type_id='radios',
-            label='chose you weapon',
-            order=self.form.get_next_field_order()
-        )
+                slug='input-radio', type_id='radios',
+                label='chose you weapon',
+                order=self.form.get_next_field_order()
+                )
         for key in ['sword', 'gun']:
             field.items.create(
-                value=key, label=key, order=field.get_next_order()
-            )
+                    value=key, label=key, order=field.get_next_order()
+                    )
 
-        form_class = self.form.get_django_form_class()
+            form_class = self.form.get_django_form_class()
         form = form_class()
         self.assertIn('input-radio', form.fields)
         radio = form.fields['input-radio']
@@ -215,16 +230,16 @@ class TestDynamicForm(TestCase):
 
     def test_radio_buttons(self):
         field = self.form.fields.create(
-            slug='input-radio-buttons', type_id='radios_buttons',
-            label='chose you weapon',
-            order=self.form.get_next_field_order()
-        )
+                slug='input-radio-buttons', type_id='radios_buttons',
+                label='chose you weapon',
+                order=self.form.get_next_field_order()
+                )
         for key in ['sword', 'gun']:
             field.items.create(
-                value=key, label=key, order=field.get_next_order()
-            )
+                    value=key, label=key, order=field.get_next_order()
+                    )
 
-        form_class = self.form.get_django_form_class()
+            form_class = self.form.get_django_form_class()
         form = form_class()
         self.assertIn('input-radio-buttons', form.fields)
         radio = form.fields['input-radio-buttons']
@@ -235,9 +250,9 @@ class TestDynamicForm(TestCase):
 
     def test_date_field(self):
         self.form.fields.create(
-            slug='input-date', type_id='date', label='your date',
-            order=self.form.get_next_field_order()
-        )
+                slug='input-date', type_id='date', label='your date',
+                order=self.form.get_next_field_order()
+                )
         form_class = self.form.get_django_form_class()
         form = form_class()
         self.assertIn('input-date', form.fields)
@@ -246,9 +261,9 @@ class TestDynamicForm(TestCase):
 
     def test_number_field(self):
         self.form.fields.create(
-            slug='input-number', type_id='number', label='your number',
-            order=self.form.get_next_field_order()
-        )
+                slug='input-number', type_id='number', label='your number',
+                order=self.form.get_next_field_order()
+                )
         form_class = self.form.get_django_form_class()
         form = form_class()
         self.assertIn('input-number', form.fields)
