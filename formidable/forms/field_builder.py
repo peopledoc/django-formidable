@@ -36,7 +36,9 @@ class FieldBuilder(object):
         if role and not self.field_is_dict:
             # The role is previously "prefetch" in order to avoid database
             # hit, we don't use a get() method in queryset.
-            return self.field.accesses.all()[0]
+            qs = self.field.accesses.all()
+            if qs.exists():
+                return qs[0]
         return None
 
     def get_field_class(self):
