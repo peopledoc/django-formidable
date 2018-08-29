@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 2.1.2 (2018-08-29)
+==========================
 
 - Django field `disabled` option are now set through the field builder (#351).
 
