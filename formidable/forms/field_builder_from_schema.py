@@ -53,8 +53,9 @@ class HelpTextBuilder(FieldBuilder):
 
     field_class = fields.HelpTextField
 
-    def get_field_kwargs(self):
-        kwargs = super(HelpTextBuilder, self).get_field_kwargs()
+    def get_field_kwargs(self, default_widget_class):
+        kwargs = super(HelpTextBuilder, self).get_field_kwargs(
+            default_widget_class)
         kwargs['text'] = kwargs.pop('help_text')
         return kwargs
 
@@ -137,8 +138,9 @@ class ChoiceFieldBuilder(FieldBuilder):
 
     field_class = forms.ChoiceField
 
-    def get_field_kwargs(self):
-        kwargs = super(ChoiceFieldBuilder, self).get_field_kwargs()
+    def get_field_kwargs(self, default_widget_class):
+        kwargs = super(ChoiceFieldBuilder, self).get_field_kwargs(
+            default_widget_class)
         kwargs['choices'] = self.get_choices()
         return kwargs
 
