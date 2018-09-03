@@ -214,6 +214,8 @@ class ConditionTestCase(TestCase):
 
         form = form_class(data)
         self.assertTrue(form.is_valid(), form.errors)
+        # bar is in readonly
+        data['bar'] = ''
         self.assertEqual(form.cleaned_data, data)
 
     def test_readonly_field_displayed_and_missing(self):
