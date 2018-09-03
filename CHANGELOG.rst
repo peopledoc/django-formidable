@@ -2,7 +2,7 @@
 ChangeLog
 =========
 
-Release Candidate 3.0.0 RC1 (2018-08-20)
+Release Candidate 3.0.0 RC2 (2018-09-03)
 ========================================
 
 - Added a plugin mechanism, allowing users to define and integrate their own "business logic" fields.
