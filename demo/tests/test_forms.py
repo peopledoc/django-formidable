@@ -161,6 +161,21 @@ class TestDynamicForm(TestCase):
         checkbox = form.fields['checkbox']
         self.assertEqual(type(checkbox), forms.BooleanField)
 
+    def test_disabled_checkbox(self):
+        checkbox = self.form.fields.create(
+            slug='checkbox', type_id='checkbox', label='checkbox',
+            order=self.form.get_next_field_order(),
+        )
+        checkbox.accesses.create(access_id='human', level=READONLY)
+        form_class = self.form.get_django_form_class(role='human')
+        form = form_class()
+        self.assertIn('checkbox', form.fields)
+        checkbox = form.fields['checkbox']
+        self.assertEqual(type(checkbox), forms.BooleanField)
+        self.assertIn('disabled', checkbox.widget.attrs)
+        self.assertTrue(checkbox.widget.attrs['disabled'])
+        self.assertTrue(checkbox.disabled)
+
     def test_checkboxes(self):
         self.form.fields.create(
             slug='checkboxes', type_id='checkboxes', label='checkboxes',

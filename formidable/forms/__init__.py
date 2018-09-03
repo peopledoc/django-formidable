@@ -14,7 +14,7 @@ from collections import OrderedDict
 from django import forms
 from django.db.models import Prefetch
 
-from formidable.forms import field_builder, field_builder_from_schema
+from formidable.forms import field_builder
 from formidable.forms.conditions import conditions_register
 from formidable.models import Access, Formidable, Item
 
@@ -95,7 +95,7 @@ def get_dynamic_form_class_from_schema(schema, field_factory=None):
 
     """
     attrs = OrderedDict()
-    field_factory = field_factory or field_builder_from_schema.FormFieldFactory()  # noqa
+    field_factory = field_factory or field_builder.FormFieldFactory()  # noqa
     doc = schema['description']
     for field in schema['fields']:
         try:

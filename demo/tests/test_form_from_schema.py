@@ -8,9 +8,7 @@ from formidable.constants import REQUIRED
 from formidable.forms import (
     FormidableForm, fields, get_dynamic_form_class_from_schema
 )
-from formidable.forms import (
-    field_builder, field_builder_from_schema, widgets
-)
+from formidable.forms import field_builder, widgets
 from formidable.serializers.forms import contextualize
 from formidable.validators import (
     GTEValidator, MinLengthValidator, AgeAboveValidator
@@ -341,7 +339,7 @@ class TestFormFromSchema(TestCase):
         """
         self.assertEqual(
             set(field_builder.FormFieldFactory.field_map),
-            set(field_builder_from_schema.FormFieldFactory.field_map)
+            set(field_builder.FormFieldFactory.field_map)
         )
 
 

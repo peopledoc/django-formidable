@@ -19,6 +19,12 @@ Minor changes
 - Upgrade to Circle-CI 2 (before the end of life of Circle-CI v1 on August, 31st 2018). (#342)
 - Optimize Circle-CI usage by using the tox matrix in tests (#343)
 - Skip `tox` installation in the circle-ci environment: it's already there (#344).
+- Refactoring of the field builder (Use only one module for the form builder factory) (#347).
+
+Release 2.1.2 (2018-08-29)
+==========================
+
+- Django field `disabled` option are now set through the field builder (#351).
 
 Release 2.1.1 (2018-06-22)
 ==========================

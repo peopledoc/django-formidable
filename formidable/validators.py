@@ -246,6 +246,9 @@ class ValidatorFactory(object):
         """
         Return the tuple of validation type, validation msg, validation value
         """
+        if isinstance(validation, dict):
+            return (validation['type'],
+                    validation['message'], validation['value'])
         return validation.type, validation.message or None, validation.value
 
 
