@@ -16,18 +16,20 @@ from formidable.serializers.items import ItemSerializer
 from formidable.serializers.list import NestedListSerializer
 from formidable.serializers.validation import ValidationSerializer
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import SkipField
+from rest_framework.settings import api_settings
+from rest_framework.utils import html
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'description',
     'accesses', 'validations', 'order', 'defaults'
 )
 
-
 field_register = FieldSerializerRegister.get_instance()
 
 
 class FieldListSerializer(NestedListSerializer):
-
     field_id = 'slug'
     parent_name = 'form_id'
 
@@ -57,9 +59,53 @@ class FieldListSerializer(NestedListSerializer):
         )
         return qs.order_by('order')
 
+    def to_internal_value(self, data):
+        """
+        List of dicts of native values <- List of dicts of primitive datatypes.
+        Warning:
+        Need to check this function for the new drf versions.
+        This version was taken from the DRF 3.7.7
+        """
+        if html.is_html_input(data):
+            data = html.parse_html_list(data)
+
+        if not isinstance(data, list):
+            message = self.error_messages['not_a_list'].format(
+                input_type=type(data).__name__
+            )
+            raise ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: [message]
+            }, code='not_a_list')
+
+        if not self.allow_empty and len(data) == 0:
+            if self.parent and self.partial:
+                raise SkipField()
+
+            message = self.error_messages['empty']
+            raise ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: [message]
+            }, code='empty')
+
+        ret = []
+        errors = []
+        # Add context to the validation call
+        context = self.context
+        for item in data:
+            try:
+                validated = self.child.run_validation(item, context=context)
+            except ValidationError as exc:
+                errors.append(exc.detail)
+            else:
+                ret.append(validated)
+                errors.append({})
+
+        if any(errors):
+            raise ValidationError(errors)
+
+        return ret
+
 
 class FieldSerializer(WithNestedSerializer):
-
     type_id = None
 
     items = ItemSerializer(many=True)
@@ -83,6 +129,7 @@ class FieldSerializer(WithNestedSerializer):
         data['parameters'] = {}
         for config_field in self.get_config_fields():
             data['parameters'][config_field] = data.pop(config_field, None)
+
         return super(FieldSerializer, self).to_internal_value(data)
 
     def to_representation(self, instance):
@@ -149,7 +196,6 @@ class ListContextFieldSerializer(serializers.ListSerializer):
 
 
 class ContextFieldSerializer(serializers.ModelSerializer):
-
     disabled = serializers.SerializerMethodField()
     required = serializers.SerializerMethodField()
     validations = ValidationSerializer(many=True, required=False)
@@ -213,7 +259,6 @@ class FieldItemMixin(object):
 
 @load_serializer(field_register)
 class TextFieldSerializer(FieldSerializer):
-
     type_id = 'text'
 
     class Meta(FieldSerializer.Meta):
@@ -222,13 +267,11 @@ class TextFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class ParagraphFieldSerializer(TextFieldSerializer):
-
     type_id = 'paragraph'
 
 
 @load_serializer(field_register)
 class DropdownFieldSerializer(FieldItemMixin, FieldSerializer):
-
     type_id = 'dropdown'
 
     class Meta(FieldSerializer.Meta):
@@ -237,7 +280,6 @@ class DropdownFieldSerializer(FieldItemMixin, FieldSerializer):
 
 @load_serializer(field_register)
 class CheckboxFieldSerializer(FieldSerializer):
-
     type_id = 'checkbox'
 
     class Meta(FieldSerializer.Meta):
@@ -246,7 +288,6 @@ class CheckboxFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class CheckboxesFieldSerializer(FieldItemMixin, FieldSerializer):
-
     type_id = 'checkboxes'
 
     class Meta(FieldSerializer.Meta):
@@ -255,7 +296,6 @@ class CheckboxesFieldSerializer(FieldItemMixin, FieldSerializer):
 
 @load_serializer(field_register)
 class RadiosFieldSerializer(FieldItemMixin, FieldSerializer):
-
     type_id = 'radios'
 
     class Meta(FieldSerializer.Meta):
@@ -264,13 +304,11 @@ class RadiosFieldSerializer(FieldItemMixin, FieldSerializer):
 
 @load_serializer(field_register)
 class RadiosButtonsFieldSerializer(RadiosFieldSerializer):
-
     type_id = 'radios_buttons'
 
 
 @load_serializer(field_register)
 class FileFieldSerializer(FieldSerializer):
-
     type_id = 'file'
 
     class Meta(FieldSerializer.Meta):
@@ -279,7 +317,6 @@ class FileFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class DateFieldSerializer(FieldSerializer):
-
     type_id = 'date'
 
     class Meta(FieldSerializer.Meta):
@@ -288,7 +325,6 @@ class DateFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class EmailFieldSerializer(FieldSerializer):
-
     type_id = 'email'
 
     class Meta(FieldSerializer.Meta):
@@ -297,7 +333,6 @@ class EmailFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class NumberFieldSerializer(FieldSerializer):
-
     type_id = 'number'
 
     class Meta(FieldSerializer.Meta):
@@ -306,7 +341,6 @@ class NumberFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class HelpTextFieldSerializer(FieldSerializer):
-
     type_id = 'help_text'
     description = serializers.CharField(required=True, source='help_text')
 
@@ -317,7 +351,6 @@ class HelpTextFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class TitleFieldSerializer(FieldSerializer):
-
     type_id = 'title'
 
     class Meta(FieldSerializer.Meta):
@@ -327,7 +360,6 @@ class TitleFieldSerializer(FieldSerializer):
 
 @load_serializer(field_register)
 class SeparatorFieldSerializer(FieldSerializer):
-
     type_id = 'separator'
 
     class Meta(FieldSerializer.Meta):
