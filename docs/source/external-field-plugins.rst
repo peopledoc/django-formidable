@@ -159,12 +159,10 @@ Let's add some validation in your Serializer, then.
 
 .. code-block:: python
 
-    from rest_framework import serializers
     from formidable.register import load_serializer, FieldSerializerRegister
     from formidable.serializers.fields import FieldSerializer, BASE_FIELDS
 
     field_register = FieldSerializerRegister.get_instance()
-
 
     @load_serializer(field_register)
     class ColorPickerFieldSerializer(FieldSerializer):
@@ -182,17 +180,19 @@ Let's add some validation in your Serializer, then.
             fields = BASE_FIELDS + ('parameters',)
 
         def to_internal_value(self, data):
+            # A call to this super() will build the parameters dict.
             data = super(ColorPickerFieldSerializer, self).to_internal_value(data)
             # Check if the parameters are compliant
-            format = data.get('color_format')
-            if format is None:
+            parameters = data.get('parameters', {})
+            if set(parameters.keys()) != {'color_format'}:
                 self.fail('missing_parameter')
 
+            format = parameters.get('color_format')
             if format not in self.allowed_formats:
                 self.fail("invalid_format",
                           format=format, formats=self.allowed_formats)
 
-            return super(ColorPickerFieldSerializer, self).to_internal_value(data)
+            return data
 
 .. note:: Full example
 
