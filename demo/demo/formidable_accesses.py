@@ -16,4 +16,12 @@ def get_accesses():
 
 
 def get_context(request, kwargs):
-    return request.session['role']
+    """
+    Return the value of the role for the request
+
+    For the sake of the demo, the role value can be set using the Django
+    session or the "GET" argument.
+
+    example: "http://localhost:8000/api/forms/1/validate?role=jedi"
+    """
+    return request.session.get('role') or request.GET.get('role')
