@@ -3,5 +3,5 @@ from __future__ import absolute_import
 from .json_migrations import latest_version
 
 default_app_config = 'formidable.app.FormidableConfig'
-version = '2.2.0.dev0'
+version = '3.0.0rc3'
 json_version = latest_version
