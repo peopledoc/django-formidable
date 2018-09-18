@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import unicode_literals
 
 from django import forms
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 from formidable.forms import fields
+from formidable.utils import import_object
 from formidable.validators import DateValidatorFactory, ValidatorFactory
 
 
@@ -13,7 +15,6 @@ class SkipField(Exception):
 
 
 class FieldBuilder(object):
-
     field_class = forms.CharField
     widget_class = None
     validator_factory_class = ValidatorFactory
@@ -28,9 +29,18 @@ class FieldBuilder(object):
     def build(self, role=None):
         self.access = self.get_accesses(role)
         field_class = self.get_field_class()
-        return field_class(**self.get_field_kwargs(
-            default_widget_class=field_class.widget)
-        )
+
+        if self.field_is_dict:
+            params = self.field.get('parameters')
+        else:
+            params = getattr(self.field, 'parameters', None)
+
+        instance = field_class(**self.get_field_kwargs(
+            default_widget_class=field_class.widget))
+
+        if params:
+            setattr(instance, '__formidable_field_parameters', params)
+        return instance
 
     def get_accesses(self, role):
         if role and not self.field_is_dict:
@@ -78,7 +88,7 @@ class FieldBuilder(object):
 
     def get_disabled(self):
         if self.field_is_dict:
-            return self.field['disabled']
+            return self.field.get('disabled', False)
 
         if self.access:
             return self.access.level == 'READONLY'
@@ -257,7 +267,25 @@ class FormFieldFactory(object):
 
     def __init__(self, field_map=None):
         self.map = self.field_map.copy()
+        self.add_extra_fields()
         self.map.update(field_map or {})
+
+    def add_extra_fields(self):
+        # If the settings is not set, skip this step.
+        if not hasattr(settings, 'FORMIDABLE_EXTERNAL_FIELD_BUILDERS'):
+            return
+        extra = getattr(settings, 'FORMIDABLE_EXTERNAL_FIELD_BUILDERS', {})
+        # If empty or None
+        if not extra:
+            return
+
+        for key, classpath in extra.items():
+            field_builder_class = import_object(classpath)
+            if not issubclass(field_builder_class, FieldBuilder):
+                raise ImproperlyConfigured(
+                    "{} is not of a subclass of `FieldBuiler`".format(
+                        classpath))
+            self.map[key] = field_builder_class
 
     def produce(self, field, role=None):
         """

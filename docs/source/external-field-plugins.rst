@@ -23,6 +23,7 @@ Tree structure
     ├── formidable_color_picker
     │   ├── apps.py
     │   ├── __init__.py
+    |   |── field_builder.py
     │   ├── serializers.py
     ├── setup.cfg
     └── setup.py
@@ -127,7 +128,7 @@ Then you can also retrieve this instance JSON defintion
     }
 
 Making your field a bit more clever
-===================================
+-----------------------------------
 
 Let's say that colors can be expressed in two ways: RGB tuple (``rgb``) or Hexadecimal expression (``hex``). This means your field has to be parametrized in order to store this information at the builder step. Let's imagine your JSON payload would look like:
 
@@ -193,6 +194,56 @@ Let's add some validation in your Serializer, then.
                           format=format, formats=self.allowed_formats)
 
             return super(ColorPickerFieldSerializer, self).to_internal_value(data)
+
+
+Load your field for the form filler
+===================================
+
+In your Django settings, add or update the ``settings.FORMIDABLE_EXTERNAL_FIELD_BUILDERS`` variable, like this:
+
+.. code-block:: python
+
+    FORMIDABLE_EXTERNAL_FIELD_BUILDERS = {
+        "color_picker": 'formidable_color_picker.field_builder.ColorPickerFieldBuilder',
+    }
+
+Then this namespace should point at your :class:`ColorPickerFieldBuilder` class, which can be written as follows:
+
+.. important::
+
+    The classes you're pointing at in this settings must be subclasses of :class:`formidable.forms.field_builder.FieldBuilder`.
+
+.. code-block:: python
+
+    import re
+    from django import forms
+    from formidable.forms.field_builder import FieldBuilder
+
+    COLOR_RE = re.compile('^#(?:[0-9a-fA-F]{3}){1,2}$')
+
+    class ColorPickerField(forms.Field):
+
+        def to_python(self, value):
+            return value
+
+        def validate(self, value):
+            # Depending on the parent class, it might be a good idea to call
+            # super() in order to use the parents validation.
+            super(ColorPickerField, self).validate(value)
+            params = getattr(self, '__formidable_field_parameters', {})
+            color_format = params.get('color_format')
+            if color_format == 'rgb':
+                if value not in ('red', 'green', 'blue'):
+                    raise forms.ValidationError("Invalid color: {}".format(value))
+            elif color_format == 'hex':
+                if not COLOR_RE.match(value):
+                    raise forms.ValidationError("Invalid color: {}".format(value))
+            else:
+                raise forms.ValidationError("Invalid color format.")
+
+    class ColorPickerFieldBuilder(FieldBuilder):
+        field_class = ColorPickerField
+
 
 .. note:: Full example
 

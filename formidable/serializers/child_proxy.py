@@ -18,6 +18,7 @@ def call_right_serializer_by_instance(meth):
         else:
             type_id = getattr(instance, self.lookup_field)
 
+        kwargs.pop('context', {})
         serializer = self.get_right_serializer(type_id)
         meth_name = getattr(serializer, meth.__name__)
         return meth_name(instance, *args, **kwargs)
@@ -28,9 +29,10 @@ def call_right_serializer_by_instance(meth):
 def call_right_serializer_by_attrs(meth):
 
     def _wrapper(self, attrs, *args, **kwargs):
-
         lookup = self.lookup_field
         serializer = self.get_right_serializer(attrs[lookup])
+        context = kwargs.pop('context', {})
+        serializer.custom_context = context
         meth_name = getattr(serializer, meth.__name__)
         return meth_name(attrs, *args, **kwargs)
 
@@ -40,7 +42,7 @@ def call_right_serializer_by_attrs(meth):
 def call_all_serializer(meth):
 
     def _wrapper(self, *args, **kwargs):
-
+        kwargs.pop('context', {})
         for serializer in self.get_all_serializer():
             meth_name = getattr(serializer, meth.__name__)
             return meth_name(*args, **kwargs)
@@ -71,7 +73,7 @@ class LazyChildProxy(object):
         pass
 
     @call_right_serializer_by_attrs
-    def run_validation(self):
+    def run_validation(self, context=None):
         pass
 
     @call_right_serializer_by_attrs

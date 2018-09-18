@@ -4,6 +4,8 @@ from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers import FormidableSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializer
 
+import mock
+
 
 class TestCustomFieldSerializer(TestCase):
     def setUp(self):
@@ -37,7 +39,7 @@ class TestCustomFieldSerializer(TestCase):
                     "required": False,
                     "disabled": False,
                     "isVisible": True,
-                    "type_id": "custom_type_id",
+                    "type_id": custom_type_id,
                     "validations": [],
                     "order": 1,
                     "meta_info": "meta",
@@ -79,6 +81,27 @@ class TestCustomFieldSerializer(TestCase):
         self.assertNotIn('parameters', data)
         # remove instance
         self.instance.delete()
+
+    def test_context_in_field_serializer(self):
+        # backup a serializer
+        backup_serializer = self.field_register[self.custom_type_id]
+        # mock a field serializer
+        mocked_serializer = mock.MagicMock()
+        self.field_register[self.custom_type_id] = mock.MagicMock(
+            return_value=mocked_serializer
+        )
+        # test serializer with an empty context
+        serializer = FormidableSerializer(data=self.schema)
+        serializer.is_valid()
+        self.assertEqual(mocked_serializer.custom_context, {})
+        # test serializer with context
+        serializer = FormidableSerializer(
+            data=self.schema, context={'test': 'context'}
+        )
+        serializer.is_valid()
+        self.assertEqual(mocked_serializer.custom_context, {'test': 'context'})
+        # remove mock and revert serializer
+        self.field_register[self.custom_type_id] = backup_serializer
 
     def tearDown(self):
         self.field_register.pop(self.custom_type_id)

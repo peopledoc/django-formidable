@@ -95,7 +95,7 @@ def get_dynamic_form_class_from_schema(schema, field_factory=None):
 
     """
     attrs = OrderedDict()
-    field_factory = field_factory or field_builder.FormFieldFactory()  # noqa
+    field_factory = field_factory or field_builder.FormFieldFactory()
     doc = schema['description']
     for field in schema['fields']:
         try:
