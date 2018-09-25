@@ -12,6 +12,7 @@ master (unreleased)
 - Change the global exception handling error level, from "error" to "exception". It'll provide better insights if you're using Logmatic or any other logging aggregator (#336).
 - Skip `tox` installation in the circle-ci environment: it's already there (#344).
 - Refactoring of the field builder (Use only one module for the form builder factory) (#347).
+- Add `parameters` to the fields schema
 
 Release 2.1.2 (2018-08-29)
 ==========================

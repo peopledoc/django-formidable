@@ -114,7 +114,7 @@ class FieldSerializer(WithNestedSerializer):
     # redefine here the order field just to take it at the save/update time
     # The order is automatically calculated, if the order is define in
     # incoming payload, it will be automatically overridden.
-    parameters = serializers.JSONField(write_only=True)
+    parameters = serializers.JSONField()
     order = serializers.IntegerField(write_only=True, required=False)
     defaults = DefaultSerializer(many=True, required=False)
     description = serializers.CharField(required=False, allow_null=True,
@@ -126,7 +126,9 @@ class FieldSerializer(WithNestedSerializer):
         if 'help_text' in data:
             data['description'] = data.pop('help_text')
 
-        data['parameters'] = {}
+        if not data.get('parameters'):
+            data['parameters'] = {}
+
         for config_field in self.get_config_fields():
             data['parameters'][config_field] = data.pop(config_field, None)
 
@@ -137,7 +139,6 @@ class FieldSerializer(WithNestedSerializer):
         for config_field in self.get_config_fields():
             if instance.parameters is not None:
                 field[config_field] = instance.parameters.get(config_field)
-        field.pop('parameters', None)
         return field
 
     def get_config_fields(self):
