@@ -78,7 +78,7 @@ class TestCustomFieldSerializer(TestCase):
         # test serialized data
         self.assertIn('meta_info', data)
         self.assertIn('some_another_data', data)
-        self.assertNotIn('parameters', data)
+        self.assertIn('parameters', data)
         # remove instance
         self.instance.delete()
 
