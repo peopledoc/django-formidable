@@ -148,7 +148,7 @@ Let's say that colors can be expressed in two ways: RGB tuple (``rgb``) or Hexad
 
 You want then to make sure that your user would not send a wrong parameter, as in these BAD examples:
 
-.. code-block:: json
+.. code-block:: json-object
 
     "color_format": ""
     "color_format": "foo"
@@ -193,7 +193,7 @@ Let's add some validation in your Serializer, then.
                 self.fail("invalid_format",
                           format=format, formats=self.allowed_formats)
 
-            return super(ColorPickerFieldSerializer, self).to_internal_value(data)
+            return data
 
 
 Load your field for the form filler
@@ -216,12 +216,23 @@ Then this namespace should point at your :class:`ColorPickerFieldBuilder` class,
 .. code-block:: python
 
     import re
-    from django import forms
+    from formidable.forms.fields import ParametrizedFieldMixin, CharField
     from formidable.forms.field_builder import FieldBuilder
 
     COLOR_RE = re.compile('^#(?:[0-9a-fA-F]{3}){1,2}$')
 
-    class ColorPickerField(forms.Field):
+    class ColorPickerWidget(TextInput):
+        """
+        This widget class enables to use the :meth:`to_formidable()` helper.
+        """
+        type_id = 'color_picker'
+
+    class ColorPickerField(ParametrizedFieldMixin, CharField):
+        """
+        The ColorPickerField should inherit from a ``formidable.forms.fields``
+        subclass.
+        """
+        widget = ColorPickerWidget
 
         def to_python(self, value):
             return value
@@ -243,6 +254,12 @@ Then this namespace should point at your :class:`ColorPickerFieldBuilder` class,
 
     class ColorPickerFieldBuilder(FieldBuilder):
         field_class = ColorPickerField
+
+
+.. important::
+
+    * The field should inherit from a formidable Field class, to enable :meth:`to_formidable()` and :meth:`to_json()` to be used
+    * The ``widget`` associated with the Field should have the ``type_id`` property set to the same than the Serializer.
 
 
 .. note:: Full example

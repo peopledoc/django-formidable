@@ -4,6 +4,8 @@ from django import forms
 
 from formidable.forms.field_builder import FieldBuilder
 from formidable.serializers.fields import FieldSerializer, BASE_FIELDS
+from formidable.forms.fields import ParametrizedFieldMixin, CharField
+from formidable.forms.widgets import TextInput
 
 
 COLOR_RE = re.compile('^#(?:[0-9a-fA-F]{3}){1,2}$')
@@ -35,20 +37,23 @@ class ColorPickerFieldSerializer(FieldSerializer):
         if format not in self.allowed_formats:
             self.fail("invalid_format",
                       format=format, formats=self.allowed_formats)
+        return data
 
-        return super(ColorPickerFieldSerializer, self).to_internal_value(data)
+
+class ColorPickerWidget(TextInput):
+    type_id = 'color_picker'
 
 
-class ColorPickerField(forms.Field):
+class ColorPickerField(ParametrizedFieldMixin, CharField):
     """
     Custom Django for fields, to handle validation of color picks.
     """
+    widget = ColorPickerWidget
+
     def to_python(self, value):
         return value
 
     def validate(self, value):
-        # Depending on the parent class, it might be a good idea to call
-        # super() in order to use the parents validation.
         super(ColorPickerField, self).validate(value)
         params = getattr(self, '__formidable_field_parameters', {})
         color_format = params.get('color_format')

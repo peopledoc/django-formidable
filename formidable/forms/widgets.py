@@ -62,16 +62,19 @@ class FormidableWidget(widgets.Widget):
     multiple = False
     """ If true, the widget is multiple selection items """
 
-    def to_formidable(self, formidable, slug, label, help_text, order):
+    def to_formidable(self, formidable, slug, label, help_text, order,
+                      parameters=None):
         """
         Create an association in database with the formidable reference object.
-        :attr:`slug`, :attr:`label`, :attr:`help_text` come from the
+        The arguments :attr:`slug`, :attr:`label`, :attr:`help_text`,
+        :attr:`parameters` come from the
         :class:`formidable.forms.fields.Field` associated object.
         """
+        parameters = parameters or {}
         return formidable.fields.create(
             slug=slug, label=label, type_id=self.type_id,
             help_text=help_text, multiple=self.multiple,
-            order=order
+            order=order, parameters=parameters
         )
 
 
@@ -87,9 +90,10 @@ class Textarea(FormidableWidget, widgets.Textarea):
 
 class ItemsWidget(FormidableWidget):
 
-    def to_formidable(self, formidable, slug, label, help_text, order, items):
+    def to_formidable(self, formidable, slug, label, help_text, order, items,
+                      parameters=None):
         field = super(ItemsWidget, self).to_formidable(
-            formidable, slug, label, help_text, order
+            formidable, slug, label, help_text, order, parameters=parameters
         )
         for order, item in enumerate(items):
             value, label = item
