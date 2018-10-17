@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 3.0.0rc5 (2018-10-17)
+=============================
 
 - Upgrade to Circle-CI 2 (before the end of life of Circle-CI v1 on August, 31st 2018). (#342)
 - Optimize Circle-CI usage by using the tox matrix in tests (#343)
