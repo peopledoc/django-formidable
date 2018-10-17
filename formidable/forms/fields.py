@@ -126,6 +126,22 @@ class Field(object):
         return {}
 
 
+class ParametrizedFieldMixin(object):
+    """
+    Field mixin to authorize feeding it with parameters
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.parameters = kwargs.pop('parameters', {})
+        super(ParametrizedFieldMixin, self).__init__(*args, **kwargs)
+
+    def get_extra_formidable_kwargs(self):
+        kwargs = super(
+            ParametrizedFieldMixin, self).get_extra_formidable_kwargs()
+        kwargs.update({'parameters': self.parameters or {}})
+        return kwargs
+
+
 class FormatField(Field, fields.Field):
     """
     Handles display information inside the form.
