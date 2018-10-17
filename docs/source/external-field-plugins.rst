@@ -2,6 +2,8 @@
 External Field Plugin Mechanism
 ===============================
 
+.. versionadded:: 3.0.0
+
 We've included a mechanism to add your own fields to the collection of available fields in ``django-formidable``.
 
 It'll be possible to:

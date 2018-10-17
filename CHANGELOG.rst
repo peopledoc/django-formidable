@@ -2,20 +2,27 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 3.0.0 (2018-10-31)
+==========================
 
-- Upgrade to Circle-CI 2 (before the end of life of Circle-CI v1 on August, 31st 2018). (#342)
-- Optimize Circle-CI usage by using the tox matrix in tests (#343)
+Main Changes
+------------
+
 - Added a plugin mechanism, allowing users to define and integrate their own "business logic" fields (#345).
 - Extend the validation in the filler API to allow validation of extra fields (#348).
-- Change the global exception handling error level, from "error" to "exception". It'll provide better insights if you're using Logmatic or any other logging aggregator (#336).
-- Skip `tox` installation in the circle-ci environment: it's already there (#344).
 - Refactoring of the field builder (Use only one module for the form builder factory) (#347).
 - Add `parameters` to the fields schema.
 - Allow Fields and Widgets to introduce `parameters` when being stored as Formidable models instances (#358).
 - Added pytz as a requirement.
-- Enforce support for Django REST Framework to the version 3.8.x ; the 3.9 series is incompatible with our current codebase.
+- Enforce support for Django REST Framework to the version 3.8.x ; **the 3.9 series is incompatible with our current codebase**.
+
+Minor Changes
+-------------
+
+- Upgrade to Circle-CI 2 (before the end of life of Circle-CI v1 on August, 31st 2018). (#342)
+- Optimize Circle-CI usage by using the tox matrix in tests (#343)
+- Change the global exception handling error level, from "error" to "exception". It'll provide better insights if you're using Logmatic or any other logging aggregator (#336).
+- Skip `tox` installation in the circle-ci environment: it's already there (#344).
 
 Release 2.1.2 (2018-08-29)
 ==========================

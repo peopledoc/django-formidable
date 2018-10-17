@@ -2,6 +2,20 @@
 Deprecation timeline
 ====================
 
+From 2.1.2 to 3.0.0
+===================
+
+Octobre 31st, 2018
+
+Django REST Framework versions
+------------------------------
+
+.. deprecated:: 3.0.0
+
+    Support for Django REST Framework stricly greater than 3.8.
+    The 3.9 series has introduced an incompatibility with ``django-formidable``.
+
+
 From 1.7.0 to 2.0.0
 ===================
 
