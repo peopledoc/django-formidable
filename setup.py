@@ -29,6 +29,7 @@ setup(
         'markdown',
         'python-dateutil',
         'jsonfield',
+        'pytz',
         'six',
     ],
     classifiers=[
