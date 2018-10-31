@@ -48,7 +48,7 @@ class ValidationSerializerTest(TestCase):
         data = {
             'field_id': self.text_field.id,
             'type': 'REGEXP',
-            'value': '\w+ly',
+            'value': r'\w+ly',
         }
         serializer = RegexpSerializer(data=data)
         self.assertTrue(serializer.is_valid())
@@ -57,7 +57,7 @@ class ValidationSerializerTest(TestCase):
         data = {
             'field_id': self.text_field.id,
             'type': 'REGEXP',
-            'value': '\w+ly(',
+            'value': r'\w+ly(',
         }
         serializer = RegexpSerializer(data=data)
         self.assertFalse(serializer.is_valid())

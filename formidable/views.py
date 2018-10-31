@@ -303,7 +303,7 @@ class ValidateViewFromSchema(ValidateView):
         object with its JSON representation.
 
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     class ValidationFileFieldBuilder(field_builder.FileFieldBuilder):  # noqa
 
