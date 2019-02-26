@@ -1513,10 +1513,10 @@ class CreateSerializerMigrationTestCase(TestCase):
             {
                 'type_id': 'dropdown',
                 'slug': 'dropdown-input', 'label': 'dropdown label',
-                'help_text': 'Field Help',
+                'description': 'Field Help',
                 'multiple': False,
                 'items': [
-                    {'value': 'tutu', 'label': 'toto', 'help_text': 'Item Help'},  # noqa
+                    {'value': 'tutu', 'label': 'toto', 'description': 'Item Help'},  # noqa
                     {'value': 'tata', 'label': 'plop'},
                 ],
                 'accesses': [],

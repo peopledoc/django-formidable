@@ -5,8 +5,8 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
-
+- Clean up help_text migration (#292)
+- Freeze perf-rec version for the python 2.7
 
 Release 3.0.0 (2018-10-31)
 ==========================
