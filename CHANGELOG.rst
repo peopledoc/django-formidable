@@ -2,6 +2,10 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+Nothing here yet.
+
 Release 3.0.1 (2019-03-01)
 ==========================
 
