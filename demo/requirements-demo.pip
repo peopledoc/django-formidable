@@ -2,7 +2,6 @@ django-cors-headers
 ipdb
 django-extensions
 freezegun
-django-perf-rec
 mock
 # added a typing module to fix https://github.com/django-extensions/django-extensions/issues/1176
 typing
