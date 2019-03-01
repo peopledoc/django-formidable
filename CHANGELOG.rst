@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 3.0.1 (2019-03-01)
+==========================
 
 - Clean up help_text migration (#292)
 - Freeze perf-rec version for the python 2.7
