@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Fix documentation build (#363).
+- Upgrade requirements to Django REST Framework 3.9.x.
 
 Release 3.0.1 (2019-03-01)
 ==========================

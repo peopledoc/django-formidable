@@ -171,7 +171,7 @@ class UpdateFormTestCase(FormidableAPITestCase):
             'description': 'edited description',
             'fields': []
         }
-        res = self.client.put(self.edit_url, data)
+        res = self.client.put(self.edit_url, data, format="json")
         self.assertEquals(res.status_code, 200)
         formidable = Formidable.objects.order_by('pk').last()
         self.assertEquals(formidable.pk, self.form.pk)
@@ -188,7 +188,7 @@ class UpdateFormTestCase(FormidableAPITestCase):
         url = self.edit_url
         self.assertFalse(url.endswith('/'))
         res = self.client.put(
-            url, data
+            url, data, format="json"
         )
         self.assertEquals(res.status_code, 200)
         res = self.client.put(
@@ -209,7 +209,7 @@ class UpdateFormTestCase(FormidableAPITestCase):
         )
         self.assertEquals(res.status_code, 200)
         res = self.client.get(
-            url + '/', form_data, format='json'
+            url + '/', form_data
         )
         self.assertEquals(res.status_code, 200)
 

@@ -8,7 +8,6 @@
       "description": "title",
       "accesses": []
     },
-
     {
       "id": "name",
       "slug": "name",
@@ -52,7 +51,9 @@
       "label": "text1",
       "type_id": "text",
       "description": "text",
-      "accesses": []
+      "accesses": [
+          {"access_id": "jedi", "level": "REQUIRED"}
+      ]
     }
   ],
   "description": "Test description",
