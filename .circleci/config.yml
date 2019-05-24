@@ -13,7 +13,7 @@ jobs:
   docs:
     working_directory: ~/django-formidable
     docker:
-      - image: circleci/node:4.8.2
+      - image: circleci/node:lts
     steps:
       - checkout
       - run:
