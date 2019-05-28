@@ -2,10 +2,23 @@
 Deprecation timeline
 ====================
 
+From 3.0.1 to 3.1.0
+===================
+
+June 3rd, 2019
+
+Django REST Framework versions
+------------------------------
+
+.. new:: 3.1.0
+
+    Support for Django REST Framework on all versions up to the 3.9 series.
+
+
 From 2.1.2 to 3.0.0
 ===================
 
-Octobre 31st, 2018
+October 31st, 2018
 
 Django REST Framework versions
 ------------------------------

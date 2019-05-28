@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 3.1.0 (2019-06-03)
+==========================
 
 - Fix documentation build (#363).
 - Upgrade requirements to Django REST Framework 3.9.x.
