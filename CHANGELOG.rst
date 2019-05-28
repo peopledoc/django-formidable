@@ -4,7 +4,8 @@ ChangeLog
 
 master (unreleased)
 ===================
-Nothing here yet.
+
+- Fix documentation build (#363).
 
 Release 3.0.1 (2019-03-01)
 ==========================
