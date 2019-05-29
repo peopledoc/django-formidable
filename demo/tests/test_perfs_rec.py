@@ -2,17 +2,16 @@
 import os
 import json
 
-from django.test import TestCase as OrigTestCase
-
 try:
     from django.urls import reverse
 except ImportError:
     from django.core.urlresolvers import reverse
 
 from django_perf_rec import TestCaseMixin
+from rest_framework.test import APITestCase
 
 
-class TestCase(TestCaseMixin, OrigTestCase):
+class TestCase(TestCaseMixin, APITestCase):
     """
     Add use perf rec mixin
     """
@@ -59,18 +58,22 @@ class TestPerfRec(TestCase):
     def test_access_list_perf_rec(self):
         with self.record_performance(record_name='accesses-list'):
             url = reverse('formidable:accesses_list')
-            self.client.get(url)
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
     def test_context_form_details_perf_rec(self):
         form_id = self._create_form()
 
+        url = reverse('formidable:context_form_detail', args=(form_id,))
+
         with self.record_performance(record_name='get-context-form'):
-            url = reverse('formidable:context_form_detail', args=(form_id,))
-            self.client.get(url)
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
     def test_form_create_perf_rec(self):
         with self.record_performance(record_name='create-form'):
             self._create_form()
+        # Status code is checked in :func:`_create_form()`
 
     def test_form_update_form_without_changes(self):
         form_id = self._create_form()
@@ -79,10 +82,11 @@ class TestPerfRec(TestCase):
                 record_name='update-form-without-changes'
         ):
             url = reverse('formidable:form_detail', args=(form_id, ))
-            self.client.put(
-                url, data=json.dumps(self.form_data),
-                content_type='application/json'
+            response = self.client.put(
+                url, data=self.form_data,
+                format='json'
             )
+        self.assertEqual(response.status_code, 200)
 
     def test_form_update_with_changes(self):
         form_id = self._create_form()
@@ -91,24 +95,28 @@ class TestPerfRec(TestCase):
                 record_name='update-form-with-changes'
         ):
             url = reverse('formidable:form_detail', args=(form_id,))
-            self.client.put(
-                url, data=json.dumps(self.form_data_changed),
-                content_type='application/json'
+            response = self.client.put(
+                url, data=self.form_data_changed,
+                format='json'
             )
+        self.assertEqual(response.status_code, 200)
 
     def test_retrieve_form_perf_rec(self):
         form_id = self._create_form()
 
         with self.record_performance(record_name='retrieve-form'):
             url = reverse('formidable:form_detail', args=(form_id,))
-            self.client.get(url)
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
     def test_form_validate_perf_rec(self):
         form_id = self._create_form()
 
         with self.record_performance(record_name='validate-form'):
             url = reverse('formidable:form_validation', args=(form_id,))
-            self.client.post(url)
+            response = self.client.post(url, format="json")
+        # Empty response in the case it's valid.
+        self.assertEqual(response.status_code, 204)
 
     def _create_form(self):
         session = self.client.session
@@ -117,7 +125,8 @@ class TestPerfRec(TestCase):
 
         url = reverse('formidable:form_create')
         result = self.client.post(
-            url, data=self.form_data
+            url, data=self.form_data, format="json"
         )
+        self.assertEqual(result.status_code, 201)
 
         return result.data.get('id')

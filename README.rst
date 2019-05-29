@@ -15,7 +15,7 @@ Warnings
 
 * Python Compatibility : Python 2.7, 3.5, 3.6
 * Django compatibility : Django 1.10, 1.11
-* Django REST Framework : Compatible from the version 3.5.4 to 3.8.x ; **django-formidable is incompatible with the 3.9.x series**.
+* Django REST Framework : Compatible from the version 3.5.4 to 3.9.x.
 
 See the `Deprecation timeline <http://django-formidable.readthedocs.io/en/latest/deprecations.html>`_ document for more information on deprecated versions.
 

@@ -25,7 +25,7 @@ setup(
                  'guillaume.gerard@people-doc.com',
     install_requires=[
         'Django',
-        'djangorestframework<3.9',
+        'djangorestframework<4.0.0',
         'markdown',
         'python-dateutil',
         'jsonfield',
