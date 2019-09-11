@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Extend the test matrix to spread through different DRF versions.
 
 Release 3.1.0 (2019-06-03)
 ==========================
