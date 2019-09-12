@@ -9,15 +9,15 @@ from formidable.forms import BaseDynamicForm, fields
 
 class RenderingFormatField(TestCase):
 
-    class TestForm(BaseDynamicForm):
-
+    class MockForm(BaseDynamicForm):
+        """Mock Form"""
         title = fields.TitleField(label='Onboarding Form')
         helptext = fields.HelpTextField(text='Enter your **address**')
         sepa = fields.SeparatorField()
 
     def setUp(self):
         super(RenderingFormatField, self).setUp()
-        self.form = self.TestForm()
+        self.form = self.MockForm()
 
     def test_render_help_text(self):
         text = self.form.as_p()

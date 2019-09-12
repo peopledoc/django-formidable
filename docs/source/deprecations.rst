@@ -2,6 +2,14 @@
 Deprecation timeline
 ====================
 
+From 3.2.0 to... ?
+==================
+
+.. versionadded:: X.Y.Z
+
+    Added support for Django 2.2. Django Formidable should probably work on Django 2.0 and 2.1, but it's not in our test suite. We've decided to skip those versions because of their short-term support.
+
+
 From 3.1.0 to 3.2.0
 ===================
 
