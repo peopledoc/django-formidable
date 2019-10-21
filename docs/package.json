@@ -8,6 +8,6 @@
   "author": "Guillaume Gérard <guillaume.gerard88@gmail.com> (http://guillaume.gerard.pm)",
   "license": "MIT",
   "devDependencies": {
-    "swagger-ui": "^2.2.10"
+    "swagger-ui": "^3.23.11"
   }
 }
