@@ -9,7 +9,6 @@ TestPerfRec.create-form:
 - db: 'UPDATE "django_session" SET ... WHERE "django_session"."session_key" = #'
 - db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
-- db: SAVEPOINT `#`
 - db: INSERT INTO "formidable_formidable" (...) VALUES (...)
 - db: INSERT INTO "formidable_field" (...) VALUES (...)
 - db: INSERT INTO "formidable_access" (...) VALUES (...)
@@ -47,7 +46,6 @@ TestPerfRec.create-form:
 - db: INSERT INTO "formidable_access" (...) VALUES (...)
 - db: INSERT INTO "formidable_access" (...) VALUES (...)
 - db: INSERT INTO "formidable_access" (...) VALUES (...)
-- db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 - db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
@@ -62,7 +60,6 @@ TestPerfRec.create-form-pg:
 - db: 'UPDATE "django_session" SET ... WHERE "django_session"."session_key" = #'
 - db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > #::timestamptz AND "django_session"."session_key" = #)'
-- db: SAVEPOINT `#`
 - db: INSERT INTO "formidable_formidable" (...) VALUES (...) RETURNING "formidable_formidable"."id"
 - db: INSERT INTO "formidable_field" (...) VALUES (...) RETURNING "formidable_field"."id"
 - db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
@@ -100,7 +97,6 @@ TestPerfRec.create-form-pg:
 - db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
 - db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
 - db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
-- db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 - db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
@@ -140,8 +136,8 @@ TestPerfRec.retrieve-form-pg:
 - db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
 TestPerfRec.update-form-with-changes:
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
-- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
 - db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
 - db: 'SELECT ... FROM "formidable_field" WHERE ("formidable_field"."form_id" = # AND "formidable_field"."slug" IN (...))'
@@ -165,16 +161,49 @@ TestPerfRec.update-form-with-changes:
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
-- db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 - db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
-TestPerfRec.update-form-with-changes-pg:
-- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > #::timestamptz AND "django_session"."session_key" = #)'
-- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: RELEASE SAVEPOINT `#`
+TestPerfRec.update-form-with-changes-patch:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
 - db: SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE ("formidable_field"."form_id" = # AND "formidable_field"."slug" IN (...))'
+- db: DELETE FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
+- db: DELETE FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...)
+- db: DELETE FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+- db: DELETE FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
+- db: DELETE FROM "formidable_field" WHERE "formidable_field"."id" IN (...)
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: INSERT INTO "formidable_field" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: INSERT INTO "formidable_access" (...) VALUES (...)
+- db: 'UPDATE "formidable_field" SET ... WHERE "formidable_field"."id" = #'
+- db: 'SELECT "formidable_access"."access_id" FROM "formidable_access" WHERE "formidable_access"."field_id" = #'
+- db: 'SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+- db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
+- db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+- db: RELEASE SAVEPOINT `#`
+TestPerfRec.update-form-with-changes-patch-pg:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > #::timestamptz AND "django_session"."session_key" = #)'
+- db: SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = # FOR UPDATE NOWAIT'
 - db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
 - db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
 - db: 'SELECT ... FROM "formidable_field" WHERE ("formidable_field"."form_id" = # AND "formidable_field"."slug" IN (...))'
@@ -198,16 +227,49 @@ TestPerfRec.update-form-with-changes-pg:
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
-- db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 - db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+- db: RELEASE SAVEPOINT `#`
+TestPerfRec.update-form-with-changes-pg:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > #::timestamptz AND "django_session"."session_key" = #)'
+- db: SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = # FOR UPDATE NOWAIT'
+- db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE ("formidable_field"."form_id" = # AND "formidable_field"."slug" IN (...))'
+- db: DELETE FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
+- db: DELETE FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...)
+- db: DELETE FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+- db: DELETE FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
+- db: DELETE FROM "formidable_field" WHERE "formidable_field"."id" IN (...)
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
+- db: INSERT INTO "formidable_field" (...) VALUES (...) RETURNING "formidable_field"."id"
+- db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
+- db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
+- db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
+- db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
+- db: INSERT INTO "formidable_access" (...) VALUES (...) RETURNING "formidable_access"."id"
+- db: 'UPDATE "formidable_field" SET ... WHERE "formidable_field"."id" = #'
+- db: 'SELECT "formidable_access"."access_id" FROM "formidable_access" WHERE "formidable_access"."field_id" = #'
+- db: 'SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+- db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
+- db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
+- db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+- db: RELEASE SAVEPOINT `#`
 TestPerfRec.update-form-without-changes:
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
-- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
 - db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
@@ -259,16 +321,16 @@ TestPerfRec.update-form-without-changes:
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
-- db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 - db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+- db: RELEASE SAVEPOINT `#`
 TestPerfRec.update-form-without-changes-pg:
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > #::timestamptz AND "django_session"."session_key" = #)'
-- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: SAVEPOINT `#`
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = # FOR UPDATE NOWAIT'
 - db: 'UPDATE "formidable_formidable" SET ... WHERE "formidable_formidable"."id" = #'
 - db: 'SELECT "formidable_field"."slug" FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = #'
@@ -320,12 +382,12 @@ TestPerfRec.update-form-without-changes-pg:
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
 - db: 'UPDATE "formidable_access" SET ... WHERE "formidable_access"."id" = #'
-- db: RELEASE SAVEPOINT `#`
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 - db: SELECT ... FROM "formidable_item" WHERE "formidable_item"."field_id" IN (...) ORDER BY "formidable_item"."order" ASC
 - db: SELECT ... FROM "formidable_default" WHERE "formidable_default"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_validation" WHERE "formidable_validation"."field_id" IN (...)
 - db: SELECT ... FROM "formidable_access" WHERE "formidable_access"."field_id" IN (...)
+- db: RELEASE SAVEPOINT `#`
 TestPerfRec.validate-form:
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
 - db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'

@@ -144,8 +144,12 @@ class FormidableSerializer(WithNestedSerializer):
         return data
 
     def save(self, *args, **kwargs):
-        with transaction.atomic():
-            return super(FormidableSerializer, self).save(*args, **kwargs)
+        # Wrap around a transaction only if we're not already in a transaction.
+        connection = transaction.get_connection()
+        if not connection.in_atomic_block:
+            with transaction.atomic():
+                return super(FormidableSerializer, self).save(*args, **kwargs)
+        return super(FormidableSerializer, self).save(*args, **kwargs)
 
     def to_representation(self, obj):
         data = super(FormidableSerializer, self).to_representation(obj)

@@ -9,6 +9,7 @@ from copy import deepcopy
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.db import DatabaseError
 import django_perf_rec
 
 from freezegun import freeze_time
@@ -339,6 +340,26 @@ class UpdateFormTestCase(FormidableAPITestCase):
         with patch.object(QuerySet, 'order_by', order_by):
             res = self.client.put(self.edit_url, data, format='json')
         self.assertEquals(res.status_code, 200, res)
+
+    def test_simple_database_error_update(self):
+        data = {
+            'label': 'edited label',
+            'description': 'edited description',
+            'fields': []
+        }
+        with patch('formidable.views.FormidableDetail.get_queryset') as patched:  # noqa
+            patched.side_effect = DatabaseError(
+                'could not obtain lock on row...')
+            res = self.client.put(self.edit_url, data, format="json")
+        # 409 means "CONFLICT"
+        self.assertEquals(res.status_code, 409)
+        self.assertEquals(
+            res.json(),
+            {
+                "code": "permission_denied",
+                "message": "Database error, operation failed"
+            }
+        )
 
 
 class TestAccess(FormidableAPITestCase):

@@ -59,15 +59,27 @@ class TestPerfRec(TestCase):
             open(os.path.join(fixtures_path, 'form-data-changed.json'))
         )
 
+    def _create_form(self):
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+
+        url = reverse('formidable:form_create')
+        result = self.client.post(
+            url, data=self.form_data, format="json"
+        )
+        self.assertEqual(result.status_code, 201)
+
+        return result.data.get('id')
+
     def test_access_list_perf_rec(self):
+        url = reverse('formidable:accesses_list')
         with self.record_performance(record_name='TestPerfRec.accesses-list'):
-            url = reverse('formidable:accesses_list')
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_context_form_details_perf_rec(self):
         form_id = self._create_form()
-
         url = reverse('formidable:context_form_detail', args=(form_id,))
 
         with self.record_performance(
@@ -82,11 +94,11 @@ class TestPerfRec(TestCase):
 
     def test_form_update_form_without_changes(self):
         form_id = self._create_form()
+        url = reverse('formidable:form_detail', args=(form_id, ))
 
         with self.record_performance(
                 record_name='TestPerfRec.update-form-without-changes'
         ):
-            url = reverse('formidable:form_detail', args=(form_id, ))
             response = self.client.put(
                 url, data=self.form_data,
                 format='json'
@@ -95,12 +107,25 @@ class TestPerfRec(TestCase):
 
     def test_form_update_with_changes(self):
         form_id = self._create_form()
+        url = reverse('formidable:form_detail', args=(form_id,))
 
         with self.record_performance(
                 record_name='TestPerfRec.update-form-with-changes'
         ):
-            url = reverse('formidable:form_detail', args=(form_id,))
             response = self.client.put(
+                url, data=self.form_data_changed,
+                format='json'
+            )
+        self.assertEqual(response.status_code, 200)
+
+    def test_form_update_with_changes_patch(self):
+        form_id = self._create_form()
+        url = reverse('formidable:form_detail', args=(form_id,))
+
+        with self.record_performance(
+                record_name='TestPerfRec.update-form-with-changes-patch'
+        ):
+            response = self.client.patch(
                 url, data=self.form_data_changed,
                 format='json'
             )
@@ -108,30 +133,17 @@ class TestPerfRec(TestCase):
 
     def test_retrieve_form_perf_rec(self):
         form_id = self._create_form()
+        url = reverse('formidable:form_detail', args=(form_id,))
 
         with self.record_performance(record_name='TestPerfRec.retrieve-form'):
-            url = reverse('formidable:form_detail', args=(form_id,))
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_form_validate_perf_rec(self):
         form_id = self._create_form()
+        url = reverse('formidable:form_validation', args=(form_id,))
 
         with self.record_performance(record_name='TestPerfRec.validate-form'):
-            url = reverse('formidable:form_validation', args=(form_id,))
             response = self.client.post(url, format="json")
         # Empty response in the case it's valid.
         self.assertEqual(response.status_code, 204)
-
-    def _create_form(self):
-        session = self.client.session
-        session['role'] = 'padawan'
-        session.save()
-
-        url = reverse('formidable:form_create')
-        result = self.client.post(
-            url, data=self.form_data, format="json"
-        )
-        self.assertEqual(result.status_code, 201)
-
-        return result.data.get('id')
