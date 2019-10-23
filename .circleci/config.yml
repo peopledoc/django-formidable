@@ -3,8 +3,15 @@ jobs:
   build:
     docker:
       - image: themattrix/tox
+      - image: circleci/postgres:latest
     working_directory: ~/django-formidable
     steps:
+      - run:
+          name: "Update APT stuff"
+          command: "apt-get update"
+      - run:
+          name: "Install postgresql-common Debian package"
+          command: "apt-get install -y postgresql-common"
       - checkout
       - run:
           name: Run the test suite

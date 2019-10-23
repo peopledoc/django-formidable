@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 
 import copy
 from functools import reduce
+from unittest import skipIf
 
+from django.conf import settings
 from django.db import connection
 from django.test import TestCase, TransactionTestCase
 from django.test.utils import CaptureQueriesContext
@@ -1219,6 +1221,8 @@ class CreateSerializerTestCase(TestCase):
 
 class CreateSerializerTransactionTestCase(TransactionTestCase):
 
+    @skipIf('postgresql' in settings.DATABASES['default']['ENGINE'],
+            "Skip if PG")
     def test_unique_transaction(self):
         data = copy.deepcopy(CreateSerializerTestCase.data)
         data['fields'] = CreateSerializerTestCase.fields_with_items
@@ -1228,7 +1232,7 @@ class CreateSerializerTransactionTestCase(TransactionTestCase):
             serializer.save()
         begin_count = sum(1 for query in capture.captured_queries
                           if query['sql'] == 'BEGIN')
-        self.assertEqual(begin_count, 1)
+        self.assertEqual(begin_count, 1, capture.captured_queries)
 
 
 class UpdateFormTestCase(TestCase):
@@ -1528,6 +1532,7 @@ class CreateSerializerMigrationTestCase(TestCase):
         serializer = FormidableSerializer(data=self.data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
         form = serializer.save()
-        self.assertEqual(form.fields.all()[0].help_text, 'Field Help')
-        self.assertEqual(form.fields.all()[0].items.all()[0].help_text,
-                         'Item Help')
+        field = form.fields.first()
+        self.assertEqual(field.help_text, 'Field Help')
+        first_item = field.items.order_by('id').first()
+        self.assertEqual(first_item.help_text, 'Item Help')

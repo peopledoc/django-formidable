@@ -2,6 +2,13 @@ UpdateFormTestCase.test_queryset_on_context_form_detail:
 - db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > # AND "django_session"."session_key" = #)'
 - db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+UpdateFormTestCase.test_queryset_on_context_form_detail-pg:
+- db: 'SELECT ... FROM "django_session" WHERE ("django_session"."expire_date" > #::timestamptz AND "django_session"."session_key" = #)'
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
 UpdateFormTestCase.test_queryset_on_get:
+- db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
+- db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'
+UpdateFormTestCase.test_queryset_on_get-pg:
 - db: 'SELECT ... FROM "formidable_formidable" WHERE "formidable_formidable"."id" = #'
 - db: 'SELECT ... FROM "formidable_field" WHERE "formidable_field"."form_id" = # ORDER BY "formidable_field"."order" ASC'

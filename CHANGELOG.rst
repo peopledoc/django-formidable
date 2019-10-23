@@ -7,6 +7,7 @@ master (unreleased)
 
 - Extend the test matrix to spread through different DRF versions.
 - Drop support for Django 1.10 (EOL was in December 2nd, 2017).
+- Launch tests on Postgresql as well as SQLite. Launching these tests will be possible both locally and on Circle-CI. See the "dev" documentation on how you can run tests on your development environment (#161).
 
 Release 3.1.0 (2019-06-03)
 ==========================
