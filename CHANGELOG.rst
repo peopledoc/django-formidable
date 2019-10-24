@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Extend the test matrix to spread through different DRF versions.
+- Drop support for Django 1.10 (EOL was in December 2nd, 2017).
 
 Release 3.1.0 (2019-06-03)
 ==========================

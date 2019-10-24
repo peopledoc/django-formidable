@@ -2,6 +2,13 @@
 Deprecation timeline
 ====================
 
+From 3.1.0 to ...
+=================
+
+October/November 2019
+
+* Drop support for Django 1.10 (EOL was in December 2nd, 2017)
+
 From 3.0.1 to 3.1.0
 ===================
 
