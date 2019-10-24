@@ -5,6 +5,18 @@ Developer's documentation
 Testing
 -------
 
+Prerequisites
+~~~~~~~~~~~~~
+
+If you want to run the whole test suite, you'll need to have a working Postgresql server instance (preferrably the latest), with the ``pg_virtualenv`` tool available.
+On Debian, this executable is provided by the package ``postgresql-common``.
+
+If you don't have this tools in your toolbox, then... if you're doing a change that **impacts the performance records**, you won't be able to see or generate the diff, **so your branch tests would fail.**
+
+.. note::
+
+    Postgresql driver is only available for Linux or MacOS.
+
 Using tox
 ~~~~~~~~~
 

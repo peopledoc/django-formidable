@@ -8,6 +8,7 @@ import json
 from copy import deepcopy
 
 from django.core.urlresolvers import reverse
+from django.conf import settings
 import django_perf_rec
 
 from freezegun import freeze_time
@@ -290,17 +291,25 @@ class UpdateFormTestCase(FormidableAPITestCase):
         ).exists())
 
     def test_queryset_on_get(self):
-        with django_perf_rec.record(path='perfs/'):
+        record_name = 'UpdateFormTestCase.test_queryset_on_get'
+        if 'postgresql' in settings.DATABASES['default']['ENGINE']:
+            record_name = '{}-pg'.format(record_name)
+
+        with django_perf_rec.record(record_name=record_name, path='perfs/'):
             self.client.get(reverse(
                 'formidable:form_detail', args=[self.form.pk])
             )
 
     def test_queryset_on_context_form_detail(self):
+        record_name = 'UpdateFormTestCase.test_queryset_on_context_form_detail'
+        if 'postgresql' in settings.DATABASES['default']['ENGINE']:
+            record_name = '{}-pg'.format(record_name)
+
         session = self.client.session
         session['role'] = 'padawan'
         session.save()
 
-        with django_perf_rec.record(path='perfs/'):
+        with django_perf_rec.record(record_name=record_name, path='perfs/'):
             self.client.get(reverse(
                 'formidable:context_form_detail', args=[self.form.pk])
             )
