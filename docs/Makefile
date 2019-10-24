@@ -238,19 +238,7 @@ collectstatic:
 	mkdir -p source/_static/specs
 	mkdir -p source/_static/swagger-ui
 	npm install
-	cp -R \
-		node_modules/swagger-ui/dist/css/ \
-		node_modules/swagger-ui/dist/fonts/ \
-		node_modules/swagger-ui/dist/images/ \
-		node_modules/swagger-ui/dist/lang/ \
-		node_modules/swagger-ui/dist/lib/ \
-		node_modules/swagger-ui/dist/swagger-ui.min.js \
+	cp \
+		node_modules/swagger-ui-dist/* \
 		source/_static/swagger-ui/
-	echo -n 'var spec = ' > ./source/_static/specs/formidable.js
-	python \
-		-c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4, sort_keys=True, separators=(",", ": "))' \
-		< ./swagger/formidable.yml \
-		>> ./source/_static/specs/formidable.js
-	# Build the Formidable JSON Schema
-	python -c 'import sys, json; from tests import schema; json.dump(schema, sys.stdout, indent=4, separators=(",", ": "), sort_keys=True)' \
-  > ./source/_static/specs/formidable.json
+	python -c 'import yaml, json; json.dump(yaml.load(open("./swagger/formidable.yml")), open("./source/_static/specs/formidable.json", "w"), indent=4, separators=(",", ": "), sort_keys=True)'

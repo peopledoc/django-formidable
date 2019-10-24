@@ -1,20 +1,5 @@
 {
-    "allOf": [
-        {
-            "$ref": "#/definitions/Form"
-        },
-        {
-            "properties": {
-                "fields": {
-                    "description": "List of fields ordered in the form",
-                    "items": {
-                        "$ref": "#/definitions/Field"
-                    },
-                    "type": "array"
-                }
-            }
-        }
-    ],
+    "basePath": "/api",
     "definitions": {
         "Access": {
             "description": "Different contexts that helps to render a form",
@@ -46,6 +31,40 @@
                 "description"
             ],
             "type": "object"
+        },
+        "BuilderError": {
+            "properties": {
+                "fields": {
+                    "description": "Errors on fields (key => field; value => list of messages)",
+                    "type": "object"
+                },
+                "non_field_errors": {
+                    "description": "Errors on anything except fields (validations...)",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "BuilderForm": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Form"
+                },
+                {
+                    "properties": {
+                        "fields": {
+                            "description": "List of fields ordered in the form",
+                            "items": {
+                                "$ref": "#/definitions/Field"
+                            },
+                            "type": "array"
+                        }
+                    }
+                }
+            ]
         },
         "Condition": {
             "description": "Describe conditional display of a field, depending on the value of another field.\n\ne.g.: \"display the field 'what is you favorite Star Wars character?' if the boolean field 'Do you like Star Wars?' is checked\".\n",
@@ -292,6 +311,53 @@
             ],
             "type": "object"
         },
+        "InputError": {
+            "description": "Object that contains field errors as key with a list of string in value",
+            "properties": {
+                "__all__": {
+                    "description": "Errors on anything except form's fields",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "InputField": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Field"
+                }
+            ],
+            "properties": {
+                "values": {
+                    "description": "Values selected/inputed when the form is in edition mode",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            }
+        },
+        "InputForm": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Form"
+                },
+                {
+                    "properties": {
+                        "fields": {
+                            "description": "List of fields ordered in the form",
+                            "items": {
+                                "$ref": "#/definitions/InputField"
+                            },
+                            "type": "array"
+                        }
+                    }
+                }
+            ]
+        },
         "Item": {
             "description": "Describe an item in a list",
             "properties": {
@@ -314,5 +380,166 @@
             ],
             "type": "object"
         }
-    }
+    },
+    "host": "localhost:8000",
+    "info": {
+        "description": "django-formidable is a full django application which allows you to create,\nedit, delete and use forms.\n\n##### Field types\n\nList of known types available:\n\n| Type | Description | HTML Component |\n| ---- | ----------- | -------------- |\n| title | Title | h2 |\n| helpText | Helptext | p |\n| fieldset | Group of fields (iterable) | fieldset |\n| fieldsetTable | Group of fields display as table (iterable) | table |\n| separation | Separator line (design only) | hr |\n| checkbox | Checkbox alone | input type=checkbox |\n| checkboxes | Some checkboxes, all checkable | input type=checkbox, all have the same name |\n| dropdown | Dropdown with values | select |\n| radios | Some radios, only one is selected at once | input type=radio |\n| radiosButtons | Some radios display as toggle button | input type=radio |\n| text | Input for one line text | input type=text |\n| paragraph | Input for multiline text | textarea |\n| file | Field to select a local file to be uploaded | input type=file |\n| date | Input for a date (datepicker with it, lang know by application parameter, validation by momentjs) | input type=date |\n| email | Input for an email (validation by regexp) | input |\n| number | Input for a number | input |\n\n##### Validations types\n\nList of validations available by types:\n\n| Field | Validation type |\n| ----- | ----------- |\n| text | MINLENGTH, MAXLENGTH, REGEXP |\n| paragraph | MINLENGTH, MAXLENGTH, REGEXP |\n| date | GT, GTE, LT, LTE, EQ, NEQ, IS_AGE_ABOVE (>=), IS_AGE_UNDER (<), IS_DATE_IN_THE_PAST (< today), IS_DATE_IN_THE_FUTURE (< today) |\n| number | GT, GTE, LT, LTE, EQ, NEQ |\n",
+        "title": "Formidable API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/builder/accesses/": {
+            "get": {
+                "description": "List of accesses available.",
+                "responses": {
+                    "200": {
+                        "description": "A list of accesses",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/Access"
+                            },
+                            "type": "array"
+                        }
+                    }
+                },
+                "summary": "Get accesses"
+            }
+        },
+        "/builder/forms/": {
+            "post": {
+                "description": "Create Form Description",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BuilderForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created form",
+                        "schema": {
+                            "$ref": "#/definitions/BuilderForm"
+                        }
+                    },
+                    "400": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/BuilderError"
+                        }
+                    }
+                },
+                "summary": "Create a new form"
+            }
+        },
+        "/builder/forms/{id}/": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Form",
+                        "schema": {
+                            "$ref": "#/definitions/BuilderForm"
+                        }
+                    }
+                },
+                "summary": "Retrieve a Form"
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "in": "body",
+                        "name": "form",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BuilderForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Form",
+                        "schema": {
+                            "$ref": "#/definitions/BuilderForm"
+                        }
+                    },
+                    "400": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/BuilderError"
+                        }
+                    }
+                },
+                "summary": "Update a Form"
+            }
+        },
+        "/forms/{id}/": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A form",
+                        "schema": {
+                            "$ref": "#/definitions/BuilderForm"
+                        }
+                    }
+                },
+                "summary": "Get a contextualized form"
+            }
+        },
+        "/forms/{id}/validate/": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Validation OK"
+                    },
+                    "400": {
+                        "description": "Validation KO",
+                        "schema": {
+                            "$ref": "#/definitions/InputError"
+                        }
+                    }
+                },
+                "summary": "Validate user-data against a form schema."
+            }
+        }
+    },
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0"
 }
