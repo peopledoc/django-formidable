@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 3.2.0 (2019-11-07)
+==========================
 
 - Extend the test matrix to spread through different DRF versions.
 - Drop support for Django 1.10 (EOL was in December 2nd, 2017).
