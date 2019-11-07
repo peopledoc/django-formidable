@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+
+Nothing here yet.
+
 Release 3.2.0 (2019-11-07)
 ==========================
 
