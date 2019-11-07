@@ -5,6 +5,8 @@ import logging
 
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, PermissionDenied
+from django.db import DatabaseError
+from django.db.utils import OperationalError
 from django.forms.utils import ErrorDict, ErrorList
 from django.http import Http404
 
@@ -136,6 +138,16 @@ def exception_handler(exc, context):
     elif isinstance(exc, forms.ValidationError):
         data = format_forms_error(exc.error_list)
         status_code = 422
+    elif isinstance(exc, (OperationalError, DatabaseError)) \
+            and "could not obtain lock" in str(exc):
+        data = {
+            'code': 'permission_denied',
+            'message': six.text_type(
+                "Database error, operation failed"
+            ),
+        }
+        # 409 error code means CONFLICT.
+        status_code = 409
     else:
         # unhandled exception, return generic error
         error_message = six.text_type(exceptions.APIException.default_detail)

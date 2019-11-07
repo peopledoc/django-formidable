@@ -3,9 +3,11 @@
 from __future__ import unicode_literals
 
 import logging
+from contextlib import contextmanager
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.db import transaction
 
 import six
 from formidable.accesses import get_accesses, get_context
@@ -175,6 +177,34 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
     success_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_SUCCESS'
     failure_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL'
+
+    def __init__(self, *args, **kwargs):
+        super(FormidableDetail, self).__init__(*args, **kwargs)
+        self.select_for_update = None
+
+    def filter_queryset(self, queryset):
+        qs = super(FormidableDetail, self).filter_queryset(queryset)
+        if self.select_for_update:
+            qs = qs.select_for_update(nowait=True)
+        return qs
+
+    @contextmanager
+    def select_form_for_update(self):
+        self.select_for_update = True
+        yield
+        self.select_for_update = None
+
+    @transaction.atomic
+    def put(self, *args, **kwargs):
+        with self.select_form_for_update():
+            result = super(FormidableDetail, self).put(*args, **kwargs)
+        return result
+
+    @transaction.atomic
+    def patch(self, *args, **kwargs):
+        with self.select_form_for_update():
+            result = super(FormidableDetail, self).patch(*args, **kwargs)
+        return result
 
 
 class FormidableCreate(six.with_metaclass(MetaClassView,
