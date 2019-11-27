@@ -157,7 +157,7 @@ class HelpTextWidget(FormidableWidget):
     type_id = 'help_text'
     input_type = 'help_text'
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, **kwargs):
         return markdown(value)
 
 
@@ -170,7 +170,7 @@ class TitleWidget(FormidableWidget):
         self.tag = tag
         super(TitleWidget, self).__init__(*args, **kwargs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, **kwargs):
         tag = attrs.get('tag', None) or self.tag
         return '<{tag}>{value}</{tag}>'.format(
             tag=tag, value=value
@@ -182,5 +182,5 @@ class SeparatorWidget(FormidableWidget):
     type_id = 'separator'
     input_type = 'separator'
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, **kwargs):
         return '<hr>'

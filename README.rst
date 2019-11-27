@@ -13,8 +13,8 @@ edit, delete and use forms.
 Warnings
 ========
 
-* Python Compatibility : Python 2.7, 3.5, 3.6
-* Django compatibility : Django 1.11 (support of Django 2 is coming soon).
+* Python Compatibility : Python 2.7 (for Django 1.11 only), 3.5, 3.6
+* Django compatibility : Django 1.11, 2.2.
 * Django REST Framework : Compatible from the version 3.8.x to 3.10.x
 
 See the `Deprecation timeline <http://django-formidable.readthedocs.io/en/latest/deprecations.html>`_ document for more information on deprecated versions.

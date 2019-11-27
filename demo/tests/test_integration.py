@@ -7,9 +7,9 @@ import json
 
 from copy import deepcopy
 
-from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import DatabaseError
+from django.urls import reverse
 import django_perf_rec
 
 from freezegun import freeze_time

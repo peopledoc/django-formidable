@@ -79,7 +79,9 @@ class Field(models.Model):
 
     slug = models.CharField(max_length=256)
     label = models.CharField(max_length=256)
-    form = models.ForeignKey(Formidable, related_name='fields')
+    form = models.ForeignKey(
+        Formidable, related_name='fields', on_delete=models.CASCADE
+    )
     type_id = models.CharField(
         max_length=256,
         choices=FieldSerializerRegister.get_instance().to_choices()
@@ -106,7 +108,9 @@ class Field(models.Model):
 class Default(models.Model):
 
     value = models.CharField(max_length=256)
-    field = models.ForeignKey(Field, related_name='defaults')
+    field = models.ForeignKey(
+        Field, related_name='defaults', on_delete=models.CASCADE
+    )
 
     class Meta:
         app_label = 'formidable'
@@ -117,7 +121,9 @@ class Default(models.Model):
 
 @python_2_unicode_compatible
 class Item(models.Model):
-    field = models.ForeignKey(Field, related_name='items')
+    field = models.ForeignKey(
+        Field, related_name='items', on_delete=models.CASCADE
+    )
     value = models.TextField()
     label = models.TextField()
     order = models.IntegerField()
@@ -137,7 +143,9 @@ class Access(models.Model):
         unique_together = (('field', 'access_id'),)
         app_label = 'formidable'
 
-    field = models.ForeignKey(Field, related_name='accesses')
+    field = models.ForeignKey(
+        Field, related_name='accesses', on_delete=models.CASCADE
+    )
     access_id = models.CharField(max_length=128)
     level = models.CharField(max_length=128, choices=(
         (constants.REQUIRED, 'Required'), (constants.EDITABLE, 'Editable'),
@@ -151,7 +159,9 @@ class Access(models.Model):
 
 @python_2_unicode_compatible
 class Validation(models.Model):
-    field = models.ForeignKey(Field, related_name='validations')
+    field = models.ForeignKey(
+        Field, related_name='validations', on_delete=models.CASCADE
+    )
     value = models.CharField(max_length=256)
     type = models.CharField(max_length=256)
     message = models.TextField(blank=True, null=True)

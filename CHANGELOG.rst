@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Add support to Django 2.2 (#326).
 
 Release 3.2.0 (2019-11-07)
 ==========================

@@ -2,11 +2,7 @@
 import os
 import json
 
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
-
+from django.urls import reverse
 from django.conf import settings
 from django_perf_rec import TestCaseMixin
 from rest_framework.test import APITestCase

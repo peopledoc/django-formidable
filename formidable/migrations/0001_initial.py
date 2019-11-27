@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 ('label', models.CharField(max_length=256)),
                 ('order', models.IntegerField()),
                 ('help_text', models.TextField(null=True, blank=True)),
-                ('field', models.ForeignKey(related_name='items', to='formidable.Field')),
+                ('field', models.ForeignKey(related_name='items', to='formidable.Field', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('slug', models.CharField(max_length=128)),
                 ('message', models.TextField(null=True, blank=True)),
-                ('form', models.ForeignKey(related_name='presets', to='formidable.Formidable')),
+                ('form', models.ForeignKey(related_name='presets', to='formidable.Formidable', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('slug', models.CharField(max_length=128)),
                 ('value', models.CharField(max_length=128, null=True, blank=True)),
                 ('field_id', models.CharField(max_length=128, null=True, blank=True)),
-                ('preset', models.ForeignKey(related_name='arguments', to='formidable.Preset')),
+                ('preset', models.ForeignKey(related_name='arguments', to='formidable.Preset', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -85,23 +85,23 @@ class Migration(migrations.Migration):
                 ('value', models.CharField(max_length=256)),
                 ('type', models.CharField(max_length=256)),
                 ('message', models.TextField(null=True, blank=True)),
-                ('field', models.ForeignKey(related_name='validations', to='formidable.Field')),
+                ('field', models.ForeignKey(related_name='validations', to='formidable.Field', on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
             model_name='field',
             name='form',
-            field=models.ForeignKey(related_name='fields', to='formidable.Formidable'),
+            field=models.ForeignKey(related_name='fields', to='formidable.Formidable', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='default',
             name='field',
-            field=models.ForeignKey(related_name='defaults', to='formidable.Field'),
+            field=models.ForeignKey(related_name='defaults', to='formidable.Field', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='access',
             name='field',
-            field=models.ForeignKey(related_name='accesses', to='formidable.Field'),
+            field=models.ForeignKey(related_name='accesses', to='formidable.Field', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='field',

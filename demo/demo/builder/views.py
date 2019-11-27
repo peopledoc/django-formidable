@@ -2,8 +2,9 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
+from django.urls import reverse
+
 from formidable.models import Formidable
-from django.core.urlresolvers import reverse
 from formidable.accesses import get_accesses
 
 

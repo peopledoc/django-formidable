@@ -4,7 +4,7 @@ Tests for the exception handling module, common with every view in Formidable.
 """
 from __future__ import unicode_literals
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django import forms
 from django.http import Http404
