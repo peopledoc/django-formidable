@@ -2,11 +2,11 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 3.3.0 (2019-11-29)
+==========================
 
 - Add support to Django 2.2 (#326).
-- Add support to Python 3.7 & 3.8.
+- Add support to Python 3.7 & 3.8 (#374).
 
 Release 3.2.0 (2019-11-07)
 ==========================
