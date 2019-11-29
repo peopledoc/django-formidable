@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Add support to Django 2.2 (#326).
+- Add support to Python 3.7 & 3.8.
 
 Release 3.2.0 (2019-11-07)
 ==========================

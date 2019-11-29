@@ -13,7 +13,7 @@ edit, delete and use forms.
 Warnings
 ========
 
-* Python Compatibility : Python 2.7 (for Django 1.11 only), 3.5, 3.6
+* Python Compatibility : Python 2.7 (for Django 1.11 only), 3.5, 3.6, 3.7, 3.8
 * Django compatibility : Django 1.11, 2.2.
 * Django REST Framework : Compatible from the version 3.8.x to 3.10.x
 
