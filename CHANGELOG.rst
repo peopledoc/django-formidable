@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Removed ``tox.ini`` directive that skipped missing Python interpreters.
 
 Release 3.3.0 (2019-11-29)
 ==========================
