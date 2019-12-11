@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from django.test import TestCase
 
 from formidable.forms import BaseDynamicForm, fields
@@ -16,7 +12,7 @@ class RenderingFormatField(TestCase):
         sepa = fields.SeparatorField()
 
     def setUp(self):
-        super(RenderingFormatField, self).setUp()
+        super().setUp()
         self.form = self.MockForm()
 
     def test_render_help_text(self):

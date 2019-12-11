@@ -56,7 +56,6 @@ Then you're going to need to make sure that Django would catch this file at star
 
 .. code-block:: python
 
-    from __future__ import absolute_import
     from django.apps import AppConfig
 
 
@@ -185,7 +184,7 @@ Let's add some validation in your Serializer, then.
             fields = BASE_FIELDS + ('parameters',)
 
         def to_internal_value(self, data):
-            data = super(ColorPickerFieldSerializer, self).to_internal_value(data)
+            data = super().to_internal_value(data)
             # Check if the parameters are compliant
             format = data.get('color_format')
             if format is None:
@@ -242,7 +241,7 @@ Then this namespace should point at your :class:`ColorPickerFieldBuilder` class,
         def validate(self, value):
             # Depending on the parent class, it might be a good idea to call
             # super() in order to use the parents validation.
-            super(ColorPickerField, self).validate(value)
+            super().validate(value)
             params = getattr(self, '__formidable_field_parameters', {})
             color_format = params.get('color_format')
             if color_format == 'rgb':

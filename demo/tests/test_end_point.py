@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import copy
 from functools import reduce
 from unittest import skipIf
@@ -1311,7 +1307,7 @@ class UpdateFormTestCase(TestCase):
     }]
 
     def setUp(self):
-        super(UpdateFormTestCase, self).setUp()
+        super().setUp()
         self.form = Formidable.objects.create(
             label='testform', description='test form',
         )

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from django.forms import forms
 
 
@@ -14,7 +10,7 @@ class FormatBoundField(forms.BoundField):
     """
 
     def __init__(self, *args, **kwargs):
-        super(FormatBoundField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # This attribute is used to generate (or not) the final label
         # with html tags. We force the label to None to avoid the label
         # generation:

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from django.test import TestCase
 
 from formidable import constants
@@ -25,7 +21,7 @@ class FormTest(FormidableForm):
 
 class FieldItemTestCase(TestCase):
     def setUp(self):
-        super(FieldItemTestCase, self).setUp()
+        super().setUp()
         self.formidable = FormTest.to_formidable(label='label')
 
     def test_label_field_size(self):
@@ -51,7 +47,7 @@ class FieldItemTestCase(TestCase):
 class UnicodeTestCase(TestCase):
 
     def setUp(self):
-        super(UnicodeTestCase, self).setUp()
+        super().setUp()
         self.formidable = FormTest.to_formidable(label='label')
 
     def test_formidable(self):

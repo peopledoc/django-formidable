@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This modules allows to modify the form between Fields validations and Form
 validation.
@@ -18,10 +17,6 @@ This can be used in the following situations:
    :members: mapper
 
 """
-
-from __future__ import unicode_literals
-
-import six
 
 
 class ConditionsRegister(dict):
@@ -73,7 +68,7 @@ class ConditionsMetaClass(type):
     """
 
     def __new__(mcls, name, base, attrs):
-        condition_class = super(ConditionsMetaClass, mcls).__new__(
+        condition_class = super().__new__(
             mcls, name, base, attrs
         )
         if 'action' in attrs:
@@ -121,7 +116,7 @@ class ConditionTest(object):
         )
 
 
-class Condition(six.with_metaclass(ConditionsMetaClass)):
+class Condition(metaclass=ConditionsMetaClass):
     """
     Object that represents a Conditional action to be applied on some fields
     depending on the result of the `tests`.

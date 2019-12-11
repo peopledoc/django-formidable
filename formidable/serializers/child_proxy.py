@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
-import six
-
-
 def call_right_serializer_by_instance(meth):
 
     def _wrapper(self, instance, *args, **kwargs):
@@ -55,7 +48,7 @@ class LazyChildProxy(object):
     def __init__(self, register):
         self.lookup_field = register.lookup_field
         self.register = {
-            key: value() for key, value in six.iteritems(register)
+            key: value() for key, value in register.items()
         }
 
     def get_right_serializer(self, type_id):

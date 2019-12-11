@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import logging
 from contextlib import contextmanager
 
@@ -9,7 +5,6 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 
-import six
 from formidable.accesses import get_accesses, get_context
 from formidable.exception_handler import ExceptionHandlerMixin
 from formidable.forms import field_builder, get_dynamic_form_class_from_schema
@@ -117,19 +112,19 @@ class CallbackMixin(object):
         self._call_callback(callback)
 
     def perform_create(self, serializer):
-        response = super(CallbackMixin, self).perform_create(serializer)
+        response = super().perform_create(serializer)
         self.success_callback()
         return response
 
     def perform_update(self, serializer):
         "Perform update (overridden to handle callbacks)"
-        response = super(CallbackMixin, self).perform_update(serializer)
+        response = super().perform_update(serializer)
         self.success_callback()
         return response
 
     def handle_exception(self, exc):
         "Handle errors/exceptions (overridden to handle callbacks)"
-        response = super(CallbackMixin, self).handle_exception(exc)
+        response = super().handle_exception(exc)
         # Don't bother with the callback if it was a wrong method
         if isinstance(exc, exceptions.MethodNotAllowed):
             return response
@@ -166,12 +161,11 @@ class MetaClassView(type):
 
             permissions_classes = perform_import(modules, None)
             attrs['permission_classes'] = permissions_classes
-        return super(MetaClassView, mcls).__new__(mcls, name, bases, attrs)
+        return super().__new__(mcls, name, bases, attrs)
 
 
-class FormidableDetail(six.with_metaclass(MetaClassView,
-                       CallbackMixin,
-                       ExceptionHandlerMixin, RetrieveUpdateAPIView)):
+class FormidableDetail(CallbackMixin, ExceptionHandlerMixin,
+                       RetrieveUpdateAPIView, metaclass=MetaClassView):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
@@ -179,11 +173,11 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
     failure_callback_settings = 'FORMIDABLE_POST_UPDATE_CALLBACK_FAIL'
 
     def __init__(self, *args, **kwargs):
-        super(FormidableDetail, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.select_for_update = None
 
     def filter_queryset(self, queryset):
-        qs = super(FormidableDetail, self).filter_queryset(queryset)
+        qs = super().filter_queryset(queryset)
         if self.select_for_update:
             qs = qs.select_for_update(nowait=True)
         return qs
@@ -197,19 +191,18 @@ class FormidableDetail(six.with_metaclass(MetaClassView,
     @transaction.atomic
     def put(self, *args, **kwargs):
         with self.select_form_for_update():
-            result = super(FormidableDetail, self).put(*args, **kwargs)
+            result = super().put(*args, **kwargs)
         return result
 
     @transaction.atomic
     def patch(self, *args, **kwargs):
         with self.select_form_for_update():
-            result = super(FormidableDetail, self).patch(*args, **kwargs)
+            result = super().patch(*args, **kwargs)
         return result
 
 
-class FormidableCreate(six.with_metaclass(MetaClassView,
-                       CallbackMixin,
-                       ExceptionHandlerMixin, CreateAPIView)):
+class FormidableCreate(CallbackMixin, ExceptionHandlerMixin,
+                       CreateAPIView, metaclass=MetaClassView):
     queryset = Formidable.objects.all()
     serializer_class = FormidableSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
@@ -217,21 +210,21 @@ class FormidableCreate(six.with_metaclass(MetaClassView,
     failure_callback_settings = 'FORMIDABLE_POST_CREATE_CALLBACK_FAIL'
 
 
-class ContextFormDetail(six.with_metaclass(MetaClassView,
-                        ExceptionHandlerMixin, RetrieveAPIView)):
+class ContextFormDetail(ExceptionHandlerMixin, RetrieveAPIView,
+                        metaclass=MetaClassView):
 
     queryset = Formidable.objects.all()
     serializer_class = ContextFormSerializer
     settings_permission_key = 'FORMIDABLE_PERMISSION_USING'
 
     def get_serializer_context(self):
-        context = super(ContextFormDetail, self).get_serializer_context()
+        context = super().get_serializer_context()
         context['role'] = get_context(self.request, self.kwargs)
         return context
 
 
-class AccessList(six.with_metaclass(MetaClassView, ExceptionHandlerMixin,
-                                    APIView)):
+class AccessList(ExceptionHandlerMixin, APIView,
+                 metaclass=MetaClassView):
 
     settings_permission_key = 'FORMIDABLE_PERMISSION_BUILDER'
 
@@ -244,8 +237,8 @@ class AccessList(six.with_metaclass(MetaClassView, ExceptionHandlerMixin,
                             status=status.HTTP_400_BAD_REQUEST)
 
 
-class ValidateView(six.with_metaclass(MetaClassView,
-                   ExceptionHandlerMixin, APIView)):
+class ValidateView(ExceptionHandlerMixin, APIView,
+                   metaclass=MetaClassView):
     """
     This view is usually called by the UI front-end in order to validate
     data inside a form to avoid uploading file.

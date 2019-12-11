@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This module provides custom form fields in order to define a Formidable
 object, as with a standard django form.
@@ -49,8 +48,6 @@ your own fields, please look at :mod:`formidable.forms.widgets`.
 
 """
 
-from __future__ import unicode_literals
-
 from django.forms import fields
 
 from formidable.accesses import get_accesses
@@ -66,7 +63,7 @@ class Field(object):
     def __init__(self, accesses=None, default=None, *args, **kwargs):
         self.defaults = [default] if default is not None else []
         self.accesses = accesses or {}
-        super(Field, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def to_formidable(self, form, order, slug):
         # First thing, check accesses are correct.
@@ -133,11 +130,10 @@ class ParametrizedFieldMixin(object):
 
     def __init__(self, *args, **kwargs):
         self.parameters = kwargs.pop('parameters', {})
-        super(ParametrizedFieldMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_extra_formidable_kwargs(self):
-        kwargs = super(
-            ParametrizedFieldMixin, self).get_extra_formidable_kwargs()
+        kwargs = super().get_extra_formidable_kwargs()
         kwargs.update({'parameters': self.parameters or {}})
         return kwargs
 
@@ -160,7 +156,7 @@ class FormatField(Field, fields.Field):
 
     def __init__(self, *args, **kwargs):
         kwargs['help_text'] = ''
-        super(FormatField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class HelpTextField(FormatField, fields.Field):
@@ -175,7 +171,7 @@ class HelpTextField(FormatField, fields.Field):
 
     def __init__(self, text, *args, **kwargs):
         self.text = text
-        super(HelpTextField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_bound_field(self, form, name):
         return boundfield.HelpTextBoundField(form, self, name)
@@ -227,11 +223,11 @@ class EmailField(Field, fields.EmailField):
 class ItemField(Field):
 
     def __init__(self, defaults=None, *args, **kwargs):
-        super(ItemField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.defaults = defaults or []
 
     def get_extra_formidable_kwargs(self):
-        kwargs = super(ItemField, self).get_extra_formidable_kwargs()
+        kwargs = super().get_extra_formidable_kwargs()
         kwargs['items'] = self.choices
         return kwargs
 

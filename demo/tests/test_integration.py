@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import os
 import json
 
@@ -22,12 +18,7 @@ from formidable import validators, constants
 
 from . import form_data, form_data_items
 
-import six
-
-if six.PY3:
-    from unittest.mock import patch
-else:
-    from mock import patch
+from unittest.mock import patch
 
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -155,7 +146,7 @@ class CreateFormTestCase(FormidableAPITestCase):
 class UpdateFormTestCase(FormidableAPITestCase):
 
     def setUp(self):
-        super(UpdateFormTestCase, self).setUp()
+        super().setUp()
         self.form = Formidable.objects.create(
             label='test', description='test'
         )
@@ -387,7 +378,7 @@ class TestAccess(FormidableAPITestCase):
 class TestChain(FormidableAPITestCase):
 
     def setUp(self):
-        super(FormidableAPITestCase, self).setUp()
+        super().setUp()
         self.form = MyTestForm.to_formidable(label='Jedi Form')
         self.assertTrue(self.form.pk)
 
@@ -429,7 +420,7 @@ class TestValidationEndPoint(FormidableAPITestCase):
     url = 'formidable:form_validation'
 
     def setUp(self):
-        super(TestValidationEndPoint, self).setUp()
+        super().setUp()
         self.formidable = MyForm.to_formidable(label='title')
 
     def test_validate_data_ok(self):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import json
 
@@ -30,7 +29,7 @@ class TestCase(TestCaseMixin, APITestCase):
         if 'postgresql' in settings.DATABASES['default']['ENGINE']:
             record_name = '{}-pg'.format(record_name)
 
-        return super(TestCase, self).record_performance(
+        return super().record_performance(
             path=path,
             record_name=record_name
         )
@@ -45,7 +44,7 @@ class TestPerfRec(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(TestPerfRec, cls).setUpClass()
+        super().setUpClass()
         fixtures_path = os.path.join(cls.dir_path, cls.fixtures_folder)
 
         cls.form_data = json.load(

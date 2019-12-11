@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Tests for the exception handling module, common with every view in Formidable.
-"""
-from __future__ import unicode_literals
-
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django import forms
@@ -14,11 +8,7 @@ from rest_framework import exceptions
 
 from formidable.models import Formidable
 
-import six
-if six.PY3:
-    from unittest.mock import patch
-else:
-    from mock import patch
+from unittest.mock import patch
 
 
 INIT_TO_MOCK = 'formidable.serializers.forms.FormidableSerializer.__init__'
@@ -26,7 +16,7 @@ INIT_TO_MOCK = 'formidable.serializers.forms.FormidableSerializer.__init__'
 
 class ExceptionHandlingTest(APITestCase):
     def setUp(self):
-        super(ExceptionHandlingTest, self).setUp()
+        super().setUp()
         self.form = Formidable.objects.create(
             label='test', description='test'
         )

@@ -5,6 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
+- Drop support for Python 2.7 (EOL: January 1st, 2020)
 - Removed ``tox.ini`` directive that skipped missing Python interpreters.
 
 Release 3.3.0 (2019-11-29)

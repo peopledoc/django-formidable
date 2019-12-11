@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import copy
 from collections import defaultdict
 
@@ -67,7 +63,7 @@ class FormidableSerializer(WithNestedSerializer):
         inside the form itself, we must check this here.
         """
         # calling subserializer validate method (fields)
-        data = super(FormidableSerializer, self).validate(data)
+        data = super().validate(data)
         # check every field define in conditions are defined inside the form
         if 'conditions' in data:
             data = self.check_conditions_cohesion(data)
@@ -75,7 +71,7 @@ class FormidableSerializer(WithNestedSerializer):
 
     def create(self, validated_data):
         conditions = validated_data.pop('conditions', None)
-        instance = super(FormidableSerializer, self).create(validated_data)
+        instance = super().create(validated_data)
         if conditions:
             instance.conditions = conditions
             instance.save()
@@ -83,7 +79,7 @@ class FormidableSerializer(WithNestedSerializer):
 
     def update(self, instance, validated_data):
         instance.conditions = validated_data.pop('conditions', None)
-        instance = super(FormidableSerializer, self).update(
+        instance = super().update(
             instance, validated_data
         )
         return instance
@@ -148,11 +144,11 @@ class FormidableSerializer(WithNestedSerializer):
         connection = transaction.get_connection()
         if not connection.in_atomic_block:
             with transaction.atomic():
-                return super(FormidableSerializer, self).save(*args, **kwargs)
-        return super(FormidableSerializer, self).save(*args, **kwargs)
+                return super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     def to_representation(self, obj):
-        data = super(FormidableSerializer, self).to_representation(obj)
+        data = super().to_representation(obj)
         data['version'] = json_version
         return data
 
@@ -168,11 +164,11 @@ class ContextFormSerializer(serializers.ModelSerializer):
         depth = 2
 
     def __init__(self, *args, **kwargs):
-        super(ContextFormSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['fields'].set_context('role', self._context['role'])
 
     def to_representation(self, obj):
-        data = super(ContextFormSerializer, self).to_representation(obj)
+        data = super().to_representation(obj)
         data['version'] = json_version
         return data
 

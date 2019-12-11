@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Validators
 ==========
@@ -7,8 +6,6 @@ Validators
     :members:
 
 """
-
-from __future__ import unicode_literals
 
 from datetime import date
 from decimal import Decimal
@@ -117,7 +114,7 @@ class NEQValidator(FormidableValidator, validators.BaseValidator):
 class DateValidator(FormidableValidator):
 
     def __init__(self, limit_value, message=None):
-        super(DateValidator, self).__init__(
+        super().__init__(
             parse(limit_value).date(), message
         )
 
@@ -261,7 +258,8 @@ class DateValidatorFactory(ValidatorFactory):
             'IS_AGE_ABOVE': self.age_above,
             'IS_AGE_UNDER': self.age_under
         }
-        _maps.update(super(DateValidatorFactory, self).maps)
+        _maps.update(super().maps)
+
         return _maps
 
     def lt(self, value, message):

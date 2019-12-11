@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # formidable documentation build configuration file, created by
 # sphinx-quickstart on Tue May 10 11:04:21 2016.
 #
