@@ -2,7 +2,7 @@
 Security setup
 ==============
 
-As any other web application, Django Formidable might be targeted by pirates and would try to inject SQL or malicious code through Javascript or any other XSS method.
+As any other web application, Django Formidable might be targeted by pirates who would try to inject SQL or malicious code through Javascript or any other XSS method.
 
 How to secure your django-formidable installation
 =================================================
