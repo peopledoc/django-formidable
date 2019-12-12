@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import logging
 
 from rest_framework.exceptions import ValidationError
@@ -56,7 +52,7 @@ class NestedListSerializer(ListSerializer):
         """
         ensure that field_id is unique among children
         """
-        data = super(NestedListSerializer, self).validate(data)
+        data = super().validate(data)
 
         if self.field_id:
             if len(data) != len({f[self.field_id] for f in data}):

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from django.test import TestCase
 
 from formidable.models import Formidable
@@ -506,7 +502,7 @@ class CreationForm(FormidableForm):
 class TestEditForm(TestCase):
 
     def setUp(self):
-        super(TestEditForm, self).setUp()
+        super().setUp()
         self.formidable = CreationForm.to_formidable(
             label='create', description='my creation form'
         )

@@ -2,6 +2,17 @@
 Deprecation timeline
 ====================
 
+From 3.3.0 to 4.0.0 (unreleased)
+================================
+
+Python versions
+---------------
+
+.. deprecated:: 4.0.0
+
+    Drop support for Python 2.7 (EOL is January 1st, 2020)
+
+
 From 3.2.0 to 3.3.0
 ===================
 

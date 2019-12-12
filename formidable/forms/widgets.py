@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Most of Django's widgets are defined here. These widgets are usable with
 any fields defined in :mod:`formidable.forms.fields`. These widgets are here
@@ -43,8 +42,6 @@ of associated field.
 .. autoclass:: HelpTextWidget
 
 """
-
-from __future__ import unicode_literals
 
 from django.forms import widgets
 
@@ -92,7 +89,7 @@ class ItemsWidget(FormidableWidget):
 
     def to_formidable(self, formidable, slug, label, help_text, order, items,
                       parameters=None):
-        field = super(ItemsWidget, self).to_formidable(
+        field = super().to_formidable(
             formidable, slug, label, help_text, order, parameters=parameters
         )
         for order, item in enumerate(items):
@@ -168,7 +165,7 @@ class TitleWidget(FormidableWidget):
 
     def __init__(self, tag='h4', *args, **kwargs):
         self.tag = tag
-        super(TitleWidget, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None, **kwargs):
         tag = attrs.get('tag', None) or self.tag

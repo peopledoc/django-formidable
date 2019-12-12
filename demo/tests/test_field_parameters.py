@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.test import TestCase
 
 from formidable.forms import FormidableForm
@@ -18,7 +17,7 @@ class WithParametrizedField(FormidableForm):
 class TestToFormidableParametrizedField(TestCase):
 
     def setUp(self):
-        super(TestToFormidableParametrizedField, self).setUp()
+        super().setUp()
         self.field_register = FieldSerializerRegister.get_instance()
 
         @load_serializer(self.field_register)
@@ -26,7 +25,7 @@ class TestToFormidableParametrizedField(TestCase):
             pass
 
     def tearDown(self):
-        super(TestToFormidableParametrizedField, self).tearDown()
+        super().tearDown()
         self.field_register.pop(BaseColorPickerFieldSerializer.type_id)
 
     def test_to_formidable(self):

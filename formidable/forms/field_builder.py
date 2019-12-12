@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -142,7 +139,7 @@ class HelpTextBuilder(FieldBuilder):
     field_class = fields.HelpTextField
 
     def get_field_kwargs(self, default_widget_class):
-        kwargs = super(HelpTextBuilder, self).get_field_kwargs(
+        kwargs = super().get_field_kwargs(
             default_widget_class
         )
         kwargs['text'] = kwargs.pop('help_text')
@@ -195,7 +192,7 @@ class ChoiceFieldBuilder(FieldBuilder):
     field_class = forms.ChoiceField
 
     def get_field_kwargs(self, default_widget_class):
-        kwargs = super(ChoiceFieldBuilder, self).get_field_kwargs(
+        kwargs = super().get_field_kwargs(
             default_widget_class
         )
         kwargs['choices'] = self.get_choices()
@@ -227,12 +224,12 @@ class DropdownFieldBuilder(ChoiceFieldBuilder):
     def get_field_class(self):
         if self.is_multiple:
             return forms.MultipleChoiceField
-        return super(DropdownFieldBuilder, self).get_field_class()
+        return super().get_field_class()
 
     def get_widget_class(self):
         if self.is_multiple:
             return forms.SelectMultiple
-        return super(DropdownFieldBuilder, self).get_widget_class()
+        return super().get_widget_class()
 
 
 class RadioFieldBuilder(ChoiceFieldBuilder):

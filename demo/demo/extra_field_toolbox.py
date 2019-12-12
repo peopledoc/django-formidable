@@ -28,7 +28,7 @@ class ColorPickerFieldSerializer(FieldSerializer):
         fields = BASE_FIELDS + ('parameters',)
 
     def to_internal_value(self, data):
-        data = super(ColorPickerFieldSerializer, self).to_internal_value(data)
+        data = super().to_internal_value(data)
         # Check if the parameters are compliant
         format = data.get('color_format')
         if format is None:
@@ -54,7 +54,7 @@ class ColorPickerField(ParametrizedFieldMixin, CharField):
         return value
 
     def validate(self, value):
-        super(ColorPickerField, self).validate(value)
+        super().validate(value)
         params = getattr(self, '__formidable_field_parameters', {})
         color_format = params.get('color_format')
         if color_format == 'rgb':

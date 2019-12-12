@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 This module exposes everything needed to generate a standard django form class
 from a formidable object.
@@ -6,9 +6,6 @@ from a formidable object.
 Given a formidable object, you can use :func:`get_dynamic_form_class` to get
 its corresponding django form class.
 """
-
-from __future__ import unicode_literals
-
 from collections import OrderedDict
 
 from django import forms
@@ -32,7 +29,7 @@ class FormidableBoundFieldCache(dict):
         form, field, name = bf.form, bf.field, bf.name
         if hasattr(field, 'get_bound_field'):
             bf = field.get_bound_field(form, name)
-        return super(FormidableBoundFieldCache, self).__setitem__(key, bf)
+        return super().__setitem__(key, bf)
 
 
 class BaseDynamicForm(forms.Form):
@@ -45,7 +42,7 @@ class BaseDynamicForm(forms.Form):
     """
 
     def __init__(self, *args, **kwargs):
-        super(BaseDynamicForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._bound_fields_cache = FormidableBoundFieldCache()
 
     def get_removed_fields(self, cleaned_data):
@@ -74,7 +71,7 @@ class BaseDynamicForm(forms.Form):
         return (k for k, v in condition_targets.items() if not v)
 
     def clean(self):
-        cleaned_data = super(BaseDynamicForm, self).clean()
+        cleaned_data = super().clean()
 
         removed_fields = self.get_removed_fields(cleaned_data)
         for field_id in removed_fields:

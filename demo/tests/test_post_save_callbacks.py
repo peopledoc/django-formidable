@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from copy import deepcopy
 from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse
@@ -14,11 +11,7 @@ from formidable.views import check_callback_configuration
 
 from . import form_data, form_data_items
 
-import six
-if six.PY3:
-    from unittest.mock import patch
-else:
-    from mock import patch
+from unittest.mock import patch
 
 CALLBACK = 'demo.callback_save'
 CALLBACK_EXCEPTION = 'demo.callback_exception'
@@ -99,7 +92,7 @@ class CreateFormTestCase(APITestCase):
 class UpdateFormTestCase(APITestCase):
 
     def setUp(self):
-        super(UpdateFormTestCase, self).setUp()
+        super().setUp()
         self.form = Formidable.objects.create(
             label='test', description='test'
         )

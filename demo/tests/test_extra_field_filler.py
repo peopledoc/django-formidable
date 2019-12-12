@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import json
 from os.path import join, dirname
 
@@ -73,7 +70,7 @@ class ExtraLoadingTestCase(TestCase):
 class FillFormWithExtraFieldTestCase(TestCase):
 
     def setUp(self):
-        super(FillFormWithExtraFieldTestCase, self).setUp()
+        super().setUp()
         self.custom_type_id = 'color_picker'
         self.field_register = FieldSerializerRegister.get_instance()
 
@@ -87,7 +84,7 @@ class FillFormWithExtraFieldTestCase(TestCase):
             self.schema_data = json.load(fd)
 
     def tearDown(self):
-        super(FillFormWithExtraFieldTestCase, self).tearDown()
+        super().tearDown()
         self.field_register.pop(self.custom_type_id)
 
     @override_settings(FORMIDABLE_EXTERNAL_FIELD_BUILDERS={

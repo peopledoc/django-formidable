@@ -1,16 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 .. autofunction:: get_accesses
     members
 """
-
-from __future__ import unicode_literals
-
 import importlib
 
 from django.conf import settings
-
-import six
 
 
 class PreviewMode:
@@ -49,10 +43,7 @@ def get_accesses():
     module, meth_name = settings.FORMIDABLE_ACCESS_RIGHTS_LOADER.rsplit(
         '.', 1
     )
-    if six.PY3:
-        mod = importlib.import_module(module)
-    else:
-        mod = importlib.import_module(module, [meth_name])
+    mod = importlib.import_module(module)
     meth = getattr(mod, meth_name)
     res = meth()
     assert type(res) == list, 'FORMIDABLE_ACCESS_RIGHTS_LOADER has to return a list'  # noqa
@@ -63,9 +54,6 @@ def get_accesses():
 
 def get_context(request, kwargs):
     module, meth_name = settings.FORMIDABLE_CONTEXT_LOADER.rsplit('.', 1)
-    if six.PY3:
-        mod = importlib.import_module(module)
-    else:
-        mod = importlib.import_module(module, [meth_name])
+    mod = importlib.import_module(module)
     meth = getattr(mod, meth_name)
     return meth(request, kwargs)

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import os
 import json
 import copy
@@ -36,7 +32,7 @@ class ConditionTestCase(TestCase):
         ))
 
     def setUp(self):
-        super(ConditionTestCase, self).setUp()
+        super().setUp()
         conditions_schema = [
             {
                 'name': 'My Name',
@@ -286,7 +282,7 @@ class DropdownConditionsTestCase(TestCase):
         return get_dynamic_form_class(formidable, role)
 
     def setUp(self):
-        super(DropdownConditionsTestCase, self).setUp()
+        super().setUp()
         conditions_schema = [
             {
                 'name': 'Show a and b if value "ab" selected',
@@ -372,7 +368,7 @@ class MultipleConditionsTestCase(TestCase):
         return get_dynamic_form_class(formidable, role)
 
     def setUp(self):
-        super(MultipleConditionsTestCase, self).setUp()
+        super().setUp()
         conditions_schema = [
             {
                 'name': 'display A',

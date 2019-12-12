@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from django.db.models import Prefetch
 from django.utils.functional import cached_property
 
@@ -35,7 +31,7 @@ class FieldListSerializer(NestedListSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs['child'] = LazyChildProxy(field_register)
-        super(FieldListSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def validate(self, validated_data):
         """
@@ -43,7 +39,7 @@ class FieldListSerializer(NestedListSerializer):
         order before the update/create method sorts the validated data
         by id.
         """
-        validated_data = super(FieldListSerializer, self).validate(
+        validated_data = super().validate(
             validated_data
         )
         for index, data in enumerate(validated_data):
@@ -52,7 +48,7 @@ class FieldListSerializer(NestedListSerializer):
         return validated_data
 
     def get_attribute(self, instance):
-        qs = super(FieldListSerializer, self).get_attribute(instance)
+        qs = super().get_attribute(instance)
         qs = qs.prefetch_related(
             Prefetch('items', queryset=Item.objects.order_by('order')),
             'defaults', 'validations', 'accesses'
@@ -128,10 +124,10 @@ class FieldSerializer(WithNestedSerializer):
         for config_field in self.get_config_fields():
             data['parameters'][config_field] = data.pop(config_field, None)
 
-        return super(FieldSerializer, self).to_internal_value(data)
+        return super().to_internal_value(data)
 
     def to_representation(self, instance):
-        field = super(FieldSerializer, self).to_representation(instance)
+        field = super().to_representation(instance)
         for config_field in self.get_config_fields():
             if instance.parameters is not None:
                 field[config_field] = instance.parameters.get(config_field)
@@ -171,7 +167,7 @@ class ListContextFieldSerializer(serializers.ListSerializer):
         return self._context['role']
 
     def get_attribute(self, instance):
-        qs = super(ListContextFieldSerializer, self).get_attribute(instance)
+        qs = super().get_attribute(instance)
         access_qs = Access.objects.filter(access_id=self.role)
         access_qs = access_qs.exclude(level=constants.HIDDEN)
         qs = qs.prefetch_related(
@@ -243,13 +239,13 @@ class FieldItemMixin(object):
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
-        field = super(FieldItemMixin, self).create(validated_data)
+        field = super().create(validated_data)
         self.item_serializer.create(field, items_data)
         return field
 
     def update(self, instance, validated_data):
         items_kwargs = validated_data.pop('items')
-        field = super(FieldItemMixin, self).update(instance, validated_data)
+        field = super().update(instance, validated_data)
         self.item_serializer.update(field.items, field, items_kwargs)
         return field
 

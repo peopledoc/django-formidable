@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 from formidable.accesses import get_accesses
 from formidable.constants import EDITABLE
 from formidable.models import Access
@@ -36,7 +32,7 @@ class AccessListSerializer(NestedListSerializer):
     parent_name = 'field_id'
 
     def validate(self, data):
-        data = super(AccessListSerializer, self).validate(data)
+        data = super().validate(data)
         accesses_id = [accesses['access_id'] for accesses in data]
 
         for access in get_accesses():

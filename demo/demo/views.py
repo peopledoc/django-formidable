@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.views.generic.edit import FormView
 
 from formidable.models import Formidable

@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+"""
+Tests for the exception handling module, common with every view in Formidable.
+"""
 
 import logging
 
@@ -10,7 +11,6 @@ from django.db.utils import OperationalError
 from django.forms.utils import ErrorDict, ErrorList
 from django.http import Http404
 
-import six
 from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
@@ -36,7 +36,7 @@ def _reformat_drf_errors(errors, detail, path=None):
         # errors are always coerced to a list so we
         # can skip the last level in our path
         path.pop()
-        message = six.text_type(detail)
+        message = str(detail)
         error = {
             'message': message,
             'code': getattr(detail, 'code', 'invalid') or 'invalid',
@@ -76,7 +76,7 @@ def _reformat_forms_errors(errors, error, path=None):
     else:
         # django.core.exceptions.Exception
         item = {
-            'message': six.text_type(error.message),
+            'message': str(error.message),
             'code': error.code or 'invalid',
         }
         if path:
@@ -119,19 +119,19 @@ def exception_handler(exc, context):
 
         data = {
             'code': getattr(exc.detail, 'code', 'error'),
-            'message': six.text_type(exc.detail),
+            'message': str(exc.detail),
         }
         status_code = exc.status_code
     elif isinstance(exc, Http404):
         data = {
             'code': 'not_found',
-            'message': six.text_type(exceptions.NotFound.default_detail),
+            'message': str(exceptions.NotFound.default_detail),
         }
         status_code = 404
     elif isinstance(exc, PermissionDenied):
         data = {
             'code': 'permission_denied',
-            'message': six.text_type(
+            'message': str(
                 exceptions.PermissionDenied.default_detail),
         }
         status_code = 403
@@ -142,7 +142,7 @@ def exception_handler(exc, context):
             and "could not obtain lock" in str(exc):
         data = {
             'code': 'permission_denied',
-            'message': six.text_type(
+            'message': str(
                 "Database error, operation failed"
             ),
         }
@@ -150,7 +150,7 @@ def exception_handler(exc, context):
         status_code = 409
     else:
         # unhandled exception, return generic error
-        error_message = six.text_type(exceptions.APIException.default_detail)
+        error_message = str(exceptions.APIException.default_detail)
         data = {
             'code': 'error',
             'message': error_message,

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from copy import deepcopy
 
 from django.urls import reverse
@@ -58,7 +55,7 @@ class CreateFormTestCase(APITestCase):
 class UpdateFormTestCase(APITestCase):
 
     def setUp(self):
-        super(UpdateFormTestCase, self).setUp()
+        super().setUp()
         self.form = Formidable.objects.create(
             label='test', description='test'
         )

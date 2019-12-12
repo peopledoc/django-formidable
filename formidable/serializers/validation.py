@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import re
 
 from formidable.models import Validation
@@ -17,7 +13,7 @@ class ListValidationSerializer(serializers.ListSerializer):
 
     def __init__(self, *args, **kwargs):
         kwargs['child'] = LazyChildProxy(validation_register)
-        super(ListValidationSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def create(self, field, validated_data):
         for data in validated_data:
