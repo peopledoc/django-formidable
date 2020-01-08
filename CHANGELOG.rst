@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- DOC: removed ``setup.py`` Python2-related classifiers.
 
 Release 4.0.0 (2020-01-08)
 ==========================
