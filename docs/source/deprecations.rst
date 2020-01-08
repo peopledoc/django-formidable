@@ -2,8 +2,10 @@
 Deprecation timeline
 ====================
 
-From 3.3.0 to 4.0.0 (unreleased)
-================================
+From 3.3.0 to 4.0.0
+===================
+
+Jan 8th, 2020.
 
 Python versions
 ---------------
@@ -11,6 +13,13 @@ Python versions
 .. deprecated:: 4.0.0
 
     Drop support for Python 2.7 (EOL is January 1st, 2020)
+
+Configuration option
+--------------------
+
+.. versionadded:: 4.0.0
+
+    Added support for XSS prevention using the ``DJANGO_FORMIDABLE_SANITIZE_FUNCTION`` settings. See `the security Documentation <https://django-formidable.readthedocs.io/en/master/security.html>`_ for more information.
 
 
 From 3.2.0 to 3.3.0

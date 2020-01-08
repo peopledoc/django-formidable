@@ -2,12 +2,12 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 4.0.0 (2020-01-08)
+==========================
 
-- Drop support for Python 2.7 (EOL: January 1st, 2020)
-- Added an XSS prevention mechanism. See the `security documentation <https://django-formidable.readthedocs.io/en/master/>`_ for more information and details on how to setup your own sanitization process.
-- Removed ``tox.ini`` directive that skipped missing Python interpreters.
+- Drop support for Python 2.7 -- EOL: January 1st, 2020 (#377).
+- Added an XSS prevention mechanism. See the `security documentation <https://django-formidable.readthedocs.io/en/master/>`_ for more information and details on how to setup your own sanitization process (#378).
+- Removed ``tox.ini`` directive that skipped missing Python interpreters (#376).
 
 Release 3.3.0 (2019-11-29)
 ==========================
