@@ -133,3 +133,6 @@ PERF_REC = {
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, '..', 'formidable', 'locale'),
 ]
+
+
+DJANGO_FORMIDABLE_SANITIZE_FUNCTION = "demo.security.clean"

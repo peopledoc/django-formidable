@@ -11,6 +11,7 @@ Contents:
    forms
    form-specs
    api
+   security
    callbacks
    dev
    translations

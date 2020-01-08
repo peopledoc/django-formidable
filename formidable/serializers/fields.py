@@ -4,6 +4,7 @@ from django.utils.functional import cached_property
 from formidable import constants
 from formidable.models import Access, Field, Item
 from formidable.register import FieldSerializerRegister, load_serializer
+from formidable.security import get_clean_function
 from formidable.serializers.access import AccessSerializer
 from formidable.serializers.child_proxy import LazyChildProxy
 from formidable.serializers.common import WithNestedSerializer
@@ -142,6 +143,25 @@ class FieldSerializer(WithNestedSerializer):
         config_fields = []
         list_serializer_class = FieldListSerializer
         fields = '__all__'
+
+    @cached_property
+    def _clean_function(self):
+        return get_clean_function()
+
+    def validate_label(self, label):
+        if not label:
+            return label
+        return self._clean_function(label)
+
+    def validate_description(self, description):
+        if not description:
+            return description
+        return self._clean_function(description)
+
+    def validate_placeholder(self, placeholder):
+        if not placeholder:
+            return placeholder
+        return self._clean_function(placeholder)
 
     @cached_property
     def access_serializer(self):

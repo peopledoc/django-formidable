@@ -3,10 +3,12 @@ from collections import defaultdict
 
 from django.conf import settings
 from django.db import transaction
+from django.utils.functional import cached_property
 
 from formidable import constants, json_version
 from formidable.forms import conditions
 from formidable.models import Formidable
+from formidable.security import get_clean_function
 from formidable.serializers import fields
 from formidable.serializers.common import WithNestedSerializer
 from rest_framework import serializers
@@ -54,6 +56,16 @@ class FormidableSerializer(WithNestedSerializer):
         fields = ('label', 'description', 'fields', 'id', 'conditions')
         depth = 2
         extra_kwargs = {'id': {'read_only': True}}
+
+    @cached_property
+    def _clean_function(self):
+        return get_clean_function()
+
+    def validate_label(self, label):
+        return self._clean_function(label)
+
+    def validate_description(self, description):
+        return self._clean_function(description)
 
     def validate(self, data):
         """
