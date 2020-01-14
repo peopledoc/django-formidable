@@ -52,6 +52,20 @@ class DropdownConditionsTestForm(FormidableForm):
         accesses={'padawan': constants.EDITABLE})
 
 
+class MultipleChoicesConditionsTestForm(FormidableForm):
+    main_choices = fields.MultipleChoiceField(
+        choices=(
+            ('a', 'A'),
+            ('b', 'B'),
+            ('no_condition', 'No_condition')
+        ),
+        accesses={'padawan': constants.EDITABLE}
+    )
+    a = fields.CharField(accesses={'padawan': constants.EDITABLE})
+    b = fields.CharField(accesses={'padawan': constants.EDITABLE})
+    c = fields.CharField(accesses={'padawan': constants.EDITABLE})
+
+
 class SimpleConditionTestCaseTestForm(FormidableForm):
     checkbox = fields.BooleanField(
         label='My checkbox',
