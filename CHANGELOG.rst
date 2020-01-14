@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - DOC: removed ``setup.py`` Python2-related classifiers.
+- Fix the support for conditions when their trigger field is a multiple choice field.
 
 Release 4.0.0 (2020-01-08)
 ==========================
