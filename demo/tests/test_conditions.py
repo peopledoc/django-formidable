@@ -47,7 +47,7 @@ class ConditionTestCase(TestCase):
                 ]
             }
         ]
-        form_class = test_conditions_fixtures.ConditionTestCaseTestForm
+        form_class = test_conditions_fixtures.SimpleConditionTestCaseTestForm
         self.formidable = form_class.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
@@ -310,7 +310,7 @@ class DropdownConditionsTestCase(TestCase):
             }
         ]
 
-        form_class = test_conditions_fixtures.DropdownConditionsTestCaseDropDownForm  # noqa
+        form_class = test_conditions_fixtures.DropdownConditionsTestForm
         self.formidable = form_class.to_formidable(
             label='Drop Down Test Form')
         self.formidable.conditions = conditions_schema
@@ -396,7 +396,7 @@ class MultipleConditionsTestCase(TestCase):
             }
 
         ]
-        test_form = test_conditions_fixtures.DropdownConditionsTestCaseTestForm
+        test_form = test_conditions_fixtures.CheckboxConditionsTestForm
         self.formidable = test_form.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
