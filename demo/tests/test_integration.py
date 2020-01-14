@@ -559,20 +559,6 @@ class TestValidationFromSchemaEndPoint(TestValidationEndPoint):
     url = 'form_validation_schema'
 
 
-class DropDownForm(FormidableForm):
-    main_dropdown = fields.ChoiceField(
-        choices=(
-            ('first', 'First'),
-            ('second', 'Second'),
-            ('third', 'Third'),
-        )
-    )
-    first_field = fields.CharField()
-    second_field = fields.CharField()
-    third_field = fields.CharField()
-    another_field = fields.CharField()
-
-
 class TestConditionalRulesWithDropDowns(FormidableAPITestCase):
     def test_can_validate_form_with_dropdown_conditional_fields(self):
         url = 'formidable:form_validation'
