@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+
+Nothing here yet.
+
 Release 4.0.1 (2020-01-21)
 ==========================
 
