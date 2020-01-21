@@ -4,7 +4,7 @@ from formidable.forms import (
 from formidable import constants
 
 
-class DropdownConditionsTestCaseTestForm(FormidableForm):
+class CheckboxConditionsTestForm(FormidableForm):
     checkbox_a = fields.BooleanField(
         label='My checkbox',
         accesses={'padawan': constants.EDITABLE,
@@ -35,7 +35,7 @@ class DropdownConditionsTestCaseTestForm(FormidableForm):
     )
 
 
-class DropdownConditionsTestCaseDropDownForm(FormidableForm):
+class DropdownConditionsTestForm(FormidableForm):
     main_dropdown = fields.ChoiceField(
         choices=(
             ('ab', 'AB'),
@@ -52,7 +52,21 @@ class DropdownConditionsTestCaseDropDownForm(FormidableForm):
         accesses={'padawan': constants.EDITABLE})
 
 
-class ConditionTestCaseTestForm(FormidableForm):
+class MultipleChoicesConditionsTestForm(FormidableForm):
+    main_choices = fields.MultipleChoiceField(
+        choices=(
+            ('a', 'A'),
+            ('b', 'B'),
+            ('no_condition', 'No_condition')
+        ),
+        accesses={'padawan': constants.EDITABLE}
+    )
+    a = fields.CharField(accesses={'padawan': constants.EDITABLE})
+    b = fields.CharField(accesses={'padawan': constants.EDITABLE})
+    c = fields.CharField(accesses={'padawan': constants.EDITABLE})
+
+
+class SimpleConditionTestCaseTestForm(FormidableForm):
     checkbox = fields.BooleanField(
         label='My checkbox',
         accesses={'padawan': constants.EDITABLE,

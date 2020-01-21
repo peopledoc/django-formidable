@@ -47,7 +47,7 @@ class ConditionTestCase(TestCase):
                 ]
             }
         ]
-        form_class = test_conditions_fixtures.ConditionTestCaseTestForm
+        form_class = test_conditions_fixtures.SimpleConditionTestCaseTestForm
         self.formidable = form_class.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
@@ -310,7 +310,7 @@ class DropdownConditionsTestCase(TestCase):
             }
         ]
 
-        form_class = test_conditions_fixtures.DropdownConditionsTestCaseDropDownForm  # noqa
+        form_class = test_conditions_fixtures.DropdownConditionsTestForm
         self.formidable = form_class.to_formidable(
             label='Drop Down Test Form')
         self.formidable.conditions = conditions_schema
@@ -396,7 +396,7 @@ class MultipleConditionsTestCase(TestCase):
             }
 
         ]
-        test_form = test_conditions_fixtures.DropdownConditionsTestCaseTestForm
+        test_form = test_conditions_fixtures.CheckboxConditionsTestForm
         self.formidable = test_form.to_formidable(label='title')
         self.formidable.conditions = conditions_schema
 
@@ -463,6 +463,92 @@ class MultipleConditionsTestCase(TestCase):
         self.assertTrue(form.is_valid())
         self.assertTrue('a' in form.cleaned_data)
         self.assertTrue('b' in form.cleaned_data)
+
+
+class MultipleChoiceConditionsTestCase(TestCase):
+
+    def get_form_class(self, formidable, role):
+        return get_dynamic_form_class(formidable, role)
+
+    def setUp(self):
+        super().setUp()
+        conditions_schema = [
+            {
+                'name': 'Show a if "a" is selected',
+                'action': 'display_iff',
+                'fields_ids': ['a', ],
+                'tests': [
+                    {
+                        'field_id': 'main_choices',
+                        'operator': 'eq',
+                        'values': ['a'],
+                    }
+                ]
+            },
+            {
+                'name': 'Show b if value "b" selected',
+                'action': 'display_iff',
+                'fields_ids': ['b'],
+                'tests': [
+                    {
+                        'field_id': 'main_choices',
+                        'operator': 'eq',
+                        'values': ['b'],
+                    }
+                ]
+            }
+        ]
+
+        form_class = test_conditions_fixtures.MultipleChoicesConditionsTestForm
+        self.formidable = form_class.to_formidable(
+            label='Multiple Choice Test Form')
+        self.formidable.conditions = conditions_schema
+
+    def test_none_selected(self):
+        form_class = self.get_form_class(self.formidable, 'padawan')
+        data = {}
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_a_only_selected(self):
+        form_class = self.get_form_class(self.formidable, 'padawan')
+        data = {
+            'main_choices': ['a'],
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' not in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_b_only_selected(self):
+        form_class = self.get_form_class(self.formidable, 'padawan')
+        data = {
+            'main_choices': ['b']
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' not in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
+
+    def test_a_and_b_selected(self):
+        form_class = self.get_form_class(self.formidable, 'padawan')
+        data = {
+            'main_choices': ['a', 'b']
+        }
+
+        form = form_class(data)
+        self.assertTrue(form.is_valid())
+        self.assertTrue('a' in form.cleaned_data)
+        self.assertTrue('b' in form.cleaned_data)
+        self.assertTrue('c' in form.cleaned_data)
 
 
 class ConditionSerializerTestCase(TestCase):

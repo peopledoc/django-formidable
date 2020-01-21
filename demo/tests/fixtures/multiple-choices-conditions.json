@@ -1,0 +1,173 @@
+{
+	"label": "Multiple Choices w/ condition Test Form",
+	"description": "Multiple Choices w/ condition Test Form",
+	"fields": [{
+			"slug": "main_choices",
+			"label": "main_choices",
+			"type_id": "checkboxes",
+			"placeholder": "",
+			"description": "Main Choices",
+			"accesses": [{
+					"access_id": "padawan",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "robot",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi-master",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "human",
+					"level": "EDITABLE"
+				}
+			],
+			"validations": [],
+			"defaults": [],
+			"items": [{
+					"value": "first",
+					"label": "First",
+					"description": null
+				},
+				{
+					"value": "second",
+					"label": "Second",
+					"description": null
+				},
+				{
+					"value": "third",
+					"label": "Third",
+					"description": null
+				}
+			],
+			"multiple": true
+		},
+		{
+			"slug": "first_field",
+			"label": "first_field",
+			"type_id": "text",
+			"placeholder": "first_field",
+			"description": "first_field",
+			"accesses": [{
+					"access_id": "padawan",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "robot",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi-master",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "human",
+					"level": "EDITABLE"
+				}
+			],
+			"validations": [],
+			"defaults": []
+		},
+		{
+			"slug": "second_field",
+			"label": "second_field",
+			"type_id": "text",
+			"placeholder": "second_field",
+			"description": "second_field",
+			"accesses": [{
+					"access_id": "padawan",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "robot",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi-master",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "human",
+					"level": "EDITABLE"
+				}
+			],
+			"validations": [],
+			"defaults": []
+		},
+		{
+			"slug": "third_field",
+			"label": "third_field",
+			"type_id": "text",
+			"placeholder": null,
+			"description": "",
+			"accesses": [{
+					"access_id": "padawan",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "robot",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "jedi-master",
+					"level": "EDITABLE"
+				},
+				{
+					"access_id": "human",
+					"level": "EDITABLE"
+				}
+			],
+			"validations": [],
+			"defaults": []
+		}
+	],
+	"id": 1,
+	"conditions": [{
+			"name": "Show first and second if value 'first' selected",
+			"fields_ids": [
+				"first_field",
+				"second_field"
+			],
+			"action": "display_iff",
+			"tests": [{
+				"field_id": "main_choices",
+				"operator": "eq",
+				"values": [
+					"first"
+				]
+			}]
+		},
+		{
+			"name": "Show third if value 'second' selected",
+			"fields_ids": [
+				"third_field"
+			],
+			"action": "display_iff",
+			"tests": [{
+				"field_id": "main_choices",
+				"operator": "eq",
+				"values": [
+					"second"
+				]
+			}]
+		}
+	]
+}

@@ -40,6 +40,13 @@ class ConditionsRegister(dict):
                     field = fields[field_id]
                 except KeyError:
                     return []
+
+                # Define that we have a multiple field or not.
+                multiple = hasattr(field, "choices") and \
+                    field.widget.allow_multiple_selected
+                if multiple:
+                    # Multiple fields accept lists only as values.
+                    return field.to_python(values)
                 else:
                     return [field.to_python(value) for value in values]
 
@@ -76,6 +83,17 @@ class ConditionsMetaClass(type):
         return condition_class
 
 
+def operator_eq(ref_value, values):
+    """
+    Compare if the field values is in the condition values.
+    """
+    if isinstance(ref_value, list):
+        for v in values:
+            if v in ref_value:
+                return True
+    return ref_value == values[0]
+
+
 class ConditionTest(object):
     """
     Test that is evaluated to know if the action of a :class:`Condition` can be
@@ -84,10 +102,7 @@ class ConditionTest(object):
     defined in `mapper`
     """
 
-    #: dict of supported operators and their comparison function
-    mapper = {
-        'eq': lambda field, values: field == values[0],
-    }
+    mapper = {'eq': operator_eq}
 
     def __init__(self, field_id, operator, values):
         self.field_id = field_id

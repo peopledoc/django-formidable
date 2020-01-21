@@ -559,20 +559,6 @@ class TestValidationFromSchemaEndPoint(TestValidationEndPoint):
     url = 'form_validation_schema'
 
 
-class DropDownForm(FormidableForm):
-    main_dropdown = fields.ChoiceField(
-        choices=(
-            ('first', 'First'),
-            ('second', 'Second'),
-            ('third', 'Third'),
-        )
-    )
-    first_field = fields.CharField()
-    second_field = fields.CharField()
-    third_field = fields.CharField()
-    another_field = fields.CharField()
-
-
 class TestConditionalRulesWithDropDowns(FormidableAPITestCase):
     def test_can_validate_form_with_dropdown_conditional_fields(self):
         url = 'formidable:form_validation'
@@ -637,6 +623,84 @@ class TestConditionalRulesWithDropDowns(FormidableAPITestCase):
         conditions_schema = json.load(open(
             os.path.join(
                 TESTS_DIR, 'fixtures', 'drop-down-conditions.json'
+            )
+        ))
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.post(
+            reverse('formidable:form_create'),
+            conditions_schema,
+            format='json'
+        )
+        self.assertEqual(res.status_code, 201)
+
+
+class TestConditionalRulesWithMultiChoice(FormidableAPITestCase):
+
+    def test_can_validate_form_with_multiple_choice_fields(self):
+        url = 'formidable:form_validation'
+
+        class MultipleChoiceForm(FormidableForm):
+            main_choices = fields.MultipleChoiceField(
+                choices=(
+                    ('first', 'First'),
+                    ('second', 'Second'),
+                    ('third', 'Third'),
+                ),
+                accesses={'padawan': constants.EDITABLE}
+            )
+            first_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            second_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            third_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+            another_field = fields.CharField(
+                accesses={'padawan': constants.EDITABLE})
+
+        form = MultipleChoiceForm.to_formidable(label='Drop Down Test Form')
+        form.conditions = [
+            {
+                'name': 'Show first and second if value "first" selected',
+                'action': 'display_iff',
+                'fields_ids': ['first_field', 'second_field', ],
+                'tests': [
+                    {
+                        'field_id': 'main_choices',
+                        'operator': 'eq',
+                        'values': ['first'],
+                    }
+                ]
+            },
+            {
+                'name': 'Show third if value "second" selected',
+                'action': 'display_iff',
+                'fields_ids': ['third_field'],
+                'tests': [
+                    {
+                        'field_id': 'main_choices',
+                        'operator': 'eq',
+                        'values': ['second'],
+                    }
+                ]
+            }
+        ]
+        form.save()
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+        res = self.client.post(
+            reverse(url, args=[form.pk]),
+            {"main_dropdown": "first", "third_field": "test"},
+            format='json'
+        )
+        self.assertEqual(res.status_code, 204)
+
+    def test_can_create_form_with_multiple_choices_via_api(self):
+        conditions_schema = json.load(open(
+            os.path.join(
+                TESTS_DIR, 'fixtures', 'multiple-choices-conditions.json'
             )
         ))
         session = self.client.session
