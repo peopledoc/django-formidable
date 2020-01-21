@@ -18,7 +18,7 @@ This PR closes #<!-- issue number -->
 * [ ] Amend `CHANGELOG.rst` (check the release date)
 * [ ] *If the version deprecates one or more feature(s)* check the docs `deprecations.rst` file and change it if necessary.
 * [ ] DON'T FORGET TO MAKE THE "BACK TO DEV COMMIT"
-* [ ] Tag the appropiate commit with the appropriate tag (i.e. not the "back to dev one")
+* [ ] Tag the appropriate commit with the appropriate tag (i.e. not the "back to dev one")
 * [ ] Merge (fast forward is nice)
 * [ ] Push the tag (using: `git push --tags`)
 * [ ] Edit the release (copy/paste CHANGELOG)
