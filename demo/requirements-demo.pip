@@ -4,6 +4,7 @@ django-extensions
 freezegun
 mock
 bleach
+django-perf-rec
 # added a typing module to fix https://github.com/django-extensions/django-extensions/issues/1176
 typing
 # A temporary workaround for DRF-related error:

@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Drop support for Django REST Framework 3.8 (#382).
 
 Release 4.0.1 (2020-01-21)
 ==========================

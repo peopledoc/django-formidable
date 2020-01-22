@@ -2,6 +2,14 @@
 Deprecation timeline
 ====================
 
+From 4.0.1 to x.y.z
+===================
+
+.. deprecated:: x.y.z
+
+    Drop support for Django Rest Framework 3.8
+
+
 From 3.3.0 to 4.0.0
 ===================
 
