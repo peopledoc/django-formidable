@@ -1,5 +1,5 @@
 from django.db import migrations
-import jsonfield.fields
+from jsonfield import JSONField
 
 
 class Migration(migrations.Migration):
@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='formidable',
             name='conditions',
-            field=jsonfield.fields.JSONField(default=list),
+            field=JSONField(default=list),
         ),
     ]
