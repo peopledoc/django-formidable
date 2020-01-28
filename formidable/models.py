@@ -7,6 +7,17 @@ from formidable import constants
 from formidable.register import FieldSerializerRegister
 
 
+def get_serializer(definition_schema, context=None):
+    """
+    Return a FormidableSerializer instance, including eventual context.
+    """
+    from formidable.serializers import FormidableSerializer
+    serializer = FormidableSerializer(data=definition_schema)
+    # pass context to serializer so we can use it during data validation
+    serializer.context.update(context or {})  # If None, will default to {}
+    return serializer
+
+
 class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
@@ -48,9 +59,8 @@ class Formidable(models.Model):
         <Formidable: Formidable object>
 
         """
-        from formidable.serializers import FormidableSerializer
-
-        serializer = FormidableSerializer(data=definition_schema)
+        context = kwargs.pop("context", {})
+        serializer = get_serializer(definition_schema, context)
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 
