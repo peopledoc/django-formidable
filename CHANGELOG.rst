@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Drop support for Django REST Framework 3.8 (#382).
+- Use ``jsonfield2`` library to handle ``JSONField``'s. (#384)
 
 Release 4.0.1 (2020-01-21)
 ==========================
