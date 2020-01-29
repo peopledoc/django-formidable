@@ -9,6 +9,14 @@ From 4.0.1 to x.y.z
 
     Drop support for Django Rest Framework 3.8
 
+.. versionchanged:: x.y.z
+
+    Replaced ``jsonfield`` library by ``jsonfield2``.
+
+.. warning::
+
+    **Important Warning for Integrators**: ``jsonfield`` and ``jsonfield2`` are using the same namespace. So if you are migrating to this version, you'll probably have to make sure that ``jsonfield`` package is totally removed from your environment before using django-formidable.
+
 
 From 3.3.0 to 4.0.0
 ===================
