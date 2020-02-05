@@ -25,7 +25,7 @@ setup(
         'djangorestframework<4.0.0',
         'markdown',
         'python-dateutil',
-        'jsonfield2',
+        'jsonfield',
         'pytz',
     ],
     classifiers=[
