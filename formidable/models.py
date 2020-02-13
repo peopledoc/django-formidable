@@ -103,7 +103,7 @@ class Field(models.Model):
 @python_2_unicode_compatible
 class Default(models.Model):
 
-    value = models.CharField(max_length=256)
+    value = models.CharField(max_length=256, blank=True)
     field = models.ForeignKey(
         Field, related_name='defaults', on_delete=models.CASCADE
     )
