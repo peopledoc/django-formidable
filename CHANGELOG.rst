@@ -2,7 +2,7 @@
 ChangeLog
 =========
 
-Release 4.0.2 (unreleased)
+Release 4.0.2 (2020-02-13)
 ==========================
 
 - HOTFIX: Allow empty values for ``defaults`` properties (#391).
