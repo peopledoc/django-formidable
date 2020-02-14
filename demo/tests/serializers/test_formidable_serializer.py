@@ -103,5 +103,39 @@ class TestCustomFieldSerializer(TestCase):
         # remove mock and revert serializer
         self.field_register[self.custom_type_id] = backup_serializer
 
+    def test_empty_string_defaults(self):
+        schema = {
+            "label": "test",
+            "description": "test",
+            "fields": [
+                {
+                    "slug": "custom-type-id",
+                    "label": "Custom field",
+                    "placeholder": None,
+                    "description": None,
+                    "defaults": [],
+                    "multiple": False,
+                    "values": [],
+                    "required": False,
+                    "disabled": False,
+                    "isVisible": True,
+                    "type_id": "text",
+                    "validations": [],
+                    "accesses": [
+                        {
+                            "id": "field-access868",
+                            "level": "EDITABLE",
+                            "access_id": "padawan"
+                        }
+                    ]
+                }
+            ]
+        }
+        # to make sure we know the use-case we want to test.
+        schema['fields'][0]['defaults'] = [""]
+        serializer = FormidableSerializer(data=schema)
+        assert serializer.is_valid(), serializer.errors
+
     def tearDown(self):
+        super().tearDown()
         self.field_register.pop(self.custom_type_id)

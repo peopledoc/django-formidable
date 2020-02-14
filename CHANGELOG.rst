@@ -7,6 +7,11 @@ master (unreleased)
 
 - Drop support for Django REST Framework 3.8 (#382).
 
+Release 4.0.2 (2020-02-13)
+==========================
+
+- HOTFIX: Allow empty values for ``defaults`` properties (#391).
+
 Release 4.0.1 (2020-01-21)
 ==========================
 
