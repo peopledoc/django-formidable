@@ -6,6 +6,7 @@ master (unreleased)
 ===================
 
 - Drop support for Django REST Framework 3.8 (#382).
+- Ensure ``jsonfield`` compatibility check. Documentation is amended, and an ``ImportWarning`` is thrown as soon as you're using Django 1.11 (#395).
 
 Release 4.0.2 (2020-02-13)
 ==========================
