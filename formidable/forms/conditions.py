@@ -94,7 +94,7 @@ def operator_eq(ref_value, values):
     return ref_value == values[0]
 
 
-class ConditionTest(object):
+class ConditionTest:
     """
     Test that is evaluated to know if the action of a :class:`Condition` can be
     applied.

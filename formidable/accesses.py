@@ -15,7 +15,7 @@ class PreviewMode:
     TABLE = 'TABLE'
 
 
-class AccessObject(object):
+class AccessObject:
     """
     This class is used to build roles that will be checked in fields accesses
 

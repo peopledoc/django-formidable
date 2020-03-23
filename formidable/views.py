@@ -61,7 +61,7 @@ def check_callback_configuration():
     return True
 
 
-class CallbackMixin(object):
+class CallbackMixin:
     success_callback_settings = ''
     failure_callback_settings = ''
     callback_error_message = "An error has occurred with function: `%s`"
