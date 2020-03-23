@@ -1,13 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 from formidable import constants
 from formidable.register import FieldSerializerRegister
 from jsonfield.fields import JSONField
 
 
-@python_2_unicode_compatible
 class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
@@ -66,7 +64,6 @@ class Formidable(models.Model):
         return '{formidable.label}'.format(formidable=self)
 
 
-@python_2_unicode_compatible
 class Field(models.Model):
 
     class Meta:
@@ -100,7 +97,6 @@ class Field(models.Model):
         return '{field.label}'.format(field=self)
 
 
-@python_2_unicode_compatible
 class Default(models.Model):
 
     value = models.CharField(max_length=256, blank=True)
@@ -115,7 +111,6 @@ class Default(models.Model):
         return '{default.value}'.format(default=self)
 
 
-@python_2_unicode_compatible
 class Item(models.Model):
     field = models.ForeignKey(
         Field, related_name='items', on_delete=models.CASCADE
@@ -132,7 +127,6 @@ class Item(models.Model):
         return '{item.label}: {item.value}'.format(item=self)
 
 
-@python_2_unicode_compatible
 class Access(models.Model):
 
     class Meta:
@@ -153,7 +147,6 @@ class Access(models.Model):
             access=self)
 
 
-@python_2_unicode_compatible
 class Validation(models.Model):
     field = models.ForeignKey(
         Field, related_name='validations', on_delete=models.CASCADE
