@@ -26,21 +26,26 @@ Tests are launched using `tox <http://tox.readthedocs.io/>`_. You may want to be
 
     $ tox
 
-This will run all the test suite, for all the versions of Django, using all the Python interpreters supported.
+This will run all the test suite, combining
+
+* all versions of Django supported,
+* all the Python interpreters supported,
+* all versions of Django REST Framework supported,
+* on SQLite Databases + Postgresql Databases
 
 Targeting a specific environment is done using:
 
 .. code:: shell
 
-    $ tox -e django111-py27
+    $ tox -e django22-py38-drf310-sqlite
 
 If you want to target a specific test, simply add its namespace after a double-dash ``--``.
 
-For example, the following will run ``test_fields`` test module using Django 1.11 and Python 2.7:
+For example, the following will run ``test_fields`` test module using Django 2.2, Python 3.8 using a SQLite database:
 
 .. code:: shell
 
-    $ tox -e django111-py27 -- tests.test_fields
+    $ tox -e django22-py38-drf310-sqlite -- tests.test_fields
 
 And the following will run the same test class for all the supported environments:
 
@@ -53,7 +58,8 @@ If somehow you've messed-up with your environment(s), you can still recreate it/
 .. code:: shell
 
     $ tox -r  # RECREATE ALL THE THINGS
-    $ tox -re django111-py27  # recreate and run tests using `django111-py27`
+    # recreate and run tests using django 2.2 + python 3.8 + DRF 3.10 + SQLite DB.
+    $ tox -re django22-py38-drf310-sqlite
 
 
 Using py.test
