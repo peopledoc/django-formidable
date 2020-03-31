@@ -35,7 +35,7 @@ class ValidationSerializer(serializers.ModelSerializer):
         list_serializer_class = ListValidationSerializer
 
 
-class IntValueChecker(object):
+class IntValueChecker:
 
     def validate_value(self, value):
 

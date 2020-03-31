@@ -162,7 +162,7 @@ def exception_handler(exc, context):
     return Response(data, status=status_code, headers=headers)
 
 
-class ExceptionHandlerMixin(object):
+class ExceptionHandlerMixin:
     """
     this mixin replaces the exception handler from the APIView
 

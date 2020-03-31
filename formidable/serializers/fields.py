@@ -251,7 +251,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         return access.level == constants.REQUIRED
 
 
-class FieldItemMixin(object):
+class FieldItemMixin:
 
     @cached_property
     def item_serializer(self):

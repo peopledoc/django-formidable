@@ -11,7 +11,7 @@ class SkipField(Exception):
     pass
 
 
-class FieldBuilder(object):
+class FieldBuilder:
     field_class = forms.CharField
     widget_class = None
     validator_factory_class = ValidatorFactory
@@ -243,7 +243,7 @@ class CheckboxesFieldBuilder(ChoiceFieldBuilder):
     widget_class = forms.CheckboxSelectMultiple
 
 
-class FormFieldFactory(object):
+class FormFieldFactory:
 
     field_map = {
         'text': TextFieldBuilder,

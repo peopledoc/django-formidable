@@ -56,7 +56,7 @@ from formidable.exceptions import UnknownAccess
 from formidable.forms import boundfield, widgets
 
 
-class Field(object):
+class Field:
 
     widget = widgets.TextInput
 
@@ -123,7 +123,7 @@ class Field(object):
         return {}
 
 
-class ParametrizedFieldMixin(object):
+class ParametrizedFieldMixin:
     """
     Field mixin to authorize feeding it with parameters
     """

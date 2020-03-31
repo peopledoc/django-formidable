@@ -43,7 +43,7 @@ def call_all_serializer(meth):
     return _wrapper
 
 
-class LazyChildProxy(object):
+class LazyChildProxy:
 
     def __init__(self, register):
         self.lookup_field = register.lookup_field

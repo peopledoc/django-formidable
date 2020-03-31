@@ -17,7 +17,7 @@ from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 
 
-class FormidableValidator(object):
+class FormidableValidator:
 
     def to_formidable(self, field):
         return field.validations.create(**self.get_formidable_kwargs())
@@ -189,7 +189,7 @@ class AgeUnderValidator(AgeAboveValidator):
         return value >= age
 
 
-class ValidatorFactory(object):
+class ValidatorFactory:
 
     @cached_property
     def maps(self):
