@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from formidable.register import FieldSerializerRegister, load_serializer
 from formidable.serializers import FormidableSerializer
+from formidable.serializers.forms import ContextFormSerializer
 from formidable.serializers.fields import BASE_FIELDS, FieldSerializer
 
 import mock
@@ -60,10 +61,10 @@ class TestCustomFieldSerializer(TestCase):
 
     def test_custom_field_serialize(self):
         serializer = FormidableSerializer(data=self.schema)
-        serializer.is_valid()
+        assert serializer.is_valid()
         serializer.save()
         # get field instance
-        self.instance = serializer.instance
+        instance = serializer.instance
         custom_field = serializer.instance.fields.first()
         # test field instance
         self.assertIn('meta_info', custom_field.parameters)
@@ -80,7 +81,35 @@ class TestCustomFieldSerializer(TestCase):
         self.assertIn('some_another_data', data)
         self.assertIn('parameters', data)
         # remove instance
-        self.instance.delete()
+        instance.delete()
+
+    def test_custom_field_serialize_contextserializer(self):
+        # Create a Formidable form using the schema
+        serializer = FormidableSerializer(data=self.schema)
+        assert serializer.is_valid()
+        serializer.save()
+        # get form instance
+        instance = serializer.instance
+
+        # Convert it into a "padawan" form
+        serializer = ContextFormSerializer(
+            instance, context={'role': 'padawan'}
+        )
+
+        # get field instance
+        fields = serializer['fields'].value
+        custom_field = fields[0]
+        # test field instance
+        self.assertIn('meta_info', custom_field['parameters'])
+        self.assertEqual(custom_field["parameters"]['meta_info'], "meta")
+        self.assertIn('some_another_data', custom_field["parameters"])
+        self.assertEqual(
+            custom_field["parameters"]['some_another_data'],
+            "some_another_data"
+        )
+
+        # remove instance
+        instance.delete()
 
     def test_context_in_field_serializer(self):
         # backup a serializer

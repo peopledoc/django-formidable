@@ -9,6 +9,7 @@ master (unreleased)
 - Drop support for Django REST Framework 3.8 (#382).
 - Fix Postgresql configuration in CircleCI regarding the authentication (#395).
 - Small cleanups of Python2-related code.
+- Include the property ``parameters`` serializing a form using the ContextFormSerializer.
 
 Release 4.0.2 (2020-02-13)
 ==========================
