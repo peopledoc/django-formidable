@@ -175,5 +175,4 @@ class DisplayIffCondition(Condition):
         return "<Condition {name}: Display {fields} if {tests}>".format(
             fields=self.fields_ids,
             tests=self.tests,
-            action=self.action,
             name=self.name)

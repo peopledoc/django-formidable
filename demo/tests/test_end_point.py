@@ -1,5 +1,5 @@
 import copy
-from functools import reduce
+from itertools import chain
 from unittest import skipIf
 
 from django.conf import settings
@@ -1026,17 +1026,13 @@ class CreateSerializerTestCase(TestCase):
 
     def test_create_ordering(self):
         # aggregate fields
-        def extend(l, elt):
-            l.extend(elt)
-            return l
-
-        fields = reduce(extend, [
+        fields_aggregated = list(chain(
             self.fields_with_items, self.fields_without_items,
             self.format_field_helptext, self.format_field_separator,
             self.format_field_title
-        ], [])
+        ))
         data = copy.deepcopy(self.data)
-        data['fields'] = fields
+        data['fields'] = fields_aggregated
         serializer = FormidableSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         form = serializer.save()

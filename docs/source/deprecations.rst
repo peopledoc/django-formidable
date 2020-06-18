@@ -5,14 +5,19 @@ Deprecation timeline
 From 4.0.1 to x.y.z
 ===================
 
+Django versions
+---------------
+
+.. deprecated:: x.y.z
+
+    Drop support for Django 1.11
+
+Django REST Framework versions
+------------------------------
+
 .. deprecated:: x.y.z
 
     Drop support for Django Rest Framework 3.8
-
-.. warning:: x.y.z
-
-    As of February 2020, several releases of the library ``jsonfield`` have broken the compatibility with Django 1.11.
-    As a consequence, if you want to use Django Formidable with Django 1.11, you'll have to make sure that you're freezing your requirements to ``jsonfield<3``.
 
 
 From 3.3.0 to 4.0.0

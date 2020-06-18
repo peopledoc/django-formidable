@@ -14,16 +14,10 @@ Warnings
 ========
 
 * Python Compatibility : 3.5, 3.6, 3.7, 3.8
-* Django compatibility : Django 1.11, 2.2.
+* Django compatibility : Django 2.2.
 * Django REST Framework : Compatible from the version 3.9.x to 3.10.x
 
-.. warning::
-
-    Versions of ``jsonfield`` beyond 3.x are incompatible with Django 1.11.
-    If you're still using Django 1.11, you'll have to freeze it with ``jsonfield<3`` in your project.
-
 See the `Deprecation timeline <http://django-formidable.readthedocs.io/en/latest/deprecations.html>`_ document for more information on deprecated versions.
-
 
 License
 =======
