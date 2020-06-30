@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+===================
+
+Nothing to see here yet.
+
 Release 5.0.0 (2020-06-30)
 ==========================
 
