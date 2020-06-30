@@ -216,6 +216,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
     defaults = DefaultSerializer(many=True, required=False)
     description = serializers.CharField(required=False, allow_null=True,
                                         allow_blank=True, source='help_text')
+    parameters = serializers.JSONField()
 
     class Meta:
         list_serializer_class = ListContextFieldSerializer
@@ -223,7 +224,7 @@ class ContextFieldSerializer(serializers.ModelSerializer):
         fields = (
             'slug', 'label', 'type_id', 'placeholder', 'description',
             'validations', 'disabled', 'required', 'multiple', 'items',
-            'defaults',
+            'defaults', 'parameters',
         )
 
     @property
