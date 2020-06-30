@@ -2,20 +2,20 @@
 Deprecation timeline
 ====================
 
-From 4.0.1 to x.y.z
+From 4.0.1 to 5.0.0
 ===================
 
 Django versions
 ---------------
 
-.. deprecated:: x.y.z
+.. deprecated:: 5.0.0
 
     Drop support for Django 1.11
 
 Django REST Framework versions
 ------------------------------
 
-.. deprecated:: x.y.z
+.. deprecated:: 5.0.0
 
     Drop support for Django Rest Framework 3.8
 

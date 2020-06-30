@@ -2,14 +2,21 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 5.0.0 (2020-06-30)
+==========================
 
+Breaking Changes
+----------------
+
+- Include the property ``parameters`` when serializing a form using the ContextFormSerializer.
 - Drop support for Django 1.11 (#398, #395).
 - Drop support for Django REST Framework 3.8 (#382).
+
+Other changes
+-------------
+
 - Fix Postgresql configuration in CircleCI regarding the authentication (#395).
 - Small cleanups of Python2-related code.
-- Include the property ``parameters`` serializing a form using the ContextFormSerializer.
 
 Release 4.0.2 (2020-02-13)
 ==========================
