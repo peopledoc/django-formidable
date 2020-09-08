@@ -5,6 +5,14 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 
+from rest_framework import exceptions, status
+from rest_framework.generics import (
+    CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
+)
+from rest_framework.response import Response
+from rest_framework.settings import import_from_string, perform_import
+from rest_framework.views import APIView
+
 from formidable.accesses import get_accesses, get_context
 from formidable.exception_handler import ExceptionHandlerMixin
 from formidable.forms import field_builder, get_dynamic_form_class_from_schema
@@ -14,13 +22,6 @@ from formidable.forms.field_builder import (
 from formidable.models import Formidable
 from formidable.serializers import FormidableSerializer, SimpleAccessSerializer
 from formidable.serializers.forms import ContextFormSerializer, contextualize
-from rest_framework import exceptions, status
-from rest_framework.generics import (
-    CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
-)
-from rest_framework.response import Response
-from rest_framework.settings import import_from_string, perform_import
-from rest_framework.views import APIView
 
 logger = logging.getLogger(__name__)
 

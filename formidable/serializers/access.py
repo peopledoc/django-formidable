@@ -1,9 +1,10 @@
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+
 from formidable.accesses import get_accesses
 from formidable.constants import EDITABLE
 from formidable.models import Access
 from formidable.serializers.list import NestedListSerializer
-from rest_framework import serializers
-from rest_framework.serializers import ValidationError
 
 
 class SimpleAccessSerializer(serializers.BaseSerializer):

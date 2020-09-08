@@ -1,9 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from jsonfield.fields import JSONField
+
 from formidable import constants
 from formidable.register import FieldSerializerRegister
-from jsonfield.fields import JSONField
 
 
 class Formidable(models.Model):
