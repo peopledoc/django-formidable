@@ -1,6 +1,12 @@
 from django.db.models import Prefetch
 from django.utils.functional import cached_property
 
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import SkipField
+from rest_framework.settings import api_settings
+from rest_framework.utils import html
+
 from formidable import constants
 from formidable.models import Access, Field, Item
 from formidable.register import FieldSerializerRegister, load_serializer
@@ -12,11 +18,6 @@ from formidable.serializers.defaults import DefaultSerializer
 from formidable.serializers.items import ItemSerializer
 from formidable.serializers.list import NestedListSerializer
 from formidable.serializers.validation import ValidationSerializer
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from rest_framework.fields import SkipField
-from rest_framework.settings import api_settings
-from rest_framework.utils import html
 
 BASE_FIELDS = (
     'slug', 'label', 'type_id', 'placeholder', 'description',

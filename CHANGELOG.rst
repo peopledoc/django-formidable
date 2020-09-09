@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing to see here yet.
+- Applying isort v5+ changes: no ``--recursive flag``, removed the ``not_skip`` settings. (internal change, no runtime impact).
 
 Release 5.0.0 (2020-06-30)
 ==========================

@@ -5,14 +5,15 @@ from django.conf import settings
 from django.db import transaction
 from django.utils.functional import cached_property
 
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from formidable import constants, json_version
 from formidable.forms import conditions
 from formidable.models import Formidable
 from formidable.security import get_clean_function
 from formidable.serializers import fields
 from formidable.serializers.common import WithNestedSerializer
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 
 class ConditionTestSerializer(serializers.Serializer):

@@ -1,7 +1,8 @@
+from rest_framework import serializers
+
 from formidable.models import Default
 from formidable.security import get_clean_function
 from formidable.serializers.list import NestedListSerializerDummyUpdate
-from rest_framework import serializers
 
 
 class DefaultListSerializer(NestedListSerializerDummyUpdate):
