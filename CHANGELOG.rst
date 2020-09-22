@@ -2,8 +2,10 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 6.0.0rc1
+================
+
+**BETA VERSION** *Handle with care.*
 
 - Improve default values for readonly fields.
 - Applying isort v5+ changes: no ``--recursive flag``, removed the ``not_skip`` settings. (internal change, no runtime impact).
