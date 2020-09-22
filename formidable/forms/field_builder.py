@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.forms.fields import MultipleChoiceField
 
 from formidable.forms import fields
 from formidable.utils import import_object
@@ -59,6 +60,7 @@ class FieldBuilder:
             'help_text': self.get_help_text(),
             'validators': self.get_validators(),
             'disabled': self.get_disabled(),
+            'initial': self.get_initial()
         }
 
         kwargs['widget'] = self.get_widget(default_widget_class)
@@ -91,6 +93,23 @@ class FieldBuilder:
             return self.access.level == 'READONLY'
 
         return False
+
+    def get_initial(self):
+        if self.field_is_dict and 'defaults' in self.field:
+            defaults = self.field['defaults']
+            if len(defaults) > 0:
+                if (self.field_class == MultipleChoiceField
+                        or self.field.get('multiple', False)):
+                    return defaults
+                return defaults[0]
+        elif hasattr(self.field, 'defaults'):
+            defaults = self.field.defaults.all()
+            if len(defaults) > 0:
+                if (self.field_class == MultipleChoiceField
+                        or getattr(self.field, 'multiple', False)):
+                    return list(defaults)
+                return defaults[0]
+        return None
 
     def get_required(self):
         if self.field_is_dict:

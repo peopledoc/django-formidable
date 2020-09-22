@@ -5,6 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
+- Improve default values for readonly fields.
 - Applying isort v5+ changes: no ``--recursive flag``, removed the ``not_skip`` settings. (internal change, no runtime impact).
 
 Release 5.0.0 (2020-06-30)
