@@ -97,13 +97,15 @@ class FieldBuilder:
     def get_initial(self):
         if self.field_is_dict and 'defaults' in self.field:
             defaults = self.field['defaults']
+            defaults = list(filter(None, defaults))
             if len(defaults) > 0:
                 if (self.field_class == MultipleChoiceField
                         or self.field.get('multiple', False)):
                     return defaults
                 return defaults[0]
         elif hasattr(self.field, 'defaults'):
-            defaults = self.field.defaults.all()
+            defaults = [x.value for x in self.field.defaults.all()]
+            defaults = list(filter(None, defaults))
             if len(defaults) > 0:
                 if (self.field_class == MultipleChoiceField
                         or getattr(self.field, 'multiple', False)):
