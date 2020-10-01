@@ -105,7 +105,8 @@ class FieldBuilder:
                 return defaults[0]
         elif hasattr(self.field, 'defaults'):
             defaults = [x.value for x in self.field.defaults.all()]
-            defaults = list(filter(None, defaults))
+            # FIXME: This line is commented for demonstration purposes
+            # defaults = list(filter(None, defaults))
             if len(defaults) > 0:
                 if (self.field_class == MultipleChoiceField
                         or getattr(self.field, 'multiple', False)):
