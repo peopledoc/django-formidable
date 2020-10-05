@@ -22,13 +22,13 @@ jobs:
   docs:
     working_directory: ~/django-formidable
     docker:
-      - image: circleci/node:lts
+      - image: circleci/node:lts-buster
     steps:
       - checkout
       - run:
           name: Check Python version & install Python dependencies
           command: |
-            python --version
+            python3 --version
             sudo apt update && sudo apt install python-pip python-dev
       - run:
           name: Run Sphinx doc tests using tox
