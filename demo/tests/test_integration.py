@@ -1,5 +1,7 @@
 import os
 import json
+import datetime
+from decimal import Decimal
 
 from copy import deepcopy
 
@@ -13,10 +15,10 @@ from rest_framework.test import APITestCase
 
 from formidable.models import Formidable
 from formidable.accesses import get_accesses
-from formidable.forms import FormidableForm, fields
+from formidable.forms import FormidableForm, fields, get_dynamic_form_class
 from formidable import validators, constants
 
-from . import form_data, form_data_items
+from . import form_data, form_data_items, form_data_readonly
 
 from unittest.mock import patch
 
@@ -373,6 +375,60 @@ class TestAccess(FormidableAPITestCase):
                 self.assertEqual(access['preview_as'], 'TABLE')
             else:
                 self.assertEqual(access['preview_as'], 'FORM')
+
+
+class TestReadonlyDefault(FormidableAPITestCase):
+    def test_form_readonly_empty_submit(self):
+        res = self.client.post(
+            reverse('formidable:form_create'),
+            form_data_readonly, format='json')
+        self.assertEquals(res.status_code, 201)
+        formidable = Formidable.objects.order_by('pk').last()
+        form_class = get_dynamic_form_class(formidable, 'padawan')
+        form = form_class({})
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data, {
+            'readonly_text': 'Hello World!',
+            'readonly_paragraph': 'Hello World!',
+            'readonly_date': datetime.date(2020, 9, 29),
+            'readonly_number': Decimal('10'),
+            'readonly_email': 'jon.europe@example.com',
+            'readonly_dropdown': 'val1',
+            'readonly_multiple_dropdown': ['val2', 'val3'],
+            'readonly_checkbox': True,
+            'readonly_checkboxes': ['val2', 'val3'],
+            'readonly_radios': 'val1',
+            'readonly_radios_buttons': 'val1'
+        })
+
+    def test_form_readonly_empty_defaults(self):
+
+        form_data = deepcopy(form_data_readonly)
+        # Preparing a "bad" defaults
+        for field in form_data['fields']:
+            field['defaults'].append("")  # empty value
+
+        res = self.client.post(
+            reverse('formidable:form_create'),
+            form_data, format='json')
+        self.assertEquals(res.status_code, 201)
+        formidable = Formidable.objects.order_by('pk').last()
+        form_class = get_dynamic_form_class(formidable, 'padawan')
+        form = form_class({})
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data, {
+            'readonly_text': 'Hello World!',
+            'readonly_paragraph': 'Hello World!',
+            'readonly_date': datetime.date(2020, 9, 29),
+            'readonly_number': Decimal('10'),
+            'readonly_email': 'jon.europe@example.com',
+            'readonly_dropdown': 'val1',
+            'readonly_multiple_dropdown': ['val2', 'val3'],
+            'readonly_checkbox': True,
+            'readonly_checkboxes': ['val2', 'val3'],
+            'readonly_radios': 'val1',
+            'readonly_radios_buttons': 'val1'
+        })
 
 
 class TestChain(FormidableAPITestCase):
