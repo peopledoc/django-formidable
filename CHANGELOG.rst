@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 6.0.0rc2
+================
 
 - Fix default values for readonly date fields.
 - Improve default values for readonly fields.
