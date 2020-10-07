@@ -5,6 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
+- Fix defaults on readonly fields during validation from schema
 - Fix default values for readonly date fields.
 - Improve default values for readonly fields.
 - Applying isort v5+ changes: no ``--recursive flag``, removed the ``not_skip`` settings. (internal change, no runtime impact).
