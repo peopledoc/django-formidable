@@ -2,13 +2,18 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 6.0.0 (2020-10-07)
+==========================
+
+Breaking Changes
+----------------
 
 - Drop support for Python 3.5 (EOL: 2020-09-13).
-- Fix defaults on readonly fields during validation from schema
-- Fix default values for readonly date fields.
-- Improve default values for readonly fields.
+- Default values for readonly fields are kept in cleaned_data.
+
+Other changes
+-------------
+
 - Applying isort v5+ changes: no ``--recursive flag``, removed the ``not_skip`` settings. (internal change, no runtime impact).
 
 Release 5.0.0 (2020-06-30)
