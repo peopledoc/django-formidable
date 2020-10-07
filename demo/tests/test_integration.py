@@ -430,6 +430,33 @@ class TestReadonlyDefault(FormidableAPITestCase):
             'readonly_radios_buttons': 'val1'
         })
 
+    def test_validate_form_readonly_empty_defaults(self):
+
+        session = self.client.session
+        session['role'] = 'padawan'
+        session.save()
+
+        form_data = deepcopy(form_data_readonly)
+        # Preparing a "bad" defaults
+        for field in form_data['fields']:
+            field['defaults'].append("")  # empty value
+
+        res = self.client.post(
+            reverse('formidable:form_create'),
+            form_data, format='json')
+        self.assertEquals(res.status_code, 201)
+        formidable = Formidable.objects.order_by('pk').last()
+
+        # Validation from schema
+        res = self.client.post(
+            reverse('form_validation_schema', args=[formidable.pk]),
+            {}, format='json'
+        )
+        self.assertEqual(res.status_code, 204)
+        self.assertIn(res.content, ("", b""))  # Should be empty
+        # As a consequence, if there's no body content, there shouldn't be any
+        # content-type sent back to the client.
+
 
 class TestChain(FormidableAPITestCase):
 
