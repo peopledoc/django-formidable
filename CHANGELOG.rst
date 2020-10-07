@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 6.0.0c3
+===============
 
 - Drop support for Python 3.5 (EOL: 2020-09-13).
 - Fix defaults on readonly fields during validation from schema
