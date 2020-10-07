@@ -2,6 +2,16 @@
 Deprecation timeline
 ====================
 
+From 5.0.0 to 6.0.0
+===================
+
+Python versions
+---------------
+
+.. deprecated:: 6.0.0
+
+    Drop support for Python 3.5
+
 From 4.0.1 to 5.0.0
 ===================
 
