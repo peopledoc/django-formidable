@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing to see here yet.
+- Pass context to serializer in from_json.
 
 Release 6.0.0 (2020-10-07)
 ==========================

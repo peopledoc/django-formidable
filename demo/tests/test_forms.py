@@ -1,5 +1,5 @@
 import json
-import os
+from os.path import dirname, join
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -8,7 +8,7 @@ import django_perf_rec
 from freezegun import freeze_time
 
 from formidable.constants import REQUIRED, EDITABLE, READONLY, HIDDEN
-from formidable.models import Formidable
+from formidable.models import Formidable, get_serializer
 from formidable.forms import FormidableForm, widgets, fields
 
 
@@ -787,8 +787,10 @@ class FormidableModelTestCase(TestCase):
         We should have an instance of ``Formidable``.
 
         """
-        filepath = os.path.join(os.path.dirname(__file__),
-                                '../fixtures/augmentation_heures.json')
+        filepath = join(
+            dirname(__file__),
+            '../fixtures/augmentation_heures.json'
+        )
         with open(filepath) as f:
             schema_definition = json.load(f)
 
@@ -808,3 +810,20 @@ class FormidableModelTestCase(TestCase):
         self.assertEqual(len(context.exception.messages), 3)
         for message in context.exception.messages:
             self.assertEqual(message, 'This field is required.')
+
+    def test_get_serializer_with_context(self):
+        filepath = join(
+            dirname(__file__),
+            '../fixtures/augmentation_heures.json'
+        )
+        with open(filepath) as f:
+            schema_definition = json.load(f)
+
+        # get_serializer is a function that is called in from_json.
+        serializer = get_serializer(schema_definition)
+        self.assertEqual(serializer.context, {})
+
+        serializer = get_serializer(
+            schema_definition,
+            context={"hello": "world"})
+        self.assertEqual(serializer.context, {"hello": "world"})
