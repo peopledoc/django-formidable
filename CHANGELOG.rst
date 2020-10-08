@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 6.1.0 (2020-10-07)
+==========================
 
 - Pass context to serializer in from_json.
 - Fix license reference in setup.py (#402).
