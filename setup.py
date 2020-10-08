@@ -12,7 +12,7 @@ setup(
     version=formidable.version,
     packages=find_packages(),
     include_package_data=True,
-    license='BSD License',
+    license='MIT License',
     description='django-formidable is a full django application which '
                 'allows you to create, edit, delete and use forms.',
     long_description=README,
