@@ -50,3 +50,18 @@ def test_id_and_label_and_description():
     form = _load_fixture('0004_id_label_description.json')
     errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
     assert len(errors) == 0
+
+
+def test_id_description_null():
+    form = _load_fixture('0021_id_label_description_null.json')
+    errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.validator == "type"
+    assert error.message == "None is not of type 'string'"
+
+
+def test_id_description_empty():
+    form = _load_fixture('0022_id_label_description_empty.json')
+    errors = sorted(validator.iter_errors(form), key=lambda e: e.path)
+    assert len(errors) == 0

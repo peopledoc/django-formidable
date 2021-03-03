@@ -21,7 +21,7 @@ def get_serializer(definition_schema, context=None):
 class Formidable(models.Model):
 
     label = models.CharField(max_length=256)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     conditions = JSONField(null=False, blank=False, default=list)
 
     class Meta:

@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ===================
 
-Nothing here yet.
+- Allow empty description on ``Formidable`` model
 
 Release 6.1.0 (2020-10-07)
 ==========================

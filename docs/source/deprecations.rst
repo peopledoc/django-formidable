@@ -2,6 +2,13 @@
 Deprecation timeline
 ====================
 
+From 6.1.0 to <x.y.z>
+=====================
+
+.. versionadded:: <x.y.z>
+
+    The `description` field in the ``Formidable`` model class would now allow empty values.
+
 From 5.0.0 to 6.0.0
 ===================
 
