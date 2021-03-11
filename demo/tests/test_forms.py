@@ -807,7 +807,7 @@ class FormidableModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as context:
             Formidable.from_json({'json_invalid': True})
 
-        self.assertEqual(len(context.exception.messages), 3)
+        self.assertEqual(len(context.exception.messages), 2)
         for message in context.exception.messages:
             self.assertEqual(message, 'This field is required.')
 
@@ -827,3 +827,21 @@ class FormidableModelTestCase(TestCase):
             schema_definition,
             context={"hello": "world"})
         self.assertEqual(serializer.context, {"hello": "world"})
+
+    def test_duplication(self):
+        """
+        try to duplicate a `Formidable`` object using the ``from_json``
+        and then it's ``to_json`` methods
+        """
+        form = Formidable.objects.create(label='test', description='desc')
+        json = form.to_json()
+        new_form = Formidable.from_json(json)
+        self.assertEqual('test', new_form.label)
+        self.assertEqual('desc', new_form.description)
+
+    def test_duplication_empty_desc(self):
+        form = Formidable.objects.create(label='test', description='')
+        json = form.to_json()
+        new_form = Formidable.from_json(json)
+        self.assertEqual('test', new_form.label)
+        self.assertEqual('', new_form.description)

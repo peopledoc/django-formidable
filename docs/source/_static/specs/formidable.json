@@ -291,7 +291,7 @@
                     "type": "array"
                 },
                 "description": {
-                    "description": "Description of the form",
+                    "description": "Description of the form - can be empty",
                     "type": "string"
                 },
                 "id": {
