@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-===================
+Release 7.0.0 (2021-03-11)
+==========================
 
 - Allow empty description on ``Formidable`` model
 
