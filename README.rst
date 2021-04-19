@@ -46,6 +46,19 @@ You can also browse the documentation locally, using the following, for example:
 
     $ make docs serve-docs
 
+About the model graph
+---------------------
+
+On the "intro" page of the documentation, you can see a graph of the different Django models defined in the application.
+
+To generate this graph, you'll need to have `graphviz installed <https://graphviz.org/download/>`_ on your system.
+
+When you're ready, you may initiate this generation using:
+
+.. code:: sh
+
+    $ tox -e django_graph
+
 Quick-Start
 ===========
 
