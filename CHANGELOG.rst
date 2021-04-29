@@ -7,6 +7,7 @@ master (unreleased)
 
 - Added a tox job target to create a Django model graph using `dot`. Run `tox -e django_graph` to see the result. Since the database schema doesn't change that often, this tox target won't be associated with automated tests or doc generation - it's probably going to be a one-shot.
 - Add/Confirm support of Django REST Framework 3.11 (#417).
+- Added a thorough documentation for maintainers
 
 Release 7.0.0 (2021-03-11)
 ==========================
