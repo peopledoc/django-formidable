@@ -2,6 +2,16 @@
 Deprecation timeline
 ====================
 
+From 7.0.0 to x.y.z
+===================
+
+Django REST Framework versions
+------------------------------
+
+.. versionadded:: x.y.z
+
+    Add/Confirm support of Django REST Framework 3.11
+
 From 6.1.0 to 7.0.0
 ===================
 
