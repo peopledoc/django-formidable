@@ -17,6 +17,7 @@ Contents:
    translations
    deprecations
    external-field-plugins
+   maintainers
 
 Indices and tables
 ==================
