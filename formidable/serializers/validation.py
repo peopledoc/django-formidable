@@ -128,8 +128,14 @@ class FutureDateSerializer(ValidationSerializer):
 
     type_id = 'IS_DATE_IN_THE_FUTURE'
 
+    def to_internal_value(self, data):
+        if isinstance(data['value'], bool):
+            data['value'] = str(data['value'])
+        data = super().to_internal_value(data)
+        return data
+
     def validate_value(self, value):
-        if value in ['t', "true"]:
-            return "true"
+        if value in ['t', 'true', 'True']:
+            return 'true'
         else:
-            return "false"
+            return 'false'

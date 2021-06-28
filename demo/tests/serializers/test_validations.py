@@ -3,7 +3,7 @@ from django.test import TestCase
 from formidable.models import Formidable
 from formidable.serializers.validation import (
     MinLengthSerializer, RegexpSerializer,
-    ValidationSerializer
+    ValidationSerializer, FutureDateSerializer
 )
 
 
@@ -57,6 +57,24 @@ class ValidationSerializerTest(TestCase):
         }
         serializer = RegexpSerializer(data=data)
         self.assertFalse(serializer.is_valid())
+
+    def test_valid_bool_future_date_value(self):
+        data = {
+            'field_id': self.text_field.id,
+            'type': 'IS_DATE_IN_THE_FUTURE',
+            'value': True,
+        }
+        serializer = FutureDateSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+
+    def test_valid_string_future_date_value(self):
+        data = {
+            'field_id': self.text_field.id,
+            'type': 'IS_DATE_IN_THE_FUTURE',
+            'value': 'true',
+        }
+        serializer = FutureDateSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
 
     def test_update_validations(self):
         list_serializer = ValidationSerializer(many=True)
