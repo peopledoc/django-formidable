@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+master (unreleased)
+==================
+
+Nothing to see here.
+
 Release 7.1.0 (2021-06-28)
 ==========================
 
