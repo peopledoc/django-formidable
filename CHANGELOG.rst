@@ -9,6 +9,7 @@ master (unreleased)
 - Add/Confirm support of Django REST Framework 3.11 (#417).
 - Added a thorough documentation for maintainers
 - Pin psycopg2-binary to 2.8 in testing env to fix CI.
+- Allow to create validations `IS_DATE_IN_THE_FUTURE` by passing a boolean value instead of a string.
 
 Release 7.0.0 (2021-03-11)
 ==========================
