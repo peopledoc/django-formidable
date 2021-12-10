@@ -28,7 +28,7 @@ def yaml2json():
     # Building raw data out of the Swagger Formidable definition
     swagger_file = join(ROOT_PATH, '..', 'swagger', 'formidable.yml')
     with open(swagger_file) as fd:
-        data = yaml.load(fd)
+        data = yaml.full_load(fd)
 
     to_exclude = (
         'BuilderForm', 'InputError', 'BuilderError', 'InputForm', 'InputField'
