@@ -111,6 +111,22 @@ class TestCustomFieldSerializer(TestCase):
         # remove instance
         instance.delete()
 
+    def test_custom_field_serialize_default_conditions(self):
+        serializer = FormidableSerializer(data=self.schema)
+        assert serializer.is_valid()
+
+        self.assertIn("conditions", serializer.validated_data)
+        self.assertEqual(serializer.validated_data["conditions"], [])
+
+    def test_custom_field_serialize_none_conditions(self):
+        self.schema["conditions"] = None
+        serializer = FormidableSerializer(data=self.schema)
+        assert not serializer.is_valid()
+
+        self.assertIn(
+            "This field may not be null.",
+            serializer.errors["conditions"])
+
     def test_context_in_field_serializer(self):
         # backup a serializer
         backup_serializer = self.field_register[self.custom_type_id]

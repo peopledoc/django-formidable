@@ -48,7 +48,7 @@ class ConditionSerializer(serializers.Serializer):
 class FormidableSerializer(WithNestedSerializer):
 
     fields = fields.FieldSerializer(many=True)
-    conditions = ConditionSerializer(many=True, required=False)
+    conditions = ConditionSerializer(many=True, required=False, default=[])
 
     nested_objects = ['fields']
 
