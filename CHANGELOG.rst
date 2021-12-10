@@ -5,7 +5,9 @@ ChangeLog
 master (unreleased)
 ==================
 
-Nothing to see here.
+- Fix issues with postgresql on CI.
+- Replace deprecated yaml.load calls to fix doc build.
+- Add a default value `[]` to conditions.
 
 Release 7.1.0 (2021-06-28)
 ==========================
