@@ -1,6 +1,7 @@
 import os
 import json
 
+import django
 from django.urls import reverse
 from django.conf import settings
 from django_perf_rec import TestCaseMixin
@@ -28,6 +29,9 @@ class TestCase(TestCaseMixin, APITestCase):
 
         if 'postgresql' in settings.DATABASES['default']['ENGINE']:
             record_name = '{}-pg'.format(record_name)
+
+        if django.get_version().startswith("2"):
+            record_name = '{}-django2'.format(record_name)
 
         return super().record_performance(
             path=path,
