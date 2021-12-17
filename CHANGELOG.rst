@@ -8,6 +8,7 @@ master (unreleased)
 - Fix issues with postgresql on CI.
 - Replace deprecated yaml.load calls to fix doc build.
 - Add a default value `[]` to conditions.
+- Added support for Django 3
 
 Release 7.1.0 (2021-06-28)
 ==========================

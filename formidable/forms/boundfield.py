@@ -1,7 +1,7 @@
-from django.forms import forms
+from django.forms.boundfield import BoundField
 
 
-class FormatBoundField(forms.BoundField):
+class FormatBoundField(BoundField):
     """
     The format field skips the rendering with the label attribute
     in the form level (i.e => form.as_p() doesn't have to generate any label
