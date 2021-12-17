@@ -13,11 +13,13 @@ jobs:
           command: "apt-get update"
       - run:
           name: "Install postgresql-common Debian package"
-          command: "apt-get install -y postgresql-common"
+          command: "apt-get install -y postgresql postgresql-common"
       - checkout
       - run:
           name: Run the test suite
-          command: tox -r
+          command: |
+            chmod 777 /tmp
+            tox -r
 
   docs:
     working_directory: ~/django-formidable
@@ -29,11 +31,11 @@ jobs:
           name: Check Python version & install Python dependencies
           command: |
             python3 --version
-            sudo apt update && sudo apt install python-pip python-dev
+            sudo apt update && sudo apt install python3-pip python3-dev
       - run:
           name: Run Sphinx doc tests using tox
           command: |
-            pip install --user tox
+            python3 -m pip install --user tox
             ~/.local/bin/tox -e docs
 
 workflows:

@@ -241,4 +241,4 @@ collectstatic:
 	cp \
 		node_modules/swagger-ui-dist/* \
 		source/_static/swagger-ui/
-	python -c 'import yaml, json; json.dump(yaml.load(open("./swagger/formidable.yml")), open("./source/_static/specs/formidable.json", "w"), indent=4, separators=(",", ": "), sort_keys=True)'
+	python -c 'import yaml, json; json.dump(yaml.full_load(open("./swagger/formidable.yml")), open("./source/_static/specs/formidable.json", "w"), indent=4, separators=(",", ": "), sort_keys=True)'
