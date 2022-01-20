@@ -2,8 +2,8 @@
 ChangeLog
 =========
 
-master (unreleased)
-==================
+Release 7.2.0 (2022-01-21)
+==========================
 
 - Fix issues with postgresql on CI.
 - Replace deprecated yaml.load calls to fix doc build.
