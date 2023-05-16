@@ -116,7 +116,7 @@ class FieldBuilder:
             return self.field['required']
 
         if self.access:
-            if self.access.level == 'HIDDEN':
+            if self.access.level == 'HIDDEN' or self.access.level == 'READONLY':
                 raise SkipField()
             return self.access.level == 'REQUIRED'
 

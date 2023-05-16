@@ -5,7 +5,7 @@ ChangeLog
 master (unreleased)
 ==================
 
-Nothing to see here.
+- Fix disabled field validation
 
 Release 7.2.0 (2022-01-21)
 ==========================

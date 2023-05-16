@@ -16,7 +16,7 @@ from rest_framework.test import APITestCase
 
 from formidable.models import Formidable
 from formidable.accesses import get_accesses
-from formidable.forms import FormidableForm, fields, get_dynamic_form_class
+from formidable.forms import FormidableForm, fields, get_dynamic_form_class, widgets
 from formidable import validators, constants
 
 from . import form_data, form_data_items, form_data_readonly
@@ -623,6 +623,42 @@ class TestValidationEndPoint(FormidableAPITestCase):
             parameters, format='json'
         )
         # We still don't validate file fields.
+        self.assertEqual(res.status_code, 204)
+
+    def test_with_mandatory_field_for_another_role(self):
+        class WithMandatoryFieldAnotherRole(FormidableForm):
+            first_radio_input = fields.ChoiceField(
+                widget=widgets.RadioSelect,
+                choices=(('yes', 'Yes'), ('no', 'No')),
+                accesses={
+                    'padawan': constants.REQUIRED,
+                    'human': constants.READONLY
+                }
+            )
+            second_radio_input = fields.ChoiceField(
+                widget=widgets.RadioSelect,
+                choices=(('yes', 'Yes'), ('no', 'No')),
+                accesses={
+                    'padawan': constants.REQUIRED,
+                    'human': constants.READONLY
+                }
+            )
+
+        formidable = WithMandatoryFieldAnotherRole.to_formidable(
+            label="test with another role mandatory field"
+        )
+
+        # Set role for the session
+        session = self.client.session
+        session['role'] = 'human'
+        session.save()
+
+        # Fill the field for the setted role
+        parameters = {'second_radio_input': 'yes'}
+
+        res = self.client.post(
+            reverse(self.url, args=[formidable.pk]), parameters, format='json'
+        )
         self.assertEqual(res.status_code, 204)
 
     def test_unallowed_method(self):
