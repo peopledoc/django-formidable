@@ -7,7 +7,6 @@ executors:
     docker:
       - image: quay.io/cfra/shellcheck-circleci
 
-version: 2
 jobs:
   build:
     docker:
