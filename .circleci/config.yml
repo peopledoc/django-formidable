@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: themattrix/tox
-      - image: circleci/postgres:latest
+      - image: cimg/postgres:latest
         environment:
           POSTGRES_HOST_AUTH_METHOD: trust
     working_directory: ~/django-formidable
@@ -24,7 +24,7 @@ jobs:
   docs:
     working_directory: ~/django-formidable
     docker:
-      - image: circleci/node:lts-buster
+      - image: cimg/node:lts-buster
     steps:
       - checkout
       - run:
