@@ -24,7 +24,7 @@ jobs:
   docs:
     working_directory: ~/django-formidable
     docker:
-      - image: cimg/node:lts-buster
+      - image: cimg/node:20.2.0
     steps:
       - checkout
       - run:
